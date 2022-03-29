@@ -11,4 +11,5 @@ export function userLogin(data, filters={}) {
 
 export const userLogout = () => ({
   type: 'LOGOUT'
+
 })

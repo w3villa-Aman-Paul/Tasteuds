@@ -42,7 +42,7 @@ const DEFAULT_STATE = {
 
 let changes = null;
 export default function accountReducer(state = DEFAULT_STATE, action) {
-  const response = action.payload && (action.payload.data || action.payload.response)
+  const response = action.payload  && (action.payload.data || action.payload.response);
   
   switch (action.type) {
     /**
@@ -63,6 +63,23 @@ export default function accountReducer(state = DEFAULT_STATE, action) {
         saving: false
       };
       return { ...state, ...changes };
+    
+    case 'ACCOUNT_RETREIVE_PENDING':
+      return { ...state, saving: true };
+
+    case 'ACCOUNT_RETREIVE_REJECTED':
+      changes = {
+        saving: false
+      };
+      return { ...state, ...changes };
+
+    case 'ACCOUNT_RETREIVE_FULFILLED':
+      return{
+        account: dataFormatter.deserialize(response),
+        saving: false,
+      }
+
+
 
     /**
      * GET_COMPLETED_ORDERS
@@ -97,7 +114,7 @@ export default function accountReducer(state = DEFAULT_STATE, action) {
         orders: [],
         saving: false
       };
-      return { ...state, ...changes };
+    return { ...state, ...changes };
 
     /**
      * RETURN DEFAULT
@@ -106,3 +123,5 @@ export default function accountReducer(state = DEFAULT_STATE, action) {
       return state
   }
 }
+
+

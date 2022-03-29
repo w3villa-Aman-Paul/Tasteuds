@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { connect } from 'react-redux'
+import { connect,useSelector } from 'react-redux'
 import { View, Text, StyleSheet, Image } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 import { ChevronRight, Support } from '../icons'
@@ -14,6 +14,10 @@ import {
 import { userLogout } from '../../redux/actions/authActions'
 
 function CustomDrawerContent({ dispatch, ...props }) {
+
+  const { account } = useSelector(state => state.account);
+  const { email } = account;
+
   return (
     <DrawerContentScrollView {...props}>
       <View style={styles.jumbotron}>
@@ -26,11 +30,11 @@ function CustomDrawerContent({ dispatch, ...props }) {
         >
           <View style={styles.centeredContent}>
             <Image
-              source={require('../../../assets/images/user-profile-photo/user-profile-photo.png')}
+              source={require('../../../assets/images/user-profile-photo/mohsin.jpg')}
               style={styles.avatar}
             />
             <View style={styles.profileDetails}>
-              <Text style={ styles.profileName }>Jane Pinto</Text>
+              <Text style={ styles.profileName }>{email}</Text>
               <ChevronRight size={20} style={{color: colors.white}} />
             </View>
           </View>

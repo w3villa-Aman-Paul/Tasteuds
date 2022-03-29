@@ -11,6 +11,7 @@ const rootReducer = combineReducers({
   checkout: checkoutReducer,
   products: productsReducer,
   taxons: taxonsReducer
-})
+});
+
 
 export default rootReducer

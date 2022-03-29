@@ -1,7 +1,7 @@
-import { handleAPI, API_VERSION_STOREFRONT } from '../../library/utils/apiUtils';
+import { handleAPI, API_VERSION_STOREFRONT, handleAddCartItem } from '../../library/utils/apiUtils';
 
 export function getDefaultCountry(data, params={}) {
-  const url = `/${API_VERSION_STOREFRONT}/countries/default`;
+  const url = `${API_VERSION_STOREFRONT}/countries/default`;
   const method = 'GET';
   params = {
     include: 'states'
@@ -13,7 +13,7 @@ export function getDefaultCountry(data, params={}) {
 }
 
 export function getCountriesList(data, filters={}) {
-  const url = `/${API_VERSION_STOREFRONT}/countries`;
+  const url = `${API_VERSION_STOREFRONT}/countries`;
   const method = 'GET';
   return {
     type: 'GET_COUNTRIES_LIST',
@@ -22,7 +22,7 @@ export function getCountriesList(data, filters={}) {
 }
 
 export function getCountry(id, params={}) {
-  const url = `/${API_VERSION_STOREFRONT}/countries/${id}`;
+  const url = `${API_VERSION_STOREFRONT}/countries/${id}`;
   const method = 'GET';
   params = {
     include: 'states'
@@ -34,7 +34,7 @@ export function getCountry(id, params={}) {
 }
 
 export function getPaymentMethods(filters={}) {
-  const url = `/${API_VERSION_STOREFRONT}/checkout/payment_methods`;
+  const url = `${API_VERSION_STOREFRONT}/checkout/payment_methods`;
   const method = 'GET';
   return {
     type: 'GET_PAYMENT_METHODS',
@@ -42,32 +42,45 @@ export function getPaymentMethods(filters={}) {
   };
 }
 
-export function checkoutNext() {
-  const url = `/${API_VERSION_STOREFRONT}/checkout/next`;
+export function checkoutNext(auth_token, data={}) {
+  const url = `${API_VERSION_STOREFRONT}/checkout/next`;
   const method = 'PATCH';
   const params = {
     include: 'line_items.variant.option_values,line_items.variant.images'
   }
   return {
     type: 'CHECKOUT_NEXT',
-    payload: handleAPI(url, params, method)
+    payload:  handleAddCartItem(url, params, method, data, auth_token)
   };
 }
 
-export function updateCheckout(data) {
-  const url = `/${API_VERSION_STOREFRONT}/checkout`;
+export function updateCheckout(auth_token,data) {
+  const url = `${API_VERSION_STOREFRONT}/checkout`;
   const method = 'PATCH';
   const params = {
     include: 'line_items.variant.option_values,line_items.variant.images'
   }
   return {
     type: 'UPDATE_CHECKOUT',
-    payload: handleAPI(url, params, method, data)
+    payload: handleAddCartItem(url, params, method, data, auth_token)
   };
 }
 
+export function shippingRates(auth_token, data={}) {
+  const url = `${API_VERSION_STOREFRONT}/checkout/shipping_rates`;
+  const method = 'GET';
+  const params = {
+    include: 'line_items.variant.option_values,line_items.variant.images'
+  }
+  return {
+    type: 'RATES_CHECKOUT',
+    payload: handleAddCartItem(url, params, method, data, auth_token)
+  };
+}
+
+
 export function completeCheckout() {
-  const url = `/${API_VERSION_STOREFRONT}/checkout/complete`;
+  const url = `${API_VERSION_STOREFRONT}/checkout/complete`;
   const method = 'PATCH';
   const params = {
     include: 'line_items.variant.option_values,line_items.variant.images'
@@ -81,20 +94,20 @@ export function completeCheckout() {
 /**
  * Bag Screen Actions
  */
-export function addItem(/* auth_token,*/ data) {
-  const url = `/${API_VERSION_STOREFRONT}/cart/add_item`;
+export function addItem(auth_token, data) {
+  const url = `${API_VERSION_STOREFRONT}/cart/add_item`;
   const method = 'POST';
   const params = {
     include: 'line_items.variant.option_values,line_items.variant.images'
   }
   return {
     type: 'ADD_ITEM',
-    payload: handleAPI(url, params, method, data /* , auth_token */)
+    payload: handleAddCartItem(url, params, method, data, auth_token)
   };
 }
 
 export function getCart() {
-  const url = `/${API_VERSION_STOREFRONT}/cart`;
+  const url = `${API_VERSION_STOREFRONT}/cart`;
   const params = {
     include: 'line_items.variant.option_values,line_items.variant.images'
   }
@@ -105,8 +118,17 @@ export function getCart() {
   };
 }
 
+export function createCartToken() {
+  const url = `${API_VERSION_STOREFRONT}/cart`;
+  const method = 'POST';
+  const params = {
+    include: 'line_items.variant.option_values,line_items.variant.images'
+  }
+  return handleAPI(url, params, method)
+}
+
 export function createCart() {
-  const url = `/${API_VERSION_STOREFRONT}/cart`;
+  const url = `${API_VERSION_STOREFRONT}/cart`;
   const method = 'POST';
   const params = {
     include: 'line_items.variant.option_values,line_items.variant.images'
@@ -118,7 +140,7 @@ export function createCart() {
 }
 
 export function removeLineItem(lineItemId, filters={}) {
-  const url = `/${API_VERSION_STOREFRONT}/cart/remove_line_item/${lineItemId}`;
+  const url = `${API_VERSION_STOREFRONT}/cart/remove_line_item/${lineItemId}`;
   const params = {
     include: 'line_items.variant.option_values,line_items.variant.images'
   }
@@ -130,7 +152,7 @@ export function removeLineItem(lineItemId, filters={}) {
 }
 
 export function setQuantity(data, filters={}) {
-  const url = `/${API_VERSION_STOREFRONT}/cart/set_quantity`;
+  const url = `${API_VERSION_STOREFRONT}/cart/set_quantity`;
   const params = {
     include: 'line_items.variant.option_values,line_items.variant.images'
   }

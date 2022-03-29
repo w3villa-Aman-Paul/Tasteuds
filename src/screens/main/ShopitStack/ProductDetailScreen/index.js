@@ -18,11 +18,13 @@ import {
 } from '../../../../library/icons'
 import TextField from '../../../../library/components/TextField'
 import ActivityIndicatorCard from '../../../../library/components/ActivityIndicatorCard'
-import { addItem, setProductFavourite } from '../../../../redux'
+import { addItem, createCartToken, setProductFavourite } from '../../../../redux'
 import { connect } from 'react-redux'
 import { styles } from './styles'
 import { capitalizeFirstLetter } from '../../../../res/helperFunctions'
 import { HOST } from '../../../../res/env'
+import AsyncStorage from '@react-native-community/async-storage'
+import { get } from 'lodash'
 
 const CarouselProductCard = ({ imageURI }) => {
   return (
@@ -49,14 +51,14 @@ const CarouselProductCard = ({ imageURI }) => {
   )
 }
 
-const ProductDetailScreen = ({ dispatch, product, auth, saving }) => {
+const ProductDetailScreen = ({navigation, dispatch, product, auth, saving }) => {
   const [pincode, setPincode] = useState('')
 
   const [isVariantSelected, setIsVariantSelected] = useState(true)
   const [activeColor, setActiveColor] = useState(product.default_variant.option_values[0].presentation)
   const [activeSize, setActiveSize] = useState('')
   const [selectedVariant, setSelectedVariant] = useState({})
-  const [imageURI, setImageURI] = useState(`${HOST}/${product.variants[0].images[0].styles[3].url}`)
+  const [imageURI, setImageURI] = useState(`${HOST}/${product.variants[0].images[0]?.styles[3].url}`)
 
   const [snackbarVisible, setSnackbarVisible] = useState(false)
 
@@ -67,17 +69,29 @@ const ProductDetailScreen = ({ dispatch, product, auth, saving }) => {
     setActiveSize('')
     setSelectedVariant({})
     setIsVariantSelected(true)
-    setImageURI(`${HOST}/${product.variants[index].images[0].styles[3].url}`)
+    setImageURI(`${HOST}/${product.variants[index].images[0]?.styles[3].url}`)
   }
 
-  const handleAddToBag = () => {
-    dispatch(addItem(
+  const dismissSnackbar = () => setSnackbarVisible(false);
+
+  const getcartToken = async () => {
+      const { data } = await createCartToken();
+      return data.data.attributes.token;
+  }
+
+  
+
+  const handleAddToBag = async () => {
+    dispatch(addItem( await getcartToken(), 
       {
         variant_id: selectedVariant.id,
         quantity: 1,
       }
     ))
-    // setSnackbarVisible(true)
+    setTimeout(() => {
+      navigation.navigate('Bag');
+    }, 1000);
+    return setSnackbarVisible(true);
   }
 
   if(saving) {
@@ -172,9 +186,9 @@ const ProductDetailScreen = ({ dispatch, product, auth, saving }) => {
                       return <Avatar
                         key={index}
                         size="small"
-                        title={`${variant.option_values[1].presentation}`}
+                        title={`${variant.option_values[1]?.presentation}`}
                         onPress={() => {
-                            setActiveSize(variant.option_values[1].presentation)
+                            setActiveSize(variant.option_values[1]?.presentation)
                             setSelectedVariant(variant)
                             setIsVariantSelected(false)
                           }
@@ -184,11 +198,11 @@ const ProductDetailScreen = ({ dispatch, product, auth, saving }) => {
                         containerStyle={{
                           backgroundColor: colors.white,
                           marginRight: 16,
-                          borderColor: variant.option_values[1].presentation !== activeSize ? colors.black : colors.primary,
+                          borderColor: variant.option_values[1]?.presentation !== activeSize ? colors.black : colors.primary,
                           borderWidth: 1
                         }}
                         titleStyle={[globalStyles.latoBold14, 
-                          variant.option_values[1].presentation !== activeSize ? globalStyles.textDark : globalStyles.textPrimary
+                          variant.option_values[1]?.presentation !== activeSize ? globalStyles.textDark : globalStyles.textPrimary
                         ]}
                       />
                     } else { return null }
@@ -332,7 +346,7 @@ const ProductDetailScreen = ({ dispatch, product, auth, saving }) => {
       </ScrollView>
       <Snackbar
         visible={snackbarVisible}
-        duration={2000}
+        onDismiss = {dismissSnackbar}
         >
         Added to Bag !
       </Snackbar>
@@ -345,5 +359,6 @@ const mapStateToProps = state => ({
   auth: state.auth,
   saving: state.products.saving
 })
+
 
 export default connect(mapStateToProps)(ProductDetailScreen)

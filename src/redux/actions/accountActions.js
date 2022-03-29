@@ -1,7 +1,8 @@
+import AsyncStorage from '@react-native-community/async-storage';
 import { handleAPI, API_VERSION_STOREFRONT } from '../../library/utils/apiUtils';
 
 export function accountCreate(data, filters={}) {
-  const url = `/${API_VERSION_STOREFRONT}/account/`;
+  const url = `${API_VERSION_STOREFRONT}/account`;
   const method = 'POST';
   return {
     type: 'ACCOUNT_CREATE',
@@ -9,8 +10,17 @@ export function accountCreate(data, filters={}) {
   };
 }
 
+export const accountRetrieve = (filters={}) =>(dispatch) => {
+  const url = `${API_VERSION_STOREFRONT}/account`;
+  const method = 'GET';
+  dispatch({
+    type: 'ACCOUNT_RETREIVE',
+    payload: handleAPI(url, filters, method),
+  });
+}
+
 export function getCompletedOrders() {
-  const url = `/${API_VERSION_STOREFRONT}/account/orders`;
+  const url = `${API_VERSION_STOREFRONT}/orders`;
   const method = 'GET';
   const params = {
     include: 'variants.images,variants.option_values'

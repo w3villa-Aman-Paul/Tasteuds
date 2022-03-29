@@ -5,10 +5,11 @@ import { colors } from '../../../res/palette'
 import { List } from 'react-native-paper'
 import { styles } from './styles'
 import { getTaxonsList } from '../../../redux'
-import { connect } from 'react-redux'
+import { connect, useSelector } from 'react-redux'
 import ActivityIndicatorCard from '../../../library/components/ActivityIndicatorCard'
 
 const CategoriesScreen = ({ navigation, dispatch, taxonomy, saving }) => {
+
 
   const [colorsList] = React.useState([
     '#ececec',
@@ -53,7 +54,7 @@ const CategoriesScreen = ({ navigation, dispatch, taxonomy, saving }) => {
         </View>
       </View>
       {
-        taxonomy.children.map((taxonLevel1, index) => {
+        taxonomy.map((taxonLevel1, index) => {
           return (
             <List.Accordion
               key={taxonLevel1.id}
@@ -85,7 +86,7 @@ const CategoriesScreen = ({ navigation, dispatch, taxonomy, saving }) => {
 }
 
 const mapStateToProps = state => ({
-  taxonomy: state.taxons.taxonsList[0],
+  taxonomy: state.taxons.taxonsList,
   saving: state.taxons.saving,
 })
 

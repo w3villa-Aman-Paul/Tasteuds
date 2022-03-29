@@ -29,7 +29,8 @@ export default function authReducer(state = DEFAULT_STATE, action) {
 
     case 'LOGOUT':
       AsyncStorage.removeItem('userToken')
-      AsyncStorage.removeItem('refreshToken')
+      AsyncStorage.removeItem('refreshToken');
+      AsyncStorage.removeItem('account')
       return {
         isLoading: false
       }

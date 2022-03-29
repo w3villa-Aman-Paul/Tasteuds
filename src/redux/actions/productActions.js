@@ -2,7 +2,7 @@ import { handleAPI, API_VERSION_STOREFRONT } from '../../library/utils/apiUtils'
 import QueryString from 'qs';
 
 export function getProductsList(data, {pageIndex, filter}) {
-  const url = `/${API_VERSION_STOREFRONT}/products`;
+  const url = `${API_VERSION_STOREFRONT}/products`;
   const params = {
     include: 'images',
     filter: filter,
@@ -17,7 +17,7 @@ export function getProductsList(data, {pageIndex, filter}) {
 }
 
 export function getProduct(id, filters={}) {
-  const url = `/${API_VERSION_STOREFRONT}/products/${id}`;
+  const url = `${API_VERSION_STOREFRONT}/products/${id}`;
   const params = {
     include: 'images,variants.option_values,product_properties'
   }
@@ -42,12 +42,12 @@ export function setMaximumPriceRange(maximum) {
   }
 }
 
-export const toggleProductsSizeFilter = size => ({
+export const toggleProductsSizeFilter = (size) => ({
   type: 'TOGGLE_PRODUCT_SIZE_FILTER',
   payload: size
 })
 
-export const setProductFavourite = variant => ({
+export const setProductFavourite = (variant) => ({
   type: 'SET_PRODUCT_FAVOURITE',
   payload: variant
 })

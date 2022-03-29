@@ -16,7 +16,7 @@ const SignUpScreen = ({ navigation, dispatch }) => {
   const [inputPasswordBorder, setInputPasswordBorder] = useState(false)
   const [inputPasswordConfirmationBorder, setInputPasswordConfirmationBorder] = useState(false)
 
-  const [userName, setUserName] = useState('')
+  // const [username, setUserName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [passwordConfirmation, setPasswordConfirmation] = useState('')
@@ -25,6 +25,7 @@ const SignUpScreen = ({ navigation, dispatch }) => {
     dispatch(accountCreate(
       {
         user: {
+          // username: username,
           email: email, 
           password: password,
           password_confirmation: passwordConfirmation
@@ -41,14 +42,14 @@ const SignUpScreen = ({ navigation, dispatch }) => {
       <Text style={styles.title}>Join Spree Shop</Text>
       <View style={[globalStyles.containerFluid, { justifyContent: 'space-evenly',}]}>
         <View>
-          <TextField
+          {/* <TextField
             placeholder="Name"
             inputStyle={styles.inputStyle}
             containerStyle={[styles.containerStyle, globalStyles.mb16]}
             inputContainerStyle={styles.inputContainerStyle}
             onChangeText={setUserName}
-            value={userName}
-          />
+            value={username}
+          /> */}
           <TextField
             placeholder="Email"
             inputStyle={styles.inputStyle}

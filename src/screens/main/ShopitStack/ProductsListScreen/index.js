@@ -16,7 +16,7 @@ const FlatListImageItem = ({ item, onPress, imageStyle, itemContainerStyle }) =>
     <TouchableOpacity onPress={onPress} style={itemContainerStyle}>
       <Image
         source={{
-          uri: `${HOST}/${item.images[0].styles[3].url}`
+          uri: `${HOST}/${item.images[0]?.styles[3].url}`
         }}
         style={{ width: imageStyle.width, height: imageStyle.height, resizeMode: 'cover' }}
       />

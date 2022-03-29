@@ -28,7 +28,7 @@ const ProductCard = ({ imageSource, name, description, cart, option_values,
               <View style={[styles.colorBadge, {backgroundColor: cart ? variant.option_values[0].presentation
                 : option_values[0].presentation }]} />
               <View style={styles.productSizeStyle}>
-                <Text style={{paddingHorizontal: 6, ...globalStyles.latoRegular}}>{ cart ? variant.option_values[1].presentation : option_values[1].presentation}</Text>
+                <Text style={{paddingHorizontal: 6, ...globalStyles.latoRegular}}>{ cart ? variant.option_values[1]?.presentation : option_values[1]?.presentation}</Text>
               </View>
               { counter && <View style={styles.counterContainer}>
                 <MathMinus size={14} style={{color: colors.primary}} onPress={onDecrementQuantity} />

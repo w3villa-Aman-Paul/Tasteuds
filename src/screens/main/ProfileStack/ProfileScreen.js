@@ -1,13 +1,15 @@
 import * as React from 'react'
-import { connect } from 'react-redux'
+import { connect, useSelector } from 'react-redux'
 import { View, Text, Image } from 'react-native'
 import { globalStyles } from '../../../styles/global'
 import { colors } from '../../../res/palette'
 import { LinearGradient } from 'expo-linear-gradient'
 import { Pen, User, Home, ShoppingBag, Heart, Gift, ChevronRight } from '../../../library/icons'
 import { Divider, Button } from 'react-native-elements'
-import { userLogout } from '../../../redux'
+import { accountRetrieve, userLogout } from '../../../redux'
 import { styles } from './styles'
+import AsyncStorage from '@react-native-community/async-storage'
+import axios from 'axios';
 
 const list = [
   {
@@ -34,6 +36,13 @@ const list = [
 
 const ProfileScreen = ({ dispatch }) => {
 
+  const { account } = useSelector(state => state.account);
+  const { email } = account;
+
+  React.useEffect(() => {
+    dispatch(accountRetrieve());
+  }, []);
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.jumbotron}>
@@ -46,12 +55,12 @@ const ProfileScreen = ({ dispatch }) => {
         >
           <View style={styles.centeredContent}>
             <Image
-              source={require('../../../../assets/images/user-profile-photo/user-profile-photo.png')}
+              source={require('../../../../assets/images/user-profile-photo/mohsin.jpg')}
               style={styles.avatar}
             />
             <View style={styles.profileDetails}>
-              <Text style={styles.profileName}>Jane Pinto</Text>
-              <Pen size={24} style={{ color: colors.white }} />
+              <Text style={styles.profileName}>{email}</Text>
+              <Pen size={24} style={{color: colors.white }} />
             </View>
           </View>
         </LinearGradient>

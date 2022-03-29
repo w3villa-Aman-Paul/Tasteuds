@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { ScrollView, View, Text, Image, TouchableOpacity, Dimensions } from 'react-native'
+import { ScrollView, View, Text, Image, TouchableOpacity, Dimensions, Pressable } from 'react-native'
 import { Divider, Button, Overlay } from 'react-native-elements'
 import { globalStyles } from '../../../../../styles/global'
 import { colors } from '../../../../../res/palette'
@@ -15,9 +15,11 @@ import ActivityIndicatorCard from '../../../../../library/components/ActivityInd
 import { connect } from 'react-redux'
 
 const PaymentScreen = ({ navigation, dispatch, saving, cart }) => {
-  const [cardNumber, setCardNumber] = useState('4111111111111111')
+  console.log('OrderToken',cart.token)
+  console.log('payment_id',cart.id)
+  const [cardNumber, setCardNumber] = useState('4242424242424242')
   const [nameOnCard, setNameOnCard] = useState('John Snow')
-  const [validThru, setValidThru] = useState('01/2022')
+  const [validThru, setValidThru] = useState('01/2051')
   const [cvvInput, setCvvInput] = useState('123')
 
   const [expanded, setExpanded] = useState(true);
@@ -35,16 +37,16 @@ const PaymentScreen = ({ navigation, dispatch, saving, cart }) => {
   };
 
   const handlePaymentConfirmation = async () => {
-    await dispatch(updateCheckout(
+    await dispatch(updateCheckout(cart.token,
       {
         order: {
           payments_attributes: [
             {
-              payment_method_id: 2,
+              payment_method_id: 5,
               source_attributes: {
                 number: cardNumber,
                 month: '01',
-                year: '2022',
+                year: '2051',
                 verification_value: cvvInput,
                 name: nameOnCard
               }
@@ -92,7 +94,9 @@ const PaymentScreen = ({ navigation, dispatch, saving, cart }) => {
           <View style={checkoutStyles.statusBarContainer}>
             <View style={[ checkoutStyles.rowContainer, { alignItems: 'center'} ]}>
               <CheckO size={16} style={[checkoutStyles.iconStyle, {color: colors.success}]} />
-              <Text style={ globalStyles.latoRegular, {color: colors.success}}>Bag</Text>
+              <TouchableOpacity onPress={() => navigation.navigate('Bag')}>
+                  <Text style={globalStyles.latoRegular}>Bag</Text>
+              </TouchableOpacity>
             </View>
             <View
               style={[checkoutStyles.shippingIndicatorLine, {
@@ -101,7 +105,9 @@ const PaymentScreen = ({ navigation, dispatch, saving, cart }) => {
             />
             <View style={[ checkoutStyles.rowContainer, { alignItems: 'center'} ]}>
               <CheckO size={16} style={[checkoutStyles.iconStyle, {color: colors.success}]} />
-              <Text style={ globalStyles.latoRegular, {color: colors.success}}>Address</Text>
+              <TouchableOpacity onPress={() => navigation.navigate('ShippingAddress')}>
+                  <Text style={globalStyles.latoRegular}>Address</Text>
+              </TouchableOpacity>
             </View>
             <View
               style={[checkoutStyles.shippingIndicatorLine, {
@@ -110,7 +116,9 @@ const PaymentScreen = ({ navigation, dispatch, saving, cart }) => {
             />
             <View style={[ checkoutStyles.rowContainer, { alignItems: 'center'} ]}>
               <CheckO size={16} style={[checkoutStyles.iconStyle, {color: colors.black}]} />
-              <Text style={ globalStyles.latoRegular }>Payment</Text>
+              <TouchableOpacity onPress={() => navigation.navigate('CheckoutPayment')}>
+                  <Text style={globalStyles.latoRegular}>Payment</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>

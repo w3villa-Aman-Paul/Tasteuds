@@ -13,7 +13,7 @@ const FavouritesScreen = ({ navigation, favourites }) => {
           favourites.map(ele => <ProductCard
             key={ele.id}
             shoppingBag
-            imageSource={ele.images[0].styles[3].url}
+            imageSource={ele.images[0]?.styles[3].url}
             {...ele}
           />)
         }

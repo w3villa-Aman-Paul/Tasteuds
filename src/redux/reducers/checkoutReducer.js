@@ -163,6 +163,23 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
       };
       return { ...state, ...changes };
 
+
+    case 'RATES_CHECKOUT_PENDING':
+      return { ...state, saving: true };
+
+    case 'RATES_CHECKOUT_REJECTED':
+      changes = {
+        saving: false
+      };
+      return { ...state, ...changes };
+
+    case 'RATES_CHECKOUT_FULFILLED':
+      changes = {
+        cart: dataFormatter.deserialize(response),
+        saving: false
+      };
+      return { ...state, ...changes };
+
     /**
      * COMPLETE_CHECKOUT
      */
@@ -257,7 +274,7 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
         saving: false
       };
       return { ...state, ...changes };
-    
+
     /**
      * REMOVE_LINE_ITEM
      */

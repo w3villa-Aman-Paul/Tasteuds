@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react'
-import { ScrollView, View, Text, Dimensions } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { ScrollView, View, Text, Dimensions, TouchableOpacity } from 'react-native'
 import { globalStyles } from '../../../../../styles/global'
 import { colors } from '../../../../../res/palette'
 import { CheckR, CheckO } from '../../../../../library/icons'
 import TextField from '../../../../../library/components/TextField'
 import { Picker } from '@react-native-community/picker'
-import { getCountry, updateCheckout, checkoutNext, getPaymentMethods } from '../../../../../redux/actions/checkoutActions'
+import { getCountry, updateCheckout, checkoutNext, shippingRates, getPaymentMethods, getOrderToken } from '../../../../../redux/actions/checkoutActions'
 import { connect } from 'react-redux'
 import { styles } from './styles'
 import { checkoutStyles } from '../styles'
@@ -14,21 +14,21 @@ import ActionButtonFooter from '../../../../../library/components/ActionButtonFo
 import ActivityIndicatorCard from '../../../../../library/components/ActivityIndicatorCard'
 
 const ShippingAddressScreen = ({ navigation, dispatch, country, countriesList, saving, cart }) => {
+  console.log('OrderToken',cart.token)
   const [statePickerSelectedValue, setStatePickerSelectedValue] = useState(country.states[0])
   const [countryPickerSelectedValue, setCountryPickerSelectedValue] = useState(country.iso)
-
-  const [name, setName] = useState('John Snow')
-  const [email, setEmail] = useState('john@snow.org')
-  const [address, setAddress] = useState('7735 Old Georgetown Road')
-  const [pinCode, setPinCode] = useState('20814')
-  const [city, setCity] = useState('Bethesda')
-  const [phone, setPhone] = useState('3014445002')
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [address, setAddress] = useState("")
+  const [pinCode, setPinCode] = useState("")
+  const [city, setCity] = useState("")
+  const [phone, setPhone] = useState("")
 
   const [windowWidth] = useState(Dimensions.get('window').width)
 
   const handleUpdateCheckout = async () => {
     await dispatch(
-      updateCheckout(
+      updateCheckout(cart.token,
         {
           order: {
             email: email,
@@ -57,47 +57,55 @@ const ShippingAddressScreen = ({ navigation, dispatch, country, countriesList, s
         }
       )
     )
+    // await dispatch(shippingRates(cart.token))
     await dispatch(getPaymentMethods())
-    await dispatch(checkoutNext())
+    await dispatch(checkoutNext(cart.token))
     navigation.navigate('CheckoutPayment')
   }
+
 
   useEffect(() => {
     setCountryPickerSelectedValue(country.iso)
   }, [])
 
-  if(saving) {
+  if (saving) {
     return (
       <ActivityIndicatorCard />
     )
   } else {
     return (
-      <View style={ globalStyles.containerFluid }>
+      <View style={globalStyles.containerFluid}>
         <ScrollView>
           {/* Status Bar Starts */}
           <View style={checkoutStyles.statusBarWrapper}>
             <View style={checkoutStyles.statusBarContainer}>
-              <View style={[ checkoutStyles.rowContainer, { alignItems: 'center'} ]}>
-                <CheckO size={16} style={[checkoutStyles.iconStyle, {color: colors.success}]} />
-                <Text style={ globalStyles.latoRegular, {color: colors.success}}>Bag</Text>
+              <View style={[checkoutStyles.rowContainer, { alignItems: 'center' }]}>
+                <CheckO size={16} stylcountryPickerSelectedValuee={[checkoutStyles.iconStyle, { color: colors.success }]} />
+                <TouchableOpacity onPress={() => navigation.navigate('Bag')}>
+                  <Text style={globalStyles.latoRegular}>Bag</Text>
+                </TouchableOpacity>
               </View>
               <View
                 style={[checkoutStyles.shippingIndicatorLine, {
                   borderBottomColor: colors.success,
                 }]}
               />
-              <View style={[ checkoutStyles.rowContainer, { alignItems: 'center'} ]}>
-                <CheckO size={16} style={[checkoutStyles.iconStyle, {color: colors.black}]} />
-                <Text style={ globalStyles.latoRegular }>Address</Text>
+              <View style={[checkoutStyles.rowContainer, { alignItems: 'center' }]}>
+                <CheckO size={16} style={[checkoutStyles.iconStyle, { color: colors.black }]} />
+                <TouchableOpacity onPress={() => navigation.navigate('ShippingAddress')}>
+                  <Text style={globalStyles.latoRegular}>Address</Text>
+                </TouchableOpacity>
               </View>
               <View
                 style={[checkoutStyles.shippingIndicatorLine, {
                   borderBottomColor: colors.black,
                 }]}
               />
-              <View style={[ checkoutStyles.rowContainer, { alignItems: 'center'} ]}>
-                <CheckO size={16} style={[checkoutStyles.iconStyle, {color: colors.black}]} />
-                <Text style={ globalStyles.latoRegular }>Payment</Text>
+              <View style={[checkoutStyles.rowContainer, { alignItems: 'center' }]}>
+                <CheckO size={16} style={[checkoutStyles.iconStyle, { color: colors.black }]} />
+                <TouchableOpacity onPress={() => navigation.navigate('CheckoutPayment')}>
+                  <Text style={globalStyles.latoRegular}>Payment</Text>
+                </TouchableOpacity>
               </View>
             </View>
           </View>
@@ -110,15 +118,16 @@ const ShippingAddressScreen = ({ navigation, dispatch, country, countriesList, s
               containerStyle={styles.containerStyle}
               inputContainerStyle={styles.inputContainerStyle}
               value={name}
-              onChangeText={setName}
+              onChangeText={(name) => setName(name)}
             />
+
             <TextField
               placeholder="Email"
               inputStyle={styles.inputStyle}
               containerStyle={styles.containerStyle}
               inputContainerStyle={styles.inputContainerStyle}
               value={email}
-              onChangeText={setEmail}
+              onChangeText={(email) => setEmail(email)}
             />
             <TextField
               placeholder="Phone No."
@@ -126,7 +135,7 @@ const ShippingAddressScreen = ({ navigation, dispatch, country, countriesList, s
               containerStyle={styles.containerStyle}
               inputContainerStyle={styles.inputContainerStyle}
               value={phone}
-              onChangeText={setPhone}
+              onChangeText={(phone) =>setPhone(phone)}
             />
             <TextField
               placeholder="Pin Code"
@@ -134,7 +143,7 @@ const ShippingAddressScreen = ({ navigation, dispatch, country, countriesList, s
               containerStyle={styles.containerStyle}
               inputContainerStyle={styles.inputContainerStyle}
               value={pinCode}
-              onChangeText={setPinCode}
+              onChangeText={(pinCode) => setPinCode(pinCode)}
             />
             <TextField
               placeholder="Address ( House No, Street, Area )"
@@ -142,7 +151,7 @@ const ShippingAddressScreen = ({ navigation, dispatch, country, countriesList, s
               containerStyle={styles.containerStyle}
               inputContainerStyle={styles.inputContainerStyle}
               value={address}
-              onChangeText={setAddress}
+              onChangeText={(address) => setAddress(address)}
             />
             <View style={[checkoutStyles.rowContainer, styles.inlineContainer]}>
               <TextField
@@ -151,7 +160,7 @@ const ShippingAddressScreen = ({ navigation, dispatch, country, countriesList, s
                 inputStyle={styles.inputStyle}
                 inputContainerStyle={styles.inputContainerStyle}
                 value={city}
-                onChangeText={setCity}
+                onChangeText={(city) => setCity(city)}
                 containerStyle={[styles.containerStyle, {
                   paddingTop: 5,
                   width: windowWidth / 2.3
@@ -165,14 +174,14 @@ const ShippingAddressScreen = ({ navigation, dispatch, country, countriesList, s
                   width: windowWidth / 2.3
                 }]}
                 itemStyle={styles.inputStyle}
-                onChangeText={(itemValue, itemIndex) =>
+                onValueChange={(itemValue, itemIndex) => 
                   setStatePickerSelectedValue(itemValue)
                 }
               >
                 {
                   country.states.map(state => 
-                    <Picker.Item key={state.id} label={state.name} value={state.id} />  
-                  )
+                    <Picker.Item key={state.id} label={state.name} value={state}  />
+                    )
                 }
               </Picker>
             </View>
@@ -181,14 +190,14 @@ const ShippingAddressScreen = ({ navigation, dispatch, country, countriesList, s
               selectedValue={countryPickerSelectedValue}
               style={styles.containerStyle}
               itemStyle={styles.inputStyle}
-              onChangeText={(itemValue, itemIndex) => {
+              onValueChange={(itemValue, itemIndex) => {
                 setCountryPickerSelectedValue(itemValue)
                 dispatch(getCountry(itemValue))
               }}
             >
               {
-                countriesList.map(country => 
-                  <Picker.Item key={country.id} label={country.name} value={country.iso} />  
+                countriesList.map(country =>
+                  <Picker.Item key={country.id} label={country.name} value={country.iso} />
                 )
               }
             </Picker>
@@ -197,10 +206,10 @@ const ShippingAddressScreen = ({ navigation, dispatch, country, countriesList, s
               <Text style={globalStyles.latoRegular14}>Default Address</Text>
             </View>
           </View>
-          
+
           <CheckoutDetailsCard title="Order Total" display_total={cart.display_item_total} />
         </ScrollView>
-        
+
         <ActionButtonFooter
           title="Save Address & Continue"
           onPress={handleUpdateCheckout}

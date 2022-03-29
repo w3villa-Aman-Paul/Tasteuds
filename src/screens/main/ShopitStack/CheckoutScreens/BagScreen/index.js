@@ -16,18 +16,25 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
   const [promoCode, setPromoCode] = React.useState('')
   const [snackbarVisible, setSnackbarVisible] = React.useState(false)
 
+
   React.useEffect(() => {
     dispatch(getCart())
   }, [])
 
-  const handleToCheckout = async () => {
-    if(cart.state === "cart") {
-      await dispatch(getDefaultCountry())
-      await dispatch(getCountriesList())
-      navigation.navigate('ShippingAddress')
-    } else {
-      navigation.navigate('CheckoutPayment')
-    }
+  const onDismiss = () => setSnackbarVisible(false);
+
+
+  const handleToCheckout = async() => {
+    await dispatch(getDefaultCountry())
+    await dispatch(getCountriesList())
+    navigation.navigate('ShippingAddress')
+    // if(cart.state === "cart") {
+    //   await dispatch(getDefaultCountry())
+    //   await dispatch(getCountriesList())
+    //   navigation.navigate('ShippingAddress')
+    // } else  {
+    //   navigation.navigate('CheckoutPayment')
+    // }
   }
 
   const handleRemoveLineItem = (lineItemId) => {
@@ -41,6 +48,9 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
         quantity: lineItemQuantity + 1
       }
     ))
+    setTimeout(() => {
+      setSnackbarVisible(true);
+    }, 1000)
   }
 
   const handleDecrementQuantity = (lineItemId, lineItemQuantity) => {
@@ -53,6 +63,9 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
           quantity: lineItemQuantity - 1
         }
       ))
+      setTimeout(() => {
+        setSnackbarVisible(true);
+      }, 1000)
     }
   }
 
@@ -71,7 +84,7 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
                 key={i}
                 cart
                 counter
-                imageSource={ele.variant.images[0].styles[3].url}
+                imageSource={ele.variant.images[0]?.styles[3].url}
                 onIncrementQuantity={() => handleIncrementQuantity(ele.id, ele.quantity)}
                 onDecrementQuantity={() => handleDecrementQuantity(ele.id, ele.quantity)}
                 onRemoveLineItem={() => handleRemoveLineItem(ele.id)}
@@ -106,7 +119,7 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
       </View>
       <Snackbar
         visible={snackbarVisible}
-        duration={3000}
+        onDismiss={onDismiss}
         >
         SetQuantity Success !
       </Snackbar>
