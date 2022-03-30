@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
-import { connect } from 'react-redux'
-import { View, Text } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { connect, useSelector } from 'react-redux'
+import { View, Text, StyleSheet } from 'react-native'
 import { globalStyles } from '../../styles/global'
 import { ChevronLeft, Eye } from '../../library/icons'
 import { colors } from '../../res/palette'
@@ -8,39 +8,70 @@ import { Button, Input } from 'react-native-elements'
 import { styles } from './styles'
 import TextField from '../../library/components/TextField'
 import { accountCreate } from '../../redux'
+import { Snackbar } from 'react-native-paper'
 
 
 const SignUpScreen = ({ navigation, dispatch }) => {
+
+  const { isAuth, error, message } = useSelector((state) => state.account);
+
   const [secureTextEntryToggle, setSecureTextEntryToggle] = useState(true)
-  
+
   const [inputPasswordBorder, setInputPasswordBorder] = useState(false)
   const [inputPasswordConfirmationBorder, setInputPasswordConfirmationBorder] = useState(false)
 
   // const [username, setUserName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [passwordConfirmation, setPasswordConfirmation] = useState('')
+  const [passwordConfirmation, setPasswordConfirmation] = useState('');
+  const [mess, setMessage] = useState('');
+  const [err, setError] = useState('');
 
-  const handleSignup = () =>  {
-    dispatch(accountCreate(
-      {
-        user: {
-          // username: username,
-          email: email, 
-          password: password,
-          password_confirmation: passwordConfirmation
+
+
+
+  const dismissSnackbarErr = () => setError('');
+  const dismissSnackbarMess = () => setMessage('');
+
+  useEffect(() => {
+    if(isAuth === true){
+      setTimeout(() => {
+        navigation.navigate('SignIn');
+      }, 2000)
+      return setMessage(message)
+    }
+    else{
+      setTimeout(() => {
+        setError('');
+        setEmail('');
+        setPassword('');
+        setPasswordConfirmation('');
+      }, 2000);
+      return setError(error)
+    }
+  }, [isAuth, error, message])
+
+
+  const handleSignup = () => {
+      dispatch(accountCreate(
+        {
+          user: {
+            // username: username,
+            email: email,
+            password: password,
+            password_confirmation: passwordConfirmation
+          }
         }
-      }
-    ))
+      ))
   }
 
   return (
     <View style={globalStyles.container}>
-      <ChevronLeft size={24} style={styles.backButton} 
+      <ChevronLeft size={24} style={styles.backButton}
         onPress={navigation.goBack}
       />
       <Text style={styles.title}>Join Spree Shop</Text>
-      <View style={[globalStyles.containerFluid, { justifyContent: 'space-evenly',}]}>
+      <View style={[globalStyles.containerFluid, { justifyContent: 'space-evenly', }]}>
         <View>
           {/* <TextField
             placeholder="Name"
@@ -63,9 +94,9 @@ const SignUpScreen = ({ navigation, dispatch }) => {
             secureTextEntry={secureTextEntryToggle}
             onFocus={() => setInputPasswordBorder(true)}
             onBlur={() => setInputPasswordBorder(false)}
-            containerStyle={[ styles.inputMainContainer, { borderWidth: inputPasswordBorder ? 1 : 0 }]}
-            inputStyle={ styles.inputStyle }
-            inputContainerStyle={ styles.inputContainerStyle }
+            containerStyle={[styles.inputMainContainer, { borderWidth: inputPasswordBorder ? 1 : 0 }]}
+            inputStyle={styles.inputStyle}
+            inputContainerStyle={styles.inputContainerStyle}
             rightIcon={<Eye size={24} style={{ color: colors.gray }} onPress={() => setSecureTextEntryToggle(!secureTextEntryToggle)} />}
             onChangeText={setPassword}
           />
@@ -74,9 +105,9 @@ const SignUpScreen = ({ navigation, dispatch }) => {
             secureTextEntry={secureTextEntryToggle}
             onFocus={() => setInputPasswordConfirmationBorder(true)}
             onBlur={() => setInputPasswordConfirmationBorder(false)}
-            containerStyle={[ styles.inputMainContainer, { borderWidth: inputPasswordConfirmationBorder ? 1 : 0 }]}
-            inputStyle={ styles.inputStyle }
-            inputContainerStyle={ styles.inputContainerStyle }
+            containerStyle={[styles.inputMainContainer, { borderWidth: inputPasswordConfirmationBorder ? 1 : 0 }]}
+            inputStyle={styles.inputStyle}
+            inputContainerStyle={styles.inputContainerStyle}
             rightIcon={<Eye size={24} style={{ color: colors.gray }} onPress={() => setSecureTextEntryToggle(!secureTextEntryToggle)} />}
             onChangeText={setPasswordConfirmation}
           />
@@ -96,13 +127,26 @@ const SignUpScreen = ({ navigation, dispatch }) => {
         </View>
         <View>
           <Text
-            style={[ styles.footerAction, { alignSelf: 'center' }]}
+            style={[styles.footerAction, { alignSelf: 'center' }]}
             onPress={() => navigation.navigate('SignIn')}
           > Terms of Use & Privacy Policy</Text>
         </View>
       </View>
+      <Snackbar
+        visible={mess}
+        onDismiss={dismissSnackbarMess}
+      >
+        {mess}
+      </Snackbar>
+      <Snackbar
+        visible={err}
+        onDismiss={dismissSnackbarErr}
+      >
+        {err}
+      </Snackbar>
     </View>
   )
 }
 
-export default connect()(SignUpScreen)
+export default connect()(SignUpScreen);
+

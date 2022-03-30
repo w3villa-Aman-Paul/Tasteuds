@@ -75,5 +75,12 @@ export const styles = StyleSheet.create({
   },
   inputRoundedContainer: { 
     width: 73
+  },
+  error_text:{
+    fontSize: 20,
+    color: "#f28b82",
+    justifyContent: 'center',
+    margin: 10,
+    alignItems: 'center',
   }
 })

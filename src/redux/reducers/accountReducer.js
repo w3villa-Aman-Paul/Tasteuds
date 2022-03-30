@@ -4,6 +4,9 @@ const dataFormatter = new Jsona();
 const DEFAULT_STATE = {
   saving: false,
   account: {},
+  isAuth: false,
+  error: null,
+  message: null,
   orders: [
     {
       variants: [
@@ -49,18 +52,25 @@ export default function accountReducer(state = DEFAULT_STATE, action) {
      * ACCOUNT_CREATE
      */
     case 'ACCOUNT_CREATE_PENDING':
-      return { ...state, saving: true };
+      return { ...state, saving: true, isAuth: false, error: null, message: null};
 
     case 'ACCOUNT_CREATE_REJECTED':
       changes = {
-        saving: false
+        saving: false,
+        isAuth: false,
+        message: null,
+        error: response.data.error,
+
       };
       return { ...state, ...changes };
 
     case 'ACCOUNT_CREATE_FULFILLED':
       changes = {
         account: dataFormatter.deserialize(response),
-        saving: false
+        isAuth: true,
+        message: 'Account has successfully created! Kindly Login',
+        saving: false,
+        error: null,
       };
       return { ...state, ...changes };
     

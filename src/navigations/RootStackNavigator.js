@@ -28,12 +28,12 @@ const MyTheme = {
 
 const RootStack = createStackNavigator()
 
-function RootStackNavigator({authState, dispatch}) {
+function RootStackNavigator({ authState, dispatch }) {
 
   React.useEffect(() => {
-    const bootstrapAsync = async() => {
+    const bootstrapAsync = async () => {
       dispatch(userLogin({
-        refresh_token: await AsyncStorage.getItem('refreshToken'), 
+        refresh_token: await AsyncStorage.getItem('refreshToken'),
         grant_type: "refresh_token"
       }))
     }
@@ -41,14 +41,14 @@ function RootStackNavigator({authState, dispatch}) {
     bootstrapAsync();
   }, [])
 
-  if( authState.isLoading ) {
+  if (authState.isLoading) {
     return (
       <ActivityIndicatorCard />
     )
   }
   return (
     <NavigationContainer ref={navigationRef} theme={MyTheme}>
-      <RootStack.Navigator screenOptions={{headerShown: false}}>
+      <RootStack.Navigator screenOptions={{ headerShown: false }}>
         {
           authState.access_token ? (
             <>
@@ -56,9 +56,9 @@ function RootStackNavigator({authState, dispatch}) {
             </>
           ) : (
             <>
-              <RootStack.Screen name="OnboardingA" component={OnboardingAScreen} />
-              <RootStack.Screen name="OnboardingB" component={OnboardingBScreen} />
-              <RootStack.Screen name="OnboardingC" component={OnboardingCScreen} />
+              {/* <RootStack.Screen name="OnboardingA" component={OnboardingAScreen} />
+  //          <RootStack.Screen name="OnboardingB" component={OnboardingBScreen} />
+  //          <RootStack.Screen name="OnboardingC" component={OnboardingCScreen} /> */}
               <RootStack.Screen name="SignIn" component={SignInScreen} />
               <RootStack.Screen name="SignUp" component={SignUpScreen} />
               <RootStack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
