@@ -23,7 +23,7 @@ const OrdersScreen = ({ navigation, dispatch, orders, saving }) => {
     <ScrollView>
       <View style={[globalStyles.container, globalStyles.mb114]}>
         {
-          orders.map(order => {
+          orders?.map(order => {
             return (
               <View style={globalStyles.mt24}>
                 <Text style={globalStyles.latoRegular14}>Order ID : {order.number}</Text>
