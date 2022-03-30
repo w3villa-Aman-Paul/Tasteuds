@@ -1,41 +1,51 @@
-import AsyncStorage from '@react-native-community/async-storage'
+import AsyncStorage from "@react-native-community/async-storage";
 
 const DEFAULT_STATE = {
   saving: false,
-  user: {}
+  user: {},
+  error: null,
+  isAuth: false,
+  status: null,
 };
 
 let changes = null;
 export default function authReducer(state = DEFAULT_STATE, action) {
-  const response = action.payload && (action.payload.data || action.payload.response)
+  const response =
+    action.payload && (action.payload.data || action.payload.response);
   switch (action.type) {
-    case 'LOGIN_PENDING':
-      return { ...state, saving: true };
+    case "LOGIN_PENDING":
+      return { ...state, saving: true, error: null, isAuth: false, status: "" };
 
-    case 'LOGIN_REJECTED':
+    case "LOGIN_REJECTED":
       changes = {
-        saving: false
+        saving: false,
+        error: response.data.error,
+        isAuth: false,
+        status: response.status,
       };
       return { ...state, ...changes };
 
-    case 'LOGIN_FULFILLED':
+    case "LOGIN_FULFILLED":
       changes = {
         ...response,
-        saving: false
+        saving: false,
+        error: null,
+        isAuth: true,
+        status: response.status,
       };
-      AsyncStorage.setItem('userToken', response.access_token)
-      AsyncStorage.setItem('refreshToken', response.refresh_token)
+      AsyncStorage.setItem("userToken", response.access_token);
+      AsyncStorage.setItem("refreshToken", response.refresh_token);
       return { ...state, ...changes };
 
-    case 'LOGOUT':
-      AsyncStorage.removeItem('userToken')
-      AsyncStorage.removeItem('refreshToken');
-      AsyncStorage.removeItem('account')
+    case "LOGOUT":
+      AsyncStorage.removeItem("userToken");
+      AsyncStorage.removeItem("refreshToken");
+      AsyncStorage.removeItem("account");
       return {
-        isLoading: false
-      }
-      
+        isLoading: false,
+      };
+
     default:
-      return state
+      return state;
   }
 }

@@ -41,7 +41,7 @@ const list = [
   {
     title: "Offers",
     icon: <Gift size={24} style={{ color: colors.black }} />,
-    name: "OffersScreen",
+    name: "Offers",
   },
 ];
 
