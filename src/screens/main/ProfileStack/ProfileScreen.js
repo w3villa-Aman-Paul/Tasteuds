@@ -19,7 +19,7 @@ import { styles } from "./styles";
 import { createStackNavigator } from "@react-navigation/stack";
 const list = [
   {
-    title: "Account",
+    title: "Profile",
     icon: <User size={24} style={{ color: colors.black }} />,
     name: "Account",
   },
@@ -41,7 +41,7 @@ const list = [
   {
     title: "Offers",
     icon: <Gift size={24} style={{ color: colors.black }} />,
-    name: "OffersScreen",
+    name: "Offers",
   },
 ];
 
@@ -72,8 +72,8 @@ const ProfileScreen = ({ dispatch, navigation }) => {
               }}
               style={styles.avatar}
             />
-            <View style={styles.profileDetails}>
-              <Text style={styles.profileName}>{email}</Text>
+            <View style={styles.accountDetails}>
+              <Text style={styles.accountName}>{email}</Text>
               <Pen size={24} style={{ color: colors.white }} />
             </View>
           </View>
