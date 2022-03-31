@@ -1,47 +1,62 @@
-import * as React from 'react'
-import { connect, useSelector } from 'react-redux'
-import { View, Text, Image } from 'react-native'
-import { globalStyles } from '../../../styles/global'
-import { colors } from '../../../res/palette'
-import { LinearGradient } from 'expo-linear-gradient'
-import { Pen, User, Home, ShoppingBag, Heart, Gift, ChevronRight } from '../../../library/icons'
-import { Divider, Button } from 'react-native-elements'
-import { accountRetrieve, userLogout } from '../../../redux'
-import { styles } from './styles'
-import AsyncStorage from '@react-native-community/async-storage'
-import axios from 'axios';
-
+import * as React from "react";
+import { connect, useSelector } from "react-redux";
+import { View, Text, Image, TouchableOpacity } from "react-native";
+import { globalStyles } from "../../../styles/global";
+import { colors } from "../../../res/palette";
+import { LinearGradient } from "expo-linear-gradient";
+import {
+  Pen,
+  User,
+  Home,
+  ShoppingBag,
+  Heart,
+  Gift,
+  ChevronRight,
+} from "../../../library/icons";
+import { Divider, Button } from "react-native-elements";
+import { accountLogout, accountRetrieve, userLogout } from "../../../redux";
+import { styles } from "./styles";
 const list = [
   {
-    title: 'Account',
-    icon: <User size={24} style={{color: colors.black}} />
+    title: "Account",
+    icon: <User size={24} style={{ color: colors.black }} />,
+    name: "Account",
   },
   {
-    title: 'Saved Address',
-    icon: <Home size={24} style={{color: colors.black}} />
+    title: "Saved Address",
+    icon: <Home size={24} style={{ color: colors.black }} />,
+    name: "SavedAddress",
   },
   {
-    title: 'My Orders',
-    icon: <ShoppingBag size={24} style={{color: colors.black}} />
+    title: "My Orders",
+    icon: <ShoppingBag size={24} style={{ color: colors.black }} />,
+    name: "Orders",
   },
   {
-    title: 'Favourites',
-    icon: <Heart size={24} style={{color: colors.black}} />
+    title: "Favourites",
+    icon: <Heart size={24} style={{ color: colors.black }} />,
+    name: "Favourites",
   },
   {
-    title: 'Offers',
-    icon: <Gift size={24} style={{color: colors.black}} />
+    title: "Offers",
+    icon: <Gift size={24} style={{ color: colors.black }} />,
+    name: "Offers",
   },
-]
+];
 
-const ProfileScreen = ({ dispatch }) => {
+const ProfileScreen = ({ dispatch, navigation }) => {
+  const { account } = useSelector((state) => state.account);
+  const { isAuth } = useSelector((state) => state.auth);
 
-  const { account } = useSelector(state => state.account);
-  const { email } = account;
+  const [userName, setUserName] = React.useState("");
 
   React.useEffect(() => {
-    dispatch(accountRetrieve());
-  }, []);
+    if (isAuth) {
+      setUserName(account.email);
+    } else {
+      setUserName("");
+    }
+  }, [isAuth]);
 
   return (
     <View style={styles.mainContainer}>
@@ -50,45 +65,55 @@ const ProfileScreen = ({ dispatch }) => {
           // Background Linear Gradient
           start={[1, 0]}
           end={[1, 1]}
-          colors={['#EE3168', '#C1236F']}
+          colors={["#EE3168", "#C1236F"]}
           style={styles.centeredContent}
         >
           <View style={styles.centeredContent}>
             <Image
-              source={require('../../../../assets/images/user-profile-photo/mohsin.jpg')}
+              source={{
+                uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeNWA656CRe97bqFdSiLSLH-gp6tfGFKMURg&usqp=CAU",
+              }}
               style={styles.avatar}
             />
             <View style={styles.profileDetails}>
-              <Text style={styles.profileName}>{email}</Text>
-              <Pen size={24} style={{color: colors.white }} />
+              <Text style={styles.profileName}>{userName}</Text>
+              <Pen size={24} style={{ color: colors.white }} />
             </View>
           </View>
         </LinearGradient>
       </View>
       <View>
-        {
-          list.map((item, i) => (
-            <View key={i}>
-              <View style={styles.listContainer}>
-                <View style={styles.listIcon}>{item.icon}</View>
-                <Text style={styles.title}>{item.title}</Text>
-                <View style={styles.listIcon}><ChevronRight size={24} style={{color: colors.black}} /></View>
+        {list.map((item, i) => (
+          <TouchableOpacity
+            key={i}
+            onPress={() => navigation.navigate(item.name)}
+          >
+            <View style={styles.listContainer}>
+              <View style={styles.listIcon}>{item.icon}</View>
+              <Text style={styles.title}>{item.title}</Text>
+              <View style={styles.listIcon}>
+                <ChevronRight size={24} style={{ color: colors.black }} />
               </View>
-              <Divider />
             </View>
-          )
-        )}
+            <Divider />
+          </TouchableOpacity>
+        ))}
       </View>
+
       <View style={globalStyles.container}>
         <Button
           title="Logout Account"
-          buttonStyle={ styles.buttonBlockStyle }
-          titleStyle={ globalStyles.latoBold16 }
-          onPress={() => dispatch(userLogout())}
+          buttonStyle={styles.buttonBlockStyle}
+          titleStyle={globalStyles.latoBold16}
+          onPress={() => {
+            dispatch(userLogout());
+            dispatch(accountLogout());
+            navigation.navigate("Shop");
+          }}
         />
       </View>
     </View>
-  )
-}
+  );
+};
 
-export default connect()(ProfileScreen)
+export default connect()(ProfileScreen);
