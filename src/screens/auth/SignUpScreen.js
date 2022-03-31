@@ -58,8 +58,6 @@ const SignUpScreen = ({ navigation, dispatch }) => {
   const [snacbarMessage, setSnacbarMessage] = useState("");
   const dismissSnackbar = () => setSnackbarVisible(false);
 
-  const [responseData, setResponseData] = useState({});
-
   // const [username, setUserName] = useState("");
   // const [email, setEmail] = useState("");
   // const [password, setPassword] = useState("");
@@ -78,24 +76,34 @@ const SignUpScreen = ({ navigation, dispatch }) => {
     );
   };*/
   }
-  // const signInNavigation = () => {
-  //   navigation.navigate("SignIn");
-  // };
+  const signInNavigation = () => {
+    navigation.navigate("SignIn");
+  };
 
   useEffect(() => {
-    if (status === 422) {
+    if (error === "invalid_grant" && status === 422) {
       setSnacbarMessage(error);
 
       setTimeout(() => {
         setSnackbarVisible(true);
-      }, 1000);
+      }, 2000);
       dismissSnackbar();
     } else if (status === 200) {
       setSnacbarMessage("Account Created Successfully!🙂🙂, Now you can LogIn");
+      setSnackbarVisible(true);
       setTimeout(() => {
-        setSnackbarVisible(true);
-      }, 500);
-      dismissSnackbar();
+        dispatch(
+          accountCreate({
+            user: {
+              email: "",
+              password: "",
+              password_confirmation: "",
+            },
+          })
+        );
+        dismissSnackbar();
+        signInNavigation();
+      }, 2000);
     }
   }, [isAuth, error]);
 

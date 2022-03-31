@@ -11,6 +11,7 @@ import TextField from "../../library/components/TextField";
 import { Snackbar } from "react-native-paper";
 import { Formik } from "formik";
 import * as yup from "yup";
+import ShopitStackNavigator from "../../navigations/ShopitStackNavigator";
 
 const loginValidationSchema = yup.object().shape({
   email: yup
@@ -45,12 +46,13 @@ const SignInScreen = ({ navigation, dispatch }) => {
   useEffect(() => {
     if (error === "invalid_grant" && status === 400) {
       setSnacbarMessage("You Have entered a wrong Email or Password");
+      setSnackbarVisible(true);
 
       setTimeout(() => {
-        setSnackbarVisible(true);
+        dismissSnackbar();
       }, 2000);
-    } else {
-      dismissSnackbar();
+    } else if (status === 200) {
+      navigation.navigate("Shop");
     }
   }, [isAuth, error]);
 

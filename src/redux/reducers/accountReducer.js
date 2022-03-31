@@ -4,15 +4,10 @@ const dataFormatter = new Jsona();
 const DEFAULT_STATE = {
   saving: false,
   account: {},
-<<<<<<< HEAD
   error: null,
   isAuth: false,
   status: null,
-=======
-  isAuth: false,
-  error: null,
-  message: null,
->>>>>>> dev/mohsin
+
   orders: [
     {
       variants: [
@@ -58,45 +53,25 @@ export default function accountReducer(state = DEFAULT_STATE, action) {
     /**
      * ACCOUNT_CREATE
      */
-<<<<<<< HEAD
-=======
-    case 'ACCOUNT_CREATE_PENDING':
-      return { ...state, saving: true, isAuth: false, error: null, message: null};
->>>>>>> dev/mohsin
-
     case "ACCOUNT_CREATE_PENDING":
       return { ...state, saving: true, error: null, isAuth: false, status: "" };
 
     case "ACCOUNT_CREATE_REJECTED":
       changes = {
         saving: false,
-<<<<<<< HEAD
         error: response.data.error,
         isAuth: false,
         status: response.status,
-=======
-        isAuth: false,
-        message: null,
-        error: response.data.error,
-
->>>>>>> dev/mohsin
       };
       return { ...state, ...changes };
 
     case "ACCOUNT_CREATE_FULFILLED":
       changes = {
         account: dataFormatter.deserialize(response),
-<<<<<<< HEAD
         saving: false,
         error: null,
         isAuth: true,
         status: action.payload.status,
-=======
-        isAuth: true,
-        message: 'Account has successfully created! Kindly Login',
-        saving: false,
-        error: null,
->>>>>>> dev/mohsin
       };
       return { ...state, ...changes };
 
@@ -119,6 +94,13 @@ export default function accountReducer(state = DEFAULT_STATE, action) {
         error: null,
         isAuth: true,
         status: response.status,
+      };
+    case "ACCOUNT_LOGOUT":
+      return {
+        account: {},
+        error: null,
+        isAuth: false,
+        status: null,
       };
 
     /**

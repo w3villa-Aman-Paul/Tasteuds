@@ -14,9 +14,8 @@ import {
   ChevronRight,
 } from "../../../library/icons";
 import { Divider, Button } from "react-native-elements";
-import { accountRetrieve, userLogout } from "../../../redux";
+import { accountLogout, accountRetrieve, userLogout } from "../../../redux";
 import { styles } from "./styles";
-import { createStackNavigator } from "@react-navigation/stack";
 const list = [
   {
     title: "Account",
@@ -47,13 +46,17 @@ const list = [
 
 const ProfileScreen = ({ dispatch, navigation }) => {
   const { account } = useSelector((state) => state.account);
-  const { email } = account;
+  const { isAuth } = useSelector((state) => state.auth);
 
-  const ProfileDetailsStack = createStackNavigator();
+  const [userName, setUserName] = React.useState("");
 
   React.useEffect(() => {
-    dispatch(accountRetrieve());
-  }, []);
+    if (isAuth) {
+      setUserName(account.email);
+    } else {
+      setUserName("");
+    }
+  }, [isAuth]);
 
   return (
     <View style={styles.mainContainer}>
@@ -73,7 +76,7 @@ const ProfileScreen = ({ dispatch, navigation }) => {
               style={styles.avatar}
             />
             <View style={styles.profileDetails}>
-              <Text style={styles.profileName}>{email}</Text>
+              <Text style={styles.profileName}>{userName}</Text>
               <Pen size={24} style={{ color: colors.white }} />
             </View>
           </View>
@@ -102,7 +105,11 @@ const ProfileScreen = ({ dispatch, navigation }) => {
           title="Logout Account"
           buttonStyle={styles.buttonBlockStyle}
           titleStyle={globalStyles.latoBold16}
-          onPress={() => dispatch(userLogout())}
+          onPress={() => {
+            dispatch(userLogout());
+            dispatch(accountLogout());
+            navigation.navigate("Shop");
+          }}
         />
       </View>
     </View>

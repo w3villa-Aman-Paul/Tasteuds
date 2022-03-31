@@ -31,7 +31,7 @@ export default function authReducer(state = DEFAULT_STATE, action) {
         saving: false,
         error: null,
         isAuth: true,
-        status: response.status,
+        status: action.payload.status,
       };
       AsyncStorage.setItem("userToken", response.access_token);
       AsyncStorage.setItem("refreshToken", response.refresh_token);

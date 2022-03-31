@@ -1,2 +1,2 @@
 // export const HOST = "https://demo.spreecommerce.org";
-export const HOST = "https://b1d7-223-233-75-92.ngrok.io";
+export const HOST = "https://1b87-223-233-68-231.ngrok.io";

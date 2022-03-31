@@ -19,7 +19,7 @@ function CustomDrawerContent({ dispatch, ...props }) {
 
   return (
     <DrawerContentScrollView {...props}>
-      <View style={styles.jumbotron}>
+      {/* <View style={styles.jumbotron}>
         <LinearGradient
           // Background Linear Gradient
           start={[1, 0]}
@@ -40,7 +40,8 @@ function CustomDrawerContent({ dispatch, ...props }) {
             </View>
           </View>
         </LinearGradient>
-      </View>
+      </View> */}
+      <Divider />
       <DrawerItemList {...props} />
       <Divider />
       <DrawerItem
