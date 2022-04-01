@@ -1,11 +1,21 @@
 import { Button, SafeAreaView, StyleSheet, Text, View, Image, ScrollView, TouchableOpacity } from "react-native";
-import React from "react";
+import * as React from "react";
+import { connect, useSelector } from 'react-redux';
 import { styles } from "./styles";
 import { LinearGradient } from "expo-linear-gradient";
 import { Divider } from "react-native-elements";
 import { TextInput } from "react-native-paper";
+import { retrieveAddress } from "../../../redux";
 
-const AccountScreen = ({ navigation }) => {
+const AccountScreen = ({ dispatch, navigation }) => {
+  const Address = useSelector(state => state.checkout.address);
+  const { account } = useSelector((state) => state.account);
+  const add = { ...Address };
+  const { email } = account;
+  React.useEffect(() => {
+    dispatch(retrieveAddress());
+  }, [])
+
   return (
     <ScrollView>
       <View style={styles.mainContainer}>
@@ -14,7 +24,7 @@ const AccountScreen = ({ navigation }) => {
             // Background Linear Gradient
             start={[1, 0]}
             end={[1, 1]}
-            colors={["#EE3168", "#C1236F"]}
+            colors={["#0080ff", "#000000"]}
             style={styles.centeredContent}
           >
             <View style={styles.centeredContent}>
@@ -25,9 +35,9 @@ const AccountScreen = ({ navigation }) => {
                 style={styles.avatar}
               />
               <View style={styles.profileDetails}>
-                <Text style={styles.profileName}>Sheikh Mohsin</Text>
-                <Text style={styles.profileContact}>+91 7302238567</Text>
-                <Text style={styles.profileContact}>momohsin046@gmail.com</Text>
+                <Text style={styles.profileName}>{add[0].firstname}</Text>
+                <Text style={styles.profileContact}>{add[0].phone}</Text>
+                <Text style={styles.profileContact}>{email}</Text>
               </View>
             </View>
           </LinearGradient>
@@ -36,44 +46,49 @@ const AccountScreen = ({ navigation }) => {
         <View style={styles.content}>
           <View style={styles.inputBox}>
             <Text style={styles.formText}>First Name</Text>
-            <TextInput 
-             style={styles.formInput}
+            <TextInput
+              style={styles.formInput}
+             value={add[0].firstname}
             />
           </View>
           <View style={styles.inputBox}>
             <Text style={styles.formText}>Last Name</Text>
-            <TextInput 
-             style={styles.formInput}
+            <TextInput
+              style={styles.formInput}
+              value={add[0].firstname}
             />
           </View>
           <View style={styles.inputBox}>
             <Text style={styles.formText}>Email</Text>
-            <TextInput 
-             style={styles.formInput}
+            <TextInput
+              style={styles.formInput}
+              value={email}
             />
           </View>
           <View style={styles.inputBox}>
             <Text style={styles.formText}>Contact Number</Text>
-            <TextInput 
-             style={styles.formInput}
+            <TextInput
+              style={styles.formInput}
+              value={add[0].phone}
             />
           </View>
           <View style={styles.inputBox}>
             <Text style={styles.formText}>Address</Text>
-            <TextInput 
-             style={styles.formInput}
-             multiline
+            <TextInput
+              style={styles.formInput}
+              multiline
+             value={add[0].address1}
             />
           </View>
 
           <View style={styles.formBtn}>
             <TouchableOpacity
-             style={styles.primary}
+              style={styles.primary}
             >
               <Text style={styles.textBtn}>Edit</Text>
             </TouchableOpacity>
             <TouchableOpacity
-            style={styles.primary}
+              style={styles.primary}
             >
               <Text style={styles.textBtn}>Submit</Text>
             </TouchableOpacity>
@@ -121,4 +136,4 @@ const AccountScreen = ({ navigation }) => {
   );
 };
 
-export default AccountScreen;
+export default connect()(AccountScreen);
