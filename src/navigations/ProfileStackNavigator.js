@@ -52,7 +52,6 @@ function ProfileStackNavigator({ navigation }) {
       <ProfileStack.Screen name="Profile" component={ProfileScreen} />
       <ProfileStack.Screen name="Account" component={AccountScreen} />
       <ProfileStack.Screen name="SavedAddress" component={SavedAddress} />
-      {/* <ProfileStack.Screen name="Orders" component={OrdersStackNavigator} /> */}
       <ProfileStack.Screen name="Favourites" component={FavouritesScreen} />
       <ProfileStack.Screen name="Offers" component={OffersScreen} />
     </ProfileStack.Navigator>

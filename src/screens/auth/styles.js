@@ -1,39 +1,44 @@
-import { StyleSheet } from 'react-native'
-import { globalStyles } from '../../styles/global'
-import { colors } from '../../res/palette'
+import { StyleSheet } from "react-native";
+import { globalStyles } from "../../styles/global";
+import { colors } from "../../res/palette";
 
 export const styles = StyleSheet.create({
   backButton: {
     ...globalStyles.title,
     ...globalStyles.mt48,
-    color: colors.black
+    color: colors.black,
   },
   title: {
-    ...globalStyles.title, 
-    ...globalStyles.mt16
+    ...globalStyles.title,
+    ...globalStyles.mt16,
   },
   mainContainer: {
     ...globalStyles.containerFluid,
-    justifyContent: "center"
+    justifyContent: "center",
   },
   inputMainContainer: {
     ...globalStyles.mb16,
-    backgroundColor: '#fff', 
-    height: 52, 
+    backgroundColor: "#fff",
+    height: 52,
     borderRadius: 4,
     borderColor: colors.primary,
   },
   containerStyle: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     height: 52,
     borderRadius: 4,
   },
-  inputStyle: { 
-    ...globalStyles.latoRegular16
+  inputStyle: {
+    ...globalStyles.latoRegular16,
   },
   inputContainerStyle: {
     paddingLeft: 5,
-    borderBottomColor: '#fff'
+    borderBottomColor: "#fff",
+  },
+  errorText: {
+    fontSize: 10,
+    color: "red",
+    marginBottom: 10,
   },
   formClearActionButton: {
     ...globalStyles.textPrimary,
@@ -47,9 +52,9 @@ export const styles = StyleSheet.create({
   },
   footer: {
     ...globalStyles.mt32,
-    flexDirection: 'row',
-    alignSelf: 'center',
-    alignItems: 'center'
+    flexDirection: "row",
+    alignSelf: "center",
+    alignItems: "center",
   },
   label: {
     ...globalStyles.textSecondary,
@@ -66,21 +71,14 @@ export const styles = StyleSheet.create({
     shadowColor: "rgba(0, 0, 0, 0.05)",
     shadowOffset: {
       width: 0,
-      height: 2
+      height: 2,
     },
     shadowRadius: 8,
     shadowOpacity: 1,
     borderStyle: "solid",
     borderWidth: 1,
   },
-  inputRoundedContainer: { 
-    width: 73
+  inputRoundedContainer: {
+    width: 73,
   },
-  error_text:{
-    fontSize: 20,
-    color: "#f28b82",
-    justifyContent: 'center',
-    margin: 10,
-    alignItems: 'center',
-  }
-})
+});

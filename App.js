@@ -1,36 +1,37 @@
-import * as React from 'react';
-import { Provider as PaperProvider } from 'react-native-paper'
-import { ThemeProvider } from 'react-native-elements'
-import RootStackNavigator from './src/navigations/RootStackNavigator'
-import { Provider } from 'react-redux'
-import store from './src/redux/store'
-import * as Font from 'expo-font'
-import { AppLoading } from 'expo'
+import * as React from "react";
+import { Provider as PaperProvider } from "react-native-paper";
+import { ThemeProvider } from "react-native-elements";
+import RootStackNavigator from "./src/navigations/RootStackNavigator";
+import { Provider } from "react-redux";
+import store from "./src/redux/store";
+import * as Font from "expo-font";
+import { AppLoading } from "expo";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
-const getFonts = () => Font.loadAsync({
-  'lato-bold': require('./assets/fonts/Lato-Bold.ttf'),
-  'lato-regular': require('./assets/fonts/Lato-Regular.ttf')
-})
+const getFonts = () =>
+  Font.loadAsync({
+    "lato-bold": require("./assets/fonts/Lato-Bold.ttf"),
+    "lato-regular": require("./assets/fonts/Lato-Regular.ttf"),
+  });
 
 export default function App() {
-  const [fontsLoaded, setFontsLoaded] = React.useState(false)
+  const [fontsLoaded, setFontsLoaded] = React.useState(false);
 
-  if(fontsLoaded) {
+  if (fontsLoaded) {
     return (
       <Provider store={store}>
-        <ThemeProvider>
-          <PaperProvider>
-            <RootStackNavigator />
-          </PaperProvider>
-        </ThemeProvider>
+        <SafeAreaProvider>
+          <ThemeProvider>
+            <PaperProvider>
+              <RootStackNavigator />
+            </PaperProvider>
+          </ThemeProvider>
+        </SafeAreaProvider>
       </Provider>
-    )
+    );
   } else {
     return (
-      <AppLoading
-        startAsync={getFonts}
-        onFinish={() => setFontsLoaded(true)}
-      />
-    )
+      <AppLoading startAsync={getFonts} onFinish={() => setFontsLoaded(true)} />
+    );
   }
 }

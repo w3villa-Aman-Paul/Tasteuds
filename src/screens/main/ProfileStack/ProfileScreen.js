@@ -14,15 +14,22 @@ import {
   ChevronRight,
 } from "../../../library/icons";
 import { Divider, Button } from "react-native-elements";
-import { accountRetrieve, userLogout } from "../../../redux";
+import { accountLogout, accountRetrieve, userLogout } from "../../../redux";
 import { styles } from "./styles";
-import { createStackNavigator } from "@react-navigation/stack";
 const list = [
+<<<<<<< HEAD
   {
     title: "Profile",
     icon: <User size={24} style={{ color: colors.black }} />,
     name: "Account",
   },
+=======
+  // {
+  //   title: "Account",
+  //   icon: <User size={24} style={{ color: colors.black }} />,
+  //   name: "Account",
+  // },
+>>>>>>> dev/aman
   {
     title: "Saved Address",
     icon: <Home size={24} style={{ color: colors.black }} />,
@@ -47,13 +54,17 @@ const list = [
 
 const ProfileScreen = ({ dispatch, navigation }) => {
   const { account } = useSelector((state) => state.account);
-  const { email } = account;
+  const { isAuth } = useSelector((state) => state.auth);
 
-  const ProfileDetailsStack = createStackNavigator();
+  const [userName, setUserName] = React.useState("");
 
   React.useEffect(() => {
-    dispatch(accountRetrieve());
-  }, []);
+    if (isAuth) {
+      setUserName(account.email);
+    } else {
+      setUserName("");
+    }
+  }, [isAuth]);
 
   return (
     <View style={styles.mainContainer}>
@@ -72,14 +83,20 @@ const ProfileScreen = ({ dispatch, navigation }) => {
               }}
               style={styles.avatar}
             />
+<<<<<<< HEAD
             <View style={styles.accountDetails}>
               <Text style={styles.accountName}>{email}</Text>
+=======
+            <View style={styles.profileDetails}>
+              <Text style={styles.profileName}>{userName}</Text>
+>>>>>>> dev/aman
               <Pen size={24} style={{ color: colors.white }} />
             </View>
           </View>
         </LinearGradient>
       </View>
       <View>
+        <Divider />
         {list.map((item, i) => (
           <TouchableOpacity
             key={i}
@@ -102,7 +119,11 @@ const ProfileScreen = ({ dispatch, navigation }) => {
           title="Logout Account"
           buttonStyle={styles.buttonBlockStyle}
           titleStyle={globalStyles.latoBold16}
-          onPress={() => dispatch(userLogout())}
+          onPress={() => {
+            dispatch(userLogout());
+            dispatch(accountLogout());
+            navigation.navigate("Shop");
+          }}
         />
       </View>
     </View>

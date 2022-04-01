@@ -60,8 +60,7 @@ const ProductDetailScreen = ({navigation, dispatch, product, auth, saving }) => 
   const [selectedVariant, setSelectedVariant] = useState({})
   const [imageURI, setImageURI] = useState(`${HOST}/${product.variants[0].images[0]?.styles[3].url}`)
 
-  const [snackbarVisible, setSnackbarVisible] = useState(false);
-  const [snack, setSnack] = useState(false)
+  const [snackbarVisible, setSnackbarVisible] = useState(false)
 
   const [variantDistinctColors] = useState([...new Set(product.variants.map(variant => variant.option_values[0].presentation))])
 
@@ -74,7 +73,6 @@ const ProductDetailScreen = ({navigation, dispatch, product, auth, saving }) => 
   }
 
   const dismissSnackbar = () => setSnackbarVisible(false);
-  const dismiss = () => setSnack(false);
 
   const getcartToken = async () => {
       const { data } = await createCartToken();
@@ -94,14 +92,6 @@ const ProductDetailScreen = ({navigation, dispatch, product, auth, saving }) => 
       navigation.navigate('Bag');
     }, 1000);
     return setSnackbarVisible(true);
-  }
-
-  const handleTofavourites = () => {
-    dispatch(setProductFavourite(selectedVariant));
-    setTimeout(() => {
-      navigation.navigate('Favorites')
-    }, 1000);
-    return setSnack(true)
   }
 
   if(saving) {
@@ -144,7 +134,7 @@ const ProductDetailScreen = ({navigation, dispatch, product, auth, saving }) => 
                 containerStyle={{ flex: 1, marginRight: 16 }}
                 buttonStyle={globalStyles.btn}
                 titleStyle={styles.titleStyle}
-                onPress={handleTofavourites}
+                onPress={() => dispatch(setProductFavourite(selectedVariant))}
               />
               <Button
                 title="Add To Bag"
@@ -354,12 +344,6 @@ const ProductDetailScreen = ({navigation, dispatch, product, auth, saving }) => 
           </View>
         </View>
       </ScrollView>
-      <Snackbar
-        visible={snack}
-        onDismiss = {dismiss}
-        >
-        Added to Favorites !
-      </Snackbar>
       <Snackbar
         visible={snackbarVisible}
         onDismiss = {dismissSnackbar}
