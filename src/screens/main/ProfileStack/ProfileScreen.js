@@ -17,11 +17,11 @@ import { Divider, Button } from "react-native-elements";
 import { accountLogout, accountRetrieve, userLogout } from "../../../redux";
 import { styles } from "./styles";
 const list = [
-  {
-    title: "Account",
-    icon: <User size={24} style={{ color: colors.black }} />,
-    name: "Account",
-  },
+  // {
+  //   title: "Account",
+  //   icon: <User size={24} style={{ color: colors.black }} />,
+  //   name: "Account",
+  // },
   {
     title: "Saved Address",
     icon: <Home size={24} style={{ color: colors.black }} />,
@@ -83,6 +83,7 @@ const ProfileScreen = ({ dispatch, navigation }) => {
         </LinearGradient>
       </View>
       <View>
+        <Divider />
         {list.map((item, i) => (
           <TouchableOpacity
             key={i}
