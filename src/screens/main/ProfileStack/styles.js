@@ -14,7 +14,17 @@ export const styles = StyleSheet.create({
   avatar: {
     width: 80,
     height: 80,
-    borderRadius: 50,
+    borderRadius: 100,
+  },
+  accountDetails: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 5,
+  },
+  accountName: {
+    ...globalStyles.latoBold16,
+    color: colors.white,
+    marginRight: 6,
   },
   profileDetails: {
     flexDirection: "row",
@@ -24,10 +34,17 @@ export const styles = StyleSheet.create({
   profileName: {
     ...globalStyles.latoBold16,
     color: colors.white,
-    marginRight: 4,
+    marginTop: 5,
+    marginBottom: 10,
+    marginRight: 5
+  },
+  profileContact: {
+    ...globalStyles.latoBold12,
+    color: colors.white,
+    marginTop: 5,
   },
   jumbotron: {
-    height: 168,
+    height: 200,
   },
   listContainer: {
     flexDirection: "row",
@@ -47,4 +64,44 @@ export const styles = StyleSheet.create({
     ...globalStyles.btnBlock,
     ...globalStyles.btnPrimary,
   },
+  profile_container:{
+    height: 250,
+  },
+  content: {
+    backgroundColor: '#ffffff',
+    elevation: 8,
+    margin: 10,
+    paddingVertical: 15,
+    paddingHorizontal: 10,
+  },
+  inputBox:{
+    flexDirection: 'column',
+    marginTop: 5,
+    marginBottom: 5,
+  },
+  formText:{
+    color: '#0080ff',
+    marginBottom: 5,
+    fontSize: 12,
+  },
+  formInput:{
+    height: 50,
+    backgroundColor: "#ffffff"
+  },
+  formBtn:{
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  primary:{
+    padding: 10,
+    borderRadius: 10,
+    marginRight: 5,
+    backgroundColor: '#0080ff',
+  },
+  textBtn:{
+    color: '#ffffff'
+  }
 });

@@ -3,6 +3,7 @@ const dataFormatter = new Jsona();
 
 const DEFAULT_STATE = {
   saving: false,
+  address: null,
   country: {
     states: [],
     iso: null
@@ -176,6 +177,39 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
     case 'RATES_CHECKOUT_FULFILLED':
       changes = {
         cart: dataFormatter.deserialize(response),
+        saving: false
+      };
+      return { ...state, ...changes };
+
+
+    case 'CREATE_ADDRESS_PENDING':
+      return { ...state, saving: true };
+
+    case 'CREATE_ADDRESS_REJECTED':
+      changes = {
+        saving: false
+      };
+      return { ...state, ...changes };
+
+    case 'CREATE_ADDRESS_FULFILLED':
+      changes = {
+        address: dataFormatter.deserialize(response),
+        saving: false
+      };
+      return { ...state, ...changes };
+
+      case 'RETRIEVE_ADDRESS_PENDING':
+      return { ...state, saving: true };
+
+    case 'RETRIEVE_ADDRESS_REJECTED':
+      changes = {
+        saving: false
+      };
+      return { ...state, ...changes };
+
+    case 'RETRIEVE_ADDRESS_FULFILLED':
+      changes = {
+        address: dataFormatter.deserialize(response),
         saving: false
       };
       return { ...state, ...changes };

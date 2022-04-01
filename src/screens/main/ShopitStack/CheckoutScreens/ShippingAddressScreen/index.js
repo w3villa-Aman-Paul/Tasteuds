@@ -5,7 +5,7 @@ import { colors } from '../../../../../res/palette'
 import { CheckR, CheckO } from '../../../../../library/icons'
 import TextField from '../../../../../library/components/TextField'
 import { Picker } from '@react-native-community/picker'
-import { getCountry, updateCheckout, checkoutNext, shippingRates, getPaymentMethods, getOrderToken } from '../../../../../redux/actions/checkoutActions'
+import { getCountry, updateCheckout, checkoutNext, createAddress, getPaymentMethods, getOrderToken } from '../../../../../redux/actions/checkoutActions'
 import { connect } from 'react-redux'
 import { styles } from './styles'
 import { checkoutStyles } from '../styles'
@@ -13,8 +13,8 @@ import CheckoutDetailsCard from '../../../../../library/components/CheckoutDetai
 import ActionButtonFooter from '../../../../../library/components/ActionButtonFooter'
 import ActivityIndicatorCard from '../../../../../library/components/ActivityIndicatorCard'
 
-const ShippingAddressScreen = ({ navigation, dispatch, country, countriesList, saving, cart }) => {
-  console.log('OrderToken',cart.token)
+const ShippingAddressScreen = ({ navigation, dispatch, country, countriesList, saving, cart, auth }) => {
+  console.log('OrderToken', cart.token)
   const [statePickerSelectedValue, setStatePickerSelectedValue] = useState(country.states[0])
   const [countryPickerSelectedValue, setCountryPickerSelectedValue] = useState(country.iso)
   const [name, setName] = useState("")
@@ -27,6 +27,18 @@ const ShippingAddressScreen = ({ navigation, dispatch, country, countriesList, s
   const [windowWidth] = useState(Dimensions.get('window').width)
 
   const handleUpdateCheckout = async () => {
+    await dispatch(createAddress({
+      address: {
+        firstname: name,
+        lastname: name,
+        address1: address,
+        city: city,
+        phone: phone,
+        zipcode: pinCode,
+        state_name: statePickerSelectedValue.abbr,
+        country_iso: countryPickerSelectedValue
+      }
+    }))
     await dispatch(
       updateCheckout(cart.token,
         {
@@ -135,7 +147,7 @@ const ShippingAddressScreen = ({ navigation, dispatch, country, countriesList, s
               containerStyle={styles.containerStyle}
               inputContainerStyle={styles.inputContainerStyle}
               value={phone}
-              onChangeText={(phone) =>setPhone(phone)}
+              onChangeText={(phone) => setPhone(phone)}
             />
             <TextField
               placeholder="Pin Code"
@@ -174,14 +186,14 @@ const ShippingAddressScreen = ({ navigation, dispatch, country, countriesList, s
                   width: windowWidth / 2.3
                 }]}
                 itemStyle={styles.inputStyle}
-                onValueChange={(itemValue, itemIndex) => 
+                onValueChange={(itemValue, itemIndex) =>
                   setStatePickerSelectedValue(itemValue)
                 }
               >
                 {
-                  country.states.map(state => 
-                    <Picker.Item key={state.id} label={state.name} value={state}  />
-                    )
+                  country.states.map(state =>
+                    <Picker.Item key={state.id} label={state.name} value={state} />
+                  )
                 }
               </Picker>
             </View>
@@ -224,6 +236,7 @@ const mapStateToProps = state => ({
   countriesList: state.checkout.countriesList,
   saving: state.checkout.saving,
   cart: state.checkout.cart,
+  auth: state.auth,
 })
 
 export default connect(mapStateToProps)(ShippingAddressScreen)

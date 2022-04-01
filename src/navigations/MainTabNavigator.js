@@ -43,6 +43,7 @@ function MainTabNavigator() {
           tabBarIcon: ({ color, size }) => <Heart color={color} size={size} />,
         }}
       />
+
       <Tab.Screen
         name="Profile"
         component={ProfileStackNavigator}

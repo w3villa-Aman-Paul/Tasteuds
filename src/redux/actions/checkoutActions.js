@@ -66,15 +66,21 @@ export function updateCheckout(auth_token,data) {
   };
 }
 
-export function shippingRates(auth_token, data={}) {
-  const url = `${API_VERSION_STOREFRONT}/checkout/shipping_rates`;
-  const method = 'GET';
-  const params = {
-    include: 'line_items.variant.option_values,line_items.variant.images'
-  }
+export function createAddress(data, filters={}) {
+  const url = `${API_VERSION_STOREFRONT}/account/addresses`;
+  const method = 'POST';
   return {
-    type: 'RATES_CHECKOUT',
-    payload: handleAddCartItem(url, params, method, data, auth_token)
+    type: 'CREATE_ADDRESS',
+    payload: handleAPI(url, filters, method, data)
+  };
+}
+
+export function retrieveAddress(data={}, filters={}) {
+  const url = `${API_VERSION_STOREFRONT}/account/addresses`;
+  const method = 'GET';
+  return {
+    type: 'RETRIEVE_ADDRESS',
+    payload: handleAPI(url, filters, method, data)
   };
 }
 

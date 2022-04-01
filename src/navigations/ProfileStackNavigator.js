@@ -7,7 +7,7 @@ import { globalStyles } from "../styles/global";
 import AccountScreen from "../screens/main/ProfileStack/AccountScreen";
 import SavedAddress from "../screens/main/ProfileStack/SavedAddress";
 import FavouritesScreen from "../screens/main/FavouritesStack/FavouritesScreen";
-import OffersScreen from "../screens/main/Offers/OffersScreen";
+import OffersScreen from "../screens/main/ProfileStack/OffersScreen";
 import OrdersStackNavigator from "../screens/main/MainDrawer/OrdersStack/OrdersStackNavigator";
 
 const ProfileStack = createStackNavigator();

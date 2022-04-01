@@ -40,6 +40,10 @@ export const globalStyles = StyleSheet.create({
     fontFamily: 'lato-bold',
     fontSize: 14,
   },
+  latoBold12: {
+    fontFamily: 'lato-bold',
+    fontSize: 12,
+  },
   latoBold16: {
     fontFamily: 'lato-bold',
     fontSize: 16,

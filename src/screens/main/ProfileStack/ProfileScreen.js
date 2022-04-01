@@ -17,6 +17,7 @@ import { Divider, Button } from "react-native-elements";
 import { accountLogout, accountRetrieve, userLogout } from "../../../redux";
 import { styles } from "./styles";
 const list = [
+
   // {
   //   title: "Account",
   //   icon: <User size={24} style={{ color: colors.black }} />,
