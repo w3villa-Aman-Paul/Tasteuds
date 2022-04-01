@@ -14,15 +14,19 @@ import {
   ChevronRight,
 } from "../../../library/icons";
 import { Divider, Button } from "react-native-elements";
-import { accountLogout, accountRetrieve, userLogout } from "../../../redux";
+import {
+  accountCreate,
+  accountLogout,
+  accountRetrieve,
+  userLogout,
+} from "../../../redux";
 import { styles } from "./styles";
 const list = [
-
-  // {
-  //   title: "Account",
-  //   icon: <User size={24} style={{ color: colors.black }} />,
-  //   name: "Account",
-  // },
+  {
+    title: "Reset Password",
+    icon: <User size={24} style={{ color: colors.black }} />,
+    name: "ResetPassword",
+  },
   {
     title: "Saved Address",
     icon: <Home size={24} style={{ color: colors.black }} />,
@@ -57,7 +61,7 @@ const ProfileScreen = ({ dispatch, navigation }) => {
     } else {
       setUserName("");
     }
-  }, [isAuth]);
+  }, [isAuth, account.email]);
 
   return (
     <View style={styles.mainContainer}>
@@ -83,37 +87,65 @@ const ProfileScreen = ({ dispatch, navigation }) => {
           </View>
         </LinearGradient>
       </View>
-      <View>
-        <Divider />
-        {list.map((item, i) => (
-          <TouchableOpacity
-            key={i}
-            onPress={() => navigation.navigate(item.name)}
-          >
-            <View style={styles.listContainer}>
-              <View style={styles.listIcon}>{item.icon}</View>
-              <Text style={styles.title}>{item.title}</Text>
-              <View style={styles.listIcon}>
-                <ChevronRight size={24} style={{ color: colors.black }} />
-              </View>
-            </View>
-            <Divider />
-          </TouchableOpacity>
-        ))}
-      </View>
 
-      <View style={globalStyles.container}>
-        <Button
-          title="Logout Account"
-          buttonStyle={styles.buttonBlockStyle}
-          titleStyle={globalStyles.latoBold16}
-          onPress={() => {
-            dispatch(userLogout());
-            dispatch(accountLogout());
-            navigation.navigate("Shop");
-          }}
-        />
-      </View>
+      {isAuth ? (
+        <>
+          <View>
+            <Divider />
+            {list.map((item, i) => (
+              <TouchableOpacity
+                key={i}
+                onPress={() => {
+                  navigation.navigate(item.name);
+                }}
+              >
+                <View style={styles.listContainer}>
+                  <View style={styles.listIcon}>{item.icon}</View>
+                  <Text style={styles.title}>{item.title}</Text>
+                  <View style={styles.listIcon}>
+                    <ChevronRight size={24} style={{ color: colors.black }} />
+                  </View>
+                </View>
+                <Divider />
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          <View style={globalStyles.container}>
+            <Button
+              title="Logout Account"
+              buttonStyle={styles.buttonBlockStyle}
+              titleStyle={globalStyles.latoBold16}
+              onPress={() => {
+                dispatch(userLogout());
+                dispatch(accountLogout());
+                // navigation.navigate("Shop");
+              }}
+            />
+          </View>
+        </>
+      ) : (
+        <>
+          <View style={globalStyles.container}>
+            <Button
+              title="Sign In"
+              buttonStyle={styles.buttonBlockStyle}
+              titleStyle={globalStyles.latoBold16}
+              onPress={() => {
+                navigation.navigate("SignIn");
+              }}
+            />
+            <Button
+              title="Sign Up"
+              buttonStyle={styles.buttonBlockStyle}
+              titleStyle={globalStyles.latoBold16}
+              onPress={() => {
+                navigation.navigate("SignUp");
+              }}
+            />
+          </View>
+        </>
+      )}
     </View>
   );
 };

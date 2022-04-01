@@ -75,6 +75,34 @@ export default function accountReducer(state = DEFAULT_STATE, action) {
       };
       return { ...state, ...changes };
 
+    case "ACCOUNT_UPDATE_PENDING":
+      return {
+        ...state,
+        saving: true,
+        error: null,
+        isAuth: false,
+        status: "",
+      };
+
+    case "ACCOUNT_UPDATE_REJECTED":
+      changes = {
+        saving: false,
+        error: response.data.error,
+        isAuth: false,
+        status: response.status,
+      };
+      return { ...state, ...changes };
+
+    case "ACCOUNT_UPDATE_FULFILLED":
+      changes = {
+        account: dataFormatter.deserialize(response),
+        saving: false,
+        error: null,
+        isAuth: true,
+        status: action.payload.status,
+      };
+      return { ...state, ...changes };
+
     case "ACCOUNT_RETREIVE_PENDING":
       return { ...state, saving: true, error: null, isAuth: false, status: "" };
 

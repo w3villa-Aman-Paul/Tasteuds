@@ -24,6 +24,15 @@ export const accountRetrieve =
     });
   };
 
+export const accountUpdate = (data, filters = {}) => {
+  const url = `${API_VERSION_STOREFRONT}/account`;
+  const method = "PATCH";
+  return {
+    type: "ACCOUNT_UPDATE",
+    payload: handleAPI(url, filters, method, data),
+  };
+};
+
 export function getCompletedOrders() {
   const url = `${API_VERSION_STOREFRONT}/orders`;
   const method = "GET";

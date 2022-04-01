@@ -9,13 +9,8 @@ import { styles } from "./styles";
 import TextField from "../../library/components/TextField";
 import { Snackbar } from "react-native-paper";
 import { accountCreate } from "../../redux";
-import { Formik, Field } from "formik";
+import { Formik } from "formik";
 import * as yup from "yup";
-import Axios from "axios";
-import {
-  API_VERSION_STOREFRONT,
-  handleAPI,
-} from "../../library/utils/apiUtils";
 
 const signUpValidationSchema = yup.object().shape({
   fullName: yup
@@ -58,24 +53,6 @@ const SignUpScreen = ({ navigation, dispatch }) => {
   const [snacbarMessage, setSnacbarMessage] = useState("");
   const dismissSnackbar = () => setSnackbarVisible(false);
 
-  // const [username, setUserName] = useState("");
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
-  // const [passwordConfirmation, setPasswordConfirmation] = useState("");
-
-  {
-    /*const handleSignup = () => {
-    dispatch(
-      accountCreate({
-        user: {
-          email: email,
-          password: password,
-          password_confirmation: passwordConfirmation,
-        },
-      })
-    );
-  };*/
-  }
   const signInNavigation = () => {
     navigation.navigate("SignIn");
   };

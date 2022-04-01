@@ -33,16 +33,6 @@ const SignInScreen = ({ navigation, dispatch }) => {
   const { isAuth, error, status, saving } = useSelector((state) => state.auth);
   const dismissSnackbar = () => setSnackbarVisible(false);
 
-  // const handleLogin = () => {
-  //   dispatch(
-  //     userLogin({
-  //       username: email,
-  //       password: password,
-  //       grant_type: "password",
-  //     })
-  //   );
-  // };
-
   useEffect(() => {
     if (error === "invalid_grant" && status === 400) {
       setSnacbarMessage("You Have entered a wrong Email or Password");
