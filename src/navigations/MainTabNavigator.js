@@ -43,13 +43,10 @@ function MainTabNavigator() {
           tabBarIcon: ({ color, size }) => <Heart color={color} size={size} />,
         }}
       />
-<<<<<<< HEAD
-      <Tab.Screen name="Accounts" component={ProfileStackNavigator} 
-=======
+
       <Tab.Screen
         name="Profile"
         component={ProfileStackNavigator}
->>>>>>> dev/aman
         options={{
           tabBarIcon: ({ color, size }) => (
             <Profile color={color} size={size} />

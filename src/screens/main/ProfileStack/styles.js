@@ -27,15 +27,16 @@ export const styles = StyleSheet.create({
     marginRight: 6,
   },
   profileDetails: {
-    flexDirection: "column",
+    flexDirection: "row",
     alignItems: "center",
     marginTop: 5,
   },
   profileName: {
-    ...globalStyles.latoBold18,
+    ...globalStyles.latoBold16,
     color: colors.white,
     marginTop: 5,
     marginBottom: 10,
+    marginRight: 5
   },
   profileContact: {
     ...globalStyles.latoBold12,
@@ -43,7 +44,7 @@ export const styles = StyleSheet.create({
     marginTop: 5,
   },
   jumbotron: {
-    height: 168,
+    height: 200,
   },
   listContainer: {
     flexDirection: "row",
