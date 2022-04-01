@@ -48,41 +48,6 @@ function RootStackNavigator({ authState, dispatch }) {
   return (
     <NavigationContainer ref={navigationRef} theme={MyTheme}>
       <RootStack.Navigator screenOptions={{ headerShown: false }}>
-        {/* {authState.access_token ? (
-          <>
-            <RootStack.Screen
-              name="MainDrawerNavigator"
-              component={MainDrawerNavigator}
-              authToken={authToken}
-            />
-          </>
-        ) : (
-          <>
-            <RootStack.Screen
-              name="OnboardingA"
-              component={OnboardingAScreen}
-            />
-            <RootStack.Screen
-              name="OnboardingB"
-              component={OnboardingBScreen}
-            />
-            <RootStack.Screen
-              name="OnboardingC"
-              component={OnboardingCScreen}
-            />
-            <RootStack.Screen name="SignIn" component={SignInScreen} />
-            <RootStack.Screen name="SignUp" component={SignUpScreen} />
-            <RootStack.Screen
-              name="ForgotPassword"
-              component={ForgotPasswordScreen}
-            />
-            <RootStack.Screen
-              name="ResetPassword"
-              component={ResetPasswordScreen}
-            />
-            <RootStack.Screen name="EnterCode" component={EnterCodeScreen} />
-          </>
-        )} */}
         <RootStack.Screen
           name="MainDrawerNavigator"
           component={MainDrawerNavigator}
