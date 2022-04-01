@@ -17,19 +17,12 @@ import { Divider, Button } from "react-native-elements";
 import { accountLogout, accountRetrieve, userLogout } from "../../../redux";
 import { styles } from "./styles";
 const list = [
-<<<<<<< HEAD
-  {
-    title: "Profile",
-    icon: <User size={24} style={{ color: colors.black }} />,
-    name: "Account",
-  },
-=======
+
   // {
   //   title: "Account",
   //   icon: <User size={24} style={{ color: colors.black }} />,
   //   name: "Account",
   // },
->>>>>>> dev/aman
   {
     title: "Saved Address",
     icon: <Home size={24} style={{ color: colors.black }} />,
@@ -83,13 +76,8 @@ const ProfileScreen = ({ dispatch, navigation }) => {
               }}
               style={styles.avatar}
             />
-<<<<<<< HEAD
-            <View style={styles.accountDetails}>
-              <Text style={styles.accountName}>{email}</Text>
-=======
             <View style={styles.profileDetails}>
               <Text style={styles.profileName}>{userName}</Text>
->>>>>>> dev/aman
               <Pen size={24} style={{ color: colors.white }} />
             </View>
           </View>
