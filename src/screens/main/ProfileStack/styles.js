@@ -103,5 +103,12 @@ export const styles = StyleSheet.create({
   },
   textBtn:{
     color: '#ffffff'
-  }
+  },
+  inputStyle: {
+    ...globalStyles.latoRegular16,
+  },
+  inputContainerStyle: {
+    paddingLeft: 5,
+    borderBottomColor: "#fff",
+  },
 });

@@ -14,7 +14,7 @@ import {
   ChevronRight,
 } from "../../../library/icons";
 import { Divider, Button } from "react-native-elements";
-import { accountLogout, accountRetrieve, userLogout } from "../../../redux";
+import { accountLogout, accountRetrieve, retrieveAddress, userLogout } from "../../../redux";
 import { styles } from "./styles";
 const list = [
 
@@ -57,7 +57,11 @@ const ProfileScreen = ({ dispatch, navigation }) => {
     } else {
       setUserName("");
     }
-  }, [isAuth]);
+  }, [isAuth])
+
+  React.useEffect(() => {
+    dispatch(retrieveAddress());
+  }, [])
 
   return (
     <View style={styles.mainContainer}>

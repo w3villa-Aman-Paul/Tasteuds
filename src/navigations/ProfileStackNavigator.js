@@ -9,6 +9,7 @@ import SavedAddress from "../screens/main/ProfileStack/SavedAddress";
 import FavouritesScreen from "../screens/main/FavouritesStack/FavouritesScreen";
 import OffersScreen from "../screens/main/ProfileStack/OffersScreen";
 import OrdersStackNavigator from "../screens/main/MainDrawer/OrdersStack/OrdersStackNavigator";
+import updateAddress from "../screens/main/ProfileStack/updateAddress";
 
 const ProfileStack = createStackNavigator();
 
@@ -53,6 +54,7 @@ function ProfileStackNavigator({ navigation }) {
       <ProfileStack.Screen name="Account" component={AccountScreen} />
       <ProfileStack.Screen name="SavedAddress" component={SavedAddress} />
       <ProfileStack.Screen name="Favourites" component={FavouritesScreen} />
+      <ProfileStack.Screen name="updateAdd" component={updateAddress} />
       <ProfileStack.Screen name="Offers" component={OffersScreen} />
     </ProfileStack.Navigator>
   );

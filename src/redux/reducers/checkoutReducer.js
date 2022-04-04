@@ -10,6 +10,7 @@ const DEFAULT_STATE = {
   },
   countriesList: [],
   paymentMethods: [],
+  message: null,
   cart: {
     line_items: [
       {
@@ -198,7 +199,7 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
       };
       return { ...state, ...changes };
 
-      case 'RETRIEVE_ADDRESS_PENDING':
+    case 'RETRIEVE_ADDRESS_PENDING':
       return { ...state, saving: true };
 
     case 'RETRIEVE_ADDRESS_REJECTED':
@@ -213,6 +214,24 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
         saving: false
       };
       return { ...state, ...changes };
+
+    case 'DELETE_ADDRESS_PENDING':
+      return { ...state, saving: true };
+
+    case 'DELETE_ADDRESS_REJECTED':
+      changes = {
+        saving: false
+      };
+      return { ...state, ...changes };
+
+    case 'DELETE_ADDRESS_FULFILLED':
+      changes = {
+        message: 'Address Deleted Succcessfully',
+        saving: false
+      };
+      return { ...state, ...changes };
+
+      
 
     /**
      * COMPLETE_CHECKOUT

@@ -69,7 +69,6 @@ const ShippingAddressScreen = ({ navigation, dispatch, country, countriesList, s
         }
       )
     )
-    // await dispatch(shippingRates(cart.token))
     await dispatch(getPaymentMethods())
     await dispatch(checkoutNext(cart.token))
     navigation.navigate('CheckoutPayment')
