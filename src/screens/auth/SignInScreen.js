@@ -41,6 +41,13 @@ const SignInScreen = ({ navigation, dispatch }) => {
       setTimeout(() => {
         dismissSnackbar();
       }, 2000);
+    } else if (status === 404) {
+      setSnacbarMessage("Server not found or Network Error");
+      setSnackbarVisible(true);
+
+      setTimeout(() => {
+        dismissSnackbar();
+      }, 2000);
     } else if (status === 200) {
       navigation.navigate("Shop");
     }

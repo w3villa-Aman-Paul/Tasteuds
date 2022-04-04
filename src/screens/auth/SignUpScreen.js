@@ -65,6 +65,13 @@ const SignUpScreen = ({ navigation, dispatch }) => {
         setSnackbarVisible(true);
       }, 2000);
       dismissSnackbar();
+    } else if (status === 404) {
+      setSnacbarMessage("Server not found or Network Error");
+      setSnackbarVisible(true);
+
+      setTimeout(() => {
+        dismissSnackbar();
+      }, 2000);
     } else if (status === 200) {
       setSnacbarMessage("Account Created Successfully!🙂🙂, Now you can LogIn");
       setSnackbarVisible(true);
