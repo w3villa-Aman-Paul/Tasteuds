@@ -14,12 +14,16 @@ import {
   ChevronRight,
 } from "../../../library/icons";
 import { Divider, Button } from "react-native-elements";
+<<<<<<< HEAD
 import {
   accountCreate,
   accountLogout,
   accountRetrieve,
   userLogout,
 } from "../../../redux";
+=======
+import { accountLogout, accountRetrieve, retrieveAddress, userLogout } from "../../../redux";
+>>>>>>> dev/mohsin
 import { styles } from "./styles";
 const list = [
   {
@@ -53,6 +57,7 @@ const ProfileScreen = ({ dispatch, navigation }) => {
   const { account } = useSelector((state) => state.account);
   const { isAuth } = useSelector((state) => state.auth);
 
+
   const [userName, setUserName] = React.useState("");
 
   React.useEffect(() => {
@@ -61,7 +66,15 @@ const ProfileScreen = ({ dispatch, navigation }) => {
     } else {
       setUserName("");
     }
+<<<<<<< HEAD
   }, [isAuth, account.email]);
+=======
+  }, [isAuth])
+
+  React.useEffect(() => {
+    dispatch(retrieveAddress());
+  }, [])
+>>>>>>> dev/mohsin
 
   return (
     <View style={styles.mainContainer}>

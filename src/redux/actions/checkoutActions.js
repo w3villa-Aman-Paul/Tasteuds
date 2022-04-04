@@ -84,6 +84,15 @@ export function retrieveAddress(data={}, filters={}) {
   };
 }
 
+export function deleteAdd(data = null, id, filters={}) {
+  const url = `${API_VERSION_STOREFRONT}/account/addresses/${id}`;
+  const method = 'DELETE';
+  return {
+    type: 'DELETE_ADDRESS',
+    payload: handleAPI(url, filters, method, data)
+  };
+}
+
 
 export function completeCheckout() {
   const url = `${API_VERSION_STOREFRONT}/checkout/complete`;

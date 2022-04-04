@@ -11,7 +11,7 @@ import { globalStyles } from "../../../../styles/global";
 import { colors } from "../../../../res/palette";
 import { connect } from "react-redux";
 import { styles } from "./styles";
-import { accountRetrieve } from "../../../../redux";
+import { accountRetrieve, retrieveAddress } from "../../../../redux";
 import { useSelector } from "react-redux";
 
 const Item = ({ item }) => {
