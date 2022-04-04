@@ -3,6 +3,7 @@ const dataFormatter = new Jsona();
 
 const DEFAULT_STATE = {
   saving: false,
+  status: null,
   address: null,
   country: {
     states: [],
@@ -216,18 +217,20 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
       return { ...state, ...changes };
 
     case 'DELETE_ADDRESS_PENDING':
-      return { ...state, saving: true };
+      return { ...state, saving: true, status: null };
 
     case 'DELETE_ADDRESS_REJECTED':
       changes = {
-        saving: false
+        saving: false,
+        status: response.status,
       };
       return { ...state, ...changes };
 
     case 'DELETE_ADDRESS_FULFILLED':
       changes = {
         message: 'Address Deleted Succcessfully',
-        saving: false
+        saving: false,
+        status: action.payload.status
       };
       return { ...state, ...changes };
 

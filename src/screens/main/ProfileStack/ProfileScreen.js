@@ -49,6 +49,7 @@ const ProfileScreen = ({ dispatch, navigation }) => {
   const { account } = useSelector((state) => state.account);
   const { isAuth } = useSelector((state) => state.auth);
 
+
   const [userName, setUserName] = React.useState("");
 
   React.useEffect(() => {

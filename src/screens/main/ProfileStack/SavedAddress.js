@@ -8,30 +8,29 @@ import { deleteAdd, retrieveAddress } from "../../../redux";
 const SavedAddress = ({ dispatch, navigation }) => {
 
   const Address = useSelector(state => state.checkout.address);
+  const {status} = useSelector(state => state.checkout);
 
-  let add = [];
 
-  if(Address){
-     [...add] = Address;
-  }
   
-
   const deleteAddress = (id) => {
     dispatch(deleteAdd(null,id, {}))
   }
 
 
   useEffect(() => {
-    dispatch(retrieveAddress());
-  }, [add]);
+    if(status ===  204){
+      dispatch(retrieveAddress());
+    }
+  }, [status]);
   
+  useEffect(() => dispatch(retrieveAddress()), [])
 
 
   return (
     <ScrollView>
       <View style={styles.body}>
         {
-          add.map((address) => (
+          Address?.map((address) => (
             <>
               <View style={styles.addContent}>
                 <View key={address.id} style={styles.addList}>

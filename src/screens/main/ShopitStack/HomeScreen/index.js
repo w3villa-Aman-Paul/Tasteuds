@@ -45,7 +45,6 @@ const HomeScreen = ({ navigation, dispatch }) => {
 
   React.useEffect(() => {
     dispatch(accountRetrieve(null, {}));
-    dispatch(retrieveAddress());
   }, [isAuth]);
 
   const newJustInRenderItem = ({ item }) => {
