@@ -5,5 +5,6 @@ export const colors =  {
   white: '#FFF',
   background: '#F5F5F5',
   error: '#F01F0E',
-  success: '#2AA952'
+  success: '#2AA952',
+  purple: '#363554'
 }

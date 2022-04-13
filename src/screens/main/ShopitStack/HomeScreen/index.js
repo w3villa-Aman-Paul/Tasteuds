@@ -13,6 +13,7 @@ import { connect } from "react-redux";
 import { styles } from "./styles";
 import { accountRetrieve, retrieveAddress } from "../../../../redux";
 import { useSelector } from "react-redux";
+import Footer from "../../../components/footer";
 
 const Item = ({ item }) => {
   return (
@@ -148,6 +149,7 @@ const HomeScreen = ({ navigation, dispatch }) => {
           />
         </View>
       </View>
+      <Footer />
     </ScrollView>
   );
 };

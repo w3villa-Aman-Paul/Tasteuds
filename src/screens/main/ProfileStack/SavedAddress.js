@@ -7,23 +7,25 @@ import { deleteAdd, retrieveAddress } from "../../../redux";
 
 const SavedAddress = ({ dispatch, navigation }) => {
 
-  const Address = useSelector(state => state.checkout.address);
-  const {status} = useSelector(state => state.checkout);
-
-
-  
-  const deleteAddress = (id) => {
-    dispatch(deleteAdd(null,id, {}))
-  }
-
+  useEffect(() => dispatch(retrieveAddress()), [])
 
   useEffect(() => {
     if(status ===  204){
       dispatch(retrieveAddress());
     }
   }, [status]);
+
+
+  const  Address  = useSelector(state => state.checkout.address);
+  // const [ add ] = Address;
+  const {status} = useSelector(state => state.checkout);
+
   
-  useEffect(() => dispatch(retrieveAddress()), [])
+  const deleteAddress = (id) => {
+    dispatch(deleteAdd(null,id, {}))
+  }
+
+  
 
 
   return (
