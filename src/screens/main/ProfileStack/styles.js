@@ -61,6 +61,7 @@ export const styles = StyleSheet.create({
   },
   buttonBlockStyle: {
     ...globalStyles.mt32,
+    ...globalStyles.mb32,
     ...globalStyles.btnBlock,
     ...globalStyles.btnPrimary,
   },

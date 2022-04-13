@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Text, StyleSheet } from "react-native";
+import { Text, StyleSheet, Image } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import HomeScreen from "../screens/main/ShopitStack/HomeScreen";
 import ProductsListScreen from "../screens/main/ShopitStack/ProductsListScreen";
@@ -8,7 +8,15 @@ import ShippingAddressScreen from "../screens/main/ShopitStack/CheckoutScreens/S
 import PaymentScreen from "../screens/main/ShopitStack/CheckoutScreens/PaymentScreen";
 import BagScreen from "../screens/main/ShopitStack/CheckoutScreens/BagScreen";
 import FiltersTabNavigator from "./FiltersTabNavigator";
-import { Menu, ShoppingBag, Bell, Heart, Share } from "../library/icons";
+import {
+  Menu,
+  ShoppingBag,
+  Bell,
+  Heart,
+  Share,
+  User,
+  ShoppingCart,
+} from "../library/icons";
 import { colors } from "../res/palette";
 import { globalStyles } from "../styles/global";
 import { useSelector } from "react-redux";
@@ -27,11 +35,12 @@ function ShopitStackNavigator({ navigation }) {
           <>
             {authState?.access_token ? (
               <>
-                <Bell
-                  size={24}
+                <User
+                  size={25}
                   style={{ color: colors.black, marginRight: 14 }}
+                  onPress={() => navigation.navigate("Profile")}
                 />
-                <ShoppingBag
+                <ShoppingCart
                   size={24}
                   style={{ color: colors.black }}
                   onPress={() => navigation.navigate("Bag")}
@@ -58,14 +67,14 @@ function ShopitStackNavigator({ navigation }) {
         options={{
           headerTitle: "Tastebuds",
           headerLeft: () => (
-            <Menu
-              size={24}
-              style={{ color: colors.black }}
-              onPress={() => navigation.openDrawer()}
+            <Image
+              source={require("../../assets/images/Header-Icon/header_logo.png")}
+              style={styles.header}
             />
           ),
+          title: "",
           headerLeftContainerStyle: {
-            paddingHorizontal: 22,
+            paddingHorizontal: 18,
           },
         }}
       />
@@ -172,5 +181,10 @@ const styles = StyleSheet.create({
   },
   resetButton: {
     ...globalStyles.textPrimary,
+  },
+  header: {
+    width: 150,
+    height: 30,
+    resizeMode: "contain",
   },
 });

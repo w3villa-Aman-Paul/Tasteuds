@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native";
 import { globalStyles } from "../../styles/global";
 import { colors } from "../../res/palette";
+import { color } from "react-native-reanimated";
 
 export const styles = StyleSheet.create({
   backButton: {
@@ -96,5 +97,8 @@ export const styles = StyleSheet.create({
     top: 90,
     left: 50,
     right: 72,
+  },
+  primaryColor: {
+    backgroundColor: color.purple,
   },
 });

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect, useSelector } from "react-redux";
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
 import { globalStyles } from "../../../styles/global";
 import { colors } from "../../../res/palette";
 import { LinearGradient } from "expo-linear-gradient";
@@ -14,13 +14,13 @@ import {
   ChevronRight,
 } from "../../../library/icons";
 import { Divider, Button } from "react-native-elements";
-
 import {
   accountLogout,
   accountRetrieve,
   retrieveAddress,
   userLogout,
 } from "../../../redux";
+import Footer from "../../components/footer";
 import { styles } from "./styles";
 const list = [
   {
@@ -69,89 +69,64 @@ const ProfileScreen = ({ dispatch, navigation }) => {
   }, []);
 
   return (
-    <View style={styles.mainContainer}>
-      <View style={styles.jumbotron}>
-        <LinearGradient
-          // Background Linear Gradient
-          start={[1, 0]}
-          end={[1, 1]}
-          colors={["#EE3168", "#C1236F"]}
-          style={styles.centeredContent}
-        >
-          <View style={styles.centeredContent}>
-            <Image
-              source={{
-                uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeNWA656CRe97bqFdSiLSLH-gp6tfGFKMURg&usqp=CAU",
-              }}
-              style={styles.avatar}
-            />
-            <View style={styles.profileDetails}>
-              <Text style={styles.profileName}>{userName}</Text>
-              <Pen size={24} style={{ color: colors.white }} />
-            </View>
-          </View>
-        </LinearGradient>
-      </View>
-
-      {isAuth ? (
-        <>
-          <View>
-            <Divider />
-            {list.map((item, i) => (
-              <TouchableOpacity
-                key={i}
-                onPress={() => {
-                  navigation.navigate(item.name);
+    <ScrollView>
+      <View style={styles.mainContainer}>
+        <View style={styles.jumbotron}>
+          <LinearGradient
+            // Background Linear Gradient
+            start={[1, 0]}
+            end={[1, 1]}
+            colors={["#EE3168", "#C1236F"]}
+            style={styles.centeredContent}
+          >
+            <View style={styles.centeredContent}>
+              <Image
+                source={{
+                  uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeNWA656CRe97bqFdSiLSLH-gp6tfGFKMURg&usqp=CAU",
                 }}
-              >
-                <View style={styles.listContainer}>
-                  <View style={styles.listIcon}>{item.icon}</View>
-                  <Text style={styles.title}>{item.title}</Text>
-                  <View style={styles.listIcon}>
-                    <ChevronRight size={24} style={{ color: colors.black }} />
-                  </View>
+                style={styles.avatar}
+              />
+              <View style={styles.profileDetails}>
+                <Text style={styles.profileName}>{userName}</Text>
+                <Pen size={24} style={{ color: colors.white }} />
+              </View>
+            </View>
+          </LinearGradient>
+        </View>
+        <View>
+          <Divider />
+          {list.map((item, i) => (
+            <TouchableOpacity
+              key={i}
+              onPress={() => navigation.navigate(item.name)}
+            >
+              <View style={styles.listContainer}>
+                <View style={styles.listIcon}>{item.icon}</View>
+                <Text style={styles.title}>{item.title}</Text>
+                <View style={styles.listIcon}>
+                  <ChevronRight size={24} style={{ color: colors.black }} />
                 </View>
-                <Divider />
-              </TouchableOpacity>
-            ))}
-          </View>
+              </View>
+              <Divider />
+            </TouchableOpacity>
+          ))}
+        </View>
 
-          <View style={globalStyles.container}>
-            <Button
-              title="Logout Account"
-              buttonStyle={styles.buttonBlockStyle}
-              titleStyle={globalStyles.latoBold16}
-              onPress={() => {
-                dispatch(userLogout());
-                dispatch(accountLogout());
-                // navigation.navigate("Shop");
-              }}
-            />
-          </View>
-        </>
-      ) : (
-        <>
-          <View style={globalStyles.container}>
-            <Button
-              title="Sign In"
-              buttonStyle={styles.buttonBlockStyle}
-              titleStyle={globalStyles.latoBold16}
-              onPress={() => {
-                navigation.navigate("SignIn");
-              }}
-            />
-            <Button
-              title="Sign Up"
-              buttonStyle={styles.buttonBlockStyle}
-              titleStyle={globalStyles.latoBold16}
-              onPress={() => {
-                navigation.navigate("SignUp");
-              }}
-            />
-          </View>
-        </>
-      )}
-    </View>
+        <View style={globalStyles.container}>
+          <Button
+            title="Logout Account"
+            buttonStyle={styles.buttonBlockStyle}
+            titleStyle={globalStyles.latoBold16}
+            onPress={() => {
+              dispatch(userLogout());
+              dispatch(accountLogout());
+              navigation.navigate("Shop");
+            }}
+          />
+        </View>
+      </View>
+      <Footer />
+    </ScrollView>
   );
 };
 
