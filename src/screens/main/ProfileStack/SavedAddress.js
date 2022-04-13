@@ -15,7 +15,6 @@ const SavedAddress = ({ dispatch, navigation }) => {
   const Address = useSelector((state) => state.checkout.address);
   const { status } = useSelector((state) => state.checkout);
 
-<<<<<<< HEAD
   const deleteAddress = (id) => {
     dispatch(deleteAdd(null, id, {}));
   };
@@ -25,27 +24,13 @@ const SavedAddress = ({ dispatch, navigation }) => {
       dispatch(retrieveAddress());
     }
   }, [status]);
-=======
-  useEffect(() => dispatch(retrieveAddress()), [])
+  useEffect(() => dispatch(retrieveAddress()), []);
 
   useEffect(() => {
-    if(status ===  204){
+    if (status === 204) {
       dispatch(retrieveAddress());
     }
   }, [status]);
-
-
-  const  Address  = useSelector(state => state.checkout.address);
-  // const [ add ] = Address;
-  const {status} = useSelector(state => state.checkout);
-
-  
-  const deleteAddress = (id) => {
-    dispatch(deleteAdd(null,id, {}))
-  }
-
-  
->>>>>>> dev/mohsin
 
   useEffect(() => dispatch(retrieveAddress()), []);
 

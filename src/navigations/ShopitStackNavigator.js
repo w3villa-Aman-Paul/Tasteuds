@@ -65,7 +65,7 @@ function ShopitStackNavigator({ navigation }) {
         name="Shop"
         component={HomeScreen}
         options={{
-          headerTitle: "Tastebuds",
+          headerTitle: "",
           headerLeft: () => (
             <Image
               source={require("../../assets/images/Header-Icon/header_logo.png")}
