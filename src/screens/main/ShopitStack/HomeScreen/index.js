@@ -59,8 +59,10 @@ const HomeScreen = ({ navigation, dispatch }) => {
   };
 
   return (
-    <ScrollView style={globalStyles.containerFluid}>
-      <View style={globalStyles.container}>
+    <ScrollView
+      style={{ ...globalStyles.containerFluid, backgroundColor: "#E5E5E5" }}
+    >
+      {/* <View style={globalStyles.container}>
         <SearchBar
           platform="ios"
           value={searchQuery}
@@ -74,12 +76,12 @@ const HomeScreen = ({ navigation, dispatch }) => {
             navigation.navigate("ProductsList", { searchQuery });
           }}
         />
-      </View>
+      </View> */}
       <Image
         source={require("../../../../../assets/images/banner-first-order-discount/banner-first-order-discount.png")}
         style={styles.bannerFirst}
         onPress={() => {
-          navigation.navigate("ProductsList", { title: "Womens Dress" });
+          navigation.navigate("ProductsList", { title: "PRODUKTER" });
         }}
       />
       <Image

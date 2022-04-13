@@ -8,8 +8,9 @@ import AccountScreen from "../screens/main/ProfileStack/AccountScreen";
 import SavedAddress from "../screens/main/ProfileStack/SavedAddress";
 import FavouritesScreen from "../screens/main/FavouritesStack/FavouritesScreen";
 import OffersScreen from "../screens/main/ProfileStack/OffersScreen";
-import OrdersStackNavigator from "../screens/main/MainDrawer/OrdersStack/OrdersStackNavigator";
 import updateAddress from "../screens/main/ProfileStack/updateAddress";
+import { connect } from "formik";
+import MainDrawerNavigator from "./MainDrawerNavigator";
 
 const ProfileStack = createStackNavigator();
 

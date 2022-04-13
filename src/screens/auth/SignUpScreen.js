@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { connect, useSelector } from "react-redux";
-import { View, Text } from "react-native";
+import { View, Text, Image } from "react-native";
 import { globalStyles } from "../../styles/global";
 import { ChevronLeft, Eye } from "../../library/icons";
 import { colors } from "../../res/palette";
@@ -13,10 +13,10 @@ import { Formik } from "formik";
 import * as yup from "yup";
 
 const signUpValidationSchema = yup.object().shape({
-  fullName: yup
-    .string()
-    .matches(/(\w.+\s).+/, "Enter at least 2 names")
-    .required("Full name is required"),
+  // fullName: yup
+  //   .string()
+  //   .matches(/(\w.+\s).+/, "Enter at least 2 names")
+  //   .required("Full name is required"),
   // phoneNumber: yup
   //   .string()
   //   .matches(/(01)(\d){8}\b/, "Enter a valid phone number")
@@ -98,7 +98,12 @@ const SignUpScreen = ({ navigation, dispatch }) => {
         style={styles.backButton}
         onPress={navigation.goBack}
       />
-      <Text style={styles.title}>Join Spree Shop</Text>
+
+      <Image
+        style={styles.loginLogo}
+        source={require("../../../assets/images/logo-mark.png")}
+      />
+      <Text style={{ ...styles.title, left: 27 }}>bli med i familien vår</Text>
       <View
         style={[
           globalStyles.containerFluid,
@@ -108,7 +113,6 @@ const SignUpScreen = ({ navigation, dispatch }) => {
         <Formik
           validationSchema={signUpValidationSchema}
           initialValues={{
-            fullName: "",
             email: "",
             password: "",
             confirmPassword: "",
@@ -139,35 +143,21 @@ const SignUpScreen = ({ navigation, dispatch }) => {
             touched,
             isValid,
           }) => (
-            <View>
-              <TextField
-                placeholder="Name"
-                inputStyle={styles.inputStyle}
-                containerStyle={[styles.containerStyle, globalStyles.mb16]}
-                inputContainerStyle={styles.inputContainerStyle}
-                onChangeText={handleChange("fullName")}
-                onBlur={handleBlur("fullName")}
-                value={values.fullName}
-              />
-              {errors.fullName && (
-                <Text style={[styles.errorText, { marginBottom: 2 }]}>
-                  {errors.fullName}
-                </Text>
-              )}
-
+            <View style={{ ...styles.mainContainer, top: 330 }}>
               <TextField
                 placeholder="Email"
                 inputStyle={styles.inputStyle}
-                containerStyle={[styles.containerStyle, globalStyles.mb16]}
+                containerStyle={{
+                  ...styles.containerStyle,
+                  ...globalStyles.mb16,
+                }}
                 inputContainerStyle={styles.inputContainerStyle}
                 onChangeText={handleChange("email")}
                 onBlur={handleBlur("email")}
                 value={values.email}
               />
               {errors.email && (
-                <Text style={[styles.errorText, { marginBottom: 2 }]}>
-                  {errors.email}
-                </Text>
+                <Text style={{ ...styles.errorText }}>{errors.email}</Text>
               )}
 
               <Input
@@ -194,9 +184,7 @@ const SignUpScreen = ({ navigation, dispatch }) => {
                 onChangeText={handleChange("password")}
               />
               {errors.password && (
-                <Text style={[styles.errorText, { marginBottom: 2 }]}>
-                  {errors.password}
-                </Text>
+                <Text style={{ ...styles.errorText }}>{errors.password}</Text>
               )}
 
               <Input
@@ -223,26 +211,26 @@ const SignUpScreen = ({ navigation, dispatch }) => {
                 onChangeText={handleChange("confirmPassword")}
               />
               {errors.confirmPassword && (
-                <Text style={[styles.errorText, { marginBottom: 2 }]}>
+                <Text style={{ ...styles.errorText }}>
                   {errors.confirmPassword}
                 </Text>
               )}
 
               <Button
-                title="Create Account"
+                title="Opprett konto"
                 buttonStyle={styles.buttonBlockStyle}
                 titleStyle={globalStyles.latoBold16}
+                containerStyle={{ alignSelf: "center" }}
                 onPress={handleSubmit}
-                // disabled={!isValid}
               />
               <View style={styles.footer}>
-                <Text style={styles.label}>Already have an account? </Text>
+                <Text style={styles.label}>Har du allerede en konto?</Text>
                 <Text
                   style={styles.footerAction}
                   onPress={() => navigation.navigate("SignIn")}
                 >
                   {" "}
-                  Login
+                  Logg inn
                 </Text>
               </View>
             </View>
@@ -250,11 +238,16 @@ const SignUpScreen = ({ navigation, dispatch }) => {
         </Formik>
         <View>
           <Text
-            style={[styles.footerAction, { alignSelf: "center" }]}
+            style={{
+              ...styles.footerAction,
+              alignSelf: "center",
+              position: "absolute",
+              top: 270,
+            }}
             onPress={() => navigation.navigate("SignIn")}
           >
             {" "}
-            Terms of Use & Privacy Policy
+            Vilkår for bruk & personvernerklæring
           </Text>
         </View>
       </View>

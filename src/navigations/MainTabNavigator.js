@@ -6,10 +6,15 @@ import ShopitStackNavigator from "./ShopitStackNavigator";
 import CategoriesStackNavigator from "./CategoriesStackNavigator";
 import FavouritesStackNavigator from "./FavouritesStackNavigator";
 import ProfileStackNavigator from "./ProfileStackNavigator";
+import { Button } from "react-native";
+import { connect } from "react-redux";
 
 const Tab = createBottomTabNavigator();
 
-function MainTabNavigator() {
+function MainTabNavigator({ navigation }) {
+  const openDrawer = () => {
+    navigation.openDrawer();
+  };
   return (
     <Tab.Navigator
       tabBarOptions={{
@@ -49,7 +54,9 @@ function MainTabNavigator() {
         component={ProfileStackNavigator}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Profile color={color} size={size} />
+            <>
+              <Profile color={color} size={size} />
+            </>
           ),
         }}
       />
@@ -57,4 +64,4 @@ function MainTabNavigator() {
   );
 }
 
-export default MainTabNavigator;
+export default connect()(MainTabNavigator);

@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 import {
   handleAPI,
   API_VERSION_STOREFRONT,
+  handleAddCartItem,
 } from "../../library/utils/apiUtils";
 
 export function accountCreate(data, filters = {}) {
@@ -34,7 +35,7 @@ export const accountUpdate = (data, filters = {}) => {
 };
 
 export function getCompletedOrders() {
-  const url = `${API_VERSION_STOREFRONT}/orders`;
+  const url = `${API_VERSION_STOREFRONT}/account/orders`;
   const method = "GET";
   const params = {
     include: "variants.images,variants.option_values",

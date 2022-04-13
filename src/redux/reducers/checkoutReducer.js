@@ -203,11 +203,7 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
       };
       return { ...state, ...changes };
 
-<<<<<<< HEAD
     case "RETRIEVE_ADDRESS_PENDING":
-=======
-    case 'RETRIEVE_ADDRESS_PENDING':
->>>>>>> dev/mohsin
       return { ...state, saving: true };
 
     case "RETRIEVE_ADDRESS_REJECTED":
@@ -223,25 +219,23 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
       };
       return { ...state, ...changes };
 
-    case 'DELETE_ADDRESS_PENDING':
+    case "DELETE_ADDRESS_PENDING":
       return { ...state, saving: true, status: null };
 
-    case 'DELETE_ADDRESS_REJECTED':
+    case "DELETE_ADDRESS_REJECTED":
       changes = {
         saving: false,
         status: response.status,
       };
       return { ...state, ...changes };
 
-    case 'DELETE_ADDRESS_FULFILLED':
+    case "DELETE_ADDRESS_FULFILLED":
       changes = {
-        message: 'Address Deleted Succcessfully',
+        message: "Address Deleted Succcessfully",
         saving: false,
-        status: action.payload.status
+        status: action.payload.status,
       };
       return { ...state, ...changes };
-
-      
 
     /**
      * COMPLETE_CHECKOUT

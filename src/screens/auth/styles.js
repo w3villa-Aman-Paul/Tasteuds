@@ -11,17 +11,24 @@ export const styles = StyleSheet.create({
   title: {
     ...globalStyles.title,
     ...globalStyles.mt16,
+    position: "absolute",
+    top: 300,
+    left: 12,
+    fontSize: 30,
+    color: "#3A3A59",
   },
   mainContainer: {
-    ...globalStyles.containerFluid,
+    ...globalStyles.container,
     justifyContent: "center",
+    position: "absolute",
+    top: 400,
   },
   inputMainContainer: {
     ...globalStyles.mb16,
     backgroundColor: "#fff",
     height: 52,
     borderRadius: 4,
-    borderColor: colors.primary,
+    borderColor: "#0000",
   },
   containerStyle: {
     backgroundColor: "#fff",
@@ -41,14 +48,15 @@ export const styles = StyleSheet.create({
     marginBottom: 10,
   },
   formClearActionButton: {
-    ...globalStyles.textPrimary,
+    // ...globalStyles.textPrimary,
+    color: "rgba(0, 0, 0, 0.65)",
     ...globalStyles.latoRegular14,
   },
   buttonBlockStyle: {
-    ...globalStyles.mt32,
-    backgroundColor: colors.primary,
-    borderRadius: 24,
+    backgroundColor: "#ED3358",
+    borderRadius: 10,
     height: 48,
+    width: 150,
   },
   footer: {
     ...globalStyles.mt32,
@@ -80,5 +88,13 @@ export const styles = StyleSheet.create({
   },
   inputRoundedContainer: {
     width: 73,
+  },
+  loginLogo: {
+    position: "absolute",
+    width: 238,
+    height: 145,
+    top: 90,
+    left: 50,
+    right: 72,
   },
 });

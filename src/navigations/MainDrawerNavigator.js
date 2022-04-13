@@ -5,7 +5,7 @@ import MainTabNavigator from "./MainTabNavigator";
 import OrdersStackNavigator from "../screens/main/MainDrawer/OrdersStack/OrdersStackNavigator";
 import CustomDrawerContent from "../library/components/CustomDrawerContent";
 import { colors } from "../res/palette";
-import { Browse, ShoppingBag } from "../library/icons";
+import { Browse, Menu, ShoppingBag } from "../library/icons";
 import SignInScreen from "../screens/auth/SignInScreen";
 import SignUpScreen from "../screens/auth/SignUpScreen";
 import { Icon } from "react-native-elements";

@@ -13,8 +13,6 @@ import { colors } from "../res/palette";
 import { globalStyles } from "../styles/global";
 import { useSelector } from "react-redux";
 import CustomTitle from "../library/components/CustomTitle";
-import { Icon } from "react-native-elements";
-import { TouchableOpacity } from "react-native";
 
 const ShopitStack = createStackNavigator();
 
@@ -40,33 +38,7 @@ function ShopitStackNavigator({ navigation }) {
                 />
               </>
             ) : (
-              <>
-                {/* <TouchableOpacity onPress={() => navigation.navigate("SignIn")}>
-                  <Icon
-                    name="login"
-                    type="ant-design"
-                    size={15}
-                    style={{ color: colors.black, marginRight: 3 }}
-                  />
-                  <Text
-                    style={{ color: "black", fontSize: 15, marginRight: 14 }}
-                  >
-                    Sign In
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
-                  <Icon
-                    name="sign-in"
-                    type="font-awesome"
-                    size={24}
-                    style={{ color: colors.black }}
-                  />
-                  <Text style={{ color: "black", fontSize: 15, marginLeft: 3 }}>
-                    Sign Up
-                  </Text>
-                </TouchableOpacity> */}
-              </>
+              <></>
             )}
           </>
         ),
@@ -84,7 +56,7 @@ function ShopitStackNavigator({ navigation }) {
         name="Shop"
         component={HomeScreen}
         options={{
-          headerTitle: "Spree Shop",
+          headerTitle: "Tastebuds",
           headerLeft: () => (
             <Menu
               size={24}
