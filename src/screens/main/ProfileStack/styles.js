@@ -112,4 +112,7 @@ export const styles = StyleSheet.create({
     paddingLeft: 5,
     borderBottomColor: "#fff",
   },
+  btnLink: {
+    backgroundColor: colors.btnLink,
+  },
 });

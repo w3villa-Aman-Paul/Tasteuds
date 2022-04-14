@@ -102,7 +102,7 @@ export const globalStyles = StyleSheet.create({
     backgroundColor: colors.primary,
   },
   btnSolid: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.btnLink,
   },
   btnOutlined: {
     backgroundColor: colors.white,

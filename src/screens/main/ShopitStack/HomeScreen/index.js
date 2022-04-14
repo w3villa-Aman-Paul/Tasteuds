@@ -82,7 +82,7 @@ const HomeScreen = ({ navigation, dispatch }) => {
         source={require("../../../../../assets/images/banner-first-order-discount/banner-first-order-discount.png")}
         style={styles.bannerFirst}
         onPress={() => {
-          navigation.navigate("ProductsList", { title: "PRODUKTER" });
+          navigation.navigate("ProductsList");
         }}
       />
       <Image

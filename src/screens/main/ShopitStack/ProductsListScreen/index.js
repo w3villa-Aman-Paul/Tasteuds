@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
   ScrollView,
 } from "react-native";
-import { Filters, SortAZ } from "../../../../library/icons";
+
 import { globalStyles } from "../../../../styles/global";
 import { colors } from "../../../../res/palette";
 import { styles } from "./styles";
@@ -22,9 +22,11 @@ import {
   resetProductsFilter,
   setPageIndex,
   getTaxonsList,
+  getTaxon,
 } from "../../../../redux";
 import { HOST } from "../../../../res/env";
 import { useSelector } from "react-redux";
+import Footer from "../../../components/footer";
 
 const FlatListImageItem = ({
   item,
@@ -117,7 +119,7 @@ const ProductListScreen = ({
         filter: {
           name: route.params?.searchQuery || "",
           price: `${minimumPriceRange},${maximumPriceRange}`,
-          taxons: route.params.id,
+          taxons: route?.params?.id,
         },
       })
     );
@@ -152,11 +154,15 @@ const ProductListScreen = ({
       <FlatListImageItem
         key={item.id}
         item={item}
-        onPress={() => handleProductLoad(item.id)}
+        onPress={() => handleProductLoad(item?.id)}
         imageStyle={styles.newJustInImage}
         itemContainerStyle={styles.newJustInItemContainer}
       />
     );
+  };
+
+  const handleCategoryPress = (id) => {
+    dispatch(getTaxon(id));
   };
 
   if (saving) {
@@ -197,9 +203,15 @@ const ProductListScreen = ({
 
           <ScrollView horizontal={true} style={{ ...globalStyles.mt24 }}>
             {categoryList.map((cat) => (
-              <Text key={cat.id} style={{ padding: 5, fontSize: 16 }}>
-                {cat.name}
-              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  handleCategoryPress(cat.id);
+                }}
+              >
+                <Text key={cat.id} style={{ padding: 5, fontSize: 16 }}>
+                  {cat.name}
+                </Text>
+              </TouchableOpacity>
             ))}
           </ScrollView>
         </View>
@@ -265,6 +277,7 @@ const ProductListScreen = ({
             </ListItem>
           ))}
         </BottomSheet>
+        <Footer />
       </ScrollView>
     );
 };

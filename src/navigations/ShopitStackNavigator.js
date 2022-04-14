@@ -76,12 +76,11 @@ function ShopitStackNavigator({ navigation }) {
         name="ProductsList"
         component={ProductsListScreen}
         options={({ route }) => ({
-          headerTitle: (
-            <CustomTitle
-              title={
-                route.params.title || route.params.searchQuery || "ProductsList"
-              }
-              length={productsList.length}
+          headerTitle: "",
+          headerLeft: () => (
+            <Image
+              source={require("../../assets/images/Header-Icon/header_logo.png")}
+              style={styles.header}
             />
           ),
         })}

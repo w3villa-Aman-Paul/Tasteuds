@@ -101,4 +101,7 @@ export const styles = StyleSheet.create({
   primaryColor: {
     backgroundColor: color.purple,
   },
+  btnLink: {
+    backgroundColor: colors.btnLink,
+  },
 });

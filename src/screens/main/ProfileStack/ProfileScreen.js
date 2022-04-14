@@ -117,7 +117,10 @@ const ProfileScreen = ({ dispatch, navigation }) => {
             <View style={globalStyles.container}>
               <Button
                 title="Logout Account"
-                buttonStyle={styles.buttonBlockStyle}
+                buttonStyle={{
+                  ...styles.buttonBlockStyle,
+                  ...styles.btnLink,
+                }}
                 titleStyle={globalStyles.latoBold16}
                 onPress={() => {
                   dispatch(userLogout());
@@ -132,7 +135,7 @@ const ProfileScreen = ({ dispatch, navigation }) => {
             <View style={{ ...globalStyles.container, height: 290 }}>
               <Button
                 title="SignIn"
-                buttonStyle={styles.buttonBlockStyle}
+                buttonStyle={{ ...styles.buttonBlockStyle, ...styles.btnLink }}
                 titleStyle={globalStyles.latoBold16}
                 onPress={() => {
                   navigation.navigate("SignIn");
