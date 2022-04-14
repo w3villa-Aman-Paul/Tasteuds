@@ -8,7 +8,7 @@ export const styles = StyleSheet.create({
   centeredContent: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   newJustInImage: {
     width: 109,
@@ -24,8 +24,10 @@ export const styles = StyleSheet.create({
     marginVertical: 16,
   },
   bannerFirst: {
+    resizeMode: 'contain',
     width: '100%',
-    height: 329
+    height: 200,
+    borderRadius: 10
   },
   discountStripe: {
     ...globalStyles.mt16,
@@ -67,5 +69,96 @@ export const styles = StyleSheet.create({
   flatListImageItem: {
     width: 109,
     height: 160,
+  },
+  container: {
+    flex: 1,
+    marginLeft: 10,
+    marginRight: 10,
+  },
+  banner:{
+    position: 'absolute',
+    right: 40,
+    bottom: 30,
+    color: "#ffffff",
+    fontSize: 30,
+    fontWeight: 'bold'
+  },
+  body_second:{
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  first:{
+    flex: 0.6,
+    marginRight: 5,
+  },
+  second:{
+    flex: 0.4,
+    marginLeft: 5,
+  },
+  body_second_image:{
+    width: '100%',
+    borderRadius: 10,
+  },
+  text1:{
+    position: 'absolute',
+    top: 50,
+    bottom: 50,
+    left: 35,
+    color: '#ffffff'
+  },
+  text_second:{
+    position: 'absolute',
+    bottom: 45,
+    left: 35,
+    color: '#ffffff'
+  },
+  third:{
+    borderWidth: 1,
+    borderRadius: 10,
+    borderColor: "#ffffff",
+    backgroundColor: '#ffffff',
+    elevation: 10,
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  body_third:{
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  center:{
+    resizeMode: 'contain',
+    width: 40,
+    height: 40,
+    position: 'absolute',
+    alignSelf: 'center',
+    top: 12,
+    right: 32,
+  },
+
+  body_image:{
+    flex: 0.3,
+    marginTop: 10,
+    marginBottom: 10,
+    marginLeft: 20
+  },
+  bottom_text:{
+    textAlign: 'left', 
+    fontSize: 15,
+    height: 60, 
+    marginTop: 15, 
+    marginBottom: 15
+  },
+  image_center:{
+    width: 60, 
+    height: 60, 
+    resizeMode: 'contain'
+  },
+  content_text:{
+     color: '#000000',
+     fontSize: 25,
+     textAlign: 'left',
   }
+  
 })

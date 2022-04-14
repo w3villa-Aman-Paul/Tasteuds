@@ -29,6 +29,7 @@ function ProfileStackNavigator({ navigation }) {
                 <User
                   size={25}
                   style={{ color: colors.black, marginRight: 14 }}
+                  onPress={() => navigation.navigate('Profile')}
                 />
                 <ShoppingCart
                   size={24}

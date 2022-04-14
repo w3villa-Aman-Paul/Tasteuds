@@ -7,7 +7,7 @@ const splash = ({navigation}) => {
     setTimeout(() => {
       navigation.replace('MainDrawerNavigator')
     }, 2000)
-  })
+  },[])
 
   return (
     <View style={styles.container}>

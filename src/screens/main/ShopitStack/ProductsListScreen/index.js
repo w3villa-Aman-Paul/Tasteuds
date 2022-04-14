@@ -122,7 +122,7 @@ const ProductListScreen = ({ navigation, route, dispatch, productsList, saving, 
           <SortAZ size={22} style={{ color: colors.black }}/>
           <Text style={globalStyles.latoRegular14}>Sort</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.filterBlock, { borderWidth: 2 }]} onPress={() => navigation.navigate('FiltersTabNavigator', {titie: route.params.title})}>
+        <TouchableOpacity style={[styles.filterBlock, { borderWidth: 2 }]} onPress={() => navigation.navigate('FiltersTabNavigator', {title: route.params.title})}>
           <Filters size={22} style={{ color: colors.black,
             transform: [{ rotate: "90deg" }]
           }} />
