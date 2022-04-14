@@ -14,16 +14,20 @@ import {
   ChevronRight,
 } from "../../../library/icons";
 import { Divider, Button } from "react-native-elements";
-import { accountLogout, accountRetrieve, retrieveAddress, userLogout } from "../../../redux";
+import {
+  accountLogout,
+  accountRetrieve,
+  retrieveAddress,
+  userLogout,
+} from "../../../redux";
 import Footer from "../../components/footer";
 import { styles } from "./styles";
 const list = [
-
-  // {
-  //   title: "Account",
-  //   icon: <User size={24} style={{ color: colors.black }} />,
-  //   name: "Account",
-  // },
+  {
+    title: "Reset Password",
+    icon: <User size={24} style={{ color: colors.black }} />,
+    name: "ResetPassword",
+  },
   {
     title: "Saved Address",
     icon: <Home size={24} style={{ color: colors.black }} />,
@@ -50,7 +54,6 @@ const ProfileScreen = ({ dispatch, navigation }) => {
   const { account } = useSelector((state) => state.account);
   const { isAuth } = useSelector((state) => state.auth);
 
-
   const [userName, setUserName] = React.useState("");
 
   React.useEffect(() => {
@@ -59,16 +62,16 @@ const ProfileScreen = ({ dispatch, navigation }) => {
     } else {
       setUserName("");
     }
-  }, [isAuth])
+  }, [isAuth, account.email]);
 
   React.useEffect(() => {
     dispatch(retrieveAddress());
-  }, [])
+  }, []);
 
   return (
     <ScrollView>
-      <View style={styles.mainContainer}>
-        <View style={styles.jumbotron}>
+      <View style={{ ...styles.mainContainer }}>
+        <View style={{ ...styles.jumbotron }}>
           <LinearGradient
             // Background Linear Gradient
             start={[1, 0]}
@@ -90,41 +93,68 @@ const ProfileScreen = ({ dispatch, navigation }) => {
             </View>
           </LinearGradient>
         </View>
-        <View>
-          <Divider />
-          {list.map((item, i) => (
-            <TouchableOpacity
-              key={i}
-              onPress={() => navigation.navigate(item.name)}
-            >
-              <View style={styles.listContainer}>
-                <View style={styles.listIcon}>{item.icon}</View>
-                <Text style={styles.title}>{item.title}</Text>
-                <View style={styles.listIcon}>
-                  <ChevronRight size={24} style={{ color: colors.black }} />
-                </View>
-              </View>
-              <Divider />
-            </TouchableOpacity>
-          ))}
-        </View>
 
-        <View style={globalStyles.container}>
-          <Button
-            title="Logout Account"
-            buttonStyle={styles.buttonBlockStyle}
-            titleStyle={globalStyles.latoBold16}
-            onPress={() => {
-              dispatch(userLogout());
-              dispatch(accountLogout());
-              navigation.navigate("Shop");
-            }}
-          />
-        </View>
+        {isAuth ? (
+          <>
+            <View>
+              <Divider />
+              {list.map((item, i) => (
+                <TouchableOpacity
+                  key={i}
+                  onPress={() => navigation.navigate(item.name)}
+                >
+                  <View style={styles.listContainer}>
+                    <View style={styles.listIcon}>{item.icon}</View>
+                    <Text style={styles.title}>{item.title}</Text>
+                    <View style={styles.listIcon}>
+                      <ChevronRight size={24} style={{ color: colors.black }} />
+                    </View>
+                  </View>
+                  <Divider />
+                </TouchableOpacity>
+              ))}
+            </View>
+            <View style={globalStyles.container}>
+              <Button
+                title="Logout Account"
+                buttonStyle={{
+                  ...styles.buttonBlockStyle,
+                  ...styles.btnLink,
+                }}
+                titleStyle={globalStyles.latoBold16}
+                onPress={() => {
+                  dispatch(userLogout());
+                  dispatch(accountLogout());
+                  navigation.navigate("Shop");
+                }}
+              />
+            </View>
+          </>
+        ) : (
+          <>
+            <View style={{ ...globalStyles.container, height: 290 }}>
+              <Button
+                title="SignIn"
+                buttonStyle={{ ...styles.buttonBlockStyle, ...styles.btnLink }}
+                titleStyle={globalStyles.latoBold16}
+                onPress={() => {
+                  navigation.navigate("SignIn");
+                }}
+              />
+              <Button
+                title="SignUp"
+                buttonStyle={{ ...styles.buttonBlockStyle }}
+                titleStyle={globalStyles.latoBold16}
+                onPress={() => {
+                  navigation.navigate("SignUp");
+                }}
+              />
+            </View>
+          </>
+        )}
       </View>
       <Footer />
     </ScrollView>
-
   );
 };
 

@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 import {
   handleAPI,
   API_VERSION_STOREFRONT,
+  handleAddCartItem,
 } from "../../library/utils/apiUtils";
 
 export function accountCreate(data, filters = {}) {
@@ -24,8 +25,17 @@ export const accountRetrieve =
     });
   };
 
+export const accountUpdate = (data, filters = {}) => {
+  const url = `${API_VERSION_STOREFRONT}/account`;
+  const method = "PATCH";
+  return {
+    type: "ACCOUNT_UPDATE",
+    payload: handleAPI(url, filters, method, data),
+  };
+};
+
 export function getCompletedOrders() {
-  const url = `${API_VERSION_STOREFRONT}/orders`;
+  const url = `${API_VERSION_STOREFRONT}/account/orders`;
   const method = "GET";
   const params = {
     include: "variants.images,variants.option_values",

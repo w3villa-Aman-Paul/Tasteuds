@@ -1,21 +1,20 @@
 {
   "expo": {
-    "name": "SpreeShop",
+    "name": "TasteBuds Demo",
     "slug": "spreeshop-app-slug",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "splash": {
-      "image": "./assets/images/splash/logo.png",
+      "image": "./assets/images/Header-Icon/banner-logo.png",
       "resizeMode": "contain",
+      "height": 10,
       "backgroundColor": "#ffffff"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.bluebash.spreeshop"

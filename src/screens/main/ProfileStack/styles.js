@@ -36,7 +36,7 @@ export const styles = StyleSheet.create({
     color: colors.white,
     marginTop: 5,
     marginBottom: 10,
-    marginRight: 5
+    marginRight: 5,
   },
   profileContact: {
     ...globalStyles.latoBold12,
@@ -60,50 +60,50 @@ export const styles = StyleSheet.create({
     padding: 12,
   },
   buttonBlockStyle: {
-    ...globalStyles.mt32,
-    ...globalStyles.mb32,
+    ...globalStyles.mt16,
+    ...globalStyles.mb16,
     ...globalStyles.btnBlock,
     ...globalStyles.btnPrimary,
   },
-  profile_container:{
+  profile_container: {
     height: 250,
   },
   content: {
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     elevation: 8,
     margin: 10,
     paddingVertical: 15,
     paddingHorizontal: 10,
   },
-  inputBox:{
-    flexDirection: 'column',
+  inputBox: {
+    flexDirection: "column",
     marginTop: 5,
     marginBottom: 5,
   },
-  formText:{
-    color: '#0080ff',
+  formText: {
+    color: "#0080ff",
     marginBottom: 5,
     fontSize: 12,
   },
-  formInput:{
+  formInput: {
     height: 50,
-    backgroundColor: "#ffffff"
+    backgroundColor: "#ffffff",
   },
-  formBtn:{
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+  formBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: 10,
     marginBottom: 10,
   },
-  primary:{
+  primary: {
     padding: 10,
     borderRadius: 10,
     marginRight: 5,
-    backgroundColor: '#0080ff',
+    backgroundColor: "#0080ff",
   },
-  textBtn:{
-    color: '#ffffff'
+  textBtn: {
+    color: "#ffffff",
   },
   inputStyle: {
     ...globalStyles.latoRegular16,
@@ -111,5 +111,8 @@ export const styles = StyleSheet.create({
   inputContainerStyle: {
     paddingLeft: 5,
     borderBottomColor: "#fff",
+  },
+  btnLink: {
+    backgroundColor: colors.btnLink,
   },
 });

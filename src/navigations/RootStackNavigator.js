@@ -84,23 +84,15 @@ function RootStackNavigator({ authState, dispatch }) {
           </>
         )} */}
 
-        <RootStack.Screen
-          name="Splash"
-          component={splash}
-        />
+        <RootStack.Screen name="Splash" component={splash} />
 
         <RootStack.Screen
           name="MainDrawerNavigator"
           component={MainDrawerNavigator}
         />
 
+        <RootStack.Screen name="Profile" component={ProfileStackNavigator} />
 
-        <RootStack.Screen
-        name="Profile"
-        component={ProfileStackNavigator}
-        />
-
-    
         <RootStack.Screen name="SignIn" component={SignInScreen} />
         <RootStack.Screen name="SignUp" component={SignUpScreen} />
         <RootStack.Screen

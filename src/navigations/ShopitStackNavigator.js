@@ -8,14 +8,24 @@ import ShippingAddressScreen from "../screens/main/ShopitStack/CheckoutScreens/S
 import PaymentScreen from "../screens/main/ShopitStack/CheckoutScreens/PaymentScreen";
 import BagScreen from "../screens/main/ShopitStack/CheckoutScreens/BagScreen";
 import FiltersTabNavigator from "./FiltersTabNavigator";
-import { Menu, ShoppingBag, Bell, Heart, Share, User, ShoppingCart } from "../library/icons";
+import {
+  Menu,
+  ShoppingBag,
+  Bell,
+  Heart,
+  Share,
+  User,
+  ShoppingCart,
+} from "../library/icons";
 import { colors } from "../res/palette";
 import { globalStyles } from "../styles/global";
 import { useSelector } from "react-redux";
 import CustomTitle from "../library/components/CustomTitle";
+
 import { Icon } from "react-native-elements";
 import { TouchableOpacity } from "react-native";
 import HomeComponent from "../screens/main/ShopitStack/HomeScreen";
+
 
 const ShopitStack = createStackNavigator();
 
@@ -28,23 +38,16 @@ function ShopitStackNavigator({ navigation }) {
       screenOptions={{
         headerRight: () => (
           <>
-            {authState?.access_token ? (
-              <>
-                <User
-                  size={25}
-                  style={{ color: colors.black, marginRight: 14 }}
-                  onPress={() => navigation.navigate('Profile')}
-                />
-                <ShoppingCart
-                  size={24}
-                  style={{ color: colors.black }}
-                  onPress={() => navigation.navigate("Bag")}
-                />
-              </>
-            ) : (
-              <>
-              </>
-            )}
+            <User
+              size={25}
+              style={{ color: colors.black, marginRight: 14 }}
+              onPress={() => navigation.navigate("Profile")}
+            />
+            <ShoppingCart
+              size={24}
+              style={{ color: colors.black }}
+              onPress={() => navigation.navigate("Bag")}
+            />
           </>
         ),
         headerTitleStyle: {
@@ -61,13 +64,14 @@ function ShopitStackNavigator({ navigation }) {
         name="Shop"
         component={HomeComponent}
         options={{
+          headerTitle: "",
           headerLeft: () => (
-              <Image
-                source={require('../../assets/images/Header-Icon/header_logo.png')}
-                style={styles.header}
-              />
+            <Image
+              source={require("../../assets/images/Header-Icon/header_logo.png")}
+              style={styles.header}
+            />
           ),
-          title: '',
+          title: "",
           headerLeftContainerStyle: {
             paddingHorizontal: 18,
           },
@@ -77,12 +81,11 @@ function ShopitStackNavigator({ navigation }) {
         name="ProductsList"
         component={ProductsListScreen}
         options={({ route }) => ({
-          headerTitle: (
-            <CustomTitle
-              title={
-                route.params.title || route.params.searchQuery || "ProductsList"
-              }
-              length={productsList.length}
+          headerTitle: "",
+          headerLeft: () => (
+            <Image
+              source={require("../../assets/images/Header-Icon/header_logo.png")}
+              style={styles.header}
             />
           ),
         })}
@@ -180,6 +183,6 @@ const styles = StyleSheet.create({
   header: {
     width: 150,
     height: 30,
-    resizeMode: 'contain'
-  }
+    resizeMode: "contain",
+  },
 });
