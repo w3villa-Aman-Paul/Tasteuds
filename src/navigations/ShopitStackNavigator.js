@@ -33,22 +33,16 @@ function ShopitStackNavigator({ navigation }) {
       screenOptions={{
         headerRight: () => (
           <>
-            {authState?.access_token ? (
-              <>
-                <User
-                  size={25}
-                  style={{ color: colors.black, marginRight: 14 }}
-                  onPress={() => navigation.navigate("Profile")}
-                />
-                <ShoppingCart
-                  size={24}
-                  style={{ color: colors.black }}
-                  onPress={() => navigation.navigate("Bag")}
-                />
-              </>
-            ) : (
-              <></>
-            )}
+            <User
+              size={25}
+              style={{ color: colors.black, marginRight: 14 }}
+              onPress={() => navigation.navigate("Profile")}
+            />
+            <ShoppingCart
+              size={24}
+              style={{ color: colors.black }}
+              onPress={() => navigation.navigate("Bag")}
+            />
           </>
         ),
         headerTitleStyle: {
