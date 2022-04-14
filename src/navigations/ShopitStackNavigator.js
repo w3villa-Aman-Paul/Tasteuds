@@ -21,6 +21,9 @@ import { colors } from "../res/palette";
 import { globalStyles } from "../styles/global";
 import { useSelector } from "react-redux";
 import CustomTitle from "../library/components/CustomTitle";
+import { Icon } from "react-native-elements";
+import { TouchableOpacity } from "react-native";
+import HomeComponent from "../screens/main/ShopitStack/HomeScreen";
 
 const ShopitStack = createStackNavigator();
 
@@ -57,7 +60,7 @@ function ShopitStackNavigator({ navigation }) {
     >
       <ShopitStack.Screen
         name="Shop"
-        component={HomeScreen}
+        component={HomeComponent}
         options={{
           headerTitle: "",
           headerLeft: () => (
