@@ -1,6 +1,8 @@
 import { StyleSheet, Dimensions } from 'react-native'
 import { globalStyles } from '../../../../styles/global'
 import { colors } from '../../../../res/palette'
+import { CardStyleInterpolators } from '@react-navigation/stack'
+import { getCompletedOrders } from '../../../../redux'
 
 const windowWidth = Dimensions.get('window')
 
@@ -11,11 +13,12 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   newJustInImage: {
-    width: 109,
+    width: 120,
     height: 148,
   },
   newJustInItemContainer: {
     marginRight: 16,
+    marginLeft: 10,
     marginBottom: 16,
   },
   flatListHeaderText: {
@@ -159,6 +162,43 @@ export const styles = StyleSheet.create({
      color: '#000000',
      fontSize: 25,
      textAlign: 'left',
+  },
+
+  detailsContainer: {
+    paddingVertical: 10,
+    width: 150,
+  },
+  title: {
+    ...globalStyles.latoBold14,
+  },
+  description: {
+    ...globalStyles.latoRegular,
+    color: colors.btnLink,
+  },
+
+  pricingContainer: {
+    flex: 1,
+    flexDirection: "row",
+  },
+  prices: {
+    fontFamily: "lato-bold",
+    fontSize: 13,
+    paddingRight: 5,
+    marginTop: 3,
+  },
+  bg_white:{
+    backgroundColor: colors.white
+  },
+  home_btn:{
+    width: 200,
+    backgroundColor: colors.btnLink,
+    marginLeft: 35,
+    marginBottom: 15,
+    padding: 10,
+    borderRadius: 10,
+  },
+  btn_text:{
+    color: colors.white,
+    fontSize: 18, 
   }
-  
 })

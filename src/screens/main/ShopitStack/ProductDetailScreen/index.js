@@ -62,6 +62,8 @@ const ProductDetailScreen = ({navigation, dispatch, product, auth, saving }) => 
 
   const [snackbarVisible, setSnackbarVisible] = useState(false)
 
+  const [favsnackbar, setFavSnackbar] = useState(false)
+
   const [variantDistinctColors] = useState([...new Set(product.variants.map(variant => variant.option_values[0].presentation))])
 
   const handleColorSelection = ({index, color}) => {
@@ -73,6 +75,7 @@ const ProductDetailScreen = ({navigation, dispatch, product, auth, saving }) => 
   }
 
   const dismissSnackbar = () => setSnackbarVisible(false);
+  const dismissFavSnackbar = () => setFavSnackbar(false);
 
   const getcartToken = async () => {
       const { data } = await createCartToken();
@@ -92,6 +95,15 @@ const ProductDetailScreen = ({navigation, dispatch, product, auth, saving }) => 
       navigation.navigate('Bag');
     }, 1000);
     return setSnackbarVisible(true);
+  }
+
+  const handleFav = () => {
+    dispatch(setProductFavourite(selectedVariant))
+
+    setTimeout(() => {
+      navigation.navigate('Favorites')
+    }, 1000);
+    return setFavSnackbar(true);
   }
 
   if(saving) {
@@ -134,7 +146,7 @@ const ProductDetailScreen = ({navigation, dispatch, product, auth, saving }) => 
                 containerStyle={{ flex: 1, marginRight: 16 }}
                 buttonStyle={globalStyles.btn}
                 titleStyle={styles.titleStyle}
-                onPress={() => dispatch(setProductFavourite(selectedVariant))}
+                onPress={handleFav}
               />
               <Button
                 title="Add To Bag"
@@ -349,6 +361,12 @@ const ProductDetailScreen = ({navigation, dispatch, product, auth, saving }) => 
         onDismiss = {dismissSnackbar}
         >
         Added to Bag !
+      </Snackbar>
+      <Snackbar
+        visible={favsnackbar}
+        onDismiss = {dismissFavSnackbar}
+        >
+        Added to Favorites !
       </Snackbar>
     </>
   )
