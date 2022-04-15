@@ -17,6 +17,7 @@ import OffersScreen from "../screens/main/ProfileStack/OffersScreen";
 import updateAddress from "../screens/main/ProfileStack/updateAddress";
 import { useSelector } from "react-redux";
 import { Image, StyleSheet } from "react-native";
+import { Icon } from "react-native-elements";
 
 const ProfileStack = createStackNavigator();
 
@@ -26,24 +27,8 @@ function ProfileStackNavigator({ navigation }) {
   return (
     <ProfileStack.Navigator
       screenOptions={{
-        headerRight: () => (
-          // <>
-          //   {authState?.access_token ? (
 
-          //   ) : (
-          //     <></>
-          //   )}
-          // </>
-          <>
-            <User size={25} style={{ color: colors.black, marginRight: 14 }} />
-            <ShoppingCart
-              size={24}
-              style={{ color: colors.black }}
-              onPress={() => navigation.navigate("Bag")}
-            />
-          </>
-        ),
-
+        headerTitle: "",
         headerLeft: () => (
           <Image
             source={require("../../assets/images/Header-Icon/header_logo.png")}
@@ -54,13 +39,38 @@ function ProfileStackNavigator({ navigation }) {
         headerLeftContainerStyle: {
           paddingHorizontal: 18,
         },
+        headerRight: () => (
+          <>
+            <Icon
+              name="user"
+              type="font-awesome"
+              size={29}
+              color={colors.primary}
+              onPress={() => navigation.navigate("Profile")}
+              style={{}}
+            />
+            <Icon
+              name="shoppingcart"
+              type="ant-design"
+              size={29}
+              color={colors.primary}
+              onPress={() => navigation.navigate("Bag")}
+            />
+          </>
+        ),
         headerTitleStyle: {
           ...globalStyles.latoBold18,
         },
         headerRightContainerStyle: {
+          position: "absolute",
+          top: 0,
+          right: 0,
+          width: 100,
           paddingHorizontal: 18,
           flexDirection: "row",
+          flex: 1,
           alignItems: "center",
+          justifyContent: "space-between",
         },
       }}
     >

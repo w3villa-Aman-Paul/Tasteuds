@@ -144,8 +144,9 @@ const ProductListScreen = ({
     dispatch(getTaxonsList());
   }, []);
 
-  const handleProductLoad = async (id) => {
+  const handleProductLoad = async (id, item) => {
     await dispatch(getProduct(id));
+    await dispatch(getTaxon(item.taxons[0].id));
     navigation.navigate("ProductDetail");
   };
 
@@ -154,7 +155,7 @@ const ProductListScreen = ({
       <FlatListImageItem
         key={item.id}
         item={item}
-        onPress={() => handleProductLoad(item?.id)}
+        onPress={() => handleProductLoad(item?.id, item)}
         imageStyle={styles.newJustInImage}
         itemContainerStyle={styles.newJustInItemContainer}
       />

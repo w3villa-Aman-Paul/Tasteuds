@@ -99,7 +99,7 @@ export const styles = StyleSheet.create({
     right: 72,
   },
   primaryColor: {
-    backgroundColor: color.purple,
+    backgroundColor: colors.primary,
   },
   btnLink: {
     backgroundColor: colors.btnLink,

@@ -1,29 +1,32 @@
-import * as React from 'react'
-import { View, ScrollView } from 'react-native'
-import ProductCard from '../../../library/components/ProductCard'
-import { globalStyles } from '../../../styles/global'
-import { connect } from 'react-redux'
+import * as React from "react";
+import { View, ScrollView } from "react-native";
+import ProductCard from "../../../library/components/ProductCard";
+import { globalStyles } from "../../../styles/global";
+import { connect } from "react-redux";
 
-const FavouritesScreen = ({ navigation, favourites }) => {
-
+const FavouritesScreen = ({ navigation, favorites }) => {
   return (
     <ScrollView>
       <View style={globalStyles.container}>
-        {
-          favourites.map(ele => <ProductCard
-            key={ele.id}
-            shoppingBag
-            imageSource={ele.images[0]?.styles[3].url}
-            {...ele}
-          />)
-        }
+        {favorites ? (
+          favorites.map((ele) => (
+            <ProductCard
+              key={ele.id}
+              shoppingBag
+              imageSource={ele.images[0]?.styles[3].url}
+              {...ele}
+            />
+          ))
+        ) : (
+          <></>
+        )}
       </View>
     </ScrollView>
-  )
-}
+  );
+};
 
-const mapStateToProps = state => ({
-  favourites: state.products.favourites
-})
+const mapStateToProps = (state) => ({
+  favorites: state.products.favorites,
+});
 
-export default connect(mapStateToProps)(FavouritesScreen)
+export default connect(mapStateToProps)(FavouritesScreen);

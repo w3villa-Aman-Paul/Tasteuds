@@ -68,3 +68,4 @@ function MainTabNavigator({ navigation }) {
 }
 
 export default connect()(MainTabNavigator);
+FavouritesStackNavigator;
