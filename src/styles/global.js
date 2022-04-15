@@ -7,7 +7,7 @@ export const globalStyles = StyleSheet.create({
    */
   container: {
     flex: 1,
-    width: "80%",
+    width: "90%",
     alignSelf: "center",
   },
   containerFluid: {
@@ -95,8 +95,8 @@ export const globalStyles = StyleSheet.create({
     alignItems: "center",
   },
   btn: {
-    borderColor: colors.primary,
-    borderRadius: 24,
+    backgroundColor: colors.btnLink,
+    borderRadius: 10,
   },
   btnPrimary: {
     backgroundColor: colors.primary,

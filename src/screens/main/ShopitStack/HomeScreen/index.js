@@ -1,5 +1,6 @@
 import {
   Image,
+  ImageBackground,
   ScrollView,
   StyleSheet,
   Text,
@@ -12,6 +13,7 @@ import { styles } from "./styles";
 import Footer from "../../../components/footer";
 import { accountRetrieve } from "../../../../redux";
 import { connect, useSelector } from "react-redux";
+import { colors, Icon } from "react-native-elements";
 
 const HomeComponent = ({ dispatch, navigation }) => {
   const { isAuth } = useSelector((state) => state.auth);
@@ -21,8 +23,8 @@ const HomeComponent = ({ dispatch, navigation }) => {
   }, [isAuth]);
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
+    <ScrollView style={{ ...styles.bg_white }}>
+      <View style={{ ...styles.container }}>
         <TouchableOpacity onPress={() => navigation.navigate("ProductsList")}>
           <Image
             source={require("../../../../../assets/images/Header-Icon/home_item.png")}
@@ -33,19 +35,40 @@ const HomeComponent = ({ dispatch, navigation }) => {
 
         <View style={styles.body_second}>
           <View style={styles.first}>
-            <Image
+            <ImageBackground
               source={require("../../../../../assets/images/Header-Icon/home_second.png")}
-              style={styles.body_second_image}
-            />
-            <Text style={styles.text1}>UKAS PRODUSENT </Text>
-            <Text style={styles.text_second}>BAKEHUSET PÅ ASK</Text>
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text style={styles.text1}>UKAS PRODUSENT </Text>
+              <Text style={{ ...styles.text_second, fontWeight: "700" }}>
+                BAKEHUSET PÅ ASK
+              </Text>
+            </ImageBackground>
           </View>
           <View style={styles.second}>
-            <Image
+            <ImageBackground
               source={require("../../../../../assets/images/Header-Icon/home_second_2.png")}
-              style={styles.body_second_image}
-            />
-            <Text style={styles.text1}>SE ALLE PRODUSENTER</Text>
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={{
+                  width: "80%",
+                  textAlign: "center",
+                  color: "#FFF",
+                  fontWeight: "700",
+                }}
+              >
+                SE ALLE PRODUSENTER
+              </Text>
+            </ImageBackground>
           </View>
         </View>
 
@@ -62,39 +85,96 @@ const HomeComponent = ({ dispatch, navigation }) => {
             HVORDAN FUNKER DET?
           </Text>
           <View style={styles.body_third}>
-            <View style={styles.body_image}>
-              <Image
+            <View
+              style={{
+                // ...styles.body_image,
+                flex: 0.8,
+              }}
+            >
+              <ImageBackground
                 source={require("../../../../../assets/images/Header-Icon/red_circle.png")}
-                style={styles.image_center}
-              />
-              <Image
-                source={require("../../../../../assets/images/Header-Icon/inside_circle.png")}
-                style={styles.center}
-              />
+                resizeMode={"contain"}
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Image
+                  source={require("../../../../../assets/images/Header-Icon/inside_circle.png")}
+                  style={styles.center}
+                />
+              </ImageBackground>
               <Text style={styles.bottom_text}>Legg inn bestilling</Text>
             </View>
-            <View style={styles.body_image}>
-              <Image
+            <Icon
+              name="arrowright"
+              type="ant-design"
+              size={40}
+              color={"#ed3c61"}
+              style={{
+                flex: 0.8,
+                justifyContent: "flex-start",
+                alignItems: "center",
+              }}
+            />
+            <View
+              style={{
+                // ...styles.body_image,
+                flex: 0.8,
+                width: 10,
+              }}
+            >
+              <ImageBackground
                 source={require("../../../../../assets/images/Header-Icon/red_circle.png")}
-                style={styles.image_center}
-              />
-              <Image
-                source={require("../../../../../assets/images/Header-Icon/second_circle.png")}
-                style={styles.center}
-              />
-              <Text style={styles.bottom_text}>
+                resizeMode={"contain"}
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Image
+                  source={require("../../../../../assets/images/Header-Icon/second_circle.png")}
+                  style={styles.center}
+                />
+              </ImageBackground>
+              <Text style={{ ...styles.bottom_text }}>
                 Vi henter varene rett fra bonden
               </Text>
             </View>
-            <View style={styles.body_image}>
-              <Image
+            <Icon
+              name="arrowright"
+              type="ant-design"
+              size={40}
+              color={"#ed3c61"}
+              style={{
+                flex: 0.8,
+                justifyContent: "flex-start",
+                alignItems: "center",
+              }}
+            />
+            <View
+              style={{
+                // ...styles.body_image,
+                flex: 0.8,
+              }}
+            >
+              <ImageBackground
                 source={require("../../../../../assets/images/Header-Icon/red_circle.png")}
-                style={styles.image_center}
-              />
-              <Image
-                source={require("../../../../../assets/images/Header-Icon/third_circle.png")}
-                style={styles.center}
-              />
+                resizeMode={"contain"}
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Image
+                  source={require("../../../../../assets/images/Header-Icon/third_circle.png")}
+                  style={styles.center}
+                />
+              </ImageBackground>
+
               <Text style={styles.bottom_text}>
                 Vi leverer varene hjem til deg
               </Text>
