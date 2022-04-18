@@ -131,20 +131,16 @@ const ProductDetailScreen = ({
     return setSnackbarVisible(true);
   };
 
-// <<<<<<< HEAD
-//   const handleFav = () => {
-//     dispatch(setProductFavourite(selectedVariant))
+  const handleFav = () => {
+    let variant = product.variants[0].product;
+    dispatch(setProductFavourite(variant))
 
-//     setTimeout(() => {
-//       navigation.navigate('Favorites')
-//     }, 1000);
-//     return setFavSnackbar(true);
-//   }
+    setTimeout(() => {
+      navigation.navigate('Favorites')
+    }, 1000);
+    return setFavSnackbar(true);
+  }
 
-//   if(saving) {
-//     return (
-//       <ActivityIndicatorCard />
-//     )
   if (saving) {
     return <ActivityIndicatorCard />;
   } else
@@ -221,7 +217,7 @@ const ProductDetailScreen = ({
                   // disabledTitleStyle={{ color: colors.white }}
                   containerStyle={{ flex: 1 }}
                   titleStyle={{ ...styles.titleStyle, fontSize: 20 }}
-                  buttonStyle={{ ...globalStyles.btn, width: 280, height: 60 }}
+                  buttonStyle={{ ...globalStyles.btn, width: 250, height: 60 }}
                   onPress={handleAddToBag}
                 />
                 <View
@@ -240,12 +236,7 @@ const ProductDetailScreen = ({
                     type="ant-design"
                     size={35}
                     color={colors.btnLink}
-                    onPress={() => {
-                      dispatch(setProductFavourite(selectedVariant));
-                      setTimeout(() => {
-                        navigation.navigate("Favorites");
-                      }, 1000);
-                    }}
+                    onPress={handleFav}
                   />
                 </View>
               </View>
@@ -524,6 +515,9 @@ const ProductDetailScreen = ({
         </ScrollView>
         <Snackbar visible={snackbarVisible} onDismiss={dismissSnackbar}>
           Added to Bag !
+        </Snackbar>
+        <Snackbar visible={favsnackbar} onDismiss={dismissFavSnackbar}>
+          Added to Favorites !
         </Snackbar>
       </>
     );

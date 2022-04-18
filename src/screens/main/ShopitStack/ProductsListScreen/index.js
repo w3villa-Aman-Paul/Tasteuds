@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   ScrollView,
+  SafeAreaView,
+  VirtualizedList,
 } from "react-native";
 
 import { globalStyles } from "../../../../styles/global";
@@ -155,7 +157,7 @@ const ProductListScreen = ({
       <FlatListImageItem
         key={item.id}
         item={item}
-        onPress={() => handleProductLoad(item?.id, item)}
+        onPress={() => handleProductLoad(item.id, item)}
         imageStyle={styles.newJustInImage}
         itemContainerStyle={styles.newJustInItemContainer}
       />
@@ -194,7 +196,7 @@ const ProductListScreen = ({
               borderWidth: 1,
               borderRadius: 10,
               lineHeight: 18.75,
-              fontWeight: "500,Medium",
+              fontWeight: 'bold',
               ...styles.borderPrimary,
             }}
           >
@@ -205,11 +207,12 @@ const ProductListScreen = ({
           <ScrollView horizontal={true} style={{ ...globalStyles.mt24 }}>
             {categoryList.map((cat) => (
               <TouchableOpacity
+                key={cat.id}
                 onPress={() => {
                   handleCategoryPress(cat.id);
                 }}
               >
-                <Text key={cat.id} style={{ padding: 5, fontSize: 16 }}>
+                <Text  style={{ padding: 5, fontSize: 16 }}>
                   {cat.name}
                 </Text>
               </TouchableOpacity>
@@ -217,29 +220,6 @@ const ProductListScreen = ({
           </ScrollView>
         </View>
 
-        {/* <View style={{...styles.filterContainer}}>
-          <TouchableOpacity
-            style={styles.filterBlock}
-            onPress={() => setIsSortOverlayVisible(true)}
-          >
-            <SortAZ size={22} style={{ color: colors.black }} />
-            <Text style={globalStyles.latoRegular14}>Sort</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.filterBlock, { borderWidth: 2 }]}
-            onPress={() =>
-              navigation.navigate("FiltersTabNavigator", {
-                titie: route.params.title,
-              })
-            }
-          >
-            <Filters
-              size={22}
-              style={{ color: colors.black, transform: [{ rotate: "90deg" }] }}
-            />
-            <Text style={globalStyles.latoRegular14}> Filter</Text>
-          </TouchableOpacity>
-        </View> */}
         <View
           style={{
             ...globalStyles.containerFluid,
@@ -258,11 +238,6 @@ const ProductListScreen = ({
             onEndReached={() => {
               meta.total_count !== productsList.length && handleEndReached();
             }}
-            ListFooterComponent={() =>
-              meta.total_count !== productsList.length && (
-                <ActivityIndicator size="large" />
-              )
-            }
           />
         </View>
         <BottomSheet isVisible={isSortOverlayVisible}>

@@ -8,18 +8,15 @@ const FavouritesScreen = ({ navigation, favorites }) => {
   return (
     <ScrollView>
       <View style={globalStyles.container}>
-        {favorites ? (
+        {
           favorites.map((ele) => (
             <ProductCard
               key={ele.id}
-              shoppingBag
-              imageSource={ele.images[0]?.styles[3].url}
+              imageSource={ele.images[0].styles[3].url}
               {...ele}
             />
           ))
-        ) : (
-          <></>
-        )}
+        }
       </View>
     </ScrollView>
   );

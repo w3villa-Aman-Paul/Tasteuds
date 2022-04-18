@@ -11,7 +11,7 @@ import { connect } from "react-redux";
 const FavouritesStack = createStackNavigator();
 
 function FavouritesStackNavigator({ navigation }) {
-  const favourites = useSelector((state) => state.products.favourites);
+  const favorites = useSelector((state) => state.products.favorites);
 
   return (
     <FavouritesStack.Navigator
@@ -54,8 +54,12 @@ function FavouritesStackNavigator({ navigation }) {
         component={FavouritesScreen}
         options={{
           headerTitle: (
-            <CustomTitle title="Favorites" length={favourites.length} />
+            <CustomTitle title="Favorites" length={favorites.length} />
           ),
+          title:'',
+          headerLeftContainerStyle: {
+            paddingHorizontal: 18
+          }
         }}
       />
     </FavouritesStack.Navigator>
