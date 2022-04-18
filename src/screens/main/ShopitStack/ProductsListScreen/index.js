@@ -146,7 +146,7 @@ const ProductListScreen = ({
 
   const handleProductLoad = async (id, item) => {
     await dispatch(getProduct(id));
-    await dispatch(getTaxon(item.taxons[0].id));
+    dispatch(getTaxon(item.taxons[0].id));
     navigation.navigate("ProductDetail");
   };
 

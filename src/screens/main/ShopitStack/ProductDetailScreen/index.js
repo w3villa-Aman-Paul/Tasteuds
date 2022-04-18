@@ -131,20 +131,15 @@ const ProductDetailScreen = ({
     return setSnackbarVisible(true);
   };
 
-  // <<<<<<< HEAD
-  //   const handleFav = () => {
-  //     dispatch(setProductFavourite(selectedVariant))
+  const handleFav = () => {
+    dispatch(setProductFavourite(selectedVariant));
 
-  //     setTimeout(() => {
-  //       navigation.navigate('Favorites')
-  //     }, 1000);
-  //     return setFavSnackbar(true);
-  //   }
+    setTimeout(() => {
+      navigation.navigate("Favorites");
+    }, 1000);
+    return setFavSnackbar(true);
+  };
 
-  //   if(saving) {
-  //     return (
-  //       <ActivityIndicatorCard />
-  //     )
   if (saving) {
     return <ActivityIndicatorCard />;
   } else

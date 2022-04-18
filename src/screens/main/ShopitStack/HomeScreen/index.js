@@ -1,13 +1,22 @@
-import { FlatList, Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react';
+import {
+  FlatList,
+  Image,
+  ImageBackground,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import React from "react";
 import { globalStyles } from "../../../../styles/global";
 import { styles } from "./styles";
-import Footer from '../../../components/footer';
-import { accountRetrieve, getProductsList } from '../../../../redux';
-import { connect, useSelector } from 'react-redux';
+import Footer from "../../../components/footer";
+import { accountRetrieve, getProductsList } from "../../../../redux";
+import { connect, useSelector } from "react-redux";
 import { HOST } from "../../../../res/env";
 import { colors } from "../../../../res/palette";
-import { Icon } from 'react-native-elements';
+import { Icon } from "react-native-elements";
 
 const FlatListImageItem = ({
   item,
@@ -45,7 +54,13 @@ const FlatListImageItem = ({
   );
 };
 
-const HomeComponent = ({dispatch, navigation, route, pageIndex, productsList}) => {
+const HomeComponent = ({
+  dispatch,
+  navigation,
+  route,
+  pageIndex,
+  productsList,
+}) => {
   const { isAuth } = useSelector((state) => state.auth);
 
   const handleProductsLoad = (pageIndexAfterDispatch = null) => {
@@ -61,20 +76,21 @@ const HomeComponent = ({dispatch, navigation, route, pageIndex, productsList}) =
 
   const newJustInRenderItem = ({ item }) => {
     return (
-      <FlatListImageItem
-        key={item.id}
-        item={item}
-        // onPress={() => handleProductLoad(item?.id)}
-        imageStyle={styles.newJustInImage}
-        itemContainerStyle={styles.newJustInItemContainer}
-      />
+      <TouchableOpacity onPress={() => handleProductsLoad(item?.id, item)}>
+        <FlatListImageItem
+          key={item.id}
+          item={item}
+          imageStyle={styles.newJustInImage}
+          itemContainerStyle={styles.newJustInItemContainer}
+        />
+      </TouchableOpacity>
     );
   };
 
   React.useEffect(() => {
     handleProductsLoad();
     dispatch(accountRetrieve(null, {}));
-  }, [isAuth, route.params]); 
+  }, [isAuth, route.params, productsList]);
 
   return (
     <ScrollView style={{ ...styles.bg_white }}>
@@ -239,7 +255,7 @@ const HomeComponent = ({dispatch, navigation, route, pageIndex, productsList}) =
         <View style={styles.fourth}>
           <Text style={styles.content_text}>MEST KJØPTE</Text>
         </View>
-        
+
         <View
           style={{
             ...globalStyles.containerFluid,
@@ -250,13 +266,12 @@ const HomeComponent = ({dispatch, navigation, route, pageIndex, productsList}) =
           }}
         >
           <FlatList
-            data={productsList}
-            keyExtractor={(item) => item.id}
+            data={productsList.slice(0, 10)}
+            keyExtractor={(item) => {
+              item.id + "." + item.name;
+            }}
             renderItem={newJustInRenderItem}
             numColumns={2}
-            onEndReachedThreshold={0.3}
-            initialNumToRender={5}
-            maxToRenderPerBatch={5}
           />
         </View>
       </View>
@@ -270,12 +285,9 @@ const HomeComponent = ({dispatch, navigation, route, pageIndex, productsList}) =
   );
 };
 
-
-
 const mapStateToProps = (state) => ({
   productsList: state.products.productsList,
   pageIndex: state.products.pageIndex,
 });
 
 export default connect(mapStateToProps)(HomeComponent);
-
