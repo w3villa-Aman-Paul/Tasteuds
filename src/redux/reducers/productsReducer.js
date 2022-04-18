@@ -1,4 +1,4 @@
-import Jsona from 'jsona';
+import Jsona from "jsona";
 const dataFormatter = new Jsona();
 
 const DEFAULT_STATE = {
@@ -12,40 +12,40 @@ const DEFAULT_STATE = {
     },
     sizeFilterList: [
       {
-        name: 'XS',
+        name: "XS",
         active: false,
       },
       {
-        name: 'S',
+        name: "S",
         active: false,
       },
       {
-        name: 'M',
+        name: "M",
         active: false,
       },
       {
-        name: 'L',
+        name: "L",
         active: false,
       },
       {
-        name: 'XL',
+        name: "XL",
         active: false,
       },
       {
-        name: 'XXL',
+        name: "XXL",
         active: false,
       },
       {
-        name: 'XXXL',
+        name: "XXXL",
         active: false,
-      }
-    ]
+      },
+    ],
   },
   meta: {
-    total_count: null
+    total_count: null,
   },
   isViewing: false,
-  title: '',
+  title: "",
   product: {
     variants: [
       {
@@ -53,205 +53,201 @@ const DEFAULT_STATE = {
           {
             styles: [
               {
-                url: ''
+                url: "",
               },
               {
-                url: ''
+                url: "",
               },
               {
-                url: ''
+                url: "",
               },
               {
-                url: ''
+                url: "",
               },
-            ]
-          }
-        ]
-      }
+            ],
+          },
+        ],
+      },
     ],
     images: [
       {
         styles: [
           {
-            url: ''
+            url: "",
           },
           {
-            url: ''
+            url: "",
           },
           {
-            url: ''
+            url: "",
           },
           {
-            url: ''
+            url: "",
           },
           {
-            url: ''
+            url: "",
           },
           {
-            url: ''
+            url: "",
           },
           {
-            url: ''
+            url: "",
           },
           {
-            url: ''
+            url: "",
           },
           {
-            url: ''
+            url: "",
           },
           {
-            url: ''
+            url: "",
           },
           {
-            url: ''
+            url: "",
           },
           {
-            url: ''
-          }
-        ]
-      }
+            url: "",
+          },
+        ],
+      },
     ],
     option_types: [
       {
-        option_values: []
+        option_values: [],
       },
       {
-        option_values: []
-      }
+        option_values: [],
+      },
     ],
     variants: [
       {
         option_values: [
           {
-            presentation: ''
+            presentation: "",
           },
           {
-            presentation: ''
-          }
+            presentation: "",
+          },
         ],
         images: [
           {
-            styles: [
-              {url: ''},
-              {url: ''},
-              {url: ''},
-              {url: ''}
-            ]
-          }
-        ]
-      }
+            styles: [{ url: "" }, { url: "" }, { url: "" }, { url: "" }],
+          },
+        ],
+      },
     ],
     product_properties: [],
     default_variant: {
       option_values: [
         {
-          presentation: ''
+          presentation: "",
         },
         {
-          presentation: ''
-        }
-      ]
-    }
+          presentation: "",
+        },
+      ],
+    },
   },
   productsList: [
     {
-      display_price: '$',
+      display_price: "$",
       images: [
         {
           styles: [
             {
-              url: ''
+              url: "",
             },
             {
-              url: ''
+              url: "",
             },
             {
-              url: ''
+              url: "",
             },
             {
-              url: ''
+              url: "",
             },
             {
-              url: ''
+              url: "",
             },
             {
-              url: ''
+              url: "",
             },
             {
-              url: ''
+              url: "",
             },
             {
-              url: ''
+              url: "",
             },
             {
-              url: ''
+              url: "",
             },
             {
-              url: ''
+              url: "",
             },
             {
-              url: ''
+              url: "",
             },
             {
-              url: ''
+              url: "",
             },
-          ]
-        }
-      ]
-    }
+          ],
+        },
+      ],
+    },
   ],
 };
 
 let changes = null;
 export default function productsReducer(state = DEFAULT_STATE, action) {
-  const response = action.payload && (action.payload.data || action.payload.response)
+  const response =
+    action.payload && (action.payload.data || action.payload.response);
   switch (action.type) {
     /**
      * GET_PRODUCTS_LIST
      */
-    case 'GET_PRODUCTS_LIST_PENDING':
+    case "GET_PRODUCTS_LIST_PENDING":
       return { ...state, saving: state.isViewing ? false : true };
 
-    case 'GET_PRODUCTS_LIST_REJECTED':
+    case "GET_PRODUCTS_LIST_REJECTED":
       changes = {
-        saving: false
+        saving: false,
       };
       return { ...state, ...changes };
 
-    case 'GET_PRODUCTS_LIST_FULFILLED':
+    case "GET_PRODUCTS_LIST_FULFILLED":
       changes = {
         productsList: state.isViewing
-          ? [...state.productsList, ...dataFormatter.deserialize(response)] 
+          ? [...state.productsList, ...dataFormatter.deserialize(response)]
           : dataFormatter.deserialize(response),
         isViewing: true,
         saving: false,
-        meta: response.meta
+        meta: response.meta,
       };
       return { ...state, ...changes };
 
     /**
      * GET_PRODUCT
      */
-    case 'GET_PRODUCT_PENDING':
+    case "GET_PRODUCT_PENDING":
       return { ...state, saving: true };
 
-    case 'GET_PRODUCT_REJECTED':
+    case "GET_PRODUCT_REJECTED":
       changes = {
-        saving: false
+        saving: false,
       };
       return { ...state, ...changes };
 
-    case 'GET_PRODUCT_FULFILLED':
+    case "GET_PRODUCT_FULFILLED":
       changes = {
         product: dataFormatter.deserialize(response),
-        saving: false
+        saving: false,
       };
       return { ...state, ...changes };
 
     /**
      * PRICE_RANGE
      */
-    case 'SET_MINIMUM_PRICE_RANGE':
+    case "SET_MINIMUM_PRICE_RANGE":
       return {
         ...state,
         params: {
@@ -259,11 +255,11 @@ export default function productsReducer(state = DEFAULT_STATE, action) {
           priceRange: {
             ...state.params.priceRange,
             minimum: action.payload,
-          }
-        }
-      }
+          },
+        },
+      };
 
-    case 'SET_MAXIMUM_PRICE_RANGE':
+    case "SET_MAXIMUM_PRICE_RANGE":
       return {
         ...state,
         params: {
@@ -271,36 +267,40 @@ export default function productsReducer(state = DEFAULT_STATE, action) {
           priceRange: {
             ...state.params.priceRange,
             maximum: action.payload,
-          }
-        }
-      }
+          },
+        },
+      };
 
     /**
      * RESET_PRODUCTS_LIST
      */
-    case 'RESET_PRODUCTS_LIST':
+    case "RESET_PRODUCTS_LIST":
       return {
         ...state,
         isViewing: false,
-        productsList: []
-      }
+        productsList: [],
+      };
 
     /**
      * TOGGLE_PRODUCT_SIZE_FILTER
      */
-    case 'TOGGLE_PRODUCT_SIZE_FILTER':
+    case "TOGGLE_PRODUCT_SIZE_FILTER":
       return {
         ...state,
         params: {
           ...state.params,
-          sizeFilterList: state.params.sizeFilterList.map(item => item.name !== action.payload.name ? item : { ...item, active: !item.active})
-        }
-      }
-    
+          sizeFilterList: state.params.sizeFilterList.map((item) =>
+            item.name !== action.payload.name
+              ? item
+              : { ...item, active: !item.active }
+          ),
+        },
+      };
+
     /**
      * SET_PRODUCT_FAVOURITE
      */
-    case 'SET_PRODUCT_FAVOURITE':
+    case "SET_PRODUCT_FAVOURITE":
       return {
         ...state,
         favorites: [
@@ -311,16 +311,16 @@ export default function productsReducer(state = DEFAULT_STATE, action) {
     /**
      * SET_PAGE_INDEX
      */
-    case 'SET_PAGE_INDEX':
+    case "SET_PAGE_INDEX":
       return {
         ...state,
-        pageIndex: action.payload
-      }
-    
+        pageIndex: action.payload,
+      };
+
     /**
      * RESET_PRODUCTS_FILTER
      */
-    case 'RESET_PRODUCTS_FILTER':
+    case "RESET_PRODUCTS_FILTER":
       return {
         ...state,
         params: {
@@ -330,41 +330,41 @@ export default function productsReducer(state = DEFAULT_STATE, action) {
           },
           sizeFilterList: [
             {
-              name: 'XS',
+              name: "XS",
               active: false,
             },
             {
-              name: 'S',
+              name: "S",
               active: false,
             },
             {
-              name: 'M',
+              name: "M",
               active: false,
             },
             {
-              name: 'L',
+              name: "L",
               active: false,
             },
             {
-              name: 'XL',
+              name: "XL",
               active: false,
             },
             {
-              name: 'XXL',
+              name: "XXL",
               active: false,
             },
             {
-              name: 'XXXL',
+              name: "XXXL",
               active: false,
-            }
-          ]
-        }
-      }
+            },
+          ],
+        },
+      };
 
     /**
      * Default State
      */
     default:
-      return state
+      return state;
   }
 }

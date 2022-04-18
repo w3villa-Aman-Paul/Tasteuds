@@ -12,10 +12,11 @@ import { ShoppingBag, Heart, Share } from "../library/icons";
 import { colors } from "../res/palette";
 import { globalStyles } from "../styles/global";
 import { useSelector } from "react-redux";
-import CustomTitle from "../library/components/CustomTitle";
+
 import { Icon } from "react-native-elements";
 import HomeComponent from "../screens/main/ShopitStack/HomeScreen";
 import FavouritesStackNavigator from "./FavouritesStackNavigator";
+import FavouritesScreen from "../screens/main/FavouritesStack/FavouritesScreen";
 
 const ShopitStack = createStackNavigator();
 
@@ -169,7 +170,7 @@ function ShopitStackNavigator({ navigation }) {
       />
       <ShopitStack.Screen
         name="Favorites"
-        component={FavouritesStackNavigator}
+        component={FavouritesScreen}
         options={{
           headerTitle: "",
           headerLeft: () => (
