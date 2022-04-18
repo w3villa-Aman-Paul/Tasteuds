@@ -98,6 +98,8 @@ const ProductDetailScreen = ({
     ),
   ]);
 
+  const [favsnackbar, setFavSnackbar] = useState(false);
+
   const taxon = useSelector((state) => state.taxons.taxon);
 
   const handleColorSelection = ({ index, color }) => {
@@ -109,6 +111,7 @@ const ProductDetailScreen = ({
   };
 
   const dismissSnackbar = () => setSnackbarVisible(false);
+  const dismissFavSnackbar = () => setFavSnackbar(false);
 
   const getcartToken = async () => {
     const { data } = await createCartToken();
@@ -128,6 +131,20 @@ const ProductDetailScreen = ({
     return setSnackbarVisible(true);
   };
 
+  // <<<<<<< HEAD
+  //   const handleFav = () => {
+  //     dispatch(setProductFavourite(selectedVariant))
+
+  //     setTimeout(() => {
+  //       navigation.navigate('Favorites')
+  //     }, 1000);
+  //     return setFavSnackbar(true);
+  //   }
+
+  //   if(saving) {
+  //     return (
+  //       <ActivityIndicatorCard />
+  //     )
   if (saving) {
     return <ActivityIndicatorCard />;
   } else
@@ -184,6 +201,7 @@ const ProductDetailScreen = ({
                   (Save $4.50)
                 </Text>
               </Text>
+
             </View>
           </View> */}
           <View style={[styles.containerFluid, globalStyles.mt8]}>

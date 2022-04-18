@@ -12,6 +12,7 @@ import { ShoppingBag, Heart, Share } from "../library/icons";
 import { colors } from "../res/palette";
 import { globalStyles } from "../styles/global";
 import { useSelector } from "react-redux";
+
 import { Icon } from "react-native-elements";
 import HomeComponent from "../screens/main/ShopitStack/HomeScreen";
 import FavouritesStackNavigator from "./FavouritesStackNavigator";

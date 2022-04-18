@@ -39,6 +39,7 @@ export const styles = StyleSheet.create({
   description: {
     ...globalStyles.latoRegular,
     color: colors.gray,
+    
   },
   pricingContainer: {
     flex: 1,

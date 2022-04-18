@@ -27,6 +27,7 @@ function ProfileStackNavigator({ navigation }) {
   return (
     <ProfileStack.Navigator
       screenOptions={{
+
         headerTitle: "",
         headerLeft: () => (
           <Image

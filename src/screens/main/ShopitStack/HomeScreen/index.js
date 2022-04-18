@@ -1,26 +1,80 @@
-import {
-  Image,
-  ImageBackground,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import React from "react";
+import { FlatList, Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React from 'react';
 import { globalStyles } from "../../../../styles/global";
 import { styles } from "./styles";
-import Footer from "../../../components/footer";
-import { accountRetrieve } from "../../../../redux";
-import { connect, useSelector } from "react-redux";
-import { colors, Icon } from "react-native-elements";
+import Footer from '../../../components/footer';
+import { accountRetrieve, getProductsList } from '../../../../redux';
+import { connect, useSelector } from 'react-redux';
+import { HOST } from "../../../../res/env";
+import { colors } from "../../../../res/palette";
+import { Icon } from 'react-native-elements';
 
-const HomeComponent = ({ dispatch, navigation }) => {
+const FlatListImageItem = ({
+  item,
+  onPress,
+  imageStyle,
+  itemContainerStyle,
+}) => {
+  return (
+    <TouchableOpacity onPress={onPress} style={{ ...itemContainerStyle }}>
+      <Image
+        source={{
+          uri: `${HOST}/${item.images[0].styles[3].url}`,
+        }}
+        style={{
+          width: imageStyle.width,
+          height: imageStyle.height,
+          resizeMode: "contain",
+        }}
+      />
+      <View style={styles.detailsContainer}>
+        <Text numberOfLines={1} style={styles.title}>
+          {item.name}
+        </Text>
+        <Text numberOfLines={1} style={styles.description}>
+          {item.slug}
+        </Text>
+        <View style={styles.pricingContainer}>
+          <Text style={[styles.prices, { color: colors.black }]}>
+            {" "}
+            {item.display_price}
+          </Text>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+};
+
+const HomeComponent = ({dispatch, navigation, route, pageIndex, productsList}) => {
   const { isAuth } = useSelector((state) => state.auth);
 
+  const handleProductsLoad = (pageIndexAfterDispatch = null) => {
+    dispatch(
+      getProductsList(null, {
+        pageIndex: pageIndexAfterDispatch || pageIndex,
+        filter: {
+          name: route.params?.searchQuery || "",
+        },
+      })
+    );
+  };
+
+  const newJustInRenderItem = ({ item }) => {
+    return (
+      <FlatListImageItem
+        key={item.id}
+        item={item}
+        // onPress={() => handleProductLoad(item?.id)}
+        imageStyle={styles.newJustInImage}
+        itemContainerStyle={styles.newJustInItemContainer}
+      />
+    );
+  };
+
   React.useEffect(() => {
+    handleProductsLoad();
     dispatch(accountRetrieve(null, {}));
-  }, [isAuth]);
+  }, [isAuth, route.params]); 
 
   return (
     <ScrollView style={{ ...styles.bg_white }}>
@@ -185,11 +239,43 @@ const HomeComponent = ({ dispatch, navigation }) => {
         <View style={styles.fourth}>
           <Text style={styles.content_text}>MEST KJØPTE</Text>
         </View>
+        
+        <View
+          style={{
+            ...globalStyles.containerFluid,
+            ...globalStyles.mt24,
+            ...styles.bgwhite,
+            marginLeft: 15,
+            marginRight: 15,
+          }}
+        >
+          <FlatList
+            data={productsList}
+            keyExtractor={(item) => item.id}
+            renderItem={newJustInRenderItem}
+            numColumns={2}
+            onEndReachedThreshold={0.3}
+            initialNumToRender={5}
+            maxToRenderPerBatch={5}
+          />
+        </View>
       </View>
+
+      <TouchableOpacity style={styles.home_btn}>
+        <Text style={styles.btn_text}>SE HELE UTVALGET</Text>
+      </TouchableOpacity>
 
       <Footer />
     </ScrollView>
   );
 };
 
-export default connect()(HomeComponent);
+
+
+const mapStateToProps = (state) => ({
+  productsList: state.products.productsList,
+  pageIndex: state.products.pageIndex,
+});
+
+export default connect(mapStateToProps)(HomeComponent);
+
