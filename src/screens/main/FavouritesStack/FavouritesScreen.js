@@ -11,24 +11,13 @@ const FavouritesScreen = ({ navigation, favorites }) => {
   return (
     <ScrollView>
       <View style={globalStyles.container}>
-        {favorite ? (
-          favorite?.map((ele) => (
-            <>
-              {ele ? (
-                <ProductCard
-                  key={ele?.id}
-                  shoppingBag
-                  imageSource={ele?.images[0]?.styles[3].url}
-                  {...ele}
-                />
-              ) : (
-                <></>
-              )}
-            </>
-          ))
-        ) : (
-          <></>
-        )}
+        {favorites.map((ele) => (
+          <ProductCard
+            key={ele.id}
+            imageSource={ele.images[0].styles[3].url}
+            {...ele}
+          />
+        ))}
       </View>
     </ScrollView>
   );

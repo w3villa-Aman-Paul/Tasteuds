@@ -23,8 +23,8 @@ const ProductCard = ({ imageSource, name, description, cart, option_values,
         <View style={styles.favouriteProductDetailsContainer}>
           <View style={globalStyles.containerFluid}>
             <Text style={styles.title}>{name}</Text>
-            <Text numberOfLines={1} style={styles.description}>{description || 'Women Sea Wash Pleated Dress'}</Text>
-            <View style={styles.attributeContainer}>
+            <Text numberOfLines={1} style={styles.description}>{description}</Text>
+            {/* <View style={styles.attributeContainer}>
               <View style={[styles.colorBadge, {backgroundColor: cart ? variant.option_values[0].presentation
                 : option_values[0].presentation }]} />
               <View style={styles.productSizeStyle}>
@@ -40,7 +40,7 @@ const ProductCard = ({ imageSource, name, description, cart, option_values,
               <Text style={[styles.prices, styles.discountedPrice]}>{display_price}</Text>
               <Text style={[styles.prices, styles.price]}>${price || display_price}</Text>
               <Text style={[styles.prices, styles.discountPercent]}>({0}% OFF)</Text>
-            </View>
+            </View> */}
           </View>
           <View style={styles.actionsContainer}>
             { !orders && <Close size={20} style={{color: colors.black}} onPress={onRemoveLineItem} /> }
@@ -52,6 +52,7 @@ const ProductCard = ({ imageSource, name, description, cart, option_values,
       </View>
       {soldOut ? <Text style={[globalStyles.latoRegular14, styles.description]}>Sorry, this item is currently sold out.</Text> : null}
     </View>
+    
   )
 }
 

@@ -90,6 +90,10 @@ function ShopitStackNavigator({ navigation }) {
               style={styles.header}
             />
           ),
+          title: "",
+          headerLeftContainerStyle: {
+            paddingHorizontal: 18,
+          },
         })}
       />
       <ShopitStack.Screen
@@ -104,6 +108,10 @@ function ShopitStackNavigator({ navigation }) {
               style={styles.header}
             />
           ),
+          title: "",
+          headerLeftContainerStyle: {
+            paddingHorizontal: 18,
+          },
         }}
       />
       <ShopitStack.Screen
@@ -118,6 +126,10 @@ function ShopitStackNavigator({ navigation }) {
               onPress={() => navigation.navigate("Favorites")}
             />
           ),
+          title: "",
+          headerLeftContainerStyle: {
+            paddingHorizontal: 18,
+          },
         }}
       />
       <ShopitStack.Screen

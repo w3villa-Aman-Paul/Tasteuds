@@ -132,7 +132,8 @@ const ProductDetailScreen = ({
   };
 
   const handleFav = () => {
-    dispatch(setProductFavourite(selectedVariant));
+    let variant = product.variants[0].product;
+    dispatch(setProductFavourite(variant));
 
     setTimeout(() => {
       navigation.navigate("Favorites");
@@ -216,7 +217,7 @@ const ProductDetailScreen = ({
                   // disabledTitleStyle={{ color: colors.white }}
                   containerStyle={{ flex: 1 }}
                   titleStyle={{ ...styles.titleStyle, fontSize: 20 }}
-                  buttonStyle={{ ...globalStyles.btn, width: 280, height: 60 }}
+                  buttonStyle={{ ...globalStyles.btn, width: 250, height: 60 }}
                   onPress={handleAddToBag}
                 />
                 <View
@@ -235,17 +236,7 @@ const ProductDetailScreen = ({
                     type="ant-design"
                     size={35}
                     color={colors.btnLink}
-                    onPress={() => {
-                      setSelectedVariant(product.variants);
-                      setIsVariantSelected(true);
-                      setImageURI(
-                        `${HOST}/${product?.variants[0].images[0]?.styles[3].url}`
-                      );
-                      dispatch(setProductFavourite(selectedVariant));
-                      setTimeout(() => {
-                        navigation.navigate("Favorites");
-                      }, 1000);
-                    }}
+                    onPress={handleFav}
                   />
                 </View>
               </View>
@@ -562,6 +553,9 @@ const ProductDetailScreen = ({
         </ScrollView>
         <Snackbar visible={snackbarVisible} onDismiss={dismissSnackbar}>
           Added to Bag !
+        </Snackbar>
+        <Snackbar visible={favsnackbar} onDismiss={dismissFavSnackbar}>
+          Added to Favorites !
         </Snackbar>
       </>
     );

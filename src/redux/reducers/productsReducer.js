@@ -3,7 +3,7 @@ const dataFormatter = new Jsona();
 
 const DEFAULT_STATE = {
   saving: false,
-  favourites: [],
+  favorites: [],
   pageIndex: 1,
   params: {
     priceRange: {
@@ -303,7 +303,8 @@ export default function productsReducer(state = DEFAULT_STATE, action) {
     case "SET_PRODUCT_FAVOURITE":
       return {
         ...state,
-        favourites: [...new Set([...state.favourites, action.payload])],
+
+        favorites: [...new Set([...state.favorites, action.payload])],
       };
 
     /**

@@ -288,6 +288,7 @@ const HomeComponent = ({
 const mapStateToProps = (state) => ({
   productsList: state.products.productsList,
   pageIndex: state.products.pageIndex,
+  meta: state.products.meta,
 });
 
 export default connect(mapStateToProps)(HomeComponent);
