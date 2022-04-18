@@ -165,7 +165,7 @@ const ProductListScreen = ({
   };
 
   const handleCategoryPress = (id) => {
-    dispatch(getTaxon(id));
+    // dispatch(getTaxon(id));
   };
 
   if (saving) {
@@ -196,7 +196,7 @@ const ProductListScreen = ({
               borderWidth: 1,
               borderRadius: 10,
               lineHeight: 18.75,
-              fontWeight: 'bold',
+              fontWeight: "bold",
               ...styles.borderPrimary,
             }}
           >
@@ -212,9 +212,7 @@ const ProductListScreen = ({
                   handleCategoryPress(cat.id);
                 }}
               >
-                <Text  style={{ padding: 5, fontSize: 16 }}>
-                  {cat.name}
-                </Text>
+                <Text style={{ padding: 5, fontSize: 16 }}>{cat.name}</Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
@@ -241,7 +239,7 @@ const ProductListScreen = ({
           />
         </View>
         <BottomSheet isVisible={isSortOverlayVisible}>
-          {productsSortList.map((l, i) => (
+          {productsList.map((l, i) => (
             <ListItem
               key={i}
               containerStyle={l.containerStyle}

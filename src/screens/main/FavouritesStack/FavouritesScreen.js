@@ -1,5 +1,5 @@
 import * as React from "react";
-import { View, ScrollView } from "react-native";
+import { View, ScrollView, Text } from "react-native";
 import ProductCard from "../../../library/components/ProductCard";
 import { globalStyles } from "../../../styles/global";
 import { connect, useSelector } from "react-redux";
@@ -11,6 +11,7 @@ const FavouritesScreen = ({ navigation, favorites }) => {
   return (
     <ScrollView>
       <View style={globalStyles.container}>
+        <Text style={globalStyles.title}>Favourites</Text>
         {favorites.map((ele) => (
           <ProductCard
             key={ele.id}

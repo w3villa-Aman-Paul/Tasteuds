@@ -90,7 +90,7 @@ const HomeComponent = ({
   React.useEffect(() => {
     handleProductsLoad();
     dispatch(accountRetrieve(null, {}));
-  }, [isAuth, route.params, productsList]);
+  }, [isAuth, route.params]);
 
   return (
     <ScrollView style={{ ...styles.bg_white }}>
