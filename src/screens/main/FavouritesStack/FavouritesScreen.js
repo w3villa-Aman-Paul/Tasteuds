@@ -2,20 +2,29 @@ import * as React from "react";
 import { View, ScrollView } from "react-native";
 import ProductCard from "../../../library/components/ProductCard";
 import { globalStyles } from "../../../styles/global";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 
 const FavouritesScreen = ({ navigation, favorites }) => {
+  const favorite = useSelector((state) => state.products.favourites);
+  console.log(favorite);
+
   return (
     <ScrollView>
       <View style={globalStyles.container}>
-        {favorites ? (
-          favorites.map((ele) => (
-            <ProductCard
-              key={ele.id}
-              shoppingBag
-              imageSource={ele.images[0]?.styles[3].url}
-              {...ele}
-            />
+        {favorite ? (
+          favorite?.map((ele) => (
+            <>
+              {ele ? (
+                <ProductCard
+                  key={ele?.id}
+                  shoppingBag
+                  imageSource={ele?.images[0]?.styles[3].url}
+                  {...ele}
+                />
+              ) : (
+                <></>
+              )}
+            </>
           ))
         ) : (
           <></>

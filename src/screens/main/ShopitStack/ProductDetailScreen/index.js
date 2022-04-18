@@ -27,8 +27,8 @@ import { connect } from "react-redux";
 import { styles } from "./styles";
 import { capitalizeFirstLetter } from "../../../../res/helperFunctions";
 import { HOST } from "../../../../res/env";
-import FavouritesScreen from "../../FavouritesStack/FavouritesScreen";
 import { useSelector } from "react-redux";
+import Footer from "../../../components/footer";
 
 const CarouselProductCard = ({ imageURI }) => {
   return (
@@ -223,6 +223,11 @@ const ProductDetailScreen = ({
                     size={35}
                     color={colors.btnLink}
                     onPress={() => {
+                      setSelectedVariant(product.variants);
+                      setIsVariantSelected(true);
+                      setImageURI(
+                        `${HOST}/${product?.variants[0].images[0]?.styles[3].url}`
+                      );
                       dispatch(setProductFavourite(selectedVariant));
                       setTimeout(() => {
                         navigation.navigate("Favorites");
@@ -231,100 +236,138 @@ const ProductDetailScreen = ({
                   />
                 </View>
               </View>
-              <View style={globalStyles.mt16}>
-                <Text style={globalStyles.latoBold14}>Select Color</Text>
-                <ScrollView
-                  horizontal={true}
-                  style={[styles.rowContainer, globalStyles.mt8]}
+
+              {/* ......Vendor..... */}
+              <View
+                style={{
+                  flexDirection: "row",
+                  flex: 1,
+                  height: 80,
+                  justifyContent: "flex-start",
+                  alignItems: "center",
+                  borderWidth: 1,
+                  borderColor: colors.primary,
+                  borderRadius: 10,
+                  marginTop: 40,
+                }}
+              >
+                <View
+                  style={{
+                    width: "35%",
+                    height: "100%",
+                    borderWidth: 1,
+                    borderRightColor: "grey",
+                    borderBottomColor: "transparent",
+                    borderLeftColor: "transparent",
+                    borderTopColor: "transparent",
+                    overflow: "hidden",
+                  }}
                 >
-                  {variantDistinctColors.map((color, index) => (
-                    <Avatar
-                      key={index}
-                      size="small"
-                      rounded
-                      onPress={() =>
-                        handleColorSelection({
-                          index: index,
-                          color: color,
-                        })
-                      }
-                      containerStyle={{
-                        backgroundColor: `${color}`,
-                        marginRight: 16,
-                        borderWidth: 1,
-                        padding: 1,
-                        borderColor:
-                          color !== activeColor ? colors.gray : colors.primary,
-                      }}
-                    />
-                  ))}
-                </ScrollView>
-              </View>
-              <View>
-                {activeColor ? (
-                  <View
-                    style={[styles.sizingTitleContainer, globalStyles.mt16]}
+                  <Image
+                    source={require("../../../../../assets/images/vendor.png")}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      overflow: "hidden",
+                    }}
+                  />
+                </View>
+
+                <View
+                  style={{
+                    width: "65%",
+                    height: "100%",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      fontWeight: "700",
+                    }}
                   >
-                    <Text
-                      style={[globalStyles.latoBold14, globalStyles.textDark]}
+                    BLI KJENT MED PRODUSENTEN
+                  </Text>
+                </View>
+              </View>
+
+              <View style={styles.description}>
+                <Text style={styles.desc__title}>BESKRIVELSE</Text>
+                <Text style={styles.desc__content}>{product.description}</Text>
+              </View>
+
+              <View
+                style={{
+                  ...styles.description,
+                  width: 300,
+                  padding: 10,
+                  borderWidth: 1,
+                  borderRadius: 10,
+                  borderColor: "transparent",
+                  shadowColor: "grey",
+                  shadowRadius: 10,
+                  shadowOffset: {
+                    width: 0,
+                    height: 4,
+                  },
+                  shadowOpacity: 0.8,
+                  elevation: 1,
+                  backgroundColor: "white",
+                }}
+              >
+                <Text style={styles.desc__title}>DETALJER</Text>
+                <View>
+                  {product.product_properties.map((item) => (
+                    <View
+                      key={item.id}
+                      style={{
+                        width: "75%",
+                        flexDirection: "row",
+                        marginTop: 10,
+                      }}
                     >
-                      Select Size
-                    </Text>
-                    <Text
-                      style={[
-                        globalStyles.latoBold14,
-                        globalStyles.textPrimary,
-                      ]}
-                    >
-                      Size Help?
-                    </Text>
-                  </View>
-                ) : null}
-                <View style={[styles.rowContainer, globalStyles.mt8]}>
-                  {product.variants.map((variant, index) => {
-                    if (variant.option_values[0].presentation === activeColor) {
-                      return (
-                        <Avatar
-                          key={index}
-                          size="small"
-                          title={`${variant.option_values[1]?.presentation}`}
-                          onPress={() => {
-                            setActiveSize(
-                              variant.option_values[1]?.presentation
-                            );
-                            setSelectedVariant(variant);
-                            setIsVariantSelected(false);
-                          }}
-                          rounded
-                          activeOpacity={0.7}
-                          containerStyle={{
-                            backgroundColor: colors.white,
-                            marginRight: 16,
-                            borderColor:
-                              variant.option_values[1]?.presentation !==
-                              activeSize
-                                ? colors.black
-                                : colors.primary,
-                            borderWidth: 1,
-                          }}
-                          titleStyle={[
-                            globalStyles.latoBold14,
-                            variant.option_values[1]?.presentation !==
-                            activeSize
-                              ? globalStyles.textDark
-                              : globalStyles.textPrimary,
-                          ]}
-                        />
-                      );
-                    } else {
-                      return null;
-                    }
-                  })}
+                      <Text style={{ fontWeight: "700", fontSize: 16 }}>
+                        {capitalizeFirstLetter(item.name) + ": "}
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 16,
+                        }}
+                      >
+                        {item.value}
+                      </Text>
+                    </View>
+                  ))}
                 </View>
               </View>
             </View>
+
+            <View
+              style={{
+                ...globalStyles.container,
+                marginTop: 40,
+                marginBottom: 40,
+              }}
+            >
+              <Button
+                title="TILLBAKE"
+                type="solid"
+                containerStyle={{ flex: 1 }}
+                titleStyle={{ ...styles.titleStyle, fontSize: 24 }}
+                buttonStyle={{
+                  ...globalStyles.btn,
+                  // ...globalStyles.container,
+                  flex: 1,
+                  width: 150,
+                  height: 60,
+                }}
+                onPress={() => navigation.goBack()}
+              />
+            </View>
           </View>
-          <View
+
+          {/* <View
             style={[styles.containerFluid, globalStyles.mt8, globalStyles.pv8]}
           >
             <View style={globalStyles.container}>
@@ -362,8 +405,8 @@ const ProductDetailScreen = ({
                 </Text>
               </View>
             </View>
-          </View>
-          <View
+          </View> */}
+          {/* <View
             style={[styles.containerFluid, globalStyles.mt8, globalStyles.pv8]}
           >
             <View style={globalStyles.container}>
@@ -416,8 +459,8 @@ const ProductDetailScreen = ({
                 <Text style={styles.reviewFooterAction}>View All (309)</Text>
               </TouchableOpacity>
             </View>
-          </View>
-          <View
+          </View> */}
+          {/* <View
             style={[styles.containerFluid, globalStyles.mt8, globalStyles.pv8]}
           >
             <View style={globalStyles.container}>
@@ -456,8 +499,8 @@ const ProductDetailScreen = ({
                 </Text>
               </View>
             </View>
-          </View>
-          <View
+          </View> */}
+          {/* <View
             style={[styles.containerFluid, globalStyles.mt8, globalStyles.pv16]}
           >
             <View style={globalStyles.container}>
@@ -478,8 +521,8 @@ const ProductDetailScreen = ({
               <CarouselProductCard imageURI={imageURI} />
               <CarouselProductCard imageURI={imageURI} />
             </ScrollView>
-          </View>
-          <View style={styles.footerContainer}>
+          </View> */}
+          {/* <View style={styles.footerContainer}>
             <View style={styles.footerItemListContainer}>
               <View style={styles.footerItemContainer}>
                 <CustomIconTruck size={32} style={styles.footerIcon} />
@@ -501,7 +544,8 @@ const ProductDetailScreen = ({
                 <Text style={styles.footerText}>Secure Payment</Text>
               </View>
             </View>
-          </View>
+          </View> */}
+          <Footer />
         </ScrollView>
         <Snackbar visible={snackbarVisible} onDismiss={dismissSnackbar}>
           Added to Bag !

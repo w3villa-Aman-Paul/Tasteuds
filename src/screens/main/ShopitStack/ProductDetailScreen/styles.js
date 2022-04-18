@@ -28,9 +28,16 @@ export const styles = StyleSheet.create({
     color: colors.error,
   },
   description: {
-    ...globalStyles.latoRegular14,
-    marginTop: 4,
-    color: colors.gray,
+    marginTop: 40,
+    color: colors.black,
+  },
+  desc__title: {
+    fontSize: 20,
+    fontWeight: "700",
+  },
+  desc__content: {
+    fontSize: 16,
+    color: colors.black,
   },
   title: {
     fontSize: 20,
