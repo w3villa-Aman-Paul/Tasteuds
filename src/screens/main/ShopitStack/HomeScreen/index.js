@@ -12,7 +12,7 @@ import React from "react";
 import { globalStyles } from "../../../../styles/global";
 import { styles } from "./styles";
 import Footer from "../../../components/footer";
-import { accountRetrieve, getProductsList } from "../../../../redux";
+import { accountRetrieve, getProductsList, resetProductsList } from "../../../../redux";
 import { connect, useSelector } from "react-redux";
 import { HOST } from "../../../../res/env";
 import { colors } from "../../../../res/palette";
@@ -63,6 +63,14 @@ const HomeComponent = ({
 }) => {
   const { isAuth } = useSelector((state) => state.auth);
 
+  React.useEffect(() => {
+    handleProductsLoad();
+    return () => {
+      // dispatch(resetProductsList());
+      dispatch(accountRetrieve(null, {}));
+    }
+  }, [isAuth, route.params]);
+
 
 
   const handleProductsLoad = (pageIndexAfterDispatch = null) => {
@@ -76,11 +84,11 @@ const HomeComponent = ({
     );
   };
 
-  const newJustInRenderItem = ({ item }) => {
+  const newJustInRenderItem = ({ item, index }) => {
     return (
       <TouchableOpacity onPress={() => handleProductsLoad(item?.id, item)}>
         <FlatListImageItem
-          key={item.id}
+          key={index.toString()}
           item={item}
           imageStyle={styles.newJustInImage}
           itemContainerStyle={styles.newJustInItemContainer}
@@ -88,11 +96,7 @@ const HomeComponent = ({
       </TouchableOpacity>
     );
   };
-
-  React.useEffect(() => {
-    handleProductsLoad();
-    dispatch(accountRetrieve(null, {}));
-  }, [isAuth,route.params, productsList]); 
+ 
 
 
   return (
@@ -270,9 +274,7 @@ const HomeComponent = ({
         >
           <FlatList
             data={productsList.slice(0, 10)}
-            keyExtractor={(item) => {
-              item.id + "." + item.name;
-            }}
+            keyExtractor={(item, index) => index.toString()}
             renderItem={newJustInRenderItem}
             numColumns={2}
           />

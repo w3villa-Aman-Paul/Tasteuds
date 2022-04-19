@@ -130,17 +130,17 @@ const ProductListScreen = ({
   React.useEffect(() => {
     handleProductsLoad();
     return () => {
-      dispatch(resetProductsList());
+      // dispatch(resetProductsList());
       dispatch(setPageIndex(1));
     };
   }, [route.params]);
 
-  React.useEffect(() => {
-    //Reset products filter only upon component unmount
-    return () => {
-      dispatch(resetProductsFilter());
-    };
-  }, []);
+  // React.useEffect(() => {
+  //   //Reset products filter only upon component unmount
+  //   return () => {
+  //     dispatch(resetProductsFilter());
+  //   };
+  // }, []);
 
   React.useEffect(() => {
     dispatch(getTaxonsList());
@@ -152,12 +152,12 @@ const ProductListScreen = ({
     navigation.navigate("ProductDetail");
   };
 
-  const newJustInRenderItem = ({ item }) => {
+  const newJustInRenderItem = ({ item, index }) => {
     return (
       <FlatListImageItem
-        key={item.id}
+        key={index.toString()}
         item={item}
-        onPress={() => handleProductLoad(item.id, item)}
+        onPress={() => handleProductLoad(item?.id, item)}
         imageStyle={styles.newJustInImage}
         itemContainerStyle={styles.newJustInItemContainer}
       />
@@ -205,9 +205,9 @@ const ProductListScreen = ({
           </Text>
 
           <ScrollView horizontal={true} style={{ ...globalStyles.mt24 }}>
-            {categoryList.map((cat) => (
+            {categoryList.map((cat, index) => (
               <TouchableOpacity
-                key={cat.id}
+                key={index.toString()}
                 onPress={() => {
                   handleCategoryPress(cat.id);
                 }}
@@ -231,7 +231,7 @@ const ProductListScreen = ({
         >
           <FlatList
             data={productsList}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item, index) => index.toString()}
             renderItem={newJustInRenderItem}
             numColumns={2}
             onEndReachedThreshold={0.3}

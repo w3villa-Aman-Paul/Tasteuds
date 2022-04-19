@@ -30,46 +30,6 @@ import { HOST } from "../../../../res/env";
 import { useSelector } from "react-redux";
 import Footer from "../../../components/footer";
 
-const CarouselProductCard = ({ imageURI }) => {
-  return (
-    <View style={styles.carouselProductCard}>
-      <Image
-        source={{
-          uri: imageURI,
-        }}
-        style={{
-          width: 150,
-          height: 196,
-        }}
-      />
-      <View style={styles.carouselProductDescription}>
-        <Text style={globalStyles.latoBold14}>Tokyo Talkies</Text>
-        <Text style={globalStyles.label}>Women Printed A-Line...</Text>
-        <View style={styles.carouselCardPricingContainer}>
-          <Text
-            style={[
-              styles.carouselCardPrices,
-              styles.carouselCardDiscountedPrice,
-            ]}
-          >
-            $29.90
-          </Text>
-          <Text style={[styles.carouselCardPrices, styles.carouselCardPrice]}>
-            $32.90
-          </Text>
-          <Text
-            style={[
-              styles.carouselCardPrices,
-              styles.carouselCardDiscountPercent,
-            ]}
-          >
-            (20% OFF)
-          </Text>
-        </View>
-      </View>
-    </View>
-  );
-};
 
 const ProductDetailScreen = ({
   navigation,
@@ -78,37 +38,13 @@ const ProductDetailScreen = ({
   auth,
   saving,
 }) => {
-  const [pincode, setPincode] = useState("");
-
-  const [isVariantSelected, setIsVariantSelected] = useState(true);
-  const [activeColor, setActiveColor] = useState(
-    product.default_variant.option_values[0].presentation
-  );
-  const [activeSize, setActiveSize] = useState("");
   const [selectedVariant, setSelectedVariant] = useState({});
-  const [imageURI, setImageURI] = useState(
-    `${HOST}/${product.variants[0].images[0]?.styles[3].url}`
-  );
-
   const [snackbarVisible, setSnackbarVisible] = useState(false);
-
-  const [variantDistinctColors] = useState([
-    ...new Set(
-      product.variants.map((variant) => variant.option_values[0].presentation)
-    ),
-  ]);
-
   const [favsnackbar, setFavSnackbar] = useState(false);
 
   const taxon = useSelector((state) => state.taxons.taxon);
 
-  const handleColorSelection = ({ index, color }) => {
-    setActiveColor(color);
-    setActiveSize("");
-    setSelectedVariant({});
-    setIsVariantSelected(true);
-    setImageURI(`${HOST}/${product.variants[index].images[0]?.styles[3].url}`);
-  };
+
 
   const dismissSnackbar = () => setSnackbarVisible(false);
   const dismissFavSnackbar = () => setFavSnackbar(false);
