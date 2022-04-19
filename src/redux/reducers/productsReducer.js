@@ -306,7 +306,6 @@ export default function productsReducer(state = DEFAULT_STATE, action) {
 
         favorites: [...new Set([...state.favorites, action.payload])],
       };
-
     /**
      * SET_PAGE_INDEX
      */

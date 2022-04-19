@@ -10,7 +10,7 @@ export function getProductsList(data, { pageIndex, filter }) {
     include: "images",
     filter: filter,
     page: pageIndex,
-    per_page: 18,
+    per_page: 10,
   };
   const method = "GET";
   return {

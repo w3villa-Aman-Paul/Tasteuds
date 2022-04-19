@@ -132,12 +132,12 @@ const ProductListScreen = ({
     };
   }, [route.params]);
 
-  React.useEffect(() => {
-    //Reset products filter only upon component unmount
-    return () => {
-      dispatch(resetProductsFilter());
-    };
-  }, []);
+  // React.useEffect(() => {
+  //   //Reset products filter only upon component unmount
+  //   return () => {
+  //     dispatch(resetProductsFilter());
+  //   };
+  // }, []);
 
   React.useEffect(() => {
     dispatch(getTaxonsList());
@@ -238,6 +238,7 @@ const ProductListScreen = ({
               }}
             />
           )}
+
         </View>
         <BottomSheet isVisible={isSortOverlayVisible}>
           {productsList.map((l, i) => (

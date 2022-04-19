@@ -19,18 +19,7 @@ import Footer from "../../../components/footer";
 
 const ProductDetailScreen = ({ navigation, dispatch, product, auth }) => {
   const [selectedVariant, setSelectedVariant] = useState({});
-  const [imageURI, setImageURI] = useState(
-    `${HOST}/${product.variants[0].images[0]?.styles[3].url}`
-  );
-
   const [snackbarVisible, setSnackbarVisible] = useState(false);
-
-  const [variantDistinctColors] = useState([
-    ...new Set(
-      product.variants.map((variant) => variant.option_values[0].presentation)
-    ),
-  ]);
-
   const [favsnackbar, setFavSnackbar] = useState(false);
 
   const taxon = useSelector((state) => state.taxons.taxon);

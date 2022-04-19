@@ -12,7 +12,11 @@ import React from "react";
 import { globalStyles } from "../../../../styles/global";
 import { styles } from "./styles";
 import Footer from "../../../components/footer";
-import { accountRetrieve, getProductsList } from "../../../../redux";
+import {
+  accountRetrieve,
+  getProductsList,
+  resetProductsList,
+} from "../../../../redux";
 import { connect, useSelector } from "react-redux";
 import { HOST } from "../../../../res/env";
 import { colors } from "../../../../res/palette";
