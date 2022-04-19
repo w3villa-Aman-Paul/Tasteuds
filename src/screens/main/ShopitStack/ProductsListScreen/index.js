@@ -5,10 +5,7 @@ import {
   Image,
   FlatList,
   TouchableOpacity,
-  ActivityIndicator,
   ScrollView,
-  SafeAreaView,
-  VirtualizedList,
 } from "react-native";
 
 import { globalStyles } from "../../../../styles/global";
@@ -130,7 +127,7 @@ const ProductListScreen = ({
   React.useEffect(() => {
     handleProductsLoad();
     return () => {
-      dispatch(resetProductsList());
+      // dispatch(resetProductsList());
       dispatch(setPageIndex(1));
     };
   }, [route.params]);
@@ -147,17 +144,17 @@ const ProductListScreen = ({
   }, []);
 
   const handleProductLoad = async (id, item) => {
-    await dispatch(getProduct(id));
+    dispatch(getProduct(id));
     dispatch(getTaxon(item.taxons[0].id));
     navigation.navigate("ProductDetail");
   };
 
-  const newJustInRenderItem = ({ item }) => {
+  const newJustInRenderItem = ({ item, index }) => {
     return (
       <FlatListImageItem
-        key={item.id}
+        key={index.toString()}
         item={item}
-        onPress={() => handleProductLoad(item.id, item)}
+        onPress={() => handleProductLoad(item?.id, item)}
         imageStyle={styles.newJustInImage}
         itemContainerStyle={styles.newJustInItemContainer}
       />
@@ -205,9 +202,9 @@ const ProductListScreen = ({
           </Text>
 
           <ScrollView horizontal={true} style={{ ...globalStyles.mt24 }}>
-            {categoryList.map((cat) => (
+            {categoryList.map((cat, index) => (
               <TouchableOpacity
-                key={cat.id}
+                key={index.toString()}
                 onPress={() => {
                   handleCategoryPress(cat.id);
                 }}
@@ -227,16 +224,20 @@ const ProductListScreen = ({
             marginRight: 15,
           }}
         >
-          <FlatList
-            data={productsList}
-            keyExtractor={(item) => item.id}
-            renderItem={newJustInRenderItem}
-            numColumns={2}
-            onEndReachedThreshold={0.3}
-            onEndReached={() => {
-              meta.total_count !== productsList.length && handleEndReached();
-            }}
-          />
+          {saving ? (
+            <ActivityIndicatorCard />
+          ) : (
+            <FlatList
+              data={productsList}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={newJustInRenderItem}
+              numColumns={2}
+              onEndReachedThreshold={0.3}
+              onEndReached={() => {
+                meta.total_count !== productsList.length && handleEndReached();
+              }}
+            />
+          )}
         </View>
         <BottomSheet isVisible={isSortOverlayVisible}>
           {productsList.map((l, i) => (

@@ -3,20 +3,7 @@ import { View, ScrollView, Text, Image, TouchableOpacity } from "react-native";
 import { globalStyles } from "../../../../styles/global";
 import { colors } from "../../../../res/palette";
 import { Avatar, Button, Divider, Icon } from "react-native-elements";
-import MyCarousel from "../../../../library/components/MyCarousel";
 import { Snackbar } from "react-native-paper";
-import {
-  Smile,
-  SmileSad,
-  Dollar,
-  ShoppingCart,
-  Repeat,
-  CustomIconTruck,
-  CustomIconOriginal,
-  IcOutlineAssignmentReturn,
-  RiSecurePaymentFill,
-} from "../../../../library/icons";
-import TextField from "../../../../library/components/TextField";
 import ActivityIndicatorCard from "../../../../library/components/ActivityIndicatorCard";
 import {
   addItem,
@@ -30,61 +17,7 @@ import { HOST } from "../../../../res/env";
 import { useSelector } from "react-redux";
 import Footer from "../../../components/footer";
 
-const CarouselProductCard = ({ imageURI }) => {
-  return (
-    <View style={styles.carouselProductCard}>
-      <Image
-        source={{
-          uri: imageURI,
-        }}
-        style={{
-          width: 150,
-          height: 196,
-        }}
-      />
-      <View style={styles.carouselProductDescription}>
-        <Text style={globalStyles.latoBold14}>Tokyo Talkies</Text>
-        <Text style={globalStyles.label}>Women Printed A-Line...</Text>
-        <View style={styles.carouselCardPricingContainer}>
-          <Text
-            style={[
-              styles.carouselCardPrices,
-              styles.carouselCardDiscountedPrice,
-            ]}
-          >
-            $29.90
-          </Text>
-          <Text style={[styles.carouselCardPrices, styles.carouselCardPrice]}>
-            $32.90
-          </Text>
-          <Text
-            style={[
-              styles.carouselCardPrices,
-              styles.carouselCardDiscountPercent,
-            ]}
-          >
-            (20% OFF)
-          </Text>
-        </View>
-      </View>
-    </View>
-  );
-};
-
-const ProductDetailScreen = ({
-  navigation,
-  dispatch,
-  product,
-  auth,
-  saving,
-}) => {
-  const [pincode, setPincode] = useState("");
-
-  const [isVariantSelected, setIsVariantSelected] = useState(true);
-  const [activeColor, setActiveColor] = useState(
-    product.default_variant.option_values[0].presentation
-  );
-  const [activeSize, setActiveSize] = useState("");
+const ProductDetailScreen = ({ navigation, dispatch, product, auth }) => {
   const [selectedVariant, setSelectedVariant] = useState({});
   const [imageURI, setImageURI] = useState(
     `${HOST}/${product.variants[0].images[0]?.styles[3].url}`
@@ -101,14 +34,7 @@ const ProductDetailScreen = ({
   const [favsnackbar, setFavSnackbar] = useState(false);
 
   const taxon = useSelector((state) => state.taxons.taxon);
-
-  const handleColorSelection = ({ index, color }) => {
-    setActiveColor(color);
-    setActiveSize("");
-    setSelectedVariant({});
-    setIsVariantSelected(true);
-    setImageURI(`${HOST}/${product.variants[index].images[0]?.styles[3].url}`);
-  };
+  let { saving } = useSelector((state) => state.products && state.taxons);
 
   const dismissSnackbar = () => setSnackbarVisible(false);
   const dismissFavSnackbar = () => setFavSnackbar(false);
@@ -170,36 +96,8 @@ const ProductDetailScreen = ({
               <Text
                 style={styles.price}
               >{`${product.price} ${product.currency}`}</Text>
-              {/* <Text style={styles.description}>{product.description}</Text> */}
-              {/* <View style={[styles.pricingContainer, globalStyles.mt8]}>
-                <Text style={styles.discountedPrice}>
-                  {product.display_price}
-                </Text>
-                <Text style={styles.discountPercent}>(20% OFF)</Text>
-                <Text
-                  style={[globalStyles.latoBold14, globalStyles.textSuccess]}
-                >
-                  Inclusive of all taxes
-                </Text>
-              </View> */}
             </View>
           </View>
-          {/* <View style={[styles.containerFluid, globalStyles.mt16]}>
-            <View style={[globalStyles.container, globalStyles.pv8]}>
-              <Text style={globalStyles.latoBold14}>
-                You get it for
-                <Text style={[globalStyles.prices, globalStyles.textPrimary]}>
-                  {" "}
-                  $25.49
-                </Text>
-                <Text style={[globalStyles.prices, globalStyles.textSuccess]}>
-                  {" "}
-                  (Save $4.50)
-                </Text>
-              </Text>
-
-            </View>
-          </View> */}
           <View style={[styles.containerFluid, globalStyles.mt8]}>
             <View style={[globalStyles.container, globalStyles.pv8]}>
               <View
@@ -217,7 +115,11 @@ const ProductDetailScreen = ({
                   // disabledTitleStyle={{ color: colors.white }}
                   containerStyle={{ flex: 1 }}
                   titleStyle={{ ...styles.titleStyle, fontSize: 20 }}
-                  buttonStyle={{ ...globalStyles.btn, width: 250, height: 60 }}
+                  buttonStyle={{
+                    ...globalStyles.btn,
+                    width: "85%",
+                    height: 60,
+                  }}
                   onPress={handleAddToBag}
                 />
                 <View

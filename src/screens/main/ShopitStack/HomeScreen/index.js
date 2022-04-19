@@ -17,6 +17,7 @@ import { connect, useSelector } from "react-redux";
 import { HOST } from "../../../../res/env";
 import { colors } from "../../../../res/palette";
 import { Icon } from "react-native-elements";
+import ActivityIndicatorCard from "../../../../library/components/ActivityIndicatorCard";
 
 const FlatListImageItem = ({
   item,
@@ -62,23 +63,22 @@ const HomeComponent = ({
   productsList,
 }) => {
   const { isAuth } = useSelector((state) => state.auth);
+  const { saving } = useSelector((state) => state.products);
 
   const handleProductsLoad = (pageIndexAfterDispatch = null) => {
     dispatch(
       getProductsList(null, {
-        pageIndex: pageIndexAfterDispatch || pageIndex,
-        filter: {
-          name: route.params?.searchQuery || "",
-        },
+        pageIndex: null,
+        filter: {},
       })
     );
   };
 
-  const newJustInRenderItem = ({ item }) => {
+  const newJustInRenderItem = ({ item, index }) => {
     return (
       <TouchableOpacity onPress={() => handleProductsLoad(item?.id, item)}>
         <FlatListImageItem
-          key={item.id}
+          key={index.toString()}
           item={item}
           imageStyle={styles.newJustInImage}
           itemContainerStyle={styles.newJustInItemContainer}
@@ -265,14 +265,16 @@ const HomeComponent = ({
             marginRight: 15,
           }}
         >
-          <FlatList
-            data={productsList.slice(0, 10)}
-            keyExtractor={(item) => {
-              item.id + "." + item.name;
-            }}
-            renderItem={newJustInRenderItem}
-            numColumns={2}
-          />
+          {saving ? (
+            <ActivityIndicatorCard />
+          ) : (
+            <FlatList
+              data={productsList.slice(0, 10)}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={newJustInRenderItem}
+              numColumns={2}
+            />
+          )}
         </View>
       </View>
 
