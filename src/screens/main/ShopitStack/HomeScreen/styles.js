@@ -12,12 +12,10 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   newJustInImage: {
-    width: 120,
+    width: '100%',
     height: 148,
   },
   newJustInItemContainer: {
-    marginRight: 16,
-    marginLeft: 10,
     marginBottom: 16,
   },
   flatListHeaderText: {
@@ -74,8 +72,8 @@ export const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    marginLeft: 10,
-    marginRight: 10,
+    marginLeft: 7,
+    marginRight: 7,
   },
   banner: {
     position: "absolute",
@@ -91,14 +89,14 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   first: {
+    flex: 0.6,
     width: 220,
     height: 119,
-    // marginRight: 5,
   },
   second: {
+    flex: 0.4,
     width: 139,
     height: 119,
-    // marginLeft: 5,
   },
   body_second_image: {
     width: "100%",
@@ -116,15 +114,16 @@ export const styles = StyleSheet.create({
     borderColor: "#ffffff",
     backgroundColor: "#ffffff",
     elevation: 10,
-    marginTop: 10,
-    marginBottom: 10,
+    marginTop: 25,
+    marginBottom: 25,
   },
   body_third: {
     flex: 1,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "flex-end",
-    height: 150,
+    marginTop: 5,
+    marginBottom: 15,
     paddingLeft: 45,
     paddingRight: 45,
   },
@@ -163,6 +162,7 @@ export const styles = StyleSheet.create({
   detailsContainer: {
     paddingVertical: 10,
     width: 150,
+    paddingHorizontal: 15,
   },
   title: {
     ...globalStyles.latoBold14,
@@ -186,11 +186,15 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.white
   },
   home_btn:{
-    width: 200,
+    // width: 250,
+    flex: 1,
+    alignItems: 'center',
+    marginLeft: 80,
+    marginRight: 80,
+    paddingTop: 10,
+    paddingBottom: 10,
     backgroundColor: colors.btnLink,
-    marginLeft: 35,
-    marginBottom: 15,
-    padding: 10,
+    marginBottom: 25,
     borderRadius: 10,
   },
   btn_text:{
@@ -211,7 +215,13 @@ export const styles = StyleSheet.create({
     height: 60,
     resizeMode: "contain",
   },
+  fourth:{
+    width: '100%',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   content_text: {
+    marginLeft : 10,
     color: "#000000",
     fontSize: 25,
     textAlign: "left",

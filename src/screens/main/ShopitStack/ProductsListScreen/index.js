@@ -5,10 +5,7 @@ import {
   Image,
   FlatList,
   TouchableOpacity,
-  ActivityIndicator,
   ScrollView,
-  SafeAreaView,
-  VirtualizedList,
 } from "react-native";
 
 import { globalStyles } from "../../../../styles/global";
@@ -147,7 +144,7 @@ const ProductListScreen = ({
   }, []);
 
   const handleProductLoad = async (id, item) => {
-    await dispatch(getProduct(id));
+    dispatch(getProduct(id));
     dispatch(getTaxon(item.taxons[0].id));
     navigation.navigate("ProductDetail");
   };
@@ -165,7 +162,7 @@ const ProductListScreen = ({
   };
 
   const handleCategoryPress = (id) => {
-    dispatch(getTaxon(id));
+    // dispatch(getTaxon(id));
   };
 
   if (saving) {
@@ -196,7 +193,7 @@ const ProductListScreen = ({
               borderWidth: 1,
               borderRadius: 10,
               lineHeight: 18.75,
-              fontWeight: 'bold',
+              fontWeight: "bold",
               ...styles.borderPrimary,
             }}
           >
@@ -212,9 +209,7 @@ const ProductListScreen = ({
                   handleCategoryPress(cat.id);
                 }}
               >
-                <Text  style={{ padding: 5, fontSize: 16 }}>
-                  {cat.name}
-                </Text>
+                <Text style={{ padding: 5, fontSize: 16 }}>{cat.name}</Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
@@ -229,19 +224,70 @@ const ProductListScreen = ({
             marginRight: 15,
           }}
         >
-          <FlatList
-            data={productsList}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={newJustInRenderItem}
-            numColumns={2}
-            onEndReachedThreshold={0.3}
-            onEndReached={() => {
-              meta.total_count !== productsList.length && handleEndReached();
-            }}
-          />
+          {saving ? (
+            <ActivityIndicatorCard />
+          ) : (
+            <FlatList
+              data={productsList.slice(0, 73)}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={newJustInRenderItem}
+              numColumns={2}
+            />
+          )}
         </View>
-        <BottomSheet isVisible={isSortOverlayVisible}>
-          {productsSortList.map((l, i) => (
+
+        <View style={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginBottom: 25
+        }}>
+          <Text style={{textAlign: 'center'}}>Ingen flere produkter</Text>
+
+          <TouchableOpacity style={{
+            width: 120,
+            marginTop: 30,
+            marginBottom: 10,
+            borderWidth: 1,
+            borderRadius : 10,
+            paddingHorizontal: 10,
+            paddingVertical: 3,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+            <Text>TIL TOPPEN</Text>
+          </TouchableOpacity>
+
+          <View style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+            <TouchableOpacity style={{
+              width: 100,
+              marginRight: 30,
+              paddingHorizontal: 20,
+              paddingVertical: 3,
+              borderWidth: 1,
+              borderRadius: 10,
+              alignItems: 'center',
+            }}>
+              <Text>FILTER</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={{
+               width: 100,
+              marginLeft: 30,
+              paddingHorizontal: 20,
+              paddingVertical: 3,
+              borderWidth: 1,
+              borderRadius: 10,
+              alignItems: 'center',
+            }}>
+              <Text>SORTER</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+        {/* <BottomSheet isVisible={isSortOverlayVisible}>
+          {productsList.map((l, i) => (
             <ListItem
               key={i}
               containerStyle={l.containerStyle}
@@ -252,14 +298,12 @@ const ProductListScreen = ({
               </ListItem.Content>
             </ListItem>
           ))}
-        </BottomSheet>
-        <Footer />
+        </BottomSheet> */}
       </ScrollView>
     );
 };
 
 const mapStateToProps = (state) => ({
-  meta: state.products.meta,
   saving: state.products.saving,
   productsList: state.products.productsList,
   minimumPriceRange: state.products.params.priceRange.minimum,

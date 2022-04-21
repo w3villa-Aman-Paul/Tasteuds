@@ -27,50 +27,41 @@ function ProfileStackNavigator({ navigation }) {
   return (
     <ProfileStack.Navigator
       screenOptions={{
-
         headerTitle: "",
         headerLeft: () => (
-          <Image
-            source={require("../../assets/images/Header-Icon/header_logo.png")}
-            style={styles.header}
-          />
+          <Icon name='arrowleft' type='ant-design' onPress={() => navigation.goBack()} title="Back" />
         ),
-        title: "",
         headerLeftContainerStyle: {
-          paddingHorizontal: 18,
+          paddingHorizontal: 10,
+          top: 4,
+          left: 20,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: '#ffffff',
+          borderRadius: 50,
+          elevation: 10,
+          height: 40,
+          width: 40,
         },
         headerRight: () => (
-          <>
-            <Icon
-              name="user"
-              type="font-awesome"
-              size={29}
-              color={colors.primary}
-              onPress={() => navigation.navigate("Profile")}
-              style={{}}
-            />
-            <Icon
-              name="shoppingcart"
-              type="ant-design"
-              size={29}
-              color={colors.primary}
-              onPress={() => navigation.navigate("Bag")}
-            />
-          </>
+          <Icon
+            name="search"
+            type="font-awesome"
+            size={25}
+            color={colors.primary}
+            onPress={() => navigation.navigate("Profile")}
+          />
         ),
-        headerTitleStyle: {
-          ...globalStyles.latoBold18,
-        },
         headerRightContainerStyle: {
-          position: "absolute",
-          top: 0,
-          right: 0,
-          width: 100,
-          paddingHorizontal: 18,
-          flexDirection: "row",
-          flex: 1,
-          alignItems: "center",
-          justifyContent: "space-between",
+          top: 4,
+          right: 20,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: '#ffffff',
+          borderRadius: 50,
+          elevation: 10,
+          height: 40,
+          width: 40,
         },
       }}
     >

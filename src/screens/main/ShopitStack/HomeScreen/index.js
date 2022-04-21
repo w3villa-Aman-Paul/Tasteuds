@@ -12,11 +12,18 @@ import React from "react";
 import { globalStyles } from "../../../../styles/global";
 import { styles } from "./styles";
 import Footer from "../../../components/footer";
-import { accountRetrieve, getProductsList, resetProductsList } from "../../../../redux";
+import {
+  accountRetrieve,
+  getProduct,
+  getProductsList,
+  getTaxon,
+  resetProductsList,
+} from "../../../../redux";
 import { connect, useSelector } from "react-redux";
 import { HOST } from "../../../../res/env";
 import { colors } from "../../../../res/palette";
 import { Icon } from "react-native-elements";
+import ActivityIndicatorCard from "../../../../library/components/ActivityIndicatorCard";
 
 const FlatListImageItem = ({
   item,
@@ -54,50 +61,44 @@ const FlatListImageItem = ({
   );
 };
 
-const HomeComponent = ({
-  dispatch,
-  navigation,
-  route,
-  pageIndex,
-  productsList,
-}) => {
+const HomeComponent = ({dispatch,navigation,route,pageIndex,productsList}) => {
   const { isAuth } = useSelector((state) => state.auth);
-
-  React.useEffect(() => {
-    handleProductsLoad();
-    return () => {
-      // dispatch(resetProductsList());
-      dispatch(accountRetrieve(null, {}));
-    }
-  }, [isAuth, route.params]);
-
-
+  const { saving } = useSelector((state) => state.products);
 
   const handleProductsLoad = (pageIndexAfterDispatch = null) => {
     dispatch(
       getProductsList(null, {
-        pageIndex: pageIndexAfterDispatch || pageIndex,
-        filter: {
-          name: route.params?.searchQuery || "",
-        },
+        pageIndex: null,
+        filter: {},
       })
     );
   };
 
+
+  const handleProductLoad = async (id, item) => {
+    dispatch(getProduct(id));
+    dispatch(getTaxon(item.taxons[0].id));
+    navigation.navigate("ProductDetail");
+  };
+
   const newJustInRenderItem = ({ item, index }) => {
     return (
-      <TouchableOpacity onPress={() => handleProductsLoad(item?.id, item)}>
+      <TouchableOpacity>
         <FlatListImageItem
           key={index.toString()}
           item={item}
+          onPress={() => handleProductLoad(item?.id, item)}
           imageStyle={styles.newJustInImage}
           itemContainerStyle={styles.newJustInItemContainer}
         />
       </TouchableOpacity>
     );
   };
- 
 
+  React.useEffect(() => {
+    handleProductsLoad();
+    dispatch(accountRetrieve(null, {}));
+  }, [isAuth, route.params]);
 
   return (
     <ScrollView style={{ ...styles.bg_white }}>
@@ -164,7 +165,6 @@ const HomeComponent = ({
           <View style={styles.body_third}>
             <View
               style={{
-                // ...styles.body_image,
                 flex: 0.8,
               }}
             >
@@ -259,33 +259,30 @@ const HomeComponent = ({
           </View>
         </View>
 
-        <View style={styles.fourth}>
-          <Text style={styles.content_text}>MEST KJØPTE</Text>
-        </View>
-
-        <View
-          style={{
+        <Text style={styles.content_text}>MEST KJØPTE</Text>
+          <View style={{
             ...globalStyles.containerFluid,
-            ...globalStyles.mt24,
-            ...styles.bgwhite,
-            marginLeft: 15,
-            marginRight: 15,
+            ...globalStyles.mt8,
+            ...styles.bg_white,
+            alignItems: 'center',
           }}
         >
-          <FlatList
-            data={productsList.slice(0, 10)}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={newJustInRenderItem}
-            numColumns={2}
-          />
+          {saving ? (
+            <ActivityIndicatorCard />
+          ) : (
+            <FlatList
+              data={productsList.slice(0, 10)}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={newJustInRenderItem}
+              numColumns={2}
+            />
+          )}
         </View>
       </View>
 
-      <TouchableOpacity style={styles.home_btn}>
+      <TouchableOpacity style={styles.home_btn} onPress={() => navigation.navigate('ProductsList')}>
         <Text style={styles.btn_text}>SE HELE UTVALGET</Text>
       </TouchableOpacity>
-
-      <Footer />
     </ScrollView>
   );
 };

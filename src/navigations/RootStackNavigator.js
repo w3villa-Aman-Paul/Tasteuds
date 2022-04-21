@@ -10,7 +10,7 @@ import ForgotPasswordScreen from "../screens/auth/ForgotPasswordScreen";
 import ResetPasswordScreen from "../screens/auth/ResetPasswordScreen";
 import EnterCodeScreen from "../screens/auth/EnterCodeScreen";
 
-import AsyncStorage from "@react-native-community/async-storage";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { userLogin } from "../redux/actions/authActions";
 import { connect } from "react-redux";
 import ActivityIndicatorCard from "../library/components/ActivityIndicatorCard";

@@ -82,7 +82,6 @@ const CategoriesScreen = ({ navigation, dispatch, taxonomy, saving }) => {
           )
         }
       )}
-      <Footer />
     </ScrollView>
   )
 }

@@ -303,11 +303,9 @@ export default function productsReducer(state = DEFAULT_STATE, action) {
     case "SET_PRODUCT_FAVOURITE":
       return {
         ...state,
-        favorites: [
-          ...new Set([...state.favorites, action.payload])
-        ]
-      }
 
+        favorites: [...new Set([...state.favorites, action.payload])],
+      };
     /**
      * SET_PAGE_INDEX
      */

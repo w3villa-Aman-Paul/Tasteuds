@@ -8,7 +8,7 @@ import ShippingAddressScreen from "../screens/main/ShopitStack/CheckoutScreens/S
 import PaymentScreen from "../screens/main/ShopitStack/CheckoutScreens/PaymentScreen";
 import BagScreen from "../screens/main/ShopitStack/CheckoutScreens/BagScreen";
 import FiltersTabNavigator from "./FiltersTabNavigator";
-import { ShoppingBag, Heart, Share } from "../library/icons";
+import { ShoppingBag, Heart, Share, ChevronLeft } from "../library/icons";
 import { colors } from "../res/palette";
 import { globalStyles } from "../styles/global";
 import { useSelector } from "react-redux";
@@ -28,37 +28,24 @@ function ShopitStackNavigator({ navigation }) {
     <ShopitStack.Navigator
       screenOptions={{
         headerRight: () => (
-          <>
             <Icon
-              name="user"
+              name="search"
               type="font-awesome"
-              size={29}
+              size={25}
               color={colors.primary}
               onPress={() => navigation.navigate("Profile")}
-              style={{}}
             />
-            <Icon
-              name="shoppingcart"
-              type="ant-design"
-              size={29}
-              color={colors.primary}
-              onPress={() => navigation.navigate("Bag")}
-            />
-          </>
         ),
-        headerTitleStyle: {
-          ...globalStyles.latoBold18,
-        },
         headerRightContainerStyle: {
-          position: "absolute",
-          top: 0,
-          right: 0,
-          width: 100,
-          paddingHorizontal: 18,
-          flexDirection: "row",
-          flex: 1,
-          alignItems: "center",
-          justifyContent: "space-between",
+          top: 4,
+          right: 20,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: '#ffffff',
+          borderRadius: 50,
+          elevation: 10,
+          height: 40,
+          width: 40,
         },
       }}
     >
@@ -75,7 +62,7 @@ function ShopitStackNavigator({ navigation }) {
           ),
           title: "",
           headerLeftContainerStyle: {
-            paddingHorizontal: 18,
+            paddingHorizontal: 10,
           },
         }}
       />
@@ -85,14 +72,31 @@ function ShopitStackNavigator({ navigation }) {
         options={({ route }) => ({
           headerTitle: "",
           headerLeft: () => (
-            <Image
-              source={require("../../assets/images/Header-Icon/header_logo.png")}
-              style={styles.header}
-            />
+            <Icon name='arrowleft' type='ant-design' onPress={() => navigation.goBack()} title="Back" />
           ),
           title: "",
           headerLeftContainerStyle: {
-            paddingHorizontal: 18,
+            paddingHorizontal: 10,
+            top: 4,
+            left: 20,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: '#ffffff',
+            borderRadius: 50,
+            elevation: 10,
+            height: 40,
+            width: 40,
+          },
+          headerRightContainerStyle: {
+            top: 4,
+            right: 20,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: '#ffffff',
+            borderRadius: 50,
+            elevation: 10,
+            height: 40,
+            width: 40,
           },
         })}
       />
@@ -103,14 +107,22 @@ function ShopitStackNavigator({ navigation }) {
           headerTitle: "",
           headerRightContainerStyle: styles.headerRight,
           headerLeft: () => (
-            <Image
-              source={require("../../assets/images/Header-Icon/header_logo.png")}
-              style={styles.header}
-            />
+            <ChevronLeft size={29} onPress={() => navigation.navigate('ProductsList')} style={styles.chevron} title="Back" />
           ),
           title: "",
           headerLeftContainerStyle: {
-            paddingHorizontal: 18,
+            paddingHorizontal: 15,
+          },
+          headerRightContainerStyle: {
+            top: 4,
+            right: 20,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: '#ffffff',
+            borderRadius: 50,
+            elevation: 10,
+            height: 40,
+            width: 40,
           },
         }}
       />
@@ -128,7 +140,18 @@ function ShopitStackNavigator({ navigation }) {
           ),
           title: "",
           headerLeftContainerStyle: {
-            paddingHorizontal: 18,
+            paddingHorizontal: 10,
+          },
+          headerRightContainerStyle: {
+            top: 4,
+            right: 20,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: '#ffffff',
+            borderRadius: 50,
+            elevation: 10,
+            height: 40,
+            width: 40,
           },
         }}
       />
@@ -152,6 +175,17 @@ function ShopitStackNavigator({ navigation }) {
               onPress={() => navigation.navigate("Favorites")}
             />
           ),
+          headerRightContainerStyle: {
+            top: 4,
+            right: 20,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: '#ffffff',
+            borderRadius: 50,
+            elevation: 10,
+            height: 40,
+            width: 40,
+          },
         }}
       />
       <ShopitStack.Screen
@@ -166,6 +200,17 @@ function ShopitStackNavigator({ navigation }) {
               onPress={() => navigation.navigate("Favorites")}
             />
           ),
+          headerRightContainerStyle: {
+            top: 4,
+            right: 20,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: '#ffffff',
+            borderRadius: 50,
+            elevation: 10,
+            height: 40,
+            width: 40,
+          },
         }}
       />
       <ShopitStack.Screen
@@ -186,6 +231,17 @@ function ShopitStackNavigator({ navigation }) {
               onPress={() => navigation.navigate("Favorites")}
             />
           ),
+          headerRightContainerStyle: {
+            top: 4,
+            right: 20,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: '#ffffff',
+            borderRadius: 50,
+            elevation: 10,
+            height: 40,
+            width: 40,
+          },
         }}
       />
     </ShopitStack.Navigator>
@@ -209,5 +265,10 @@ const styles = StyleSheet.create({
     width: 150,
     height: 30,
     resizeMode: "contain",
+  },
+  chevron: {
+    color: '#000000',
+    borderWidth: 1,
+    borderRadius: 8,
   },
 });
