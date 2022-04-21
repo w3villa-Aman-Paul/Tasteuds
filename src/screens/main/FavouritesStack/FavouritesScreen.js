@@ -1,17 +1,15 @@
 import * as React from "react";
-import { View, ScrollView, Text } from "react-native";
+import { View, ScrollView, Text, StyleSheet } from "react-native";
 import ProductCard from "../../../library/components/ProductCard";
 import { globalStyles } from "../../../styles/global";
 import { connect, useSelector } from "react-redux";
 
 const FavouritesScreen = ({ navigation, favorites }) => {
-  const favorite = useSelector((state) => state.products.favourites);
-  console.log(favorite);
 
   return (
     <ScrollView>
       <View style={globalStyles.container}>
-        <Text style={globalStyles.title}>Favourites</Text>
+        <Text style={styles.title}>Favourites {favorites.length}</Text>
         {favorites.map((ele) => (
           <ProductCard
             key={ele.id}
@@ -23,6 +21,15 @@ const FavouritesScreen = ({ navigation, favorites }) => {
     </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  title: {
+    textAlign: 'center',
+    color: "#000000",
+    fontSize: 25,
+    fontWeight: 'bold',
+  }
+})
 
 const mapStateToProps = (state) => ({
   favorites: state.products.favorites,

@@ -228,19 +228,65 @@ const ProductListScreen = ({
             <ActivityIndicatorCard />
           ) : (
             <FlatList
-              data={productsList}
+              data={productsList.slice(0, 73)}
               keyExtractor={(item, index) => index.toString()}
               renderItem={newJustInRenderItem}
               numColumns={2}
-              onEndReachedThreshold={0.3}
-              onEndReached={() => {
-                meta.total_count !== productsList.length && handleEndReached();
-              }}
             />
           )}
-
         </View>
-        <BottomSheet isVisible={isSortOverlayVisible}>
+
+        <View style={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginBottom: 25
+        }}>
+          <Text style={{textAlign: 'center'}}>Ingen flere produkter</Text>
+
+          <TouchableOpacity style={{
+            width: 120,
+            marginTop: 30,
+            marginBottom: 10,
+            borderWidth: 1,
+            borderRadius : 10,
+            paddingHorizontal: 10,
+            paddingVertical: 3,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+            <Text>TIL TOPPEN</Text>
+          </TouchableOpacity>
+
+          <View style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+            <TouchableOpacity style={{
+              width: 100,
+              marginRight: 30,
+              paddingHorizontal: 20,
+              paddingVertical: 3,
+              borderWidth: 1,
+              borderRadius: 10,
+              alignItems: 'center',
+            }}>
+              <Text>FILTER</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={{
+               width: 100,
+              marginLeft: 30,
+              paddingHorizontal: 20,
+              paddingVertical: 3,
+              borderWidth: 1,
+              borderRadius: 10,
+              alignItems: 'center',
+            }}>
+              <Text>SORTER</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+        {/* <BottomSheet isVisible={isSortOverlayVisible}>
           {productsList.map((l, i) => (
             <ListItem
               key={i}
@@ -252,14 +298,12 @@ const ProductListScreen = ({
               </ListItem.Content>
             </ListItem>
           ))}
-        </BottomSheet>
-        <Footer />
+        </BottomSheet> */}
       </ScrollView>
     );
 };
 
 const mapStateToProps = (state) => ({
-  meta: state.products.meta,
   saving: state.products.saving,
   productsList: state.products.productsList,
   minimumPriceRange: state.products.params.priceRange.minimum,

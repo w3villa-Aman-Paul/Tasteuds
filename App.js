@@ -5,7 +5,7 @@ import RootStackNavigator from "./src/navigations/RootStackNavigator";
 import { Provider } from "react-redux";
 import store from "./src/redux/store";
 import * as Font from "expo-font";
-import { AppLoading } from "expo";
+import ActivityIndicatorCard from "./src/library/components/ActivityIndicatorCard";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const getFonts = () =>
@@ -14,24 +14,29 @@ const getFonts = () =>
     "lato-regular": require("./assets/fonts/Lato-Regular.ttf"),
   });
 
-export default function App() {
+function App() {
   const [fontsLoaded, setFontsLoaded] = React.useState(false);
 
-  if (fontsLoaded) {
-    return (
-      <Provider store={store}>
-        <SafeAreaProvider>
-          <ThemeProvider>
-            <PaperProvider>
-              <RootStackNavigator />
-            </PaperProvider>
-          </ThemeProvider>
-        </SafeAreaProvider>
-      </Provider>
-    );
-  } else {
-    return (
-      <AppLoading startAsync={getFonts} onFinish={() => setFontsLoaded(true)} />
-    );
+  React.useEffect(() => {
+    getFonts();
+    setFontsLoaded(true);
+  }, []);
+
+  if (!fontsLoaded) {
+    return <ActivityIndicatorCard />;
   }
+
+  return (
+    <Provider store={store}>
+      <SafeAreaProvider>
+        <ThemeProvider>
+          <PaperProvider>
+            <RootStackNavigator />
+          </PaperProvider>
+        </ThemeProvider>
+      </SafeAreaProvider>
+    </Provider>
+  );
 }
+
+export default App;

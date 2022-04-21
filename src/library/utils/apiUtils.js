@@ -1,7 +1,7 @@
 import axios from 'axios';
 import qs from 'qs';
 import { HOST } from '../../res/env'
-import AsyncStorage from '@react-native-community/async-storage'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const API_VERSION_STOREFRONT = '/api/v2/storefront';
 const API_ROOT = HOST;

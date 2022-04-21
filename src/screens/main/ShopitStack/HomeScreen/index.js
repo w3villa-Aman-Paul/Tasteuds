@@ -14,7 +14,9 @@ import { styles } from "./styles";
 import Footer from "../../../components/footer";
 import {
   accountRetrieve,
+  getProduct,
   getProductsList,
+  getTaxon,
   resetProductsList,
 } from "../../../../redux";
 import { connect, useSelector } from "react-redux";
@@ -59,13 +61,7 @@ const FlatListImageItem = ({
   );
 };
 
-const HomeComponent = ({
-  dispatch,
-  navigation,
-  route,
-  pageIndex,
-  productsList,
-}) => {
+const HomeComponent = ({dispatch,navigation,route,pageIndex,productsList}) => {
   const { isAuth } = useSelector((state) => state.auth);
   const { saving } = useSelector((state) => state.products);
 
@@ -78,12 +74,20 @@ const HomeComponent = ({
     );
   };
 
+
+  const handleProductLoad = async (id, item) => {
+    dispatch(getProduct(id));
+    dispatch(getTaxon(item.taxons[0].id));
+    navigation.navigate("ProductDetail");
+  };
+
   const newJustInRenderItem = ({ item, index }) => {
     return (
-      <TouchableOpacity onPress={() => handleProductsLoad(item?.id, item)}>
+      <TouchableOpacity>
         <FlatListImageItem
           key={index.toString()}
           item={item}
+          onPress={() => handleProductLoad(item?.id, item)}
           imageStyle={styles.newJustInImage}
           itemContainerStyle={styles.newJustInItemContainer}
         />
@@ -161,7 +165,6 @@ const HomeComponent = ({
           <View style={styles.body_third}>
             <View
               style={{
-                // ...styles.body_image,
                 flex: 0.8,
               }}
             >
@@ -256,17 +259,12 @@ const HomeComponent = ({
           </View>
         </View>
 
-        <View style={styles.fourth}>
-          <Text style={styles.content_text}>MEST KJØPTE</Text>
-        </View>
-
-        <View
-          style={{
+        <Text style={styles.content_text}>MEST KJØPTE</Text>
+          <View style={{
             ...globalStyles.containerFluid,
-            ...globalStyles.mt24,
-            ...styles.bgwhite,
-            marginLeft: 15,
-            marginRight: 15,
+            ...globalStyles.mt8,
+            ...styles.bg_white,
+            alignItems: 'center',
           }}
         >
           {saving ? (
@@ -282,11 +280,9 @@ const HomeComponent = ({
         </View>
       </View>
 
-      <TouchableOpacity style={styles.home_btn}>
+      <TouchableOpacity style={styles.home_btn} onPress={() => navigation.navigate('ProductsList')}>
         <Text style={styles.btn_text}>SE HELE UTVALGET</Text>
       </TouchableOpacity>
-
-      <Footer />
     </ScrollView>
   );
 };
