@@ -1,14 +1,17 @@
-import Jsona from 'jsona';
+import Jsona from "jsona";
 const dataFormatter = new Jsona();
 
 const DEFAULT_STATE = {
   saving: false,
+  status: null,
+  address: null,
   country: {
     states: [],
-    iso: null
+    iso: null,
   },
   countriesList: [],
   paymentMethods: [],
+  message: null,
   cart: {
     line_items: [
       {
@@ -17,280 +20,334 @@ const DEFAULT_STATE = {
             {
               styles: [
                 {
-                  url: ''
+                  url: "",
                 },
                 {
-                  url: ''
+                  url: "",
                 },
                 {
-                  url: ''
+                  url: "",
                 },
                 {
-                  url: ''
-                }
-              ]
-            }
+                  url: "",
+                },
+              ],
+            },
           ],
           option_values: [
             {
-              presentation: ''
+              presentation: "",
             },
             {
-              presentation: ''
-            }
-          ]
-        }
-      }
-    ]
-  }
+              presentation: "",
+            },
+          ],
+        },
+      },
+    ],
+  },
 };
 
 let changes = null;
 export default function checkoutReducer(state = DEFAULT_STATE, action) {
-  const response = action.payload && (action.payload.data || action.payload.response)
+  const response =
+    action.payload && (action.payload.data || action.payload.response);
   switch (action.type) {
     /**
      * GET_DEFAULT_COUNTRY
      */
-    case 'GET_DEFAULT_COUNTRY_PENDING':
+    case "GET_DEFAULT_COUNTRY_PENDING":
       return { ...state, saving: true };
 
-    case 'GET_DEFAULT_COUNTRY_REJECTED':
+    case "GET_DEFAULT_COUNTRY_REJECTED":
       changes = {
-        saving: false
+        saving: false,
       };
       return { ...state, ...changes };
 
-    case 'GET_DEFAULT_COUNTRY_FULFILLED':
+    case "GET_DEFAULT_COUNTRY_FULFILLED":
       changes = {
         country: dataFormatter.deserialize(response),
-        saving: false
+        saving: false,
       };
       return { ...state, ...changes };
 
     /**
      * GET_COUNTRIES_LIST
      */
-    case 'GET_COUNTRIES_LIST_PENDING':
+    case "GET_COUNTRIES_LIST_PENDING":
       return { ...state, saving: true };
 
-    case 'GET_COUNTRIES_LIST_REJECTED':
+    case "GET_COUNTRIES_LIST_REJECTED":
       changes = {
-        saving: false
+        saving: false,
       };
       return { ...state, ...changes };
 
-    case 'GET_COUNTRIES_LIST_FULFILLED':
+    case "GET_COUNTRIES_LIST_FULFILLED":
       changes = {
         countriesList: dataFormatter.deserialize(response),
-        saving: false
+        saving: false,
       };
       return { ...state, ...changes };
 
     /**
      * GET_COUNTRY
      */
-    case 'GET_COUNTRY_PENDING':
+    case "GET_COUNTRY_PENDING":
       return { ...state, saving: true };
 
-    case 'GET_COUNTRY_REJECTED':
+    case "GET_COUNTRY_REJECTED":
       changes = {
-        saving: false
+        saving: false,
       };
       return { ...state, ...changes };
 
-    case 'GET_COUNTRY_FULFILLED':
+    case "GET_COUNTRY_FULFILLED":
       changes = {
         country: dataFormatter.deserialize(response),
-        saving: false
+        saving: false,
       };
       return { ...state, ...changes };
 
     /**
      * GET_PAYMENT_METHODS
      */
-    case 'GET_PAYMENT_METHODS_PENDING':
+    case "GET_PAYMENT_METHODS_PENDING":
       return { ...state, saving: true };
 
-    case 'GET_PAYMENT_METHODS_REJECTED':
+    case "GET_PAYMENT_METHODS_REJECTED":
       changes = {
-        saving: false
+        saving: false,
       };
       return { ...state, ...changes };
 
-    case 'GET_PAYMENT_METHODS_FULFILLED':
+    case "GET_PAYMENT_METHODS_FULFILLED":
       changes = {
         paymentMethods: dataFormatter.deserialize(response),
-        saving: false
+        saving: false,
       };
       return { ...state, ...changes };
 
     /**
      * CHECKOUT_NEXT
      */
-    case 'CHECKOUT_NEXT_PENDING':
+    case "CHECKOUT_NEXT_PENDING":
       return { ...state, saving: true };
 
-    case 'CHECKOUT_NEXT_REJECTED':
+    case "CHECKOUT_NEXT_REJECTED":
       changes = {
-        saving: false
+        saving: false,
       };
       return { ...state, ...changes };
 
-    case 'CHECKOUT_NEXT_FULFILLED':
+    case "CHECKOUT_NEXT_FULFILLED":
       changes = {
         cart: dataFormatter.deserialize(response),
-        saving: false
+        saving: false,
       };
       return { ...state, ...changes };
 
     /**
      * UPDATE_CHECKOUT
      */
-    case 'UPDATE_CHECKOUT_PENDING':
+    case "UPDATE_CHECKOUT_PENDING":
       return { ...state, saving: true };
 
-    case 'UPDATE_CHECKOUT_REJECTED':
+    case "UPDATE_CHECKOUT_REJECTED":
       changes = {
-        saving: false
+        saving: false,
       };
       return { ...state, ...changes };
 
-    case 'UPDATE_CHECKOUT_FULFILLED':
+    case "UPDATE_CHECKOUT_FULFILLED":
       changes = {
         cart: dataFormatter.deserialize(response),
-        saving: false
+        saving: false,
       };
       return { ...state, ...changes };
 
-
-    case 'RATES_CHECKOUT_PENDING':
+    case "RATES_CHECKOUT_PENDING":
       return { ...state, saving: true };
 
-    case 'RATES_CHECKOUT_REJECTED':
+    case "RATES_CHECKOUT_REJECTED":
       changes = {
-        saving: false
+        saving: false,
       };
       return { ...state, ...changes };
 
-    case 'RATES_CHECKOUT_FULFILLED':
+    case "RATES_CHECKOUT_FULFILLED":
       changes = {
         cart: dataFormatter.deserialize(response),
-        saving: false
+        saving: false,
+      };
+      return { ...state, ...changes };
+
+    /**
+     * CREATE_ADDRESS
+     */
+
+    case "CREATE_ADDRESS_PENDING":
+      return { ...state, saving: true };
+
+    case "CREATE_ADDRESS_REJECTED":
+      changes = {
+        saving: false,
+      };
+      return { ...state, ...changes };
+
+    case "CREATE_ADDRESS_FULFILLED":
+      changes = {
+        address: dataFormatter.deserialize(response),
+        saving: false,
+      };
+      return { ...state, ...changes };
+
+    case "RETRIEVE_ADDRESS_PENDING":
+      return { ...state, saving: true };
+
+    case "RETRIEVE_ADDRESS_REJECTED":
+      changes = {
+        saving: false,
+      };
+      return { ...state, ...changes };
+
+    case "RETRIEVE_ADDRESS_FULFILLED":
+      changes = {
+        address: dataFormatter.deserialize(response),
+        saving: false,
+      };
+      return { ...state, ...changes };
+
+    case "DELETE_ADDRESS_PENDING":
+      return { ...state, saving: true, status: null };
+
+    case "DELETE_ADDRESS_REJECTED":
+      changes = {
+        saving: false,
+        status: response.status,
+      };
+      return { ...state, ...changes };
+
+    case "DELETE_ADDRESS_FULFILLED":
+      changes = {
+        message: "Address Deleted Succcessfully",
+        saving: false,
+        status: action.payload.status,
       };
       return { ...state, ...changes };
 
     /**
      * COMPLETE_CHECKOUT
      */
-    case 'COMPLETE_CHECKOUT_PENDING':
+    case "COMPLETE_CHECKOUT_PENDING":
       return { ...state, saving: true };
 
-    case 'COMPLETE_CHECKOUT_REJECTED':
+    case "COMPLETE_CHECKOUT_REJECTED":
       changes = {
-        saving: false
+        saving: false,
       };
       return { ...state, ...changes };
 
-    case 'COMPLETE_CHECKOUT_FULFILLED':
+    case "COMPLETE_CHECKOUT_FULFILLED":
       changes = {
         cart: dataFormatter.deserialize(response),
-        saving: false
+        saving: false,
       };
       return { ...state, ...changes };
 
     /**
      * GET_CART
      */
-    case 'GET_CART_PENDING':
+    case "GET_CART_PENDING":
       return { ...state, saving: true };
 
-    case 'GET_CART_REJECTED':
+    case "GET_CART_REJECTED":
       changes = {
-        saving: false
+        saving: false,
       };
       return { ...state, ...changes };
 
-    case 'GET_CART_FULFILLED':
+    case "GET_CART_FULFILLED":
       changes = {
         cart: dataFormatter.deserialize(response),
-        saving: false
+        saving: false,
       };
       return { ...state, ...changes };
 
     /**
      * CREATE_CART
      */
-    case 'CREATE_CART_PENDING':
+    case "CREATE_CART_PENDING":
       return { ...state, saving: true };
 
-    case 'CREATE_CART_REJECTED':
+    case "CREATE_CART_REJECTED":
       changes = {
-        saving: false
+        saving: false,
       };
       return { ...state, ...changes };
 
-    case 'CREATE_CART_FULFILLED':
+    case "CREATE_CART_FULFILLED":
       changes = {
         cart: dataFormatter.deserialize(response),
-        saving: false
+        saving: false,
       };
       return { ...state, ...changes };
 
     /**
      * ADD_ITEM
      */
-    case 'ADD_ITEM_PENDING':
+    case "ADD_ITEM_PENDING":
       return { ...state, saving: true };
 
-    case 'ADD_ITEM_REJECTED':
+    case "ADD_ITEM_REJECTED":
       changes = {
-        saving: false
+        saving: false,
       };
       return { ...state, ...changes };
 
-    case 'ADD_ITEM_FULFILLED':
+    case "ADD_ITEM_FULFILLED":
       changes = {
         cart: dataFormatter.deserialize(response),
-        saving: false
+        saving: false,
       };
       return { ...state, ...changes };
 
     /**
      * SET_QUANTITY
      */
-    case 'SET_QUANTITY_PENDING':
+    case "SET_QUANTITY_PENDING":
       return { ...state, saving: true };
 
-    case 'SET_QUANTITY_REJECTED':
+    case "SET_QUANTITY_REJECTED":
       changes = {
-        saving: false
+        saving: false,
       };
       return { ...state, ...changes };
 
-    case 'SET_QUANTITY_FULFILLED':
+    case "SET_QUANTITY_FULFILLED":
       changes = {
         cart: dataFormatter.deserialize(response),
-        saving: false
+        saving: false,
       };
       return { ...state, ...changes };
 
     /**
      * REMOVE_LINE_ITEM
      */
-    case 'REMOVE_LINE_ITEM_PENDING':
+    case "REMOVE_LINE_ITEM_PENDING":
       return { ...state, saving: true };
 
-    case 'REMOVE_LINE_ITEM_REJECTED':
+    case "REMOVE_LINE_ITEM_REJECTED":
       changes = {
-        saving: false
+        saving: false,
       };
       return { ...state, ...changes };
 
-    case 'REMOVE_LINE_ITEM_FULFILLED':
+    case "REMOVE_LINE_ITEM_FULFILLED":
       changes = {
         cart: dataFormatter.deserialize(response),
-        saving: false
+        saving: false,
       };
       return { ...state, ...changes };
 
@@ -298,6 +355,6 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
      * Default State
      */
     default:
-      return state
+      return state;
   }
 }

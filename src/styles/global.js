@@ -1,5 +1,5 @@
-import { StyleSheet } from 'react-native'
-import { colors } from '../res/palette'
+import { StyleSheet } from "react-native";
+import { colors } from "../res/palette";
 
 export const globalStyles = StyleSheet.create({
   /**
@@ -7,72 +7,76 @@ export const globalStyles = StyleSheet.create({
    */
   container: {
     flex: 1,
-    width: '90%',
-    alignSelf: 'center'
+    width: "90%",
+    alignSelf: "center",
   },
   containerFluid: {
-    flex: 1
+    flex: 1,
   },
 
   /**
    * Typography
    */
   textSuccess: {
-    color: colors.success
+    color: colors.success,
   },
   textPrimary: {
-    color: colors.primary
+    color: colors.primary,
   },
   textSecondary: {
-    color: colors.gray
+    color: colors.gray,
   },
   textDark: {
-    color: colors.black
+    color: colors.black,
   },
   bgWhite: {
-    backgroundColor: colors.white
+    backgroundColor: colors.white,
   },
   title: {
-    fontFamily: 'lato-bold',
+    fontFamily: "lato-bold",
     fontSize: 34,
   },
   latoBold14: {
-    fontFamily: 'lato-bold',
+    fontFamily: "lato-bold",
     fontSize: 14,
   },
+  latoBold12: {
+    fontFamily: "lato-bold",
+    fontSize: 12,
+  },
   latoBold16: {
-    fontFamily: 'lato-bold',
+    fontFamily: "lato-bold",
     fontSize: 16,
   },
   latoBold18: {
-    fontFamily: 'lato-bold',
+    fontFamily: "lato-bold",
     fontSize: 18,
   },
   label: {
-    fontFamily: 'lato-regular',
+    fontFamily: "lato-regular",
     color: colors.gray,
-    fontSize: 12
+    fontSize: 12,
   },
   latoRegular: {
-    fontFamily: 'lato-regular',
+    fontFamily: "lato-regular",
     fontSize: 12,
-    color: colors.black
+    color: colors.black,
   },
   latoRegular16: {
-    fontFamily: 'lato-regular',
-    fontSize: 16
+    fontFamily: "lato-regular",
+    fontSize: 16,
   },
   latoRegular14: {
-    fontFamily: 'lato-regular',
-    fontSize: 14
+    fontFamily: "lato-regular",
+    fontSize: 14,
   },
 
   /**
-  * Pricing Text Typograhpy
-  */
+   * Pricing Text Typograhpy
+   */
   prices: {
-    fontFamily: 'lato-bold',
-    paddingRight: 8
+    fontFamily: "lato-bold",
+    paddingRight: 8,
   },
 
   /**
@@ -82,75 +86,75 @@ export const globalStyles = StyleSheet.create({
     width: 128,
     height: 36,
     backgroundColor: colors.primary,
-    borderRadius: 24
+    borderRadius: 24,
   },
   btnBlock: {
     borderRadius: 24,
     height: 48,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   btn: {
-    borderColor: colors.primary,
-    borderRadius: 24
+    backgroundColor: colors.btnLink,
+    borderRadius: 10,
   },
   btnPrimary: {
-    backgroundColor: colors.primary
+    backgroundColor: colors.primary,
   },
   btnSolid: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.btnLink,
   },
   btnOutlined: {
     backgroundColor: colors.white,
   },
   centeredContent: {
-    justifyContent: 'center',
-    alignItems: 'center'
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   /**
    * Spacing
    */
   mt8: {
-    marginTop: 8
+    marginTop: 8,
   },
   mt16: {
-    marginTop: 16
+    marginTop: 16,
   },
   mt24: {
-    marginTop: 24
+    marginTop: 24,
   },
   mt32: {
-    marginTop: 32
+    marginTop: 32,
   },
   mt48: {
-    marginTop: 48
+    marginTop: 48,
   },
   mb8: {
-    marginBottom: 8
+    marginBottom: 8,
   },
   mb16: {
-    marginBottom: 16
+    marginBottom: 16,
   },
   mb24: {
-    marginBottom: 24
+    marginBottom: 24,
   },
   mb32: {
-    marginBottom: 32
+    marginBottom: 32,
   },
   mb114: {
-    marginBottom: 114
+    marginBottom: 114,
   },
   pb16: {
-    paddingBottom: 16
+    paddingBottom: 16,
   },
   mv8: {
-    marginVertical: 8
+    marginVertical: 8,
   },
   pv8: {
-    paddingVertical: 8
+    paddingVertical: 8,
   },
   pv16: {
-    paddingVertical: 16
-  }
-})
+    paddingVertical: 16,
+  },
+});

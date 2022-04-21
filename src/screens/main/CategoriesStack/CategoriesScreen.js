@@ -7,6 +7,7 @@ import { styles } from './styles'
 import { getTaxonsList } from '../../../redux'
 import { connect, useSelector } from 'react-redux'
 import ActivityIndicatorCard from '../../../library/components/ActivityIndicatorCard'
+import Footer from "../../components/footer";
 
 const CategoriesScreen = ({ navigation, dispatch, taxonomy, saving }) => {
 
@@ -81,6 +82,7 @@ const CategoriesScreen = ({ navigation, dispatch, taxonomy, saving }) => {
           )
         }
       )}
+      <Footer />
     </ScrollView>
   )
 }

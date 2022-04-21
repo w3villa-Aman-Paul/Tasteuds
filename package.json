@@ -21,6 +21,7 @@
     "expo-cli": "^3.27.12",
     "expo-linear-gradient": "~8.2.1",
     "expo-status-bar": "^1.0.2",
+    "expo-updates": "~0.2.8",
     "formik": "^2.2.9",
     "global": "^4.4.0",
     "jsona": "^1.8.0",

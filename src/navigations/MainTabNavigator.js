@@ -1,15 +1,28 @@
 import * as React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { colors } from "../res/palette";
-import { Home, MenuGridR, Heart, Profile } from "../library/icons";
+import {
+  Home,
+  MenuGridR,
+  Heart,
+  Profile,
+  Menu,
+  Search,
+} from "../library/icons";
 import ShopitStackNavigator from "./ShopitStackNavigator";
 import CategoriesStackNavigator from "./CategoriesStackNavigator";
 import FavouritesStackNavigator from "./FavouritesStackNavigator";
-import ProfileStackNavigator from "./ProfileStackNavigator";
+import SearchComponent from "../screens/components/Search";
+
+import { connect } from "react-redux";
 
 const Tab = createBottomTabNavigator();
 
-function MainTabNavigator() {
+function MainTabNavigator({ navigation }) {
+  const openDrawer = () => {
+    navigation.openDrawer();
+  };
+
   return (
     <Tab.Navigator
       tabBarOptions={{
@@ -37,23 +50,22 @@ function MainTabNavigator() {
         }}
       />
       <Tab.Screen
-        name="Favorites"
-        component={FavouritesStackNavigator}
+        name="Search"
+        component={SearchComponent}
         options={{
-          tabBarIcon: ({ color, size }) => <Heart color={color} size={size} />,
+          tabBarIcon: ({ color, size }) => <Search color={color} size={size} />,
         }}
       />
       <Tab.Screen
-        name="Profile"
-        component={ProfileStackNavigator}
+        name="Menu"
+        component={FavouritesStackNavigator}
         options={{
-          tabBarIcon: ({ color, size }) => (
-            <Profile color={color} size={size} />
-          ),
+          tabBarIcon: ({ color, size }) => <Menu color={color} size={size} />,
         }}
       />
     </Tab.Navigator>
   );
 }
 
-export default MainTabNavigator;
+export default connect()(MainTabNavigator);
+FavouritesStackNavigator;

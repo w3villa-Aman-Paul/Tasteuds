@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { connect, useSelector } from "react-redux";
-import { View, Text } from "react-native";
+import { View, Text, Image } from "react-native";
 import { globalStyles } from "../../styles/global";
 import { ChevronLeft, Eye } from "../../library/icons";
 import { colors } from "../../res/palette";
@@ -33,19 +33,16 @@ const SignInScreen = ({ navigation, dispatch }) => {
   const { isAuth, error, status, saving } = useSelector((state) => state.auth);
   const dismissSnackbar = () => setSnackbarVisible(false);
 
-  // const handleLogin = () => {
-  //   dispatch(
-  //     userLogin({
-  //       username: email,
-  //       password: password,
-  //       grant_type: "password",
-  //     })
-  //   );
-  // };
-
   useEffect(() => {
     if (error === "invalid_grant" && status === 400) {
       setSnacbarMessage("You Have entered a wrong Email or Password");
+      setSnackbarVisible(true);
+
+      setTimeout(() => {
+        dismissSnackbar();
+      }, 2000);
+    } else if (status === 404) {
+      setSnacbarMessage("Server not found or Network Error");
       setSnackbarVisible(true);
 
       setTimeout(() => {
@@ -63,7 +60,12 @@ const SignInScreen = ({ navigation, dispatch }) => {
         style={styles.backButton}
         onPress={navigation.goBack}
       />
-      <Text style={styles.title}>Welcome Back!</Text>
+
+      <Image
+        style={styles.loginLogo}
+        source={require("../../../assets/images/logo-mark.png")}
+      />
+      <Text style={styles.title}>Logg inn for å fortsette</Text>
       <Formik
         validationSchema={loginValidationSchema}
         initialValues={{ email: "", password: "" }}
@@ -93,7 +95,7 @@ const SignInScreen = ({ navigation, dispatch }) => {
         }) => (
           <View style={styles.mainContainer}>
             <TextField
-              placeholder="Email"
+              placeholder="E-mail eller telefonnummer"
               inputStyle={styles.inputStyle}
               containerStyle={[styles.containerStyle, globalStyles.mb16]}
               inputContainerStyle={styles.inputContainerStyle}
@@ -103,13 +105,11 @@ const SignInScreen = ({ navigation, dispatch }) => {
               keyboardType="email-address"
             />
             {errors.email && (
-              <Text style={[styles.errorText, { marginBottom: 2 }]}>
-                {errors.email}
-              </Text>
+              <Text style={styles.errorText}>{errors.email}</Text>
             )}
 
             <Input
-              placeholder="Password"
+              placeholder="Passord"
               secureTextEntry={secureTextEntryToggle}
               onFocus={() => setInputPasswordBorder(true)}
               onBlur={handleBlur("password")}
@@ -135,26 +135,28 @@ const SignInScreen = ({ navigation, dispatch }) => {
               <Text style={styles.errorText}>{errors.password}</Text>
             )}
             <Button
-              title="Password help ?"
-              type="clear"
-              containerStyle={{ alignSelf: "flex-end" }}
-              titleStyle={styles.formClearActionButton}
-              onPress={() => navigation.navigate("ForgotPassword")}
-            />
-            <Button
-              title="Login to Spree Shop"
+              title="LOGG INN"
               buttonStyle={styles.buttonBlockStyle}
+              containerStyle={{ alignSelf: "center" }}
               titleStyle={globalStyles.latoBold16}
               onPress={handleSubmit}
             />
+            <Button
+              title="Glemt passord?"
+              type="clear"
+              containerStyle={{ alignSelf: "center" }}
+              titleStyle={styles.formClearActionButton}
+              onPress={() => navigation.navigate("ForgotPassword")}
+            />
+
             <View style={styles.footer}>
-              <Text style={styles.label}>Don't have an account ? </Text>
+              <Text style={styles.label}>Ingen konto enda? </Text>
               <Text
                 style={styles.footerAction}
                 onPress={() => navigation.navigate("SignUp")}
               >
                 {" "}
-                Signup
+                Opprett bruker
               </Text>
             </View>
           </View>

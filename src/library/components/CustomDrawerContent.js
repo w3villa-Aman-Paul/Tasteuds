@@ -15,6 +15,7 @@ import { userLogout } from "../../redux/actions/authActions";
 
 function CustomDrawerContent({ dispatch, ...props }) {
   const { account } = useSelector((state) => state.account);
+  const authState = useSelector((state) => state.auth);
   const { email } = account;
 
   return (
@@ -67,14 +68,21 @@ function CustomDrawerContent({ dispatch, ...props }) {
         labelStyle={styles.subMenuTitle}
         onPress={() => {}}
       />
-      <Button
-        title="Logout Account"
-        type="outline"
-        containerStyle={styles.btnOutlineContainer}
-        buttonStyle={styles.btnOutline}
-        titleStyle={styles.titleStyle}
-        onPress={() => dispatch(userLogout())}
-      />
+
+      {authState.isAuth ? (
+        <>
+          <Button
+            title="Logout Account"
+            type="outline"
+            containerStyle={styles.btnOutlineContainer}
+            buttonStyle={styles.btnOutline}
+            titleStyle={styles.titleStyle}
+            onPress={() => dispatch(userLogout())}
+          />
+        </>
+      ) : (
+        <></>
+      )}
     </DrawerContentScrollView>
   );
 }

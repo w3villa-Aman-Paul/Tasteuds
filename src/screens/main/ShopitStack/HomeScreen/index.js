@@ -1,240 +1,299 @@
-import * as React from "react";
 import {
-  View,
-  ScrollView,
-  Text,
   FlatList,
+  Image,
+  ImageBackground,
+  ScrollView,
+  StyleSheet,
+  Text,
   TouchableOpacity,
+  View,
 } from "react-native";
-import { SearchBar, Image } from "react-native-elements";
+import React from "react";
 import { globalStyles } from "../../../../styles/global";
-import { colors } from "../../../../res/palette";
-import { connect } from "react-redux";
 import { styles } from "./styles";
-import { accountRetrieve } from "../../../../redux";
-import { useSelector } from "react-redux";
-
-const Item = ({ item }) => {
-  return (
-    <TouchableOpacity
-      onPress={() => console.log(item)}
-      style={styles.flatListImageItemContainer}
-    >
-      <Image source={item.source} style={styles.flatListImageItem} />
-    </TouchableOpacity>
-  );
-};
+import Footer from "../../../components/footer";
+import { accountRetrieve, getProductsList, resetProductsList } from "../../../../redux";
+import { connect, useSelector } from "react-redux";
+import { HOST } from "../../../../res/env";
+import { colors } from "../../../../res/palette";
+import { Icon } from "react-native-elements";
 
 const FlatListImageItem = ({
   item,
   onPress,
   imageStyle,
   itemContainerStyle,
-}) => (
-  <TouchableOpacity onPress={onPress} style={itemContainerStyle}>
-    <Image
-      source={item.source}
-      style={{ width: imageStyle.width, height: imageStyle.height }}
-    />
-  </TouchableOpacity>
-);
+}) => {
+  return (
+    <TouchableOpacity onPress={onPress} style={{ ...itemContainerStyle }}>
+      <Image
+        source={{
+          uri: `${HOST}/${item.images[0].styles[3].url}`,
+        }}
+        style={{
+          width: imageStyle.width,
+          height: imageStyle.height,
+          resizeMode: "contain",
+        }}
+      />
+      <View style={styles.detailsContainer}>
+        <Text numberOfLines={1} style={styles.title}>
+          {item.name}
+        </Text>
+        <Text numberOfLines={1} style={styles.description}>
+          {item.slug}
+        </Text>
+        <View style={styles.pricingContainer}>
+          <Text style={[styles.prices, { color: colors.black }]}>
+            {" "}
+            {item.display_price}
+          </Text>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+};
 
-const HomeScreen = ({ navigation, dispatch }) => {
-  const [searchQuery, setSearchQuery] = React.useState("");
+const HomeComponent = ({
+  dispatch,
+  navigation,
+  route,
+  pageIndex,
+  productsList,
+}) => {
   const { isAuth } = useSelector((state) => state.auth);
 
   React.useEffect(() => {
-    dispatch(accountRetrieve(null, {}));
-  }, [isAuth]);
+    handleProductsLoad();
+    return () => {
+      // dispatch(resetProductsList());
+      dispatch(accountRetrieve(null, {}));
+    }
+  }, [isAuth, route.params]);
 
-  const newJustInRenderItem = ({ item }) => {
-    return (
-      <FlatListImageItem
-        item={item}
-        onPress={() => console.log(item.id)}
-        imageStyle={styles.newJustInImage}
-        itemContainerStyle={styles.newJustInItemContainer}
-      />
+
+
+  const handleProductsLoad = (pageIndexAfterDispatch = null) => {
+    dispatch(
+      getProductsList(null, {
+        pageIndex: pageIndexAfterDispatch || pageIndex,
+        filter: {
+          name: route.params?.searchQuery || "",
+        },
+      })
     );
   };
 
+  const newJustInRenderItem = ({ item, index }) => {
+    return (
+      <TouchableOpacity onPress={() => handleProductsLoad(item?.id, item)}>
+        <FlatListImageItem
+          key={index.toString()}
+          item={item}
+          imageStyle={styles.newJustInImage}
+          itemContainerStyle={styles.newJustInItemContainer}
+        />
+      </TouchableOpacity>
+    );
+  };
+ 
+
+
   return (
-    <ScrollView style={globalStyles.containerFluid}>
-      <View style={globalStyles.container}>
-        <SearchBar
-          platform="ios"
-          value={searchQuery}
-          placeholder="Search shop catalogue"
-          onChangeText={(text) => setSearchQuery(text)}
-          inputContainerStyle={{ backgroundColor: colors.white }}
-          containerStyle={{ backgroundColor: colors.background }}
-          inputStyle={globalStyles.latoRegular16}
-          searchIcon={{ color: colors.black }}
-          onSubmitEditing={() => {
-            navigation.navigate("ProductsList", { searchQuery });
-          }}
-        />
-      </View>
-      <Image
-        source={require("../../../../../assets/images/banner-first-order-discount/banner-first-order-discount.png")}
-        style={styles.bannerFirst}
-        onPress={() => {
-          navigation.navigate("ProductsList", { title: "Womens Dress" });
-        }}
-      />
-      <Image
-        source={require("../../../../../assets/images/discount-stripe/DiscountStripe.png")}
-        style={styles.discountStripe}
-      />
-      <Image
-        source={require("../../../../../assets/images/banner-EOS-sale/banner-EOS-sale.png")}
-        style={styles.bannerEndOfSale}
-      />
-      <Text style={styles.hoardingBoard}>
-        Free Shipping For You Till Midnight !
-      </Text>
-      <View style={styles.flatListContainer}>
-        <View style={globalStyles.container}>
-          <FlatList
-            data={DATA}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => <Item item={item} />}
-            numColumns={3}
-            ListHeaderComponent={() => (
-              <Text style={[styles.flatListHeaderText, { marginLeft: 8 }]}>
-                EXPLORE TOP BRANDS
+    <ScrollView style={{ ...styles.bg_white }}>
+      <View style={{ ...styles.container }}>
+        <TouchableOpacity onPress={() => navigation.navigate("ProductsList")}>
+          <Image
+            source={require("../../../../../assets/images/Header-Icon/home_item.png")}
+            style={styles.bannerFirst}
+          />
+          <Text style={styles.banner}>SE UTVALG</Text>
+        </TouchableOpacity>
+
+        <View style={styles.body_second}>
+          <View style={styles.first}>
+            <ImageBackground
+              source={require("../../../../../assets/images/Header-Icon/home_second.png")}
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text style={styles.text1}>UKAS PRODUSENT </Text>
+              <Text style={{ ...styles.text_second, fontWeight: "700" }}>
+                BAKEHUSET PÅ ASK
               </Text>
-            )}
-          />
+            </ImageBackground>
+          </View>
+          <View style={styles.second}>
+            <ImageBackground
+              source={require("../../../../../assets/images/Header-Icon/home_second_2.png")}
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={{
+                  width: "80%",
+                  textAlign: "center",
+                  color: "#FFF",
+                  fontWeight: "700",
+                }}
+              >
+                SE ALLE PRODUSENTER
+              </Text>
+            </ImageBackground>
+          </View>
         </View>
-      </View>
-      <View style={styles.flatListContainer}>
-        <View style={globalStyles.container}>
-          <FlatList
-            data={BEST_DEAL_CARD_DATA}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <Image source={item.source} style={styles.bestDealCards} />
-            )}
-            ListHeaderComponent={() => (
-              <Text style={styles.flatListHeaderText}>BEST DEALS</Text>
-            )}
-          />
+
+        <View style={styles.third}>
+          <Text
+            style={{
+              textAlign: "center",
+              marginTop: 10,
+              marginBottom: 10,
+              color: "#EB1741",
+              fontSize: 25,
+            }}
+          >
+            HVORDAN FUNKER DET?
+          </Text>
+          <View style={styles.body_third}>
+            <View
+              style={{
+                // ...styles.body_image,
+                flex: 0.8,
+              }}
+            >
+              <ImageBackground
+                source={require("../../../../../assets/images/Header-Icon/red_circle.png")}
+                resizeMode={"contain"}
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Image
+                  source={require("../../../../../assets/images/Header-Icon/inside_circle.png")}
+                  style={styles.center}
+                />
+              </ImageBackground>
+              <Text style={styles.bottom_text}>Legg inn bestilling</Text>
+            </View>
+            <Icon
+              name="arrowright"
+              type="ant-design"
+              size={40}
+              color={"#ed3c61"}
+              style={{
+                flex: 0.8,
+                justifyContent: "flex-start",
+                alignItems: "center",
+              }}
+            />
+            <View
+              style={{
+                // ...styles.body_image,
+                flex: 0.8,
+                width: 10,
+              }}
+            >
+              <ImageBackground
+                source={require("../../../../../assets/images/Header-Icon/red_circle.png")}
+                resizeMode={"contain"}
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Image
+                  source={require("../../../../../assets/images/Header-Icon/second_circle.png")}
+                  style={styles.center}
+                />
+              </ImageBackground>
+              <Text style={{ ...styles.bottom_text }}>
+                Vi henter varene rett fra bonden
+              </Text>
+            </View>
+            <Icon
+              name="arrowright"
+              type="ant-design"
+              size={40}
+              color={"#ed3c61"}
+              style={{
+                flex: 0.8,
+                justifyContent: "flex-start",
+                alignItems: "center",
+              }}
+            />
+            <View
+              style={{
+                // ...styles.body_image,
+                flex: 0.8,
+              }}
+            >
+              <ImageBackground
+                source={require("../../../../../assets/images/Header-Icon/red_circle.png")}
+                resizeMode={"contain"}
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Image
+                  source={require("../../../../../assets/images/Header-Icon/third_circle.png")}
+                  style={styles.center}
+                />
+              </ImageBackground>
+
+              <Text style={styles.bottom_text}>
+                Vi leverer varene hjem til deg
+              </Text>
+            </View>
+          </View>
         </View>
-      </View>
-      <View style={globalStyles.containerFluid}>
-        <Image
-          source={require("../../../../../assets/images/banner-festive-trend-card/banner-festive-trend-card.png")}
-          style={styles.bannerFestiveTrend}
-        />
-      </View>
-      <View
-        style={[
-          styles.flatListContainer,
-          {
-            marginBottom: 114,
-          },
-        ]}
-      >
-        <View style={globalStyles.container}>
+
+        <View style={styles.fourth}>
+          <Text style={styles.content_text}>MEST KJØPTE</Text>
+        </View>
+
+        <View
+          style={{
+            ...globalStyles.containerFluid,
+            ...globalStyles.mt24,
+            ...styles.bgwhite,
+            marginLeft: 15,
+            marginRight: 15,
+          }}
+        >
           <FlatList
-            data={NEW_JUST_IN_DATA}
-            keyExtractor={(item) => item.id}
+            data={productsList.slice(0, 10)}
+            keyExtractor={(item, index) => index.toString()}
             renderItem={newJustInRenderItem}
-            numColumns={3}
-            ListHeaderComponent={() => (
-              <Text style={styles.flatListHeaderText}>NEW JUST IN</Text>
-            )}
+            numColumns={2}
           />
         </View>
       </View>
+
+      <TouchableOpacity style={styles.home_btn}>
+        <Text style={styles.btn_text}>SE HELE UTVALGET</Text>
+      </TouchableOpacity>
+
+      <Footer />
     </ScrollView>
   );
 };
 
-export default connect()(HomeScreen);
+const mapStateToProps = (state) => ({
+  productsList: state.products.productsList,
+  pageIndex: state.products.pageIndex,
+  meta: state.products.meta,
+});
 
-const DATA = [
-  {
-    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-    source: require("../../../../../assets/images/top-brands/top-brands-card1.png"),
-  },
-  {
-    id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-    source: require("../../../../../assets/images/top-brands/top-brands-card2.png"),
-  },
-  {
-    id: "58694a0f-3da1-471f-bd96-145571e29d72",
-    source: require("../../../../../assets/images/top-brands/top-brands-card3.png"),
-  },
-  {
-    id: "bd7abcde-c1b1-46c2-aed5-3ad53abb28ba",
-    source: require("../../../../../assets/images/top-brands/top-brands-card4.png"),
-  },
-  {
-    id: "bd7fghij-c1b1-46c2-aed5-3ad53abb28ba",
-    source: require("../../../../../assets/images/top-brands/top-brands-card5.png"),
-  },
-  {
-    id: "bd7klmno-c1b1-46c2-aed5-3ad53abb28ba",
-    source: require("../../../../../assets/images/top-brands/top-brands-card6.png"),
-  },
-  {
-    id: "bd7pqrst-c1b1-46c2-aed5-3ad53abb28ba",
-    source: require("../../../../../assets/images/top-brands/top-brands-card7.png"),
-  },
-  {
-    id: "bd7uvwxy-c1b1-46c2-aed5-3ad53abb28ba",
-    source: require("../../../../../assets/images/top-brands/top-brands-card8.png"),
-  },
-  {
-    id: "bd7zabcd-c1b1-46c2-aed5-3ad53abb28ba",
-    source: require("../../../../../assets/images/top-brands/top-brands-card9.png"),
-  },
-];
-
-const BEST_DEAL_CARD_DATA = [
-  {
-    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-    source: require("../../../../../assets/images/best-deal-cards/best-deal-card1/best-deal-card.png"),
-  },
-  {
-    id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-    source: require("../../../../../assets/images/best-deal-cards/best-deal-card2/best-deal-card.png"),
-  },
-  {
-    id: "58694a0f-3da1-471f-bd96-145571e29d72",
-    source: require("../../../../../assets/images/best-deal-cards/best-deal-card3/best-deal-card.png"),
-  },
-  {
-    id: "bd7abcde-c1b1-46c2-aed5-3ad53abb28ba",
-    source: require("../../../../../assets/images/best-deal-cards/best-deal-card4/best-deal-card.png"),
-  },
-];
-
-const NEW_JUST_IN_DATA = [
-  {
-    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-    source: require("../../../../../assets/images/new-just-in/new-just-in-card1/card.png"),
-  },
-  {
-    id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-    source: require("../../../../../assets/images/new-just-in/new-just-in-card2/card.png"),
-  },
-  {
-    id: "58694a0f-3da1-471f-bd96-145571e29d72",
-    source: require("../../../../../assets/images/new-just-in/new-just-in-card3/card.png"),
-  },
-  {
-    id: "bd7abcde-c1b1-46c2-aed5-3ad53abb28ba",
-    source: require("../../../../../assets/images/new-just-in/new-just-in-card4/card.png"),
-  },
-  {
-    id: "bd7fghij-c1b1-46c2-aed5-3ad53abb28ba",
-    source: require("../../../../../assets/images/new-just-in/new-just-in-card5/card.png"),
-  },
-  {
-    id: "bd7klmno-c1b1-46c2-aed5-3ad53abb28ba",
-    source: require("../../../../../assets/images/new-just-in/new-just-in-card6/card.png"),
-  },
-];
+export default connect(mapStateToProps)(HomeComponent);

@@ -1,20 +1,22 @@
 import * as React from "react";
-import { Text, StyleSheet } from "react-native";
+import { Text, StyleSheet, Image, View } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
-import HomeScreen from "../screens/main/ShopitStack/HomeScreen";
+
 import ProductsListScreen from "../screens/main/ShopitStack/ProductsListScreen";
 import ProductDetailScreen from "../screens/main/ShopitStack/ProductDetailScreen";
 import ShippingAddressScreen from "../screens/main/ShopitStack/CheckoutScreens/ShippingAddressScreen";
 import PaymentScreen from "../screens/main/ShopitStack/CheckoutScreens/PaymentScreen";
 import BagScreen from "../screens/main/ShopitStack/CheckoutScreens/BagScreen";
 import FiltersTabNavigator from "./FiltersTabNavigator";
-import { Menu, ShoppingBag, Bell, Heart, Share } from "../library/icons";
+import { ShoppingBag, Heart, Share } from "../library/icons";
 import { colors } from "../res/palette";
 import { globalStyles } from "../styles/global";
 import { useSelector } from "react-redux";
-import CustomTitle from "../library/components/CustomTitle";
+
 import { Icon } from "react-native-elements";
-import { TouchableOpacity } from "react-native";
+import HomeComponent from "../screens/main/ShopitStack/HomeScreen";
+import FavouritesStackNavigator from "./FavouritesStackNavigator";
+import FavouritesScreen from "../screens/main/FavouritesStack/FavouritesScreen";
 
 const ShopitStack = createStackNavigator();
 
@@ -27,73 +29,53 @@ function ShopitStackNavigator({ navigation }) {
       screenOptions={{
         headerRight: () => (
           <>
-            {authState?.access_token ? (
-              <>
-                <Bell
-                  size={24}
-                  style={{ color: colors.black, marginRight: 14 }}
-                />
-                <ShoppingBag
-                  size={24}
-                  style={{ color: colors.black }}
-                  onPress={() => navigation.navigate("Bag")}
-                />
-              </>
-            ) : (
-              <>
-                {/* <TouchableOpacity onPress={() => navigation.navigate("SignIn")}>
-                  <Icon
-                    name="login"
-                    type="ant-design"
-                    size={15}
-                    style={{ color: colors.black, marginRight: 3 }}
-                  />
-                  <Text
-                    style={{ color: "black", fontSize: 15, marginRight: 14 }}
-                  >
-                    Sign In
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
-                  <Icon
-                    name="sign-in"
-                    type="font-awesome"
-                    size={24}
-                    style={{ color: colors.black }}
-                  />
-                  <Text style={{ color: "black", fontSize: 15, marginLeft: 3 }}>
-                    Sign Up
-                  </Text>
-                </TouchableOpacity> */}
-              </>
-            )}
+            <Icon
+              name="user"
+              type="font-awesome"
+              size={29}
+              color={colors.primary}
+              onPress={() => navigation.navigate("Profile")}
+              style={{}}
+            />
+            <Icon
+              name="shoppingcart"
+              type="ant-design"
+              size={29}
+              color={colors.primary}
+              onPress={() => navigation.navigate("Bag")}
+            />
           </>
         ),
         headerTitleStyle: {
           ...globalStyles.latoBold18,
         },
         headerRightContainerStyle: {
+          position: "absolute",
+          top: 0,
+          right: 0,
+          width: 100,
           paddingHorizontal: 18,
           flexDirection: "row",
+          flex: 1,
           alignItems: "center",
+          justifyContent: "space-between",
         },
       }}
     >
       <ShopitStack.Screen
         name="Shop"
-        component={HomeScreen}
+        component={HomeComponent}
         options={{
-          headerTitle: "Spree Shop",
+          headerTitle: "",
           headerLeft: () => (
-            <Menu
-              size={24}
-              style={{ color: colors.black }}
-              onPress={() => navigation.openDrawer()}
+            <Image
+              source={require("../../assets/images/Header-Icon/header_logo.png")}
+              style={styles.header}
             />
           ),
+          title: "",
           headerLeftContainerStyle: {
-            paddingHorizontal: 22,
+            paddingHorizontal: 18,
           },
         }}
       />
@@ -101,44 +83,42 @@ function ShopitStackNavigator({ navigation }) {
         name="ProductsList"
         component={ProductsListScreen}
         options={({ route }) => ({
-          headerTitle: (
-            <CustomTitle
-              title={
-                route.params.title || route.params.searchQuery || "ProductsList"
-              }
-              length={productsList.length}
+          headerTitle: "",
+          headerLeft: () => (
+            <Image
+              source={require("../../assets/images/Header-Icon/header_logo.png")}
+              style={styles.header}
             />
           ),
+          title: "",
+          headerLeftContainerStyle: {
+            paddingHorizontal: 18,
+          },
         })}
       />
       <ShopitStack.Screen
         name="ProductDetail"
         component={ProductDetailScreen}
         options={{
-          headerTitle: "Tokyo Talkies",
+          headerTitle: "",
           headerRightContainerStyle: styles.headerRight,
-          headerRight: () => (
-            <>
-              <Share size={24} style={{ color: colors.black }} />
-              <Heart
-                size={24}
-                style={{ color: colors.black }}
-                onPress={() => navigation.navigate("Favorites")}
-              />
-              <ShoppingBag
-                size={24}
-                style={{ color: colors.black }}
-                onPress={() => navigation.navigate("Bag")}
-              />
-            </>
+          headerLeft: () => (
+            <Image
+              source={require("../../assets/images/Header-Icon/header_logo.png")}
+              style={styles.header}
+            />
           ),
+          title: "",
+          headerLeftContainerStyle: {
+            paddingHorizontal: 18,
+          },
         }}
       />
       <ShopitStack.Screen
         name="Bag"
         component={BagScreen}
         options={{
-          headerTitle: "Your Bag",
+          headerTitle: "",
           headerRight: () => (
             <Heart
               size={24}
@@ -146,6 +126,10 @@ function ShopitStackNavigator({ navigation }) {
               onPress={() => navigation.navigate("Favorites")}
             />
           ),
+          title: "",
+          headerLeftContainerStyle: {
+            paddingHorizontal: 18,
+          },
         }}
       />
       <ShopitStack.Screen
@@ -184,6 +168,26 @@ function ShopitStackNavigator({ navigation }) {
           ),
         }}
       />
+      <ShopitStack.Screen
+        name="Favorites"
+        component={FavouritesScreen}
+        options={{
+          headerTitle: "",
+          headerLeft: () => (
+            <Image
+              source={require("../../assets/images/Header-Icon/header_logo.png")}
+              style={styles.header}
+            />
+          ),
+          headerRight: () => (
+            <Heart
+              size={24}
+              style={{ color: colors.black }}
+              onPress={() => navigation.navigate("Favorites")}
+            />
+          ),
+        }}
+      />
     </ShopitStack.Navigator>
   );
 }
@@ -196,9 +200,14 @@ const styles = StyleSheet.create({
     width: "30%",
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-around",
+    justifyContent: "space-evenly",
   },
   resetButton: {
     ...globalStyles.textPrimary,
+  },
+  header: {
+    width: 150,
+    height: 30,
+    resizeMode: "contain",
   },
 });
