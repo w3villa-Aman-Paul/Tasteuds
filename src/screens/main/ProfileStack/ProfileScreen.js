@@ -153,7 +153,6 @@ const ProfileScreen = ({ dispatch, navigation }) => {
           </>
         )}
       </View>
-      <Footer />
     </ScrollView>
   );
 };

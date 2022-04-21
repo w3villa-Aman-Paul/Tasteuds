@@ -8,6 +8,7 @@ import {
   Profile,
   Menu,
   Search,
+  User,
 } from "../library/icons";
 import ShopitStackNavigator from "./ShopitStackNavigator";
 import CategoriesStackNavigator from "./CategoriesStackNavigator";
@@ -15,6 +16,7 @@ import FavouritesStackNavigator from "./FavouritesStackNavigator";
 import SearchComponent from "../screens/components/Search";
 
 import { connect } from "react-redux";
+import ProfileStackNavigator from "./ProfileStackNavigator";
 
 const Tab = createBottomTabNavigator();
 
@@ -34,14 +36,14 @@ function MainTabNavigator({ navigation }) {
       }}
     >
       <Tab.Screen
-        name="Shop"
+        name="HJEM"
         component={ShopitStackNavigator}
         options={{
           tabBarIcon: ({ color, size }) => <Home color={color} size={size} />,
         }}
       />
       <Tab.Screen
-        name="Categories"
+        name="VARER"
         component={CategoriesStackNavigator}
         options={{
           tabBarIcon: ({ color, size }) => (
@@ -50,17 +52,17 @@ function MainTabNavigator({ navigation }) {
         }}
       />
       <Tab.Screen
-        name="Search"
-        component={SearchComponent}
+        name="FAVORITTER"
+        component={FavouritesStackNavigator}
         options={{
-          tabBarIcon: ({ color, size }) => <Search color={color} size={size} />,
+          tabBarIcon: ({ color, size }) => <Heart color={color} size={size} />,
         }}
       />
       <Tab.Screen
-        name="Menu"
-        component={FavouritesStackNavigator}
+        name="PROFIL"
+        component={ProfileStackNavigator}
         options={{
-          tabBarIcon: ({ color, size }) => <Menu color={color} size={size} />,
+          tabBarIcon: ({ color, size }) => <User color={color} size={size} />,
         }}
       />
     </Tab.Navigator>

@@ -7,6 +7,9 @@ import { globalStyles } from "../styles/global";
 import { useSelector } from "react-redux";
 import CustomTitle from "../library/components/CustomTitle";
 import { connect } from "react-redux";
+import { Icon } from "react-native-elements";
+import { Button, Image, StyleSheet } from "react-native";
+import { IconButton } from "react-native-paper";
 
 const FavouritesStack = createStackNavigator();
 
@@ -16,36 +19,42 @@ function FavouritesStackNavigator({ navigation }) {
   return (
     <FavouritesStack.Navigator
       screenOptions={{
+        headerTitle: "",
         headerLeft: () => (
-          <Menu
-            size={24}
-            style={{ color: colors.black }}
-            onPress={() => navigation.openDrawer()}
-          />
+           <Icon name='arrowleft' type='ant-design' onPress={() => navigation.goBack()} title="Back" />
         ),
         headerRight: () => (
-          <>
-            <Search
-              size={24}
-              style={{ color: colors.black, marginRight: 14 }}
+          <Icon
+              name="search"
+              type="font-awesome"
+              size={25}
+              color={colors.primary}
+              onPress={() => navigation.navigate("Profile")}
             />
-            <ShoppingBag
-              size={24}
-              style={{ color: colors.black }}
-              onPress={() => navigation.navigate("Bag")}
-            />
-          </>
         ),
+        title: "",
         headerLeftContainerStyle: {
-          paddingHorizontal: 22,
-        },
-        headerTitleStyle: {
-          ...globalStyles.latoBold18,
+          paddingHorizontal: 10,
+          top: 4,
+          left: 20,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: '#ffffff',
+          borderRadius: 50,
+          elevation: 10,
+          height: 40,
+          width: 40,
         },
         headerRightContainerStyle: {
-          paddingHorizontal: 18,
-          flexDirection: "row",
-          alignItems: "center",
+          top: 4,
+          right: 20,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: '#ffffff',
+          borderRadius: 50,
+          elevation: 10,
+          height: 40,
+          width: 40,
         },
       }}
     >
@@ -53,17 +62,22 @@ function FavouritesStackNavigator({ navigation }) {
         name="Favorites"
         component={FavouritesScreen}
         options={{
-          headerTitle: (
-            <CustomTitle title="Favorites" length={favorites.length} />
-          ),
+          // headerTitle: (
+          //   <CustomTitle title="Favorites" length={favorites.length} />
+          // ),
           title:'',
-          headerLeftContainerStyle: {
-            paddingHorizontal: 18
-          }
         }}
       />
     </FavouritesStack.Navigator>
   );
 }
+
+const styles = StyleSheet.create({
+  header: {
+    width: 150,
+    height: 30,
+    resizeMode: "contain",
+  },
+});
 
 export default FavouritesStackNavigator;
