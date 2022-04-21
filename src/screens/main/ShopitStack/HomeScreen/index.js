@@ -61,7 +61,13 @@ const FlatListImageItem = ({
   );
 };
 
-const HomeComponent = ({dispatch,navigation,route,pageIndex,productsList}) => {
+const HomeComponent = ({
+  dispatch,
+  navigation,
+  route,
+  pageIndex,
+  productsList,
+}) => {
   const { isAuth } = useSelector((state) => state.auth);
   const { saving } = useSelector((state) => state.products);
 
@@ -73,7 +79,6 @@ const HomeComponent = ({dispatch,navigation,route,pageIndex,productsList}) => {
       })
     );
   };
-
 
   const handleProductLoad = async (id, item) => {
     dispatch(getProduct(id));
@@ -260,11 +265,13 @@ const HomeComponent = ({dispatch,navigation,route,pageIndex,productsList}) => {
         </View>
 
         <Text style={styles.content_text}>MEST KJØPTE</Text>
-          <View style={{
-            ...globalStyles.containerFluid,
+        <View
+          style={{
+            ...globalStyles.container,
             ...globalStyles.mt8,
             ...styles.bg_white,
-            alignItems: 'center',
+            alignItems: "center",
+            justifyContent: "space-between",
           }}
         >
           {saving ? (
@@ -275,12 +282,20 @@ const HomeComponent = ({dispatch,navigation,route,pageIndex,productsList}) => {
               keyExtractor={(item, index) => index.toString()}
               renderItem={newJustInRenderItem}
               numColumns={2}
+              columnWrapperStyle={{ justifyContent: "space-between" }}
+              style={{
+                width: "100%",
+                flex: 1,
+              }}
             />
           )}
         </View>
       </View>
 
-      <TouchableOpacity style={styles.home_btn} onPress={() => navigation.navigate('ProductsList')}>
+      <TouchableOpacity
+        style={styles.home_btn}
+        onPress={() => navigation.navigate("ProductsList")}
+      >
         <Text style={styles.btn_text}>SE HELE UTVALGET</Text>
       </TouchableOpacity>
     </ScrollView>

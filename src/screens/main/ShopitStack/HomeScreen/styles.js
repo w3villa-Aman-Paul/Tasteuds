@@ -1,9 +1,10 @@
+import { StyleSheet, Dimensions } from "react-native";
+import { globalStyles } from "../../../../styles/global";
+import { colors } from "../../../../res/palette";
+import { CardStyleInterpolators } from "@react-navigation/stack";
+import { getCompletedOrders } from "../../../../redux";
 
-import { StyleSheet, Dimensions } from 'react-native'
-import { globalStyles } from '../../../../styles/global'
-import { colors } from '../../../../res/palette'
-import { CardStyleInterpolators } from '@react-navigation/stack'
-import { getCompletedOrders } from '../../../../redux'
+const windowWidth = Dimensions.get("window").width;
 
 export const styles = StyleSheet.create({
   centeredContent: {
@@ -12,11 +13,13 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   newJustInImage: {
-    width: '100%',
-    height: 148,
+    width: (windowWidth / 100) * 45,
+    height: 200,
   },
   newJustInItemContainer: {
+    flex: 1,
     marginBottom: 16,
+    backgroundColor: colors.white,
   },
   flatListHeaderText: {
     ...globalStyles.latoRegular14,
@@ -135,28 +138,28 @@ export const styles = StyleSheet.create({
     width: "50%",
   },
 
-  body_image:{
+  body_image: {
     flex: 0.3,
     marginTop: 10,
     marginBottom: 10,
-    marginLeft: 20
+    marginLeft: 20,
   },
-  bottom_text:{
-    textAlign: 'left', 
+  bottom_text: {
+    textAlign: "left",
     fontSize: 15,
-    height: 60, 
-    marginTop: 15, 
-    marginBottom: 15
+    height: 60,
+    marginTop: 15,
+    marginBottom: 15,
   },
-  image_center:{
-    width: 60, 
-    height: 60, 
-    resizeMode: 'contain'
+  image_center: {
+    width: 60,
+    height: 60,
+    resizeMode: "contain",
   },
-  content_text:{
-     color: '#000000',
-     fontSize: 25,
-     textAlign: 'left',
+  content_text: {
+    color: "#000000",
+    fontSize: 25,
+    textAlign: "left",
   },
 
   detailsContainer: {
@@ -182,13 +185,13 @@ export const styles = StyleSheet.create({
     paddingRight: 5,
     marginTop: 3,
   },
-  bg_white:{
-    backgroundColor: colors.white
+  bg_white: {
+    backgroundColor: colors.white,
   },
-  home_btn:{
+  home_btn: {
     // width: 250,
     flex: 1,
-    alignItems: 'center',
+    alignItems: "center",
     marginLeft: 80,
     marginRight: 80,
     paddingTop: 10,
@@ -197,9 +200,9 @@ export const styles = StyleSheet.create({
     marginBottom: 25,
     borderRadius: 10,
   },
-  btn_text:{
+  btn_text: {
     color: colors.white,
-    fontSize: 18, 
+    fontSize: 18,
   },
   body_image: {
     flex: 0.2,
@@ -215,13 +218,13 @@ export const styles = StyleSheet.create({
     height: 60,
     resizeMode: "contain",
   },
-  fourth:{
-    width: '100%',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  fourth: {
+    width: "100%",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   content_text: {
-    marginLeft : 10,
+    marginLeft: 10,
     color: "#000000",
     fontSize: 25,
     textAlign: "left",

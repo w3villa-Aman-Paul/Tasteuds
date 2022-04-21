@@ -177,29 +177,35 @@ const ProductListScreen = ({
             marginTop: 10,
           }}
         >
-          <Text
+          <View
             style={{
-              ...styles.title,
-              fontSize: 24,
-            }}
-          >
-            PRODUKTER
-          </Text>
-          <Text
-            style={{
-              fontSize: 16,
               padding: 10,
               marginTop: 10,
               borderWidth: 1,
               borderRadius: 10,
-              lineHeight: 18.75,
-              fontWeight: "bold",
-              ...styles.borderPrimary,
+              flex: 1,
+              flexDirection: "row",
+              elevation: 3,
+              backgroundColor: "#fff",
+              borderColor: "transparent",
             }}
           >
-            Bestill innen tirsdag (23:59) for å få varene torsdag ettermiddag.
-            Vi utvider utvalget av produsenter og produkter fortløpende!
-          </Text>
+            <Image
+              source={require("../../../../../assets/images/components/truck.png")}
+              resizeMode={"cover"}
+              style={{ flex: 0.15, marginRight: 15 }}
+            />
+            <Text
+              style={{
+                flex: 0.8,
+                fontSize: 16,
+                lineHeight: 18.75,
+                fontWeight: "bold",
+              }}
+            >
+              Bestill innen tirsdag (23:59) for å få varene torsdag ettermiddag
+            </Text>
+          </View>
 
           <ScrollView horizontal={true} style={{ ...globalStyles.mt24 }}>
             {categoryList.map((cat, index) => (
@@ -236,52 +242,62 @@ const ProductListScreen = ({
           )}
         </View>
 
-        <View style={{
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginBottom: 25
-        }}>
-          <Text style={{textAlign: 'center'}}>Ingen flere produkter</Text>
+        <View
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            marginBottom: 25,
+          }}
+        >
+          <Text style={{ textAlign: "center" }}>Ingen flere produkter</Text>
 
-          <TouchableOpacity style={{
-            width: 120,
-            marginTop: 30,
-            marginBottom: 10,
-            borderWidth: 1,
-            borderRadius : 10,
-            paddingHorizontal: 10,
-            paddingVertical: 3,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
+          <TouchableOpacity
+            style={{
+              width: 120,
+              marginTop: 30,
+              marginBottom: 10,
+              borderWidth: 1,
+              borderRadius: 10,
+              paddingHorizontal: 10,
+              paddingVertical: 3,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <Text>TIL TOPPEN</Text>
           </TouchableOpacity>
 
-          <View style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-            <TouchableOpacity style={{
-              width: 100,
-              marginRight: 30,
-              paddingHorizontal: 20,
-              paddingVertical: 3,
-              borderWidth: 1,
-              borderRadius: 10,
-              alignItems: 'center',
-            }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <TouchableOpacity
+              style={{
+                width: 100,
+                marginRight: 30,
+                paddingHorizontal: 20,
+                paddingVertical: 3,
+                borderWidth: 1,
+                borderRadius: 10,
+                alignItems: "center",
+              }}
+            >
               <Text>FILTER</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={{
-               width: 100,
-              marginLeft: 30,
-              paddingHorizontal: 20,
-              paddingVertical: 3,
-              borderWidth: 1,
-              borderRadius: 10,
-              alignItems: 'center',
-            }}>
+            <TouchableOpacity
+              style={{
+                width: 100,
+                marginLeft: 30,
+                paddingHorizontal: 20,
+                paddingVertical: 3,
+                borderWidth: 1,
+                borderRadius: 10,
+                alignItems: "center",
+              }}
+            >
               <Text>SORTER</Text>
             </TouchableOpacity>
           </View>
