@@ -35,11 +35,12 @@ export const styles = StyleSheet.create({
   },
   title: {
     ...globalStyles.latoBold14,
+    fontWeight: "700",
   },
   description: {
     ...globalStyles.latoRegular,
-    color: colors.gray,
-    
+    color: colors.btnLink,
+    fontWeight: "700",
   },
   pricingContainer: {
     flex: 1,
@@ -50,6 +51,7 @@ export const styles = StyleSheet.create({
     fontSize: 13,
     paddingRight: 5,
     marginTop: 3,
+    fontWeight: "700",
   },
   discountPercent: {
     color: colors.error,

@@ -22,10 +22,10 @@ import {
   setPageIndex,
   getTaxonsList,
   getTaxon,
+  getCategories,
 } from "../../../../redux";
 import { HOST } from "../../../../res/env";
 import { useSelector } from "react-redux";
-import Footer from "../../../components/footer";
 
 const FlatListImageItem = ({
   item,
@@ -33,6 +33,18 @@ const FlatListImageItem = ({
   imageStyle,
   itemContainerStyle,
 }) => {
+  const vendorList = useSelector((state) => state.taxons.vendors);
+
+  const resultVendor = (id) => {
+    const vendor = vendorList.filter((vendor) => {
+      if (vendor.id == id) return vendor;
+    });
+
+    let vendorName = vendor[0]?.name;
+    // console.log(">>>vendor", vendorName);
+    return vendorName;
+  };
+
   return (
     <TouchableOpacity onPress={onPress} style={{ ...itemContainerStyle }}>
       <Image
@@ -50,11 +62,10 @@ const FlatListImageItem = ({
           {item.name}
         </Text>
         <Text numberOfLines={1} style={styles.description}>
-          {item.slug}
+          {`${resultVendor(item.vendor.id)}`}
         </Text>
         <View style={styles.pricingContainer}>
           <Text style={[styles.prices, { color: colors.black }]}>
-            {" "}
             {item.display_price}
           </Text>
           {/* <Text style={[styles.prices, styles.price]}>${item.price}</Text> */}
@@ -77,7 +88,36 @@ const ProductListScreen = ({
   pageIndex,
 }) => {
   const [isSortOverlayVisible, setIsSortOverlayVisible] = React.useState(false);
-  const categoryList = useSelector((state) => state.taxons.taxonsList);
+  const categories = useSelector((state) => state.taxons.categories.children);
+  const taxonList = useSelector((state) => state.taxons.taxonsList);
+  const cate = useSelector((state) => state.taxons.categories);
+
+  const resultCategories = (id) => {
+    const categoryList = categories?.filter((cat) => cat.id == id);
+
+    console.log("ccaatt", categoryList);
+
+    return categoryList;
+  };
+
+  const catList = (tax) => {
+    let cat = resultCategories(tax.id);
+    if (cat !== 0) {
+      return cat;
+    }
+  };
+  const categoriesMain = taxonList.filter(catList);
+
+  console.log(">>>categories", categoriesMain[0]);
+
+  const scrollRef = React.useRef();
+
+  const onPressTouch = () => {
+    scrollRef.current?.scrollTo({
+      y: 0,
+      animated: true,
+    });
+  };
 
   const productsSortList = [
     {
@@ -141,6 +181,7 @@ const ProductListScreen = ({
 
   React.useEffect(() => {
     dispatch(getTaxonsList());
+    dispatch(getCategories());
   }, []);
 
   const handleProductLoad = async (id, item) => {
@@ -169,7 +210,7 @@ const ProductListScreen = ({
     return <ActivityIndicatorCard />;
   } else
     return (
-      <ScrollView style={{ ...styles.bgwhite }}>
+      <ScrollView style={{ ...styles.bgwhite }} ref={scrollRef}>
         <View
           style={{
             marginLeft: 15,
@@ -192,7 +233,7 @@ const ProductListScreen = ({
           >
             <Image
               source={require("../../../../../assets/images/components/truck.png")}
-              resizeMode={"cover"}
+              resizeMode={"contain"}
               style={{ flex: 0.15, marginRight: 15 }}
             />
             <Text
@@ -203,12 +244,12 @@ const ProductListScreen = ({
                 fontWeight: "bold",
               }}
             >
-              Bestill innen tirsdag (23:59) for å få varene torsdag ettermiddag
+              {cate?.description}
             </Text>
           </View>
 
           <ScrollView horizontal={true} style={{ ...globalStyles.mt24 }}>
-            {categoryList.map((cat, index) => (
+            {taxonList.map((cat, index) => (
               <TouchableOpacity
                 key={index.toString()}
                 onPress={() => {
@@ -263,6 +304,7 @@ const ProductListScreen = ({
               justifyContent: "center",
               alignItems: "center",
             }}
+            onPress={onPressTouch}
           >
             <Text>TIL TOPPEN</Text>
           </TouchableOpacity>

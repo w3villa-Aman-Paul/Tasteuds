@@ -17,6 +17,7 @@ import {
   getProduct,
   getProductsList,
   getTaxon,
+  getVendorsList,
   resetProductsList,
 } from "../../../../redux";
 import { connect, useSelector } from "react-redux";
@@ -99,6 +100,9 @@ const HomeComponent = ({
       </TouchableOpacity>
     );
   };
+  React.useEffect(() => {
+    dispatch(getVendorsList());
+  }, []);
 
   React.useEffect(() => {
     handleProductsLoad();
@@ -264,7 +268,9 @@ const HomeComponent = ({
           </View>
         </View>
 
-        <Text style={styles.content_text}>MEST KJØPTE</Text>
+        <Text style={{ ...styles.content_text, ...globalStyles.container }}>
+          MEST KJØPTE
+        </Text>
         <View
           style={{
             ...globalStyles.container,

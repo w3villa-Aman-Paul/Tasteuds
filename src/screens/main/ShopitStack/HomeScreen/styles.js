@@ -169,9 +169,11 @@ export const styles = StyleSheet.create({
   },
   title: {
     ...globalStyles.latoBold14,
+    fontWeight: "700",
   },
   description: {
     ...globalStyles.latoRegular,
+    fontWeight: "700",
     color: colors.btnLink,
   },
 
@@ -184,7 +186,9 @@ export const styles = StyleSheet.create({
     fontSize: 13,
     paddingRight: 5,
     marginTop: 3,
+    fontWeight: "700",
   },
+
   bg_white: {
     backgroundColor: colors.white,
   },
@@ -228,6 +232,7 @@ export const styles = StyleSheet.create({
     color: "#000000",
     fontSize: 25,
     textAlign: "left",
+    fontWeight: "700",
   },
   bg_white: {
     backgroundColor: colors.white,
