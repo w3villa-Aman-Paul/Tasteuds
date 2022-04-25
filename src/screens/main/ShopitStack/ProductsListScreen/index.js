@@ -26,6 +26,7 @@ import {
 import { HOST } from "../../../../res/env";
 import { useSelector } from "react-redux";
 import Footer from "../../../components/footer";
+// import { redA200 } from "react-native-paper/lib/typescript/src/styles/colors";
 
 const FlatListImageItem = ({
   item,
@@ -65,18 +66,10 @@ const FlatListImageItem = ({
   );
 };
 
-const ProductListScreen = ({
-  navigation,
-  route,
-  dispatch,
-  productsList,
-  saving,
-  minimumPriceRange,
-  maximumPriceRange,
-  meta,
-  pageIndex,
-}) => {
+const ProductListScreen = ({ navigation,route,dispatch,productsList,saving,minimumPriceRange,maximumPriceRange,meta,pageIndex,}) => {
   const [isSortOverlayVisible, setIsSortOverlayVisible] = React.useState(false);
+  const [filterSheet, setFilterSheet] = React.useState(false);
+
   const categoryList = useSelector((state) => state.taxons.taxonsList);
 
   const productsSortList = [
@@ -106,10 +99,27 @@ const ProductListScreen = ({
     setIsSortOverlayVisible(false);
   };
 
-  const handleEndReached = () => {
-    const response = dispatch(setPageIndex(pageIndex + 1));
-    handleProductsLoad(response.payload);
-  };
+  const filterList = [
+    {
+      title: "MATVARER",
+      onPress: null,
+    },
+    {
+      title: "PRODUSENTER",
+      onPress: null,
+    },
+    {
+      title: "Cancel",
+      containerStyle: { backgroundColor: colors.error },
+      titleStyle: { color: "white" },
+      onPress: () => setFilterSheet(false),
+    },
+  ]
+
+  // const handleEndReached = () => {
+  //   const response = dispatch(setPageIndex(pageIndex + 1));
+  //   handleProductsLoad(response.payload);
+  // };
 
   const handleProductsLoad = (pageIndexAfterDispatch = null) => {
     dispatch(
@@ -123,6 +133,15 @@ const ProductListScreen = ({
       })
     );
   };
+
+  const scrollRef = React.useRef();
+  const onScroll = () => {
+    scrollRef.current ? scrollRef.current.scrollTo({
+      y: 0,
+      animated: true,
+    }) : setTimeout(onPress, 50);
+  }
+
 
   React.useEffect(() => {
     handleProductsLoad();
@@ -169,7 +188,7 @@ const ProductListScreen = ({
     return <ActivityIndicatorCard />;
   } else
     return (
-      <ScrollView style={{ ...styles.bgwhite }}>
+      <ScrollView style={{ ...styles.bgwhite }}  ref={scrollRef}>
         <View
           style={{
             marginLeft: 15,
@@ -253,7 +272,7 @@ const ProductListScreen = ({
             paddingVertical: 3,
             justifyContent: 'center',
             alignItems: 'center',
-          }}>
+          }} onPress={() => onScroll()}>
             <Text>TIL TOPPEN</Text>
           </TouchableOpacity>
 
@@ -270,7 +289,7 @@ const ProductListScreen = ({
               borderWidth: 1,
               borderRadius: 10,
               alignItems: 'center',
-            }}>
+            }} onPress={() => setFilterSheet(true)}>
               <Text>FILTER</Text>
             </TouchableOpacity>
             <TouchableOpacity style={{
@@ -281,13 +300,13 @@ const ProductListScreen = ({
               borderWidth: 1,
               borderRadius: 10,
               alignItems: 'center',
-            }}>
+            }} onPress={() => setIsSortOverlayVisible(true)}>
               <Text>SORTER</Text>
             </TouchableOpacity>
           </View>
         </View>
-        {/* <BottomSheet isVisible={isSortOverlayVisible}>
-          {productsList.map((l, i) => (
+        <BottomSheet isVisible={isSortOverlayVisible}>
+          {productsSortList.map((l, i) => (
             <ListItem
               key={i}
               containerStyle={l.containerStyle}
@@ -298,7 +317,21 @@ const ProductListScreen = ({
               </ListItem.Content>
             </ListItem>
           ))}
-        </BottomSheet> */}
+        </BottomSheet>
+
+        <BottomSheet isVisible={filterSheet}>
+          {filterList.map((l, i) => (
+            <ListItem
+              key={i}
+              containerStyle={l.containerStyle}
+              onPress={l.onPress}
+            >
+              <ListItem.Content>
+                <ListItem.Title style={l.titleStyle}>{l.title}</ListItem.Title>
+              </ListItem.Content>
+            </ListItem>
+          ))}
+        </BottomSheet>
       </ScrollView>
     );
 };
