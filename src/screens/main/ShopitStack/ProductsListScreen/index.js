@@ -211,7 +211,7 @@ const ProductListScreen = ({ navigation,route,dispatch,productsList,saving,minim
           >
             <Image
               source={require("../../../../../assets/images/components/truck.png")}
-              resizeMode={"cover"}
+              resizeMode={"contain"}
               style={{ flex: 0.15, marginRight: 15 }}
             />
             <Text
@@ -281,7 +281,7 @@ const ProductListScreen = ({ navigation,route,dispatch,productsList,saving,minim
               paddingVertical: 3,
               justifyContent: "center",
               alignItems: "center",
-            }}
+            }} onPress={onScroll}
           >
             <Text>TIL TOPPEN</Text>
           </TouchableOpacity>
@@ -302,7 +302,7 @@ const ProductListScreen = ({ navigation,route,dispatch,productsList,saving,minim
                 borderWidth: 1,
                 borderRadius: 10,
                 alignItems: "center",
-              }}
+              }} onPress={() => setFilterSheet(true)}
             >
               <Text>FILTER</Text>
             </TouchableOpacity>
@@ -315,7 +315,7 @@ const ProductListScreen = ({ navigation,route,dispatch,productsList,saving,minim
                 borderWidth: 1,
                 borderRadius: 10,
                 alignItems: "center",
-              }}
+              }} onPress={() => setIsSortOverlayVisible(true)}
             >
               <Text>SORTER</Text>
             </TouchableOpacity>
