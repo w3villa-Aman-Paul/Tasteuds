@@ -283,5 +283,8 @@ const styles = StyleSheet.create({
     color: "#000000",
     borderWidth: 1,
     borderRadius: 8,
+    borderColor: "transparent",
+    elevation: 3,
+    backgroundColor: "#FFF",
   },
 });
