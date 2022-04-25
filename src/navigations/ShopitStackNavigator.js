@@ -28,20 +28,20 @@ function ShopitStackNavigator({ navigation }) {
     <ShopitStack.Navigator
       screenOptions={{
         headerRight: () => (
-            <Icon
-              name="search"
-              type="font-awesome"
-              size={25}
-              color={colors.primary}
-              onPress={() => navigation.navigate("Profile")}
-            />
+          <Icon
+            name="search"
+            type="font-awesome"
+            size={25}
+            color={colors.primary}
+            onPress={() => navigation.navigate("Profile")}
+          />
         ),
         headerRightContainerStyle: {
           top: 4,
           right: 20,
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: '#ffffff',
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#ffffff",
           borderRadius: 50,
           elevation: 10,
           height: 40,
@@ -70,18 +70,26 @@ function ShopitStackNavigator({ navigation }) {
         name="ProductsList"
         component={ProductsListScreen}
         options={({ route }) => ({
-          headerTitle: "",
+          headerTitle: "PRODUKTER",
           headerLeft: () => (
-            <Icon name='arrowleft' type='ant-design' onPress={() => navigation.goBack()} title="Back" />
+            <Icon
+              name="arrowleft"
+              type="ant-design"
+              onPress={() => navigation.goBack()}
+              title="Back"
+            />
           ),
-          title: "",
+          headerTitleStyle: {
+            alignSelf: "center",
+            color: colors.primary,
+          },
           headerLeftContainerStyle: {
             paddingHorizontal: 10,
             top: 4,
             left: 20,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: '#ffffff',
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#ffffff",
             borderRadius: 50,
             elevation: 10,
             height: 40,
@@ -90,9 +98,9 @@ function ShopitStackNavigator({ navigation }) {
           headerRightContainerStyle: {
             top: 4,
             right: 20,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: '#ffffff',
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#ffffff",
             borderRadius: 50,
             elevation: 10,
             height: 40,
@@ -107,7 +115,12 @@ function ShopitStackNavigator({ navigation }) {
           headerTitle: "",
           headerRightContainerStyle: styles.headerRight,
           headerLeft: () => (
-            <ChevronLeft size={29} onPress={() => navigation.navigate('ProductsList')} style={styles.chevron} title="Back" />
+            <ChevronLeft
+              size={29}
+              onPress={() => navigation.goBack()}
+              style={styles.chevron}
+              title="Back"
+            />
           ),
           title: "",
           headerLeftContainerStyle: {
@@ -116,9 +129,9 @@ function ShopitStackNavigator({ navigation }) {
           headerRightContainerStyle: {
             top: 4,
             right: 20,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: '#ffffff',
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#ffffff",
             borderRadius: 50,
             elevation: 10,
             height: 40,
@@ -145,9 +158,9 @@ function ShopitStackNavigator({ navigation }) {
           headerRightContainerStyle: {
             top: 4,
             right: 20,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: '#ffffff',
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#ffffff",
             borderRadius: 50,
             elevation: 10,
             height: 40,
@@ -178,9 +191,9 @@ function ShopitStackNavigator({ navigation }) {
           headerRightContainerStyle: {
             top: 4,
             right: 20,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: '#ffffff',
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#ffffff",
             borderRadius: 50,
             elevation: 10,
             height: 40,
@@ -203,9 +216,9 @@ function ShopitStackNavigator({ navigation }) {
           headerRightContainerStyle: {
             top: 4,
             right: 20,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: '#ffffff',
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#ffffff",
             borderRadius: 50,
             elevation: 10,
             height: 40,
@@ -234,9 +247,9 @@ function ShopitStackNavigator({ navigation }) {
           headerRightContainerStyle: {
             top: 4,
             right: 20,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: '#ffffff',
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#ffffff",
             borderRadius: 50,
             elevation: 10,
             height: 40,
@@ -267,7 +280,7 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
   },
   chevron: {
-    color: '#000000',
+    color: "#000000",
     borderWidth: 1,
     borderRadius: 8,
   },
