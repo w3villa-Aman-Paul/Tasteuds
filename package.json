@@ -57,7 +57,9 @@
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
-    "babel-preset-expo": "9.0.2"
+    "babel-plugin-transform-remove-console": "^6.9.4",
+    "babel-preset-expo": "9.0.2",
+    "@react-native-community/cli-debugger-ui": "4.7.0"
   },
   "private": true
 }

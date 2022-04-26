@@ -14,7 +14,8 @@ const getFonts = () =>
     "lato-regular": require("./assets/fonts/Lato-Regular.ttf"),
   });
 
-function App() {
+
+const App = () => {
   const [fontsLoaded, setFontsLoaded] = React.useState(false);
 
   React.useEffect(() => {

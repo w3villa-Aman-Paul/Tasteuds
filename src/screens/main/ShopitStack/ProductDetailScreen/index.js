@@ -17,7 +17,7 @@ import { HOST } from "../../../../res/env";
 import { useSelector } from "react-redux";
 import Footer from "../../../components/footer";
 
-const ProductDetailScreen = ({ navigation, dispatch, product, auth }) => {
+const ProductDetailScreen = ({ navigation, dispatch, product, auth, cart }) => {
   const [selectedVariant, setSelectedVariant] = useState({});
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [favsnackbar, setFavSnackbar] = useState(false);
@@ -28,15 +28,18 @@ const ProductDetailScreen = ({ navigation, dispatch, product, auth }) => {
   const dismissSnackbar = () => setSnackbarVisible(false);
   const dismissFavSnackbar = () => setFavSnackbar(false);
 
-  const getcartToken = async () => {
-    const { data } = await createCartToken();
-    return data.data.attributes.token;
-  };
+  // const getcartToken = async () => {
+  //   const { data } = await createCartToken();
+  //   return data.data.attributes.token;
+  // };
 
   const handleAddToBag = async () => {
+    let vari = product.variants[0].product.id;
+    console.log('variantssss', vari);
+    console.log('cartToken', cart.token)
     dispatch(
-      addItem(await getcartToken(), {
-        variant_id: selectedVariant.id,
+      addItem(cart.token, {
+        variant_id: vari,
         quantity: 1,
       })
     );
@@ -456,6 +459,7 @@ const mapStateToProps = (state) => ({
   product: state.products.product,
   auth: state.auth,
   saving: state.products.saving,
+  cart: state.checkout.cart,
 });
 
 export default connect(mapStateToProps)(ProductDetailScreen);
