@@ -34,7 +34,10 @@ const DEFAULT_STATE = {
     },
   ],
   categories: [{}],
+  menus: [{}],
+  submenus: [{}],
   vendors: [{}],
+  subMenuProducts: [{}],
 };
 
 let changes = null;
@@ -115,6 +118,62 @@ export default function taxonsReducer(state = DEFAULT_STATE, action) {
     case "GET_CATEGORIES_FULFILLED":
       changes = {
         categories: dataFormatter.deserialize(response),
+        saving: false,
+      };
+      return { ...state, ...changes };
+
+    /**
+     * Menus
+     */
+    case "GET_MENU_ITEMS_PENDING":
+      return { ...state, saving: true };
+
+    case "GET_MENU_ITEMS_REJECTED":
+      changes = {
+        saving: false,
+      };
+      return { ...state, ...changes };
+
+    case "GET_MENU_ITEMS_FULFILLED":
+      changes = {
+        menus: dataFormatter.deserialize(response),
+        saving: false,
+      };
+      return { ...state, ...changes };
+
+    /**
+     * SUB_MENU
+     */
+    case "GET_SUB_MENU_PENDING":
+      return { ...state, saving: true };
+
+    case "GET_SUB_MENU_REJECTED":
+      changes = {
+        saving: false,
+      };
+      return { ...state, ...changes };
+
+    case "GET_SUB_MENU_FULFILLED":
+      changes = {
+        submenus: dataFormatter.deserialize(response),
+        saving: false,
+      };
+      return { ...state, ...changes };
+    /**
+     * SUB_MENU_PRODUCTS
+     */
+    case "GET_SUB_MENU_PRODUCTS_PENDING":
+      return { ...state, saving: true };
+
+    case "GET_SUB_MENU_PRODUCTS_REJECTED":
+      changes = {
+        saving: false,
+      };
+      return { ...state, ...changes };
+
+    case "GET_SUB_MENU_PRODUCTS_FULFILLED":
+      changes = {
+        subMenuProducts: dataFormatter.deserialize(response),
         saving: false,
       };
       return { ...state, ...changes };

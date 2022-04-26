@@ -11,7 +11,6 @@ import {
 import React from "react";
 import { globalStyles } from "../../../../styles/global";
 import { styles } from "./styles";
-import Footer from "../../../components/footer";
 import {
   accountRetrieve,
   getProduct,

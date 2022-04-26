@@ -23,6 +23,9 @@ import {
   getTaxonsList,
   getTaxon,
   getCategories,
+  getMenus,
+  getSubMenu,
+  getSubMenuProducts,
 } from "../../../../redux";
 import { HOST } from "../../../../res/env";
 import { useSelector } from "react-redux";
@@ -36,8 +39,8 @@ const FlatListImageItem = ({
   const vendorList = useSelector((state) => state.taxons.vendors);
 
   const resultVendor = (id) => {
-    const vendor = vendorList.filter((vendor) => {
-      if (vendor.id == id) return vendor;
+    const vendor = vendorList?.filter((vendor) => {
+      if (vendor?.id == id) return vendor;
     });
 
     let vendorName = vendor[0]?.name;
@@ -62,7 +65,7 @@ const FlatListImageItem = ({
           {item.name}
         </Text>
         <Text numberOfLines={1} style={styles.description}>
-          {`${resultVendor(item.vendor.id)}`}
+          {`${resultVendor(item?.vendor?.id)}`}
         </Text>
         <View style={styles.pricingContainer}>
           <Text style={[styles.prices, { color: colors.black }]}>
@@ -76,32 +79,47 @@ const FlatListImageItem = ({
   );
 };
 
-const ProductListScreen = ({ navigation,route,dispatch,productsList,saving,minimumPriceRange,maximumPriceRange,meta,pageIndex,}) => {
+const ProductListScreen = ({
+  navigation,
+  route,
+  dispatch,
+  productsList,
+  saving,
+  minimumPriceRange,
+  maximumPriceRange,
+  meta,
+  pageIndex,
+}) => {
   const [isSortOverlayVisible, setIsSortOverlayVisible] = React.useState(false);
   const [filterSheet, setFilterSheet] = React.useState(false);
 
   const categories = useSelector((state) => state.taxons.categories.children);
-  const taxonList = useSelector((state) => state.taxons.taxonsList);
+  const taxons = useSelector((state) => state.taxons);
   const cate = useSelector((state) => state.taxons.categories);
+  const menus = useSelector((state) => state.taxons.menus);
+  const submenus = useSelector((state) => state.taxons.submenus);
 
-  const resultCategories = (id) => {
-    const categoryList = categories?.filter((cat) => cat.id == id);
+  React.useEffect(() => {
+    dispatch(getMenus());
+  }, []);
 
-    console.log("ccaatt", categoryList);
+  // const resultCategories = (id) => {
+  //   const categoryList = categories?.filter((cat) => cat.id == id);
 
-    return categoryList;
-  };
+  //   console.log("ccaatt", categoryList);
 
-  const catList = (tax) => {
-    let cat = resultCategories(tax.id);
-    if (cat !== 0) {
-      return cat;
-    }
-  };
-  const categoriesMain = taxonList.filter(catList);
+  //   return categoryList;
+  // };
 
-  console.log(">>>categories", categoriesMain[0]);
+  // const catList = (tax) => {
+  //   let cat = resultCategories(tax.id);
+  //   if (cat !== 0) {
+  //     return cat;
+  //   }
+  // };
+  // const categoriesMain = taxonList.filter(catList);
 
+  // console.log(">>>categories", categoriesMain[0]);
 
   const productsSortList = [
     {
@@ -145,7 +163,7 @@ const ProductListScreen = ({ navigation,route,dispatch,productsList,saving,minim
       titleStyle: { color: "white" },
       onPress: () => setFilterSheet(false),
     },
-  ]
+  ];
 
   // const handleEndReached = () => {
   //   const response = dispatch(setPageIndex(pageIndex + 1));
@@ -167,12 +185,13 @@ const ProductListScreen = ({ navigation,route,dispatch,productsList,saving,minim
 
   const scrollRef = React.useRef();
   const onScroll = () => {
-    scrollRef.current ? scrollRef.current.scrollTo({
-      y: 0,
-      animated: true,
-    }) : setTimeout(onPress, 50);
-  }
-
+    scrollRef.current
+      ? scrollRef.current.scrollTo({
+          y: 0,
+          animated: true,
+        })
+      : setTimeout(onPress, 50);
+  };
 
   React.useEffect(() => {
     handleProductsLoad();
@@ -200,6 +219,20 @@ const ProductListScreen = ({ navigation,route,dispatch,productsList,saving,minim
     navigation.navigate("ProductDetail");
   };
 
+  // console.log(">>>submenus", submenus);
+  // console.log(">>menus", menus);
+
+  // const intersection = productsList.filter((el) =>
+  //   taxons.subMenuProducts?.include(el.id)
+  // );
+  // console.log(">>>inte", intersection);
+  let data = taxons?.subMenuProducts?.products?.map((el) => {
+    let arr = productsList.filter((ele) => ele.id == el.id);
+    return arr[0];
+  });
+
+  console.log(">>produ", data);
+
   const newJustInRenderItem = ({ item, index }) => {
     return (
       <FlatListImageItem
@@ -212,15 +245,11 @@ const ProductListScreen = ({ navigation,route,dispatch,productsList,saving,minim
     );
   };
 
-  const handleCategoryPress = (id) => {
-    // dispatch(getTaxon(id));
-  };
-
   if (saving) {
     return <ActivityIndicatorCard />;
   } else
     return (
-      <ScrollView style={{ ...styles.bgwhite }}  ref={scrollRef}>
+      <ScrollView style={{ ...styles.bgwhite }} ref={scrollRef}>
         <View
           style={{
             marginLeft: 15,
@@ -259,16 +288,96 @@ const ProductListScreen = ({ navigation,route,dispatch,productsList,saving,minim
           </View>
 
           <ScrollView horizontal={true} style={{ ...globalStyles.mt24 }}>
-            {taxonList.map((cat, index) => (
-              <TouchableOpacity
-                key={index.toString()}
-                onPress={() => {
-                  handleCategoryPress(cat.id);
-                }}
-              >
-                <Text style={{ padding: 5, fontSize: 16 }}>{cat.name}</Text>
-              </TouchableOpacity>
-            ))}
+            <Text
+              style={{
+                padding: 8,
+                fontSize: 20,
+                fontWeight: "700",
+                color: colors.primary,
+              }}
+            >
+              Alle
+            </Text>
+            {menus?.menu_items
+              ?.filter(
+                (menu) =>
+                  menu.name !== "PRODUSENTER" &&
+                  menu.name !== "Categories" &&
+                  menu.name !== "Kategorier" &&
+                  menu.name !== "Lokalprodukter"
+              )
+              // ?.sort((a, b) => a.name.localeCompare(b.name))
+              ?.map((menu, index) => (
+                <TouchableOpacity
+                  key={index.toString()}
+                  onPress={() => {
+                    dispatch(getSubMenu(menu.link.slice(2).toLowerCase()));
+                    // console.log(">>>>", menu.link.slice(2).toLowerCase());
+                  }}
+                >
+                  <Text
+                    style={{
+                      padding: 8,
+                      fontSize: 20,
+                      fontWeight: "700",
+                      color: colors.primary,
+                    }}
+                  >
+                    {menu.name}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+          </ScrollView>
+
+          <ScrollView horizontal={true} style={{ ...globalStyles.mt24 }}>
+            <Text
+              style={{
+                paddingTop: 2,
+                paddingBottom: 2,
+                paddingRight: 6,
+                paddingLeft: 6,
+                fontSize: 15,
+                fontWeight: "700",
+                color: colors.white,
+                borderWidth: 1,
+                borderRadius: 10,
+                backgroundColor: colors.primary,
+                marginRight: 10,
+              }}
+            >
+              Alle
+            </Text>
+            {submenus.children
+              // ?.sort((a, b) => a.name.localeCompare(b.name))
+              ?.map((submenu, index) => (
+                <TouchableOpacity
+                  key={index.toString()}
+                  onPress={() => {
+                    dispatch(
+                      getSubMenuProducts(submenu.permalink.toLowerCase())
+                    );
+                    // console.log(">>>>", submenu?.name.toLowerCase());
+                  }}
+                >
+                  <Text
+                    style={{
+                      marginRight: 10,
+                      paddingTop: 2,
+                      paddingBottom: 2,
+                      paddingRight: 4,
+                      paddingLeft: 4,
+                      fontSize: 15,
+                      fontWeight: "700",
+                      color: colors.white,
+                      borderWidth: 1,
+                      borderRadius: 10,
+                      backgroundColor: colors.primary,
+                    }}
+                  >
+                    {submenu?.name}
+                  </Text>
+                </TouchableOpacity>
+              ))}
           </ScrollView>
         </View>
 
@@ -285,7 +394,7 @@ const ProductListScreen = ({ navigation,route,dispatch,productsList,saving,minim
             <ActivityIndicatorCard />
           ) : (
             <FlatList
-              data={productsList.slice(0, 73)}
+              data={productsList}
               keyExtractor={(item, index) => index.toString()}
               renderItem={newJustInRenderItem}
               numColumns={2}
@@ -313,7 +422,8 @@ const ProductListScreen = ({ navigation,route,dispatch,productsList,saving,minim
               paddingVertical: 3,
               justifyContent: "center",
               alignItems: "center",
-            }} onPress={onScroll}
+            }}
+            onPress={onScroll}
           >
             <Text>TIL TOPPEN</Text>
           </TouchableOpacity>
@@ -334,7 +444,8 @@ const ProductListScreen = ({ navigation,route,dispatch,productsList,saving,minim
                 borderWidth: 1,
                 borderRadius: 10,
                 alignItems: "center",
-              }} onPress={() => setFilterSheet(true)}
+              }}
+              onPress={() => setFilterSheet(true)}
             >
               <Text>FILTER</Text>
             </TouchableOpacity>
@@ -347,7 +458,8 @@ const ProductListScreen = ({ navigation,route,dispatch,productsList,saving,minim
                 borderWidth: 1,
                 borderRadius: 10,
                 alignItems: "center",
-              }} onPress={() => setIsSortOverlayVisible(true)}
+              }}
+              onPress={() => setIsSortOverlayVisible(true)}
             >
               <Text>SORTER</Text>
             </TouchableOpacity>

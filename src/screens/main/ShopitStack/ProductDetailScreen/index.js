@@ -68,7 +68,11 @@ const ProductDetailScreen = ({ navigation, dispatch, product, auth, cart }) => {
           style={{ ...globalStyles.containerFluid, ...styles.bgWhite }}
         >
           <Text
-            style={{ ...styles.title, ...globalStyles.container }}
+            style={{
+              ...styles.title,
+              ...globalStyles.container,
+              color: colors.primary,
+            }}
           >{`${taxon.permalink}`}</Text>
           {/* <MyCarousel key={imageURI} imageURI={imageURI} /> */}
           <Image
@@ -112,7 +116,10 @@ const ProductDetailScreen = ({ navigation, dispatch, product, auth, cart }) => {
                     width: "85%",
                     height: 60,
                   }}
-                  onPress={handleAddToBag}
+                  onPress={() => {
+                    setSelectedVariant(product);
+                    handleAddToBag();
+                  }}
                 />
                 <View
                   style={{
