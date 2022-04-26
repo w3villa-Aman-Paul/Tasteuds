@@ -47,3 +47,42 @@ export function getCategories() {
     payload: handleAPI(url, params, method),
   };
 }
+
+export function getMenus() {
+  const url = `${API_VERSION_STOREFRONT}/menus/2`;
+  const method = "GET";
+  const params = {
+    include: "menu_items",
+  };
+
+  return {
+    type: "GET_MENU_ITEMS",
+    payload: handleAPI(url, params, method),
+  };
+}
+
+export function getSubMenu(menuName) {
+  const url = `${API_VERSION_STOREFRONT}/taxons/${menuName}`;
+  const method = "GET";
+  const params = {
+    include: "products,children",
+  };
+
+  return {
+    type: "GET_SUB_MENU",
+    payload: handleAPI(url, params, method),
+  };
+}
+
+export function getSubMenuProducts(menuName) {
+  const url = `${API_VERSION_STOREFRONT}/taxons/${menuName}`;
+  const method = "GET";
+  const params = {
+    include: "products,children",
+  };
+
+  return {
+    type: "GET_SUB_MENU_PRODUCTS",
+    payload: handleAPI(url, params, method),
+  };
+}

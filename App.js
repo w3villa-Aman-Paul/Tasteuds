@@ -17,10 +17,12 @@ const getFonts = () =>
 function App() {
   const [fontsLoaded, setFontsLoaded] = React.useState(false);
 
-  React.useEffect(() => {
-    getFonts();
+  const fun = async () => {
+    await getFonts();
     setFontsLoaded(true);
-  }, []);
+  };
+
+  fun();
 
   if (!fontsLoaded) {
     return <ActivityIndicatorCard />;

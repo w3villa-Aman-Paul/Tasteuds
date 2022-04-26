@@ -1248,7 +1248,7 @@
   "version" "0.1.94"
   dependencies:
     "@expo/bunyan" "4.0.0"
-    "@expo/metro-config" "0.3.0"
+    "@expo/metro-config" "0.2.8"
     "@expo/osascript" "2.0.30"
     "@react-native-community/cli-server-api" "^5.0.1"
     "body-parser" "1.19.0"
@@ -1342,12 +1342,12 @@
     "getenv" "^1.0.0"
     "sucrase" "^3.20.0"
 
-"@expo/metro-config@0.3.0":
-  "integrity" "sha512-bwpxqrcziDuqLvSzJ18N/c3+VOVI03gZ4ZWZQ8N6s7OVJrRjUMcSlFzjKlrJNm1t9m44Xl5mzhJYGFK2WsdI+Q=="
-  "resolved" "https://registry.npmjs.org/@expo/metro-config/-/metro-config-0.3.0.tgz"
-  "version" "0.3.0"
+"@expo/metro-config@0.2.8":
+  "integrity" "sha512-8g0QrHfvSgTLzryuE4JXRwFwBZ7EmqE55zR39Yy7jEVR3epYL0JbBK0/IDFmf6auwsDFtMjAZjFL4WEhRN5bEQ=="
+  "resolved" "https://registry.npmjs.org/@expo/metro-config/-/metro-config-0.2.8.tgz"
+  "version" "0.2.8"
   dependencies:
-    "@expo/config" "6.0.7"
+    "@expo/config" "6.0.6"
     "chalk" "^4.1.0"
     "debug" "^4.3.2"
     "getenv" "^1.0.0"
@@ -3447,15 +3447,7 @@
     "ansi-styles" "^4.1.0"
     "supports-color" "^7.1.0"
 
-"chalk@^4.0.0", "chalk@^4.1.2":
-  "integrity" "sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA=="
-  "resolved" "https://registry.npmjs.org/chalk/-/chalk-4.1.2.tgz"
-  "version" "4.1.2"
-  dependencies:
-    "ansi-styles" "^4.1.0"
-    "supports-color" "^7.1.0"
-
-"chalk@^4.1.0", "chalk@^4.1.2":
+"chalk@^4.0.0", "chalk@^4.1.0", "chalk@^4.1.2":
   "integrity" "sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA=="
   "resolved" "https://registry.npmjs.org/chalk/-/chalk-4.1.2.tgz"
   "version" "4.1.2"
