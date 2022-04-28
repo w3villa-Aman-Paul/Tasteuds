@@ -93,7 +93,9 @@ const ProductListScreen = ({
   const [isSortOverlayVisible, setIsSortOverlayVisible] = React.useState(false);
   const [filterSheet, setFilterSheet] = React.useState(false);
 
-  const categories = useSelector((state) => state.taxons.categories.children);
+  const [initialData, setInitialData] = React.useState(productsList);
+
+
   const taxons = useSelector((state) => state.taxons);
   const cate = useSelector((state) => state.taxons.categories);
   const menus = useSelector((state) => state.taxons.menus);
@@ -103,23 +105,7 @@ const ProductListScreen = ({
     dispatch(getMenus());
   }, []);
 
-  // const resultCategories = (id) => {
-  //   const categoryList = categories?.filter((cat) => cat.id == id);
 
-  //   console.log("ccaatt", categoryList);
-
-  //   return categoryList;
-  // };
-
-  // const catList = (tax) => {
-  //   let cat = resultCategories(tax.id);
-  //   if (cat !== 0) {
-  //     return cat;
-  //   }
-  // };
-  // const categoriesMain = taxonList.filter(catList);
-
-  // console.log(">>>categories", categoriesMain[0]);
 
   const productsSortList = [
     {
@@ -187,9 +173,9 @@ const ProductListScreen = ({
   const onScroll = () => {
     scrollRef.current
       ? scrollRef.current.scrollTo({
-          y: 0,
-          animated: true,
-        })
+        y: 0,
+        animated: true,
+      })
       : setTimeout(onPress, 50);
   };
 
@@ -226,12 +212,14 @@ const ProductListScreen = ({
   //   taxons.subMenuProducts?.include(el.id)
   // );
   // console.log(">>>inte", intersection);
-  let data = taxons?.subMenuProducts?.products?.map((el) => {
-    let arr = productsList.filter((ele) => ele.id == el.id);
-    return arr[0];
+  let result = taxons?.subMenuProducts?.products?.map((el) => {
+    let res = productsList.filter((ele) => ele.id == el.id);
+    
+    // setInitialData(result)
+    return res[0]
   });
-
-  console.log(">>produ", data);
+  // setInitialData(result);
+  // console.log('>>ffffff', result)
 
   const newJustInRenderItem = ({ item, index }) => {
     return (
@@ -330,33 +318,32 @@ const ProductListScreen = ({
           </ScrollView>
 
           <ScrollView horizontal={true} style={{ ...globalStyles.mt24 }}>
-            <Text
-              style={{
-                paddingTop: 2,
-                paddingBottom: 2,
-                paddingRight: 6,
-                paddingLeft: 6,
-                fontSize: 15,
-                fontWeight: "700",
-                color: colors.white,
-                borderWidth: 1,
-                borderRadius: 10,
-                backgroundColor: colors.primary,
-                marginRight: 10,
-              }}
-            >
-              Alle
-            </Text>
+            <TouchableOpacity>
+                <Text
+                  style={{
+                    paddingTop: 2,
+                    paddingBottom: 2,
+                    paddingRight: 6,
+                    paddingLeft: 6,
+                    fontSize: 15,
+                    fontWeight: "700",
+                    color: colors.white,
+                    borderWidth: 1,
+                    borderRadius: 10,
+                    backgroundColor: colors.primary,
+                    marginRight: 10,
+                  }}
+                >
+                  Alle
+                </Text>
+            </TouchableOpacity>
             {submenus.children
               // ?.sort((a, b) => a.name.localeCompare(b.name))
               ?.map((submenu, index) => (
                 <TouchableOpacity
                   key={index.toString()}
                   onPress={() => {
-                    dispatch(
-                      getSubMenuProducts(submenu.permalink.toLowerCase())
-                    );
-                    // console.log(">>>>", submenu?.name.toLowerCase());
+                    dispatch(getSubMenuProducts(submenu.permalink.toLowerCase()));
                   }}
                 >
                   <Text
@@ -394,7 +381,7 @@ const ProductListScreen = ({
             <ActivityIndicatorCard />
           ) : (
             <FlatList
-              data={productsList}
+              data={result}
               keyExtractor={(item, index) => index.toString()}
               renderItem={newJustInRenderItem}
               numColumns={2}

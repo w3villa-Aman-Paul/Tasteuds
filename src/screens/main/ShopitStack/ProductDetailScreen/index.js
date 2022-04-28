@@ -7,7 +7,6 @@ import { Snackbar } from "react-native-paper";
 import ActivityIndicatorCard from "../../../../library/components/ActivityIndicatorCard";
 import {
   addItem,
-  createCartToken,
   setProductFavourite,
 } from "../../../../redux";
 import { connect } from "react-redux";
@@ -28,18 +27,12 @@ const ProductDetailScreen = ({ navigation, dispatch, product, auth, cart }) => {
   const dismissSnackbar = () => setSnackbarVisible(false);
   const dismissFavSnackbar = () => setFavSnackbar(false);
 
-  // const getcartToken = async () => {
-  //   const { data } = await createCartToken();
-  //   return data.data.attributes.token;
-  // };
 
   const handleAddToBag = async () => {
-    let vari = product.variants[0].product.id;
-    console.log('variantssss', vari);
-    console.log('cartToken', cart.token)
+    let vari = product.variants[0].id;
     dispatch(
       addItem(cart.token, {
-        variant_id: vari,
+        variant_id: vari.toString(),
         quantity: 1,
       })
     );

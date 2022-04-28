@@ -1,11 +1,12 @@
 import * as React from "react";
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, ScrollView, Image } from "react-native";
 import { globalStyles } from "../../../../../styles/global";
 import ProductCard from "../../../../../library/components/ProductCard";
 import TextField from "../../../../../library/components/TextField";
 import { styles } from "./styles";
 import { checkoutStyles } from "../styles";
 import { connect } from "react-redux";
+import { Divider } from "react-native-elements";
 import { Snackbar } from "react-native-paper";
 import CheckoutDetailsCard from "../../../../../library/components/CheckoutDetailsCard";
 import ActionButtonFooter from "../../../../../library/components/ActionButtonFooter";
@@ -17,18 +18,17 @@ import {
   getDefaultCountry,
   getCountriesList,
 } from "../../../../../redux";
-import { useSelector } from "react-redux";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import CartFooter from "../../../../../library/components/ActionButtonFooter/cartFooter";
 
 const BagScreen = ({ navigation, dispatch, saving, cart }) => {
   const [promoCode, setPromoCode] = React.useState("");
   const [snackbarVisible, setSnackbarVisible] = React.useState(false);
-  // const cart = useSelector((state) => state.checkout);
-
-  console.log(">>cart", cart.line_items);
 
   React.useEffect(() => {
     dispatch(getCart());
   }, []);
+
 
   const onDismiss = () => setSnackbarVisible(false);
 
@@ -82,65 +82,125 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
   } else
     return (
       <>
-        <View style={globalStyles.containerFluid}>
+        <View style={styles.containerBody}>
           <ScrollView>
             <View style={globalStyles.container}>
-              {cart.line_items.map((ele, i) => (
-                <ProductCard
-                  key={i}
-                  cart
-                  counter
-                  imageSource={ele.variant.images[0]?.styles[3].url}
-                  onIncrementQuantity={() =>
-                    handleIncrementQuantity(ele.id, ele.quantity)
-                  }
-                  onDecrementQuantity={() =>
-                    handleDecrementQuantity(ele.id, ele.quantity)
-                  }
-                  onRemoveLineItem={() => handleRemoveLineItem(ele.id)}
-                  {...ele}
-                />
+              {cart.line_items.map((ele, index) => (
+                <>
+                  <View key={index.toString()} style={styles.body}>
+                    <View style={styles.cart_btn}>
+                      <Text style={{ fontSize: 25 }}>{ele.quantity}</Text>
+                      <View style={styles.inc_btn}>
+                        <TouchableOpacity
+                          onPress={() =>
+                            handleIncrementQuantity(ele.id, ele.quantity)
+                          }
+                        >
+                          <Text
+                            style={{
+                              fontSize: 20,
+                              color: "#EB1741",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            +
+                          </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          onPress={() =>
+                            handleDecrementQuantity(ele.id, ele.quantity)
+                          }
+                        >
+                          <Text
+                            style={{
+                              fontSize: 20,
+                              color: "#EB1741",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            -
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                    <View style={styles.body_first}>
+                      <Image
+                        source={require("../../../../../../assets/images/Header-Icon/cart_item.png")}
+                        style={styles.image}
+                      />
+                    </View>
+
+                    <View style={styles.body_second}>
+                      <Text style={styles.name}>{ele.name}</Text>
+                    </View>
+                    <View style={styles.body_third}>
+                      <Text style={styles.price}>{ele.display_total}</Text>
+                    </View>
+                  </View>
+                  <Divider orientation="horizontal" />
+                </>
               ))}
-            </View>
-            <View
-              style={[
-                globalStyles.containerFluid,
-                globalStyles.bgWhite,
-                globalStyles.mt16,
-              ]}
-            >
-              <View style={[globalStyles.container, globalStyles.mt8]}>
-                <Text style={[globalStyles.latoBold14, globalStyles.mb8]}>
-                  Promo Code
+
+              <View style={styles.continue}>
+                <Text
+                  style={styles.continue_shop}
+                  onPress={() => navigation.navigate("ProductsList")}
+                >
+                  FORTSETT Å HANDLE
                 </Text>
-                <TextField
-                  placeholder=" Enter Promo Code"
-                  containerStyle={checkoutStyles.inputWrapperStyle}
-                  rightElement={
-                    <Text style={checkoutStyles.inputRightText}>Apply</Text>
-                  }
-                  onChangeText={setPromoCode}
-                  value={promoCode}
-                />
+              </View>
+              {/* <ProductCard
+                    key={i}
+                    // imageSource={itemImage}
+                    onIncrementQuantity={() =>
+                      handleIncrementQuantity(ele.id, ele.quantity)
+                    }
+                    onDecrementQuantity={() =>
+                      handleDecrementQuantity(ele.id, ele.quantity)
+                    }
+                    onRemoveLineItem={() => handleRemoveLineItem(ele.id)}
+                    {...ele}
+                  /> */}
+            </View>
+
+            <Divider
+              orientation="horizontal"
+              height={11}
+              width={"100%"}
+              color={"rgba(196, 196, 196, 0.2)"}
+            />
+            <View style={styles.promo}>
+              <TouchableOpacity style={styles.promo_btn}>
+                <Text>LEGG TIL PROMOKODE</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.promo}>
+              <View style={styles.price}>
+                <Text style={styles.total_text}>DELSUM</Text>
+                <Text style={styles.total_price}>{cart.display_total}</Text>
+              </View>
+              <View style={styles.price}>
+                <Text style={styles.total_text}>FRAKT</Text>
+                <Text style={styles.total_price}>59,00 NOK</Text>
               </View>
             </View>
 
+            <View style={styles.offer}>
+              <Text style={styles.continue_shop}>
+                BESTILL FOR 150,00 KR TIL OG FÅ GRATIS FRAKT
+              </Text>
+            </View>
+
+            <View></View>
+            {/* 
             <CheckoutDetailsCard
               title="Price Details"
               display_total={cart && cart.display_total}
-            />
-
-            <View style={styles.footer}>
-              <Text style={[globalStyles.textPrimary, globalStyles.latoBold16]}>
-                Continue Shopping
-              </Text>
-            </View>
+            /> */}
           </ScrollView>
 
-          <ActionButtonFooter
-            title="Proceed to Checkout"
-            onPress={handleToCheckout}
-          />
+          <CartFooter title="TIL BETALING" onPress={handleToCheckout} />
         </View>
         <Snackbar visible={snackbarVisible} onDismiss={onDismiss}>
           SetQuantity Success !

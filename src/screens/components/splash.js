@@ -5,7 +5,7 @@ const splash = ({navigation}) => {
   
   useEffect(() => {
     setTimeout(() => {
-      navigation.replace('MainDrawerNavigator')
+      navigation.replace('Shopit')
     }, 2000)
   },[])
 

@@ -5,7 +5,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "eject": "expo eject"
+    "eject": "expo eject",
+    "debug": "xdg-open 'rndebugger://set-debugger-loc?host=localhost&port=8081'"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "~1.15.0",
@@ -24,16 +25,18 @@
     "expo-cli": "^4.12.12 ",
     "expo-linear-gradient": "~11.0.3",
     "expo-status-bar": "~1.2.0",
-    "expo-updates": "~0.11.6",
+    "expo-updates": "~0.11.7",
     "formik": "^2.2.9",
     "global": "^4.4.0",
     "jsona": "^1.8.0",
     "lodash": "^4.17.20",
     "qs": "^6.9.4",
     "react": "17.0.1",
+    "react-dev-utils": "^12.0.1",
     "react-dom": "17.0.1",
     "react-native": "0.64.3",
     "react-native-collapsible": "^1.5.3",
+    "react-native-debugger": "^1.1.0",
     "react-native-elements": "^2.3.2",
     "react-native-gesture-handler": "~2.1.0",
     "react-native-pager-view": "5.4.9",
@@ -49,17 +52,19 @@
     "react-redux": "^7.2.1",
     "react-router-dom": "^6.2.2",
     "redux": "^4.0.5",
+    "redux-devtools-extension": "^2.13.9",
     "redux-logger": "^3.0.6",
     "redux-promise-middleware": "^6.1.2",
     "redux-thunk": "^2.3.0",
+    "remote-redux-devtools": "^0.5.16",
     "uuid": "^3.4.0",
     "yup": "^0.32.11"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
+    "@react-native-community/cli-debugger-ui": "4.7.0",
     "babel-plugin-transform-remove-console": "^6.9.4",
-    "babel-preset-expo": "9.0.2",
-    "@react-native-community/cli-debugger-ui": "4.7.0"
+    "babel-preset-expo": "9.0.2"
   },
   "private": true
 }

@@ -122,6 +122,14 @@ function ShopitStackNavigator({ navigation }) {
               title="Back"
             />
           ),
+          headerRight: () => (
+            <Icon
+              name="shoppingcart"
+              type="ant-design"
+              size={30}
+              onPress={() => navigation.navigate('Bag')}
+            />
+          ),
           title: "",
           headerLeftContainerStyle: {
             paddingHorizontal: 15,
