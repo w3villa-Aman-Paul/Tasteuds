@@ -15,15 +15,12 @@ import { useSelector } from "react-redux";
 
 import { Icon } from "react-native-elements";
 import HomeComponent from "../screens/main/ShopitStack/HomeScreen";
-import FavouritesStackNavigator from "./FavouritesStackNavigator";
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import FavouritesScreen from "../screens/main/FavouritesStack/FavouritesScreen";
 
 const ShopitStack = createStackNavigator();
 
-function ShopitStackNavigator({ navigation }) {
-  const productsList = useSelector((state) => state.products.productsList);
-  const authState = useSelector((state) => state.auth);
-
+function ShopitStackNavigator({ navigation, route }) {
   const cart = useSelector((state) => state.checkout.cart);
 
   const [cartCount, setCartCount] = React.useState(0);
@@ -31,6 +28,15 @@ function ShopitStackNavigator({ navigation }) {
   React.useEffect(() => {
     setCartCount(cart.item_count);
   }, [cart]);
+
+  React.useLayoutEffect(() => {
+    const routeName = getFocusedRouteNameFromRoute(route);
+    if (routeName === "Bag") {
+      navigation.setOptions({ tabBarVisible: false });
+    } else {
+      navigation.setOptions({ tabBarVisible: true });
+    }
+  }, [navigation, route]);
 
   return (
     <ShopitStack.Navigator
@@ -122,7 +128,7 @@ function ShopitStackNavigator({ navigation }) {
         component={ProductDetailScreen}
         options={{
           headerTitle: "",
-          headerRightContainerStyle: styles.headerRight,
+
           headerLeft: () => (
             <ChevronLeft
               size={29}
@@ -141,27 +147,35 @@ function ShopitStackNavigator({ navigation }) {
                 alignItems: "center",
               }}
             >
-              <Icon
-                name="person"
-                type="ionicons"
-                size={30}
-                color={colors.primary}
-                style={{ marginRight: 20 }}
-                onPress={() => navigation.navigate("Profile")}
-              />
               <TouchableOpacity
                 style={{
                   flex: 1,
                   alignItems: "center",
                   justifyContent: "center",
                 }}
+                onPress={() => navigation.navigate("Profile")}
+              >
+                <Icon
+                  name="person"
+                  type="ionicons"
+                  size={30}
+                  color={colors.primary}
+                  style={{ marginRight: 10 }}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  flex: 1,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                onPress={() => navigation.navigate("Bag")}
               >
                 <Icon
                   name="shoppingcart"
                   type="ant-design"
                   size={30}
                   color={colors.primary}
-                  onPress={() => navigation.navigate("Bag")}
                 />
 
                 {cartCount > 0 ? (
@@ -194,11 +208,17 @@ function ShopitStackNavigator({ navigation }) {
             </View>
           ),
           title: "",
+          headerStyle: {},
+          headerTitleStyle: {
+            flex: 0.6,
+          },
           headerLeftContainerStyle: {
+            flex: 0.2,
             paddingHorizontal: 15,
           },
           headerRightContainerStyle: {
-            justifyContent: "center",
+            flex: 0.2,
+            justifyContent: "space-between",
             alignItems: "center",
           },
         }}
@@ -234,6 +254,7 @@ function ShopitStackNavigator({ navigation }) {
               />
             </TouchableOpacity>
           ),
+
           headerTitleStyle: {
             color: colors.primary,
             fontFamily: "lato-bold",

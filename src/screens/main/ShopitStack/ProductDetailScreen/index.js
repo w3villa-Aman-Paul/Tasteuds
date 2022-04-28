@@ -230,19 +230,20 @@ const ProductDetailScreen = ({ navigation, dispatch, product, auth, cart }) => {
                     <View
                       key={item.id}
                       style={{
-                        width: "75%",
                         flexDirection: "row",
                         marginTop: 10,
                       }}
                     >
-                      <Text style={{ fontWeight: "700", fontSize: 16 }}>
-                        {capitalizeFirstLetter(item.name) + ": "}
-                      </Text>
                       <Text
                         style={{
                           fontSize: 16,
+                          flex: 1,
+                          flexWrap: "wrap",
                         }}
                       >
+                        <Text style={{ fontWeight: "700", fontSize: 16 }}>
+                          {capitalizeFirstLetter(item.name) + ": "}
+                        </Text>
                         {item.value}
                       </Text>
                     </View>
