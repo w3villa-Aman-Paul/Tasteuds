@@ -71,4 +71,10 @@ export const styles = StyleSheet.create({
   borderPrimary: {
     borderColor: colors.btnLink,
   },
+  active: {
+    paddingBottom: 2,
+    borderWidth: 2,
+    borderColor: "transparent",
+    borderBottomColor: colors.primary,
+  },
 });

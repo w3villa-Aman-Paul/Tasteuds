@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "TasteBuds Demo",
-    "slug": "spreeshop-app-slug",
+    "name": "TasteBuds",
+    "slug": "Tastebuds-app-slug",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -11,10 +11,10 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.bluebash.spreeshop"
+      "bundleIdentifier": "com.w3villa.tastebuds"
     },
     "android": {
-      "package": "com.bluebash.spreeshop",
+      "package": "com.w3villa.tastebuds",
       "versionCode": 1
     },
     "web": {

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Text, StyleSheet, Image, View } from "react-native";
+import { Text, StyleSheet, Image, View, TouchableOpacity } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 
 import ProductsListScreen from "../screens/main/ShopitStack/ProductsListScreen";
@@ -23,6 +23,14 @@ const ShopitStack = createStackNavigator();
 function ShopitStackNavigator({ navigation }) {
   const productsList = useSelector((state) => state.products.productsList);
   const authState = useSelector((state) => state.auth);
+
+  const cart = useSelector((state) => state.checkout.cart);
+
+  const [cartCount, setCartCount] = React.useState(0);
+
+  React.useEffect(() => {
+    setCartCount(cart.item_count);
+  }, [cart]);
 
   return (
     <ShopitStack.Navigator
@@ -79,9 +87,10 @@ function ShopitStackNavigator({ navigation }) {
               title="Back"
             />
           ),
+          headerTitleAlign: "center",
           headerTitleStyle: {
-            alignSelf: "center",
             color: colors.primary,
+            fontFamily: "lato-bold",
           },
           headerLeftContainerStyle: {
             paddingHorizontal: 10,
@@ -122,20 +131,75 @@ function ShopitStackNavigator({ navigation }) {
               title="Back"
             />
           ),
+          headerRight: () => (
+            <View
+              style={{
+                flex: 1,
+                flexDirection: "row",
+                marginRight: 10,
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <Icon
+                name="person"
+                type="ionicons"
+                size={30}
+                color={colors.primary}
+                style={{ marginRight: 20 }}
+                onPress={() => navigation.navigate("Profile")}
+              />
+              <TouchableOpacity
+                style={{
+                  flex: 1,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Icon
+                  name="shoppingcart"
+                  type="ant-design"
+                  size={30}
+                  color={colors.primary}
+                  onPress={() => navigation.navigate("Bag")}
+                />
+
+                {cartCount > 0 ? (
+                  <View
+                    style={{
+                      position: "absolute",
+                      backgroundColor: "red",
+                      width: 16,
+                      height: 16,
+                      borderRadius: 15 / 2,
+                      right: 0,
+                      top: 0,
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        alignItems: "center",
+                        justifyContent: "center",
+                        color: "#FFFFFF",
+                        fontSize: 10,
+                      }}
+                    >
+                      {cartCount}
+                    </Text>
+                  </View>
+                ) : null}
+              </TouchableOpacity>
+            </View>
+          ),
           title: "",
           headerLeftContainerStyle: {
             paddingHorizontal: 15,
           },
           headerRightContainerStyle: {
-            top: 4,
-            right: 20,
             justifyContent: "center",
             alignItems: "center",
-            backgroundColor: "#ffffff",
-            borderRadius: 50,
-            elevation: 10,
-            height: 40,
-            width: 40,
           },
         }}
       />
@@ -143,28 +207,43 @@ function ShopitStackNavigator({ navigation }) {
         name="Bag"
         component={BagScreen}
         options={{
-          headerTitle: "",
-          headerRight: () => (
-            <Heart
-              size={24}
-              style={{ color: colors.black }}
-              onPress={() => navigation.navigate("Favorites")}
-            />
+          headerTitle: "HANDLEKURV",
+
+          headerRight: () => <></>,
+
+          headerLeft: () => (
+            <TouchableOpacity
+              style={{
+                width: 30,
+                height: 30,
+                borderWidth: 1,
+                borderRadius: 50,
+                borderColor: "transparent",
+                elevation: 2,
+                backgroundColor: "white",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Icon
+                name="cross"
+                type="entypo"
+                size={24}
+                style={{ color: colors.black }}
+                onPress={() => navigation.goBack()}
+              />
+            </TouchableOpacity>
           ),
-          title: "",
+          headerTitleStyle: {
+            color: colors.primary,
+            fontFamily: "lato-bold",
+          },
+          headerTitleAlign: "center",
           headerLeftContainerStyle: {
-            paddingHorizontal: 10,
+            paddingLeft: 10,
           },
           headerRightContainerStyle: {
-            top: 4,
-            right: 20,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "#ffffff",
-            borderRadius: 50,
-            elevation: 10,
-            height: 40,
-            width: 40,
+            elevation: 0,
           },
         }}
       />
@@ -188,6 +267,10 @@ function ShopitStackNavigator({ navigation }) {
               onPress={() => navigation.navigate("Favorites")}
             />
           ),
+          headerTitleStyle: {
+            color: colors.primary,
+            fontFamily: "lato-bold",
+          },
           headerRightContainerStyle: {
             top: 4,
             right: 20,

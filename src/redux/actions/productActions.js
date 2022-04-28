@@ -2,7 +2,6 @@ import {
   handleAPI,
   API_VERSION_STOREFRONT,
 } from "../../library/utils/apiUtils";
-import QueryString from "qs";
 
 export function getProductsList(data, { pageIndex, filter }) {
   const url = `${API_VERSION_STOREFRONT}/products`;

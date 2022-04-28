@@ -40,7 +40,7 @@ export const styles = StyleSheet.create({
     color: colors.black,
   },
   title: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "700",
     color: colors.btnLink,
     paddingTop: 20,
