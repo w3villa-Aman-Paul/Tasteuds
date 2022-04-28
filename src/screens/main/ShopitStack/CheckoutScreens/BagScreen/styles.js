@@ -1,6 +1,6 @@
-import { StyleSheet } from 'react-native'
-import { globalStyles } from '../../../../../styles/global'
-import { colors } from '../../../../../res/palette'
+import { StyleSheet } from "react-native";
+import { globalStyles } from "../../../../../styles/global";
+import { colors } from "../../../../../res/palette";
 
 export const styles = StyleSheet.create({
   productDetailsText: {
@@ -73,8 +73,8 @@ export const styles = StyleSheet.create({
   },
   body_third: {
     flex: 0.3,
-    justifyContent: 'flex-start',
-    alignItems: 'center'
+    justifyContent: "flex-start",
+    alignItems: "center",
   },
   name: {
     fontSize: 15,
@@ -144,5 +144,30 @@ export const styles = StyleSheet.create({
   offer: {
     paddingBottom: 55,
     paddingHorizontal: 20,
+  },
+  circle: {
+    width: 14,
+    height: 14,
+    borderRadius: 14,
+    backgroundColor: colors.btnLink,
+  },
+
+  bar: {
+    width: "40%",
+    height: 3,
+    // borderRadius: 20,
+    backgroundColor: colors.btnLink,
+  },
+  bgWhite: {
+    backgroundColor: colors.white,
+  },
+  fontProgress: {
+    fontFamily: "lato-medium",
+    fontSize: 14,
+    // fontWeight: "500",
+  },
+
+  fontProgressBold: {
+    fontFamily: "lato-bold",
   },
 });

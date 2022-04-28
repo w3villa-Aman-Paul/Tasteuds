@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Text, StyleSheet, Image, View } from "react-native";
+import { Text, StyleSheet, Image, View, TouchableOpacity } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 
 import ProductsListScreen from "../screens/main/ShopitStack/ProductsListScreen";
@@ -15,14 +15,28 @@ import { useSelector } from "react-redux";
 
 import { Icon } from "react-native-elements";
 import HomeComponent from "../screens/main/ShopitStack/HomeScreen";
-import FavouritesStackNavigator from "./FavouritesStackNavigator";
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import FavouritesScreen from "../screens/main/FavouritesStack/FavouritesScreen";
 
 const ShopitStack = createStackNavigator();
 
-function ShopitStackNavigator({ navigation }) {
-  const productsList = useSelector((state) => state.products.productsList);
-  const authState = useSelector((state) => state.auth);
+function ShopitStackNavigator({ navigation, route }) {
+  const cart = useSelector((state) => state.checkout.cart);
+
+  const [cartCount, setCartCount] = React.useState(0);
+
+  React.useEffect(() => {
+    setCartCount(cart.item_count);
+  }, [cart]);
+
+  React.useLayoutEffect(() => {
+    const routeName = getFocusedRouteNameFromRoute(route);
+    if (routeName === "Bag") {
+      navigation.setOptions({ tabBarVisible: false });
+    } else {
+      navigation.setOptions({ tabBarVisible: true });
+    }
+  }, [navigation, route]);
 
   return (
     <ShopitStack.Navigator
@@ -79,9 +93,10 @@ function ShopitStackNavigator({ navigation }) {
               title="Back"
             />
           ),
+          headerTitleAlign: "center",
           headerTitleStyle: {
-            alignSelf: "center",
             color: colors.primary,
+            fontFamily: "lato-bold",
           },
           headerLeftContainerStyle: {
             paddingHorizontal: 10,
@@ -113,7 +128,7 @@ function ShopitStackNavigator({ navigation }) {
         component={ProductDetailScreen}
         options={{
           headerTitle: "",
-          headerRightContainerStyle: styles.headerRight,
+
           headerLeft: () => (
             <ChevronLeft
               size={29}
@@ -123,27 +138,89 @@ function ShopitStackNavigator({ navigation }) {
             />
           ),
           headerRight: () => (
-            <Icon
-              name="shoppingcart"
-              type="ant-design"
-              size={30}
-              onPress={() => navigation.navigate('Bag')}
-            />
+
+            <View
+              style={{
+                flex: 1,
+                flexDirection: "row",
+                marginRight: 10,
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <TouchableOpacity
+                style={{
+                  flex: 1,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                onPress={() => navigation.navigate("Profile")}
+              >
+                <Icon
+                  name="person"
+                  type="ionicons"
+                  size={30}
+                  color={colors.primary}
+                  style={{ marginRight: 10 }}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  flex: 1,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                onPress={() => navigation.navigate("Bag")}
+              >
+                <Icon
+                  name="shoppingcart"
+                  type="ant-design"
+                  size={30}
+                  color={colors.primary}
+                />
+
+                {cartCount > 0 ? (
+                  <View
+                    style={{
+                      position: "absolute",
+                      backgroundColor: "red",
+                      width: 16,
+                      height: 16,
+                      borderRadius: 15 / 2,
+                      right: 0,
+                      top: 0,
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        alignItems: "center",
+                        justifyContent: "center",
+                        color: "#FFFFFF",
+                        fontSize: 10,
+                      }}
+                    >
+                      {cartCount}
+                    </Text>
+                  </View>
+                ) : null}
+              </TouchableOpacity>
+            </View>
           ),
           title: "",
+          headerStyle: {},
+          headerTitleStyle: {
+            flex: 0.6,
+          },
           headerLeftContainerStyle: {
+            flex: 0.2,
             paddingHorizontal: 15,
           },
           headerRightContainerStyle: {
-            top: 4,
-            right: 20,
-            justifyContent: "center",
+            flex: 0.2,
+            justifyContent: "space-between",
             alignItems: "center",
-            backgroundColor: "#ffffff",
-            borderRadius: 50,
-            elevation: 10,
-            height: 40,
-            width: 40,
           },
         }}
       />
@@ -151,28 +228,44 @@ function ShopitStackNavigator({ navigation }) {
         name="Bag"
         component={BagScreen}
         options={{
-          headerTitle: "",
-          headerRight: () => (
-            <Heart
-              size={24}
-              style={{ color: colors.black }}
-              onPress={() => navigation.navigate("Favorites")}
-            />
+          headerTitle: "HANDLEKURV",
+
+          headerRight: () => <></>,
+
+          headerLeft: () => (
+            <TouchableOpacity
+              style={{
+                width: 30,
+                height: 30,
+                borderWidth: 1,
+                borderRadius: 50,
+                borderColor: "transparent",
+                elevation: 2,
+                backgroundColor: "white",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Icon
+                name="cross"
+                type="entypo"
+                size={24}
+                style={{ color: colors.black }}
+                onPress={() => navigation.goBack()}
+              />
+            </TouchableOpacity>
           ),
-          title: "",
+
+          headerTitleStyle: {
+            color: colors.primary,
+            fontFamily: "lato-bold",
+          },
+          headerTitleAlign: "center",
           headerLeftContainerStyle: {
-            paddingHorizontal: 10,
+            paddingLeft: 10,
           },
           headerRightContainerStyle: {
-            top: 4,
-            right: 20,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "#ffffff",
-            borderRadius: 50,
-            elevation: 10,
-            height: 40,
-            width: 40,
+            elevation: 0,
           },
         }}
       />
@@ -196,6 +289,10 @@ function ShopitStackNavigator({ navigation }) {
               onPress={() => navigation.navigate("Favorites")}
             />
           ),
+          headerTitleStyle: {
+            color: colors.primary,
+            fontFamily: "lato-bold",
+          },
           headerRightContainerStyle: {
             top: 4,
             right: 20,

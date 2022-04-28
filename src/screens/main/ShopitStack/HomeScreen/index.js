@@ -2,6 +2,7 @@ import {
   FlatList,
   Image,
   ImageBackground,
+  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -108,9 +109,9 @@ const HomeComponent = ({
     dispatch(accountRetrieve(null, {}));
   }, [isAuth, route.params]);
 
-  return (
-    <ScrollView style={{ ...styles.bg_white }}>
-      <View style={{ ...styles.container }}>
+  const flatListHeaderComponent = () => {
+    return (
+      <>
         <TouchableOpacity onPress={() => navigation.navigate("ProductsList")}>
           <Image
             source={require("../../../../../assets/images/Header-Icon/home_item.png")}
@@ -270,40 +271,51 @@ const HomeComponent = ({
         <Text style={{ ...styles.content_text, ...globalStyles.container }}>
           MEST KJØPTE
         </Text>
-        <View
+      </>
+    );
+  };
+
+  // FlatListlowerComponent
+
+  const flatListlowerComponent = () => {
+    return (
+      <>
+        <TouchableOpacity
+          style={styles.home_btn}
+          onPress={() => navigation.navigate("ProductsList")}
+        >
+          <Text style={styles.btn_text}>SE HELE UTVALGET</Text>
+        </TouchableOpacity>
+      </>
+    );
+  };
+
+  return (
+    <SafeAreaView
+      style={{ ...styles.containerFluid, ...styles.bg_white, flex: 1 }}
+    >
+      {saving ? (
+        <ActivityIndicatorCard />
+      ) : (
+        <FlatList
+          data={productsList.slice(0, 10)}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={newJustInRenderItem}
+          numColumns={2}
+          columnWrapperStyle={{ justifyContent: "space-between" }}
           style={{
             ...globalStyles.container,
             ...globalStyles.mt8,
             ...styles.bg_white,
-            alignItems: "center",
-            justifyContent: "space-between",
+            // alignItems: "center",
+            // justifyContent: "space-between",
           }}
-        >
-          {saving ? (
-            <ActivityIndicatorCard />
-          ) : (
-            <FlatList
-              data={productsList.slice(0, 10)}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={newJustInRenderItem}
-              numColumns={2}
-              columnWrapperStyle={{ justifyContent: "space-between" }}
-              style={{
-                width: "100%",
-                flex: 1,
-              }}
-            />
-          )}
-        </View>
-      </View>
-
-      <TouchableOpacity
-        style={styles.home_btn}
-        onPress={() => navigation.navigate("ProductsList")}
-      >
-        <Text style={styles.btn_text}>SE HELE UTVALGET</Text>
-      </TouchableOpacity>
-    </ScrollView>
+          showsVerticalScrollIndicator={false}
+          ListHeaderComponent={flatListHeaderComponent}
+          ListFooterComponent={flatListlowerComponent}
+        />
+      )}
+    </SafeAreaView>
   );
 };
 

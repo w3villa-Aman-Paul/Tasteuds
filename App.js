@@ -10,8 +10,9 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const getFonts = () =>
   Font.loadAsync({
-    "lato-bold": require("./assets/fonts/Lato-Bold.ttf"),
-    "lato-regular": require("./assets/fonts/Lato-Regular.ttf"),
+    "lato-bold": require("./assets/fonts/Montserrat-Bold.ttf"),
+    "lato-regular": require("./assets/fonts/Montserrat-Regular.ttf"),
+    "lato-medium": require("./assets/fonts/Montserrat-Medium.ttf"),
   });
 
 

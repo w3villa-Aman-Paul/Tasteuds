@@ -73,6 +73,13 @@ export const globalStyles = StyleSheet.create({
     fontSize: 14,
   },
 
+  montserratRegular: {
+    fontFamily: "lato-regular",
+  },
+  montserratBold: {
+    fontFamily: "lato-bold",
+  },
+
   /**
    * Pricing Text Typograhpy
    */

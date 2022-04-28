@@ -7,6 +7,9 @@ import { Snackbar } from "react-native-paper";
 import ActivityIndicatorCard from "../../../../library/components/ActivityIndicatorCard";
 import {
   addItem,
+  createCartToken,
+  getCart,
+
   setProductFavourite,
 } from "../../../../redux";
 import { connect } from "react-redux";
@@ -14,7 +17,6 @@ import { styles } from "./styles";
 import { capitalizeFirstLetter } from "../../../../res/helperFunctions";
 import { HOST } from "../../../../res/env";
 import { useSelector } from "react-redux";
-import Footer from "../../../components/footer";
 
 const ProductDetailScreen = ({ navigation, dispatch, product, auth, cart }) => {
   const [selectedVariant, setSelectedVariant] = useState({});
@@ -28,6 +30,10 @@ const ProductDetailScreen = ({ navigation, dispatch, product, auth, cart }) => {
   const dismissFavSnackbar = () => setFavSnackbar(false);
 
 
+  React.useEffect(() => {
+    dispatch(getCart());
+  }, []);
+
   const handleAddToBag = async () => {
     let vari = product.variants[0].id;
     dispatch(
@@ -36,9 +42,6 @@ const ProductDetailScreen = ({ navigation, dispatch, product, auth, cart }) => {
         quantity: 1,
       })
     );
-    setTimeout(() => {
-      navigation.navigate("Bag");
-    }, 1000);
     return setSnackbarVisible(true);
   };
 
@@ -66,7 +69,11 @@ const ProductDetailScreen = ({ navigation, dispatch, product, auth, cart }) => {
               ...globalStyles.container,
               color: colors.primary,
             }}
-          >{`${taxon.permalink}`}</Text>
+          >{`${taxon.permalink
+            .toUpperCase()
+            .slice(11)
+            .split("/")
+            .join("  >  ")}`}</Text>
           {/* <MyCarousel key={imageURI} imageURI={imageURI} /> */}
           <Image
             source={{
@@ -103,7 +110,7 @@ const ProductDetailScreen = ({ navigation, dispatch, product, auth, cart }) => {
                   // disabledStyle={{ backgroundColor: colors.gray }}
                   // disabledTitleStyle={{ color: colors.white }}
                   containerStyle={{ flex: 1 }}
-                  titleStyle={{ ...styles.titleStyle, fontSize: 20 }}
+                  titleStyle={{ ...styles.titleStyle, fontSize: 18 }}
                   buttonStyle={{
                     ...globalStyles.btn,
                     width: "85%",
@@ -220,19 +227,20 @@ const ProductDetailScreen = ({ navigation, dispatch, product, auth, cart }) => {
                     <View
                       key={item.id}
                       style={{
-                        width: "75%",
                         flexDirection: "row",
                         marginTop: 10,
                       }}
                     >
-                      <Text style={{ fontWeight: "700", fontSize: 16 }}>
-                        {capitalizeFirstLetter(item.name) + ": "}
-                      </Text>
                       <Text
                         style={{
                           fontSize: 16,
+                          flex: 1,
+                          flexWrap: "wrap",
                         }}
                       >
+                        <Text style={{ fontWeight: "700", fontSize: 16 }}>
+                          {capitalizeFirstLetter(item.name) + ": "}
+                        </Text>
                         {item.value}
                       </Text>
                     </View>
@@ -264,186 +272,6 @@ const ProductDetailScreen = ({ navigation, dispatch, product, auth, cart }) => {
               />
             </View>
           </View>
-
-          {/* <View
-            style={[styles.containerFluid, globalStyles.mt8, globalStyles.pv8]}
-          >
-            <View style={globalStyles.container}>
-              <View>
-                <Text style={globalStyles.latoBold14}>
-                  Product Detail & Care
-                </Text>
-                <View style={[styles.unorderedListItem, globalStyles.mt8]}>
-                  {product.product_properties.map((property) => (
-                    <Text key={property.id} style={globalStyles.label}>
-                      {"\u2022"} {capitalizeFirstLetter(property.name)}:{" "}
-                      {property.value}
-                    </Text>
-                  ))}
-                </View>
-              </View>
-              <View style={globalStyles.mt16}>
-                <Text style={globalStyles.latoBold14}>Description</Text>
-                <Text style={[globalStyles.label, globalStyles.mt8]}>
-                  {product.description}
-                </Text>
-              </View>
-              <View style={globalStyles.mt16}>
-                <Text style={globalStyles.latoBold14}>Manufacturer</Text>
-                <Text style={[globalStyles.label, globalStyles.mt8]}>
-                  Freeway Clothing Co, 768/1, Vijaynagar, New Delhi 116708
-                </Text>
-              </View>
-              <View style={globalStyles.mt16}>
-                <Text style={globalStyles.latoBold14}>
-                  Manufacturer Country
-                </Text>
-                <Text style={[globalStyles.label, globalStyles.mt8]}>
-                  India
-                </Text>
-              </View>
-            </View>
-          </View> */}
-          {/* <View
-            style={[styles.containerFluid, globalStyles.mt8, globalStyles.pv8]}
-          >
-            <View style={globalStyles.container}>
-              <Text style={globalStyles.latoBold14}>
-                Customer Reviews (309)
-              </Text>
-              {[
-                {
-                  id: 0,
-                  review:
-                    "Purchasing the dress online was super easy and they were delivered quick. My partner absolutely loves his new dress! Perfect! All she had to do was swap them over with his old party dress.",
-                  reviewer: "Devendar Rathore",
-                  date: "Aug 19, 2020",
-                  likes: 16,
-                  dislikes: 7,
-                },
-                {
-                  id: 1,
-                  review:
-                    "My old dress was become dull and stale. But this new dress is super amazing and fits nicely to me. Thanks for super quick delivery and good service.",
-                  reviewer: "Devendar Rathore",
-                  date: "Aug 19, 2020",
-                  likes: 46,
-                  dislikes: 6,
-                },
-              ].map((item, i, arr) => (
-                <View key={item.id} style={globalStyles.pv8}>
-                  <Text style={globalStyles.latoRegular}>{item.review}</Text>
-                  <View style={styles.reviewFooter}>
-                    <Text style={globalStyles.label}>
-                      {item.reviewer} | {item.date}
-                    </Text>
-                    <View style={styles.likesDislikesContainer}>
-                      <View style={styles.likesContainer}>
-                        <Smile size={20} style={{ color: colors.gray }} />
-                        <Text style={globalStyles.label}> {item.likes}</Text>
-                      </View>
-                      <View style={styles.likesContainer}>
-                        <SmileSad size={20} style={{ color: colors.gray }} />
-                        <Text style={globalStyles.label}> {item.dislikes}</Text>
-                      </View>
-                    </View>
-                  </View>
-                  {i !== arr.length - 1 && (
-                    <Divider style={styles.reviewBorder} />
-                  )}
-                </View>
-              ))}
-              <TouchableOpacity>
-                <Text style={styles.reviewFooterAction}>View All (309)</Text>
-              </TouchableOpacity>
-            </View>
-          </View> */}
-          {/* <View
-            style={[styles.containerFluid, globalStyles.mt8, globalStyles.pv8]}
-          >
-            <View style={globalStyles.container}>
-              <Text style={[globalStyles.latoBold14, globalStyles.mb8]}>
-                Check Delivery
-              </Text>
-              <TextField
-                placeholder=" Enter PIN Code"
-                containerStyle={styles.inputWrapperStyle}
-                rightElement={<Text style={styles.inputRight}>Check</Text>}
-                onChangeText={setPincode}
-                value={pincode}
-              />
-              <View style={styles.deliveryOffersContainer}>
-                <ShoppingCart
-                  size={18}
-                  style={[
-                    styles.deliveryOffersIcon,
-                    { transform: [{ rotateY: "180deg" }] },
-                  ]}
-                />
-                <Text style={globalStyles.latoBold14}>
-                  Delivery by Thursday, Sep 05
-                </Text>
-              </View>
-              <View style={styles.deliveryOffersContainer}>
-                <Dollar size={18} style={styles.deliveryOffersIcon} />
-                <Text style={globalStyles.latoBold14}>
-                  Cash on delivery available
-                </Text>
-              </View>
-              <View style={styles.deliveryOffersContainer}>
-                <Repeat size={18} style={styles.deliveryOffersIcon} />
-                <Text style={globalStyles.latoBold14}>
-                  Return & exchange available within 10 days
-                </Text>
-              </View>
-            </View>
-          </View> */}
-          {/* <View
-            style={[styles.containerFluid, globalStyles.mt8, globalStyles.pv16]}
-          >
-            <View style={globalStyles.container}>
-              <View style={styles.alikeProductsHeader}>
-                <Text style={[globalStyles.latoBold14, globalStyles.mb16]}>
-                  Your might also like
-                </Text>
-                <Text style={[globalStyles.label, globalStyles.latoBold14]}>
-                  12 more
-                </Text>
-              </View>
-            </View>
-            <ScrollView
-              horizontal={true}
-              style={styles.carouselProductsContainer}
-            >
-              <CarouselProductCard imageURI={imageURI} />
-              <CarouselProductCard imageURI={imageURI} />
-              <CarouselProductCard imageURI={imageURI} />
-            </ScrollView>
-          </View> */}
-          {/* <View style={styles.footerContainer}>
-            <View style={styles.footerItemListContainer}>
-              <View style={styles.footerItemContainer}>
-                <CustomIconTruck size={32} style={styles.footerIcon} />
-                <Text style={styles.footerText}>Fastest Delivery</Text>
-              </View>
-              <View style={styles.footerItemContainer}>
-                <CustomIconOriginal size={32} style={styles.footerIcon} />
-                <Text style={styles.footerText}>100% Original</Text>
-              </View>
-              <View style={styles.footerItemContainer}>
-                <IcOutlineAssignmentReturn
-                  size={32}
-                  style={styles.footerIcon}
-                />
-                <Text style={styles.footerText}>Easy Returns</Text>
-              </View>
-              <View style={styles.footerItemContainer}>
-                <RiSecurePaymentFill size={32} style={styles.footerIcon} />
-                <Text style={styles.footerText}>Secure Payment</Text>
-              </View>
-            </View>
-          </View> */}
-          <Footer />
         </ScrollView>
         <Snackbar visible={snackbarVisible} onDismiss={dismissSnackbar}>
           Added to Bag !

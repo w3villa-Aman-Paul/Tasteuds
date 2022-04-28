@@ -29,6 +29,7 @@ import {
 } from "../../../../redux";
 import { HOST } from "../../../../res/env";
 import { useSelector } from "react-redux";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const FlatListImageItem = ({
   item,
@@ -93,8 +94,9 @@ const ProductListScreen = ({
   const [isSortOverlayVisible, setIsSortOverlayVisible] = React.useState(false);
   const [filterSheet, setFilterSheet] = React.useState(false);
 
-  const [initialData, setInitialData] = React.useState(productsList);
 
+  const [all, setAll] = React.useState(true);
+  const [subLink, setSubLink] = React.useState("");
 
   const taxons = useSelector((state) => state.taxons);
   const cate = useSelector((state) => state.taxons.categories);
@@ -104,7 +106,6 @@ const ProductListScreen = ({
   React.useEffect(() => {
     dispatch(getMenus());
   }, []);
-
 
 
   const productsSortList = [
@@ -172,10 +173,10 @@ const ProductListScreen = ({
   const scrollRef = React.useRef();
   const onScroll = () => {
     scrollRef.current
-      ? scrollRef.current.scrollTo({
-        y: 0,
-        animated: true,
-      })
+      ? scrollRef.current.scrollToOffset({
+          offset: 0,
+          animated: true,
+        })
       : setTimeout(onPress, 50);
   };
 
@@ -186,13 +187,6 @@ const ProductListScreen = ({
       dispatch(setPageIndex(1));
     };
   }, [route.params]);
-
-  // React.useEffect(() => {
-  //   //Reset products filter only upon component unmount
-  //   return () => {
-  //     dispatch(resetProductsFilter());
-  //   };
-  // }, []);
 
   React.useEffect(() => {
     dispatch(getTaxonsList());
@@ -205,21 +199,10 @@ const ProductListScreen = ({
     navigation.navigate("ProductDetail");
   };
 
-  // console.log(">>>submenus", submenus);
-  // console.log(">>menus", menus);
-
-  // const intersection = productsList.filter((el) =>
-  //   taxons.subMenuProducts?.include(el.id)
-  // );
-  // console.log(">>>inte", intersection);
-  let result = taxons?.subMenuProducts?.products?.map((el) => {
-    let res = productsList.filter((ele) => ele.id == el.id);
-    
-    // setInitialData(result)
-    return res[0]
+  let data = taxons?.subMenuProducts?.products?.map((el) => {
+    let arr = productsList.filter((ele) => ele.id == el.id);
+    return arr[0];
   });
-  // setInitialData(result);
-  // console.log('>>ffffff', result)
 
   const newJustInRenderItem = ({ item, index }) => {
     return (
@@ -233,11 +216,9 @@ const ProductListScreen = ({
     );
   };
 
-  if (saving) {
-    return <ActivityIndicatorCard />;
-  } else
+  const flatListUpperElement = () => {
     return (
-      <ScrollView style={{ ...styles.bgwhite }} ref={scrollRef}>
+      <>
         <View
           style={{
             marginLeft: 15,
@@ -275,17 +256,29 @@ const ProductListScreen = ({
             </Text>
           </View>
 
-          <ScrollView horizontal={true} style={{ ...globalStyles.mt24 }}>
-            <Text
-              style={{
-                padding: 8,
-                fontSize: 20,
-                fontWeight: "700",
-                color: colors.primary,
+          <ScrollView
+            horizontal={true}
+            style={{ ...globalStyles.mt24, ...styles.bgwhite }}
+            showsHorizontalScrollIndicator={false}
+          >
+            <TouchableOpacity
+              key={"alle"}
+              onPress={() => {
+                setAll(true);
               }}
             >
-              Alle
-            </Text>
+              <Text
+                style={{
+                  padding: 8,
+                  fontSize: 20,
+                  fontWeight: "700",
+                  color: colors.primary,
+                  ...styles.active,
+                }}
+              >
+                Alle
+              </Text>
+            </TouchableOpacity>
             {menus?.menu_items
               ?.filter(
                 (menu) =>
@@ -300,7 +293,9 @@ const ProductListScreen = ({
                   key={index.toString()}
                   onPress={() => {
                     dispatch(getSubMenu(menu.link.slice(2).toLowerCase()));
-                    // console.log(">>>>", menu.link.slice(2).toLowerCase());
+                    setAll(false);
+                    setSubLink(menu.link.slice(2).toLowerCase());
+                    dispatch(getSubMenuProducts(subLink));
                   }}
                 >
                   <Text
@@ -317,78 +312,64 @@ const ProductListScreen = ({
               ))}
           </ScrollView>
 
-          <ScrollView horizontal={true} style={{ ...globalStyles.mt24 }}>
-            <TouchableOpacity>
-                <Text
-                  style={{
-                    paddingTop: 2,
-                    paddingBottom: 2,
-                    paddingRight: 6,
-                    paddingLeft: 6,
-                    fontSize: 15,
-                    fontWeight: "700",
-                    color: colors.white,
-                    borderWidth: 1,
-                    borderRadius: 10,
-                    backgroundColor: colors.primary,
-                    marginRight: 10,
-                  }}
-                >
-                  Alle
-                </Text>
-            </TouchableOpacity>
-            {submenus.children
-              // ?.sort((a, b) => a.name.localeCompare(b.name))
-              ?.map((submenu, index) => (
-                <TouchableOpacity
-                  key={index.toString()}
-                  onPress={() => {
-                    dispatch(getSubMenuProducts(submenu.permalink.toLowerCase()));
-                  }}
-                >
-                  <Text
-                    style={{
-                      marginRight: 10,
-                      paddingTop: 2,
-                      paddingBottom: 2,
-                      paddingRight: 4,
-                      paddingLeft: 4,
-                      fontSize: 15,
-                      fontWeight: "700",
-                      color: colors.white,
-                      borderWidth: 1,
-                      borderRadius: 10,
-                      backgroundColor: colors.primary,
+          {all ? (
+            <></>
+          ) : (
+            <ScrollView
+              horizontal={true}
+              style={{ ...globalStyles.mt24 }}
+              showsHorizontalScrollIndicator={false}
+            >
+              <TouchableOpacity
+                onPress={() => {
+                  dispatch(getSubMenuProducts(subLink));
+                  // console.log(">>>>", submenu?.name.toLowerCase());
+                }}
+              >
+              </TouchableOpacity>
+              {submenus.children
+                // ?.sort((a, b) => a.name.localeCompare(b.name))
+                ?.map((submenu, index) => (
+                  <TouchableOpacity
+                    key={index.toString()}
+                    onPress={() => {
+                      dispatch(
+                        getSubMenuProducts(submenu.permalink.toLowerCase())
+                      );
+                      // console.log(">>>>", submenu?.name.toLowerCase());
                     }}
                   >
-                    {submenu?.name}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-          </ScrollView>
-        </View>
-
-        <View
-          style={{
-            ...globalStyles.containerFluid,
-            ...globalStyles.mt24,
-            ...styles.bgwhite,
-            marginLeft: 15,
-            marginRight: 15,
-          }}
-        >
-          {saving ? (
-            <ActivityIndicatorCard />
-          ) : (
-            <FlatList
-              data={result}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={newJustInRenderItem}
-              numColumns={2}
-            />
+                    <Text
+                      style={{
+                        marginRight: 10,
+                        paddingTop: 2,
+                        paddingBottom: 2,
+                        paddingRight: 4,
+                        paddingLeft: 4,
+                        fontSize: 15,
+                        fontWeight: "700",
+                        color: colors.white,
+                        borderWidth: 1,
+                        borderRadius: 10,
+                        backgroundColor: colors.primary,
+                      }}
+                    >
+                      {submenu?.name}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+            </ScrollView>
           )}
         </View>
+      </>
+    );
+  };
 
+  // flatListLowerElement
+
+  const flatListLowerElement = () => {
+    return (
+      <>
         <View
           style={{
             justifyContent: "center",
@@ -479,7 +460,36 @@ const ProductListScreen = ({
             </ListItem>
           ))}
         </BottomSheet>
-      </ScrollView>
+      </>
+    );
+  };
+
+  if (saving) {
+    return <ActivityIndicatorCard />;
+  } else
+    return (
+      <SafeAreaView
+        style={{
+          ...globalStyles.containerFluid,
+          ...styles.bgwhite,
+          width: "100%",
+          flex: 1,
+        }}
+      >
+        {saving ? (
+          <ActivityIndicatorCard />
+        ) : (
+          <FlatList
+            data={all ? productsList : data}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={newJustInRenderItem}
+            numColumns={2}
+            ListHeaderComponent={flatListUpperElement}
+            ListFooterComponent={flatListLowerElement}
+            ref={scrollRef}
+          />
+        )}
+      </SafeAreaView>
     );
 };
 
