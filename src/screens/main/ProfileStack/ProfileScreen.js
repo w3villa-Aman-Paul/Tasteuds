@@ -20,7 +20,6 @@ import {
   retrieveAddress,
   userLogout,
 } from "../../../redux";
-import Footer from "../../components/footer";
 import { styles } from "./styles";
 const list = [
   {

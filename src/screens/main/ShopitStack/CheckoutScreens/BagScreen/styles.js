@@ -64,16 +64,18 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   body_first: {
-    flex: 0.2,
+    flex: 0.25,
+    justifyContent: "center",
+    alignItems: "center",
   },
   body_second: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    flex: 0.3,
+    alignItems: "center",
+    flex: 0.4,
   },
   body_third: {
-    flex: 0.3,
-    justifyContent: "flex-start",
+    flex: 0.2,
+    justifyContent: "center",
     alignItems: "center",
   },
   name: {
@@ -83,7 +85,7 @@ export const styles = StyleSheet.create({
     fontSize: 15,
   },
   cart_btn: {
-    // flex: 0.2,
+    flex: 0.15,
     flexDirection: "row",
     borderWidth: 1,
     width: 50,
@@ -106,8 +108,9 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   image: {
-    width: 60,
-    height: 80,
+    width: 74,
+    height: 65,
+    resizeMode: "contain",
   },
   continue: {
     paddingVertical: 25,

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { connect, useSelector } from "react-redux";
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, KeyboardAvoidingView } from "react-native";
 import { globalStyles } from "../../styles/global";
 import { ChevronLeft, Eye } from "../../library/icons";
 import { colors } from "../../res/palette";
@@ -65,7 +65,9 @@ const SignInScreen = ({ navigation, dispatch }) => {
         style={styles.loginLogo}
         source={require("../../../assets/images/logo-mark.png")}
       />
-      <Text style={styles.title}>Logg inn for å fortsette</Text>
+      <Text style={{ ...styles.title, textAlign: "center", width: "100%" }}>
+        Logg inn for å fortsette
+      </Text>
       <Formik
         validationSchema={loginValidationSchema}
         initialValues={{ email: "", password: "" }}
@@ -93,7 +95,7 @@ const SignInScreen = ({ navigation, dispatch }) => {
           touched,
           isValid,
         }) => (
-          <View style={styles.mainContainer}>
+          <KeyboardAvoidingView style={styles.mainContainer}>
             <TextField
               placeholder="E-mail eller telefonnummer"
               inputStyle={styles.inputStyle}
@@ -159,7 +161,7 @@ const SignInScreen = ({ navigation, dispatch }) => {
                 Opprett bruker
               </Text>
             </View>
-          </View>
+          </KeyboardAvoidingView>
         )}
       </Formik>
 

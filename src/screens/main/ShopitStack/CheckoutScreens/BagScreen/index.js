@@ -1,5 +1,5 @@
 import * as React from "react";
-import { View, Text, ScrollView, Image } from "react-native";
+import { View, Text, ScrollView, Image, TextInput } from "react-native";
 import { globalStyles } from "../../../../../styles/global";
 import ProductCard from "../../../../../library/components/ProductCard";
 import TextField from "../../../../../library/components/TextField";
@@ -22,21 +22,27 @@ import {
 import { TouchableOpacity } from "react-native-gesture-handler";
 import CartFooter from "../../../../../library/components/ActionButtonFooter/cartFooter";
 import { useSelector } from "react-redux";
-import { colors } from "react-native-elements";
+import { HOST } from "../../../../../res/env";
 
 const BagScreen = ({ navigation, dispatch, saving, cart }) => {
   const [promoCode, setPromoCode] = React.useState("");
   const [snackbarVisible, setSnackbarVisible] = React.useState(false);
 
-  // const cart = useSelector((state) => state.checkout);
-
-  const productList = useSelector((state) => state.products.productList);
+  const productsList = useSelector((state) => state.products.productsList);
 
   React.useEffect(() => {
     dispatch(getCart());
   }, []);
 
   const onDismiss = () => setSnackbarVisible(false);
+
+  const handleCartProductImage = (cartPro) => {
+    const product = productsList?.find(
+      (element) => cartPro?.variant?.product.id === element.id
+    );
+
+    return product?.images[0].styles[1];
+  };
 
   const handleToCheckout = async () => {
     await dispatch(getDefaultCountry());
@@ -188,94 +194,86 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
                 22:00
               </Text>
             </View>
-            <View style={globalStyles.container}>
-              {cart.line_items.map((ele, index) => (
-                <>
-                  <View key={index.toString()} style={styles.body}>
-                    <View style={styles.cart_btn}>
-                      <Text style={{ fontSize: 25 }}>{ele.quantity}</Text>
-                      <View style={styles.inc_btn}>
-                        <TouchableOpacity
-                          onPress={() =>
-                            handleIncrementQuantity(ele.id, ele.quantity)
-                          }
-                        >
-                          <Text
-                            style={{
-                              fontSize: 20,
-                              color: "#EB1741",
-                              fontWeight: "bold",
-                            }}
+            <View style={globalStyles.containerFluid}>
+              {cart.line_items.map((ele, index) => {
+                let cartProductImage = handleCartProductImage(ele);
+
+                return (
+                  <>
+                    <View key={index} style={styles.body}>
+                      <View style={styles.cart_btn}>
+                        <Text style={{ fontSize: 25 }}>{ele.quantity}</Text>
+                        <View style={styles.inc_btn}>
+                          <TouchableOpacity
+                            onPress={() =>
+                              handleIncrementQuantity(ele.id, ele.quantity)
+                            }
                           >
-                            +
-                          </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          onPress={() =>
-                            handleDecrementQuantity(ele.id, ele.quantity)
-                          }
-                        >
-                          <Text
-                            style={{
-                              fontSize: 20,
-                              color: "#EB1741",
-                              fontWeight: "bold",
-                            }}
+                            <Text
+                              style={{
+                                fontSize: 20,
+                                color: "#EB1741",
+                                fontWeight: "bold",
+                              }}
+                            >
+                              +
+                            </Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            onPress={() =>
+                              handleDecrementQuantity(ele.id, ele.quantity)
+                            }
                           >
-                            -
-                          </Text>
-                        </TouchableOpacity>
+                            <Text
+                              style={{
+                                fontSize: 20,
+                                color: "#EB1741",
+                                fontWeight: "bold",
+                              }}
+                            >
+                              -
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                      <View style={styles.body_first}>
+                        <Image
+                          source={{ uri: `${HOST}/${cartProductImage.url}` }}
+                          style={styles.image}
+                        />
+                      </View>
+
+                      <View style={styles.body_second}>
+                        <Text style={styles.name}>{ele.name}</Text>
+                      </View>
+                      <View style={styles.body_third}>
+                        <Text style={styles.price}>{ele.display_total}</Text>
                       </View>
                     </View>
-                    <View style={styles.body_first}>
-                      <Image
-                        source={require("../../../../../../assets/images/Header-Icon/cart_item.png")}
-                        style={styles.image}
-                      />
-                    </View>
-
-                    <View style={styles.body_second}>
-                      <Text style={styles.name}>{ele.name}</Text>
-                    </View>
-                    <View style={styles.body_third}>
-                      <Text style={styles.price}>{ele.display_total}</Text>
-                    </View>
-                  </View>
-                  <Divider orientation="horizontal" />
-                </>
-              ))}
+                    <Divider orientation="horizontal" />
+                  </>
+                );
+              })}
 
               <View style={styles.continue}>
                 <Text
-                  style={styles.continue_shop}
+                  style={{ ...styles.continue_shop, ...globalStyles.container }}
                   onPress={() => navigation.navigate("ProductsList")}
                 >
                   FORTSETT Å HANDLE
                 </Text>
               </View>
-              {/* <ProductCard
-                    key={i}
-                    // imageSource={itemImage}
-                    onIncrementQuantity={() =>
-                      handleIncrementQuantity(ele.id, ele.quantity)
-                    }
-                    onDecrementQuantity={() =>
-                      handleDecrementQuantity(ele.id, ele.quantity)
-                    }
-                    onRemoveLineItem={() => handleRemoveLineItem(ele.id)}
-                    {...ele}
-                  /> */}
             </View>
 
             <Divider
               orientation="horizontal"
               height={11}
               width={"100%"}
-              color={"rgba(196, 196, 196, 0.2)"}
+              color="#E5E5E5"
             />
             <View style={styles.promo}>
               <TouchableOpacity style={styles.promo_btn}>
-                <Text>LEGG TIL PROMOKODE</Text>
+                <TextInput placeholder="LEGG TIL PROMOKODE"></TextInput>
               </TouchableOpacity>
             </View>
 

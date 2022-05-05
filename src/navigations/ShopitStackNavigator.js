@@ -132,13 +132,12 @@ function ShopitStackNavigator({ navigation, route }) {
           headerLeft: () => (
             <ChevronLeft
               size={29}
-              onPress={() => navigation.goBack()}
+              onPress={() => navigation.navigate("ProductsList")}
               style={styles.chevron}
               title="Back"
             />
           ),
           headerRight: () => (
-
             <View
               style={{
                 flex: 1,
@@ -251,7 +250,7 @@ function ShopitStackNavigator({ navigation, route }) {
                 type="entypo"
                 size={24}
                 style={{ color: colors.black }}
-                onPress={() => navigation.goBack()}
+                onPress={() => navigation.navigate("ProductDetail")}
               />
             </TouchableOpacity>
           ),

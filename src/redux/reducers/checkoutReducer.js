@@ -5,6 +5,7 @@ const DEFAULT_STATE = {
   saving: false,
   status: null,
   address: null,
+  error: null,
   country: {
     states: [],
     iso: null,
@@ -69,6 +70,9 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
       changes = {
         country: dataFormatter.deserialize(response),
         saving: false,
+        error: null,
+        isAuth: true,
+        status: action.payload.status,
       };
       return { ...state, ...changes };
 
@@ -88,6 +92,9 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
       changes = {
         countriesList: dataFormatter.deserialize(response),
         saving: false,
+        error: null,
+        isAuth: true,
+        status: action.payload.status,
       };
       return { ...state, ...changes };
 
@@ -107,6 +114,9 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
       changes = {
         country: dataFormatter.deserialize(response),
         saving: false,
+        error: null,
+        isAuth: true,
+        status: action.payload.status,
       };
       return { ...state, ...changes };
 
@@ -126,6 +136,9 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
       changes = {
         paymentMethods: dataFormatter.deserialize(response),
         saving: false,
+        error: null,
+        isAuth: true,
+        status: action.payload.status,
       };
       return { ...state, ...changes };
 
@@ -145,6 +158,9 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
       changes = {
         cart: dataFormatter.deserialize(response),
         saving: false,
+        error: null,
+        isAuth: true,
+        status: action.payload.status,
       };
       return { ...state, ...changes };
 
@@ -152,11 +168,14 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
      * UPDATE_CHECKOUT
      */
     case "UPDATE_CHECKOUT_PENDING":
-      return { ...state, saving: true };
+      return { ...state, saving: true, error: null, isAuth: false, status: "" };
 
     case "UPDATE_CHECKOUT_REJECTED":
       changes = {
         saving: false,
+        error: response.data.error,
+        isAuth: false,
+        status: response.status,
       };
       return { ...state, ...changes };
 
@@ -164,11 +183,14 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
       changes = {
         cart: dataFormatter.deserialize(response),
         saving: false,
+        error: null,
+        isAuth: true,
+        status: action.payload.status,
       };
       return { ...state, ...changes };
 
     case "RATES_CHECKOUT_PENDING":
-      return { ...state, saving: true };
+      return { ...state, saving: true, error: null, isAuth: false, status: "" };
 
     case "RATES_CHECKOUT_REJECTED":
       changes = {
@@ -180,6 +202,9 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
       changes = {
         cart: dataFormatter.deserialize(response),
         saving: false,
+        error: null,
+        isAuth: true,
+        status: action.payload.status,
       };
       return { ...state, ...changes };
 
@@ -188,11 +213,14 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
      */
 
     case "CREATE_ADDRESS_PENDING":
-      return { ...state, saving: true };
+      return { ...state, saving: true, error: null, isAuth: false, status: "" };
 
     case "CREATE_ADDRESS_REJECTED":
       changes = {
         saving: false,
+        error: response.data.error,
+        isAuth: false,
+        status: response.status,
       };
       return { ...state, ...changes };
 
@@ -200,15 +228,21 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
       changes = {
         address: dataFormatter.deserialize(response),
         saving: false,
+        error: null,
+        isAuth: true,
+        status: action.payload.status,
       };
       return { ...state, ...changes };
 
     case "RETRIEVE_ADDRESS_PENDING":
-      return { ...state, saving: true };
+      return { ...state, saving: true, error: null, isAuth: false, status: "" };
 
     case "RETRIEVE_ADDRESS_REJECTED":
       changes = {
         saving: false,
+        error: response.data.error,
+        isAuth: false,
+        status: response.status,
       };
       return { ...state, ...changes };
 
@@ -216,15 +250,26 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
       changes = {
         address: dataFormatter.deserialize(response),
         saving: false,
+        error: null,
+        isAuth: true,
+        status: action.payload.status,
       };
       return { ...state, ...changes };
 
     case "DELETE_ADDRESS_PENDING":
-      return { ...state, saving: true, status: null };
+      return {
+        ...state,
+        saving: true,
+        error: null,
+        isAuth: false,
+        status: "",
+      };
 
     case "DELETE_ADDRESS_REJECTED":
       changes = {
         saving: false,
+        error: response.data.error,
+        isAuth: false,
         status: response.status,
       };
       return { ...state, ...changes };
@@ -233,6 +278,8 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
       changes = {
         message: "Address Deleted Succcessfully",
         saving: false,
+        error: null,
+        isAuth: true,
         status: action.payload.status,
       };
       return { ...state, ...changes };
@@ -241,11 +288,14 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
      * COMPLETE_CHECKOUT
      */
     case "COMPLETE_CHECKOUT_PENDING":
-      return { ...state, saving: true };
+      return { ...state, saving: true, error: null, isAuth: false, status: "" };
 
     case "COMPLETE_CHECKOUT_REJECTED":
       changes = {
         saving: false,
+        error: response.data.error,
+        isAuth: false,
+        status: response.status,
       };
       return { ...state, ...changes };
 
@@ -253,6 +303,9 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
       changes = {
         cart: dataFormatter.deserialize(response),
         saving: false,
+        error: null,
+        isAuth: true,
+        status: action.payload.status,
       };
       return { ...state, ...changes };
 
@@ -260,11 +313,14 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
      * GET_CART
      */
     case "GET_CART_PENDING":
-      return { ...state, saving: true };
+      return { ...state, saving: true, error: null, isAuth: false, status: "" };
 
     case "GET_CART_REJECTED":
       changes = {
         saving: false,
+        error: response.data.error,
+        isAuth: false,
+        status: response.status,
       };
       return { ...state, ...changes };
 
@@ -272,6 +328,9 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
       changes = {
         cart: dataFormatter.deserialize(response),
         saving: false,
+        error: null,
+        isAuth: true,
+        status: action.payload.status,
       };
       return { ...state, ...changes };
 
@@ -279,11 +338,14 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
      * CREATE_CART
      */
     case "CREATE_CART_PENDING":
-      return { ...state, saving: true };
+      return { ...state, saving: true, error: null, isAuth: false, status: "" };
 
     case "CREATE_CART_REJECTED":
       changes = {
         saving: false,
+        error: response.data.error,
+        isAuth: false,
+        status: response.status,
       };
       return { ...state, ...changes };
 
@@ -291,6 +353,9 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
       changes = {
         cart: dataFormatter.deserialize(response),
         saving: false,
+        error: null,
+        isAuth: true,
+        status: action.payload.status,
       };
       return { ...state, ...changes };
 
@@ -298,11 +363,14 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
      * ADD_ITEM
      */
     case "ADD_ITEM_PENDING":
-      return { ...state, saving: true };
+      return { ...state, saving: true, error: null, isAuth: false, status: "" };
 
     case "ADD_ITEM_REJECTED":
       changes = {
         saving: false,
+        error: response.data.error,
+        isAuth: false,
+        status: response.status,
       };
       return { ...state, ...changes };
 
@@ -310,6 +378,9 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
       changes = {
         cart: dataFormatter.deserialize(response),
         saving: false,
+        error: "Lagt til bag",
+        isAuth: true,
+        status: action.payload.status,
       };
       return { ...state, ...changes };
 
@@ -317,11 +388,14 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
      * SET_QUANTITY
      */
     case "SET_QUANTITY_PENDING":
-      return { ...state, saving: true };
+      return { ...state, saving: true, error: null, isAuth: false, status: "" };
 
     case "SET_QUANTITY_REJECTED":
       changes = {
         saving: false,
+        error: response.data.error,
+        isAuth: false,
+        status: response.status,
       };
       return { ...state, ...changes };
 
@@ -329,6 +403,9 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
       changes = {
         cart: dataFormatter.deserialize(response),
         saving: false,
+        error: null,
+        isAuth: true,
+        status: action.payload.status,
       };
       return { ...state, ...changes };
 
@@ -336,17 +413,24 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
      * REMOVE_LINE_ITEM
      */
     case "REMOVE_LINE_ITEM_PENDING":
-      return { ...state, saving: true };
+      return { ...state, saving: true, error: null, isAuth: false, status: "" };
 
     case "REMOVE_LINE_ITEM_REJECTED":
       changes = {
         saving: false,
+        error: response.data.error,
+        isAuth: false,
+        status: response.status,
       };
       return { ...state, ...changes };
 
     case "REMOVE_LINE_ITEM_FULFILLED":
       changes = {
         cart: dataFormatter.deserialize(response),
+        saving: false,
+        error: null,
+        isAuth: true,
+        status: action.payload.status,
         saving: false,
       };
       return { ...state, ...changes };

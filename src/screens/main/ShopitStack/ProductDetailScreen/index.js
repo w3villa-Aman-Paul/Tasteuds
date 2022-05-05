@@ -9,7 +9,6 @@ import {
   addItem,
   createCartToken,
   getCart,
-
   setProductFavourite,
 } from "../../../../redux";
 import { connect } from "react-redux";
@@ -17,31 +16,75 @@ import { styles } from "./styles";
 import { capitalizeFirstLetter } from "../../../../res/helperFunctions";
 import { HOST } from "../../../../res/env";
 import { useSelector } from "react-redux";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ProductDetailScreen = ({ navigation, dispatch, product, auth, cart }) => {
   const [selectedVariant, setSelectedVariant] = useState({});
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [favsnackbar, setFavSnackbar] = useState(false);
-
+  const [cartLocal, setCartLocal] = useState([]);
   const taxon = useSelector((state) => state.taxons.taxon);
   let { saving } = useSelector((state) => state.products && state.taxons);
 
-  const dismissSnackbar = () => setSnackbarVisible(false);
-  const dismissFavSnackbar = () => setFavSnackbar(false);
-
+  const checkout = useSelector((state) => state.checkout);
+  const errMessage = useSelector((state) => state.checkout.error);
 
   React.useEffect(() => {
     dispatch(getCart());
   }, []);
 
+  const dismissSnackbar = () => setSnackbarVisible(false);
+  const dismissFavSnackbar = () => setFavSnackbar(false);
+
+  const storeData = async (cartItem) => {
+    const circularReplacer = () => {
+      const seen = new WeakSet();
+
+      return (key, value) => {
+        if (typeof value === "object" && value !== null) {
+          if (seen.has(value)) {
+            return;
+          }
+          seen.add(value);
+        }
+        return value;
+      };
+    };
+
+    try {
+      // const jsonValue = JSON.stringify(cartItem, circularReplacer());
+      const jsonValue = JSON.stringify(cartItem, circularReplacer());
+
+      const value = `[${[...cartLocal, jsonValue]}]`;
+
+      await AsyncStorage.setItem("Cart", value);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const getData = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem("Cart");
+      return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const handleAddToBag = async () => {
-    let vari = product.variants[0].id;
-    dispatch(
-      addItem(cart.token, {
-        variant_id: vari.toString(),
-        quantity: 1,
-      })
-    );
+    let vari = product.variants[0].product;
+    // dispatch(
+    //   addItem(cart.token, {
+    //     variant_id: vari.toString(),
+    //     quantity: 1,
+    //   })
+    // );
+
+    await storeData(vari);
+    console.log(...cartLocal, vari);
+
+    console.log("ddaattaa", await getData());
     return setSnackbarVisible(true);
   };
 
@@ -69,15 +112,15 @@ const ProductDetailScreen = ({ navigation, dispatch, product, auth, cart }) => {
               ...globalStyles.container,
               color: colors.primary,
             }}
-          >{`${taxon.permalink
-            .toUpperCase()
+          >{`${taxon?.permalink
+            ?.toUpperCase()
             .slice(11)
             .split("/")
             .join("  >  ")}`}</Text>
           {/* <MyCarousel key={imageURI} imageURI={imageURI} /> */}
           <Image
             source={{
-              uri: `${HOST}/${product?.images[0]?.styles[11].url}`,
+              uri: `${HOST}/${product?.images[0]?.styles[6].url}`,
             }}
             style={{
               width: "100%",
@@ -273,9 +316,15 @@ const ProductDetailScreen = ({ navigation, dispatch, product, auth, cart }) => {
             </View>
           </View>
         </ScrollView>
-        <Snackbar visible={snackbarVisible} onDismiss={dismissSnackbar}>
-          Added to Bag !
-        </Snackbar>
+
+        {checkout.error !== null && saving === false ? (
+          <Snackbar visible={snackbarVisible} onDismiss={dismissSnackbar}>
+            {errMessage}
+          </Snackbar>
+        ) : (
+          <></>
+        )}
+
         <Snackbar visible={favsnackbar} onDismiss={dismissFavSnackbar}>
           Added to Favorites !
         </Snackbar>
