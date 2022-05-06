@@ -29,7 +29,7 @@ function ProfileStackNavigator({ navigation }) {
       screenOptions={{
         headerTitle: "",
         headerLeft: () => (
-          <Icon name='arrowleft' type='ant-design' onPress={() => navigation.goBack()} title="Back" />
+          <Icon name='arrowleft' type='ant-design' onPress={() => navigation.navigate('Profile')} />
         ),
         headerLeftContainerStyle: {
           paddingHorizontal: 10,

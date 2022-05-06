@@ -30,6 +30,7 @@ import {
 import { HOST } from "../../../../res/env";
 import { useSelector } from "react-redux";
 import { SafeAreaView } from "react-native-safe-area-context";
+import FilterFooter from "../../../../library/components/ActionButtonFooter/FilterFooter";
 
 const FlatListImageItem = ({
   item,
@@ -94,7 +95,6 @@ const ProductListScreen = ({
   const [isSortOverlayVisible, setIsSortOverlayVisible] = React.useState(false);
   const [filterSheet, setFilterSheet] = React.useState(false);
 
-
   const [all, setAll] = React.useState(true);
   const [subLink, setSubLink] = React.useState("");
 
@@ -103,10 +103,13 @@ const ProductListScreen = ({
   const menus = useSelector((state) => state.taxons.menus);
   const submenus = useSelector((state) => state.taxons.submenus);
 
+  // const toggleFilter = () => {
+  //   setFilterSheet(!filterSheet)
+  // }
+
   React.useEffect(() => {
     dispatch(getMenus());
   }, []);
-
 
   const productsSortList = [
     {
@@ -325,8 +328,7 @@ const ProductListScreen = ({
                   dispatch(getSubMenuProducts(subLink));
                   // console.log(">>>>", submenu?.name.toLowerCase());
                 }}
-              >
-              </TouchableOpacity>
+              ></TouchableOpacity>
               {submenus.children
                 // ?.sort((a, b) => a.name.localeCompare(b.name))
                 ?.map((submenu, index) => (
@@ -433,6 +435,15 @@ const ProductListScreen = ({
             </TouchableOpacity>
           </View>
         </View>
+
+        {filterSheet && (
+          <FilterFooter
+            filterSheet={filterSheet}
+            onPress={() => {
+              setFilterSheet(!filterSheet);
+            }}
+          />
+        )}
         <BottomSheet isVisible={isSortOverlayVisible}>
           {productsSortList.map((l, i) => (
             <ListItem
@@ -447,7 +458,7 @@ const ProductListScreen = ({
           ))}
         </BottomSheet>
 
-        <BottomSheet isVisible={filterSheet}>
+        {/* <BottomSheet isVisible={filterSheet}>
           {filterList.map((l, i) => (
             <ListItem
               key={i}
@@ -459,7 +470,7 @@ const ProductListScreen = ({
               </ListItem.Content>
             </ListItem>
           ))}
-        </BottomSheet>
+        </BottomSheet> */}
       </>
     );
   };

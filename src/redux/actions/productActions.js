@@ -21,7 +21,7 @@ export function getProductsList(data, { pageIndex, filter }) {
 export function getProduct(id, filters = {}) {
   const url = `${API_VERSION_STOREFRONT}/products/${id}`;
   const params = {
-    include: "images,variants.option_values,product_properties",
+    include: "images,variants,product_properties",
   };
   const method = "GET";
   return {
