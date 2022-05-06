@@ -7,9 +7,10 @@ export function getProductsList(data, { pageIndex, filter }) {
   const url = `${API_VERSION_STOREFRONT}/products`;
   const params = {
     include: "images",
-    filter: filter,
-    page: pageIndex,
-    per_page: 10,
+    filter: {},
+    "Content-Type": "application/json",
+    // page: pageIndex,
+    // per_page: 10,
   };
   const method = "GET";
   return {
@@ -21,7 +22,7 @@ export function getProductsList(data, { pageIndex, filter }) {
 export function getProduct(id, filters = {}) {
   const url = `${API_VERSION_STOREFRONT}/products/${id}`;
   const params = {
-    include: "images,variants.option_values,product_properties",
+    include: "images,variants,product_properties",
   };
   const method = "GET";
   return {

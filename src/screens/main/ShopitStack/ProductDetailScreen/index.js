@@ -1,47 +1,55 @@
 import React, { useState } from "react";
-import { View, ScrollView, Text, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  ScrollView,
+  Text,
+  Image,
+  TouchableOpacity,
+  Pressable,
+} from "react-native";
 import { globalStyles } from "../../../../styles/global";
 import { colors } from "../../../../res/palette";
 import { Avatar, Button, Divider, Icon } from "react-native-elements";
 import { Snackbar } from "react-native-paper";
 import ActivityIndicatorCard from "../../../../library/components/ActivityIndicatorCard";
-import {
-  addItem,
-  createCartToken,
-  getCart,
 
-  setProductFavourite,
-} from "../../../../redux";
+import { addItem, getCart, setProductFavourite } from "../../../../redux";
 import { connect } from "react-redux";
 import { styles } from "./styles";
 import { capitalizeFirstLetter } from "../../../../res/helperFunctions";
 import { HOST } from "../../../../res/env";
 import { useSelector } from "react-redux";
+import { getData, storeData } from "../../../../redux/rootReducer";
 
 const ProductDetailScreen = ({ navigation, dispatch, product, auth, cart }) => {
   const [selectedVariant, setSelectedVariant] = useState({});
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [favsnackbar, setFavSnackbar] = useState(false);
 
+  const [color, setColor] = useState(0);
+
   const taxon = useSelector((state) => state.taxons.taxon);
   let { saving } = useSelector((state) => state.products && state.taxons);
+
+  const checkout = useSelector((state) => state.checkout);
+  const errMessage = useSelector((state) => state.checkout.error);
+
+  React.useEffect(() => {
+    dispatch(getCart(cart.token));
+  }, []);
 
   const dismissSnackbar = () => setSnackbarVisible(false);
   const dismissFavSnackbar = () => setFavSnackbar(false);
 
-
-  React.useEffect(() => {
-    dispatch(getCart());
-  }, []);
-
   const handleAddToBag = async () => {
-    let vari = product.variants[0].id;
+    let vari = product.variants[0];
     dispatch(
       addItem(cart.token, {
-        variant_id: vari.toString(),
+        variant_id: vari.id,
         quantity: 1,
       })
     );
+
     return setSnackbarVisible(true);
   };
 
@@ -69,15 +77,15 @@ const ProductDetailScreen = ({ navigation, dispatch, product, auth, cart }) => {
               ...globalStyles.container,
               color: colors.primary,
             }}
-          >{`${taxon.permalink
-            .toUpperCase()
+          >{`${taxon?.permalink
+            ?.toUpperCase()
             .slice(11)
             .split("/")
             .join("  >  ")}`}</Text>
           {/* <MyCarousel key={imageURI} imageURI={imageURI} /> */}
           <Image
             source={{
-              uri: `${HOST}/${product?.images[0]?.styles[11].url}`,
+              uri: `${HOST}/${product?.images[0]?.styles[6].url}`,
             }}
             style={{
               width: "100%",
@@ -113,7 +121,7 @@ const ProductDetailScreen = ({ navigation, dispatch, product, auth, cart }) => {
                   titleStyle={{ ...styles.titleStyle, fontSize: 18 }}
                   buttonStyle={{
                     ...globalStyles.btn,
-                    width: "85%",
+                    width: "95%",
                     height: 60,
                   }}
                   onPress={() => {
@@ -140,6 +148,39 @@ const ProductDetailScreen = ({ navigation, dispatch, product, auth, cart }) => {
                     onPress={handleFav}
                   />
                 </View>
+              </View>
+
+              {/*......Vekt(Size).....*/}
+              <View style={styles.size}>
+                {product.variants.map((item, index) => (
+                  <TouchableOpacity
+                    style={color == index ? styles.active : styles.unactive}
+                    key={index}
+                    onPress={() => {
+                      setColor(index);
+                    }}
+                  >
+                    <Text
+                      style={
+                        color == index ? styles.size_text : styles.size_unactive
+                      }
+                    >
+                      {item.options_text.split(":")[1]}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+                {/* <TouchableOpacity style={styles.active}>
+                  <Text></Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.unactive}>
+                  <Text></Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.unactive}>
+                  <Text></Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.last}>
+                  <Text></Text>
+                </TouchableOpacity> */}
               </View>
 
               {/* ......Vendor..... */}
@@ -188,8 +229,8 @@ const ProductDetailScreen = ({ navigation, dispatch, product, auth, cart }) => {
                 >
                   <Text
                     style={{
-                      fontSize: 16,
-                      fontWeight: "700",
+                      fontSize: 13,
+                      fontFamily: "lato-bold",
                     }}
                   >
                     BLI KJENT MED PRODUSENTEN
@@ -273,9 +314,15 @@ const ProductDetailScreen = ({ navigation, dispatch, product, auth, cart }) => {
             </View>
           </View>
         </ScrollView>
-        <Snackbar visible={snackbarVisible} onDismiss={dismissSnackbar}>
-          Added to Bag !
-        </Snackbar>
+
+        {checkout.error !== null && saving === false ? (
+          <Snackbar visible={snackbarVisible} onDismiss={dismissSnackbar}>
+            {errMessage}
+          </Snackbar>
+        ) : (
+          <></>
+        )}
+
         <Snackbar visible={favsnackbar} onDismiss={dismissFavSnackbar}>
           Added to Favorites !
         </Snackbar>

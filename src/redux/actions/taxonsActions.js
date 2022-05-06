@@ -78,7 +78,7 @@ export function getSubMenuProducts(menuName) {
   const url = `${API_VERSION_STOREFRONT}/taxons/${menuName}`;
   const method = "GET";
   const params = {
-    include: "products,children",
+    include: "products,children,image",
   };
 
   return {

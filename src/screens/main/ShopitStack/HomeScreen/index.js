@@ -14,6 +14,7 @@ import { globalStyles } from "../../../../styles/global";
 import { styles } from "./styles";
 import {
   accountRetrieve,
+  createCart,
   getProduct,
   getProductsList,
   getTaxon,
@@ -34,16 +35,28 @@ const FlatListImageItem = ({
 }) => {
   return (
     <TouchableOpacity onPress={onPress} style={{ ...itemContainerStyle }}>
-      <Image
-        source={{
-          uri: `${HOST}/${item.images[0].styles[3].url}`,
-        }}
-        style={{
-          width: imageStyle.width,
-          height: imageStyle.height,
-          resizeMode: "contain",
-        }}
-      />
+      <View style={{ position: "relative" }}>
+        <Image
+          source={{
+            uri: `${HOST}/${item.images[0].styles[3].url}`,
+          }}
+          style={{
+            width: imageStyle.width,
+            height: imageStyle.height,
+            resizeMode: "contain",
+          }}
+        />
+        <TouchableOpacity style={{ position: "absolute", bottom: 0, right: 0 }}>
+          <Icon
+            name="pluscircleo"
+            type="ant-design"
+            size={34}
+            color={colors.btnLink}
+            borderRadius={34}
+            backgroundColor={colors.white}
+          />
+        </TouchableOpacity>
+      </View>
       <View style={styles.detailsContainer}>
         <Text numberOfLines={1} style={styles.title}>
           {item.name}
@@ -71,6 +84,10 @@ const HomeComponent = ({
 }) => {
   const { isAuth } = useSelector((state) => state.auth);
   const { saving } = useSelector((state) => state.products);
+
+  React.useEffect(() => {
+    dispatch(createCart());
+  }, []);
 
   const handleProductsLoad = (pageIndexAfterDispatch = null) => {
     dispatch(

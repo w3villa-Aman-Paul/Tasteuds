@@ -16,7 +16,7 @@ import FavouritesScreen from "../screens/main/FavouritesStack/FavouritesScreen";
 import OffersScreen from "../screens/main/ProfileStack/OffersScreen";
 import updateAddress from "../screens/main/ProfileStack/updateAddress";
 import { useSelector } from "react-redux";
-import { Image, StyleSheet } from "react-native";
+import { Image, StyleSheet, TouchableOpacity } from "react-native";
 import { Icon } from "react-native-elements";
 
 const ProfileStack = createStackNavigator();
@@ -29,15 +29,17 @@ function ProfileStackNavigator({ navigation }) {
       screenOptions={{
         headerTitle: "",
         headerLeft: () => (
-          <Icon name='arrowleft' type='ant-design' onPress={() => navigation.goBack()} title="Back" />
+          <TouchableOpacity onPress={() => navigation.navigate("Shop")}>
+            <Icon name="arrowleft" type="ant-design" title="Back" />
+          </TouchableOpacity>
         ),
         headerLeftContainerStyle: {
           paddingHorizontal: 10,
           top: 4,
           left: 20,
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: '#ffffff',
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#ffffff",
           borderRadius: 50,
           elevation: 10,
           height: 40,
@@ -55,9 +57,9 @@ function ProfileStackNavigator({ navigation }) {
         headerRightContainerStyle: {
           top: 4,
           right: 20,
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: '#ffffff',
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#ffffff",
           borderRadius: 50,
           elevation: 10,
           height: 40,

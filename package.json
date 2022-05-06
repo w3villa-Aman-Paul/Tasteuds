@@ -1,9 +1,8 @@
 {
-  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "start": "expo start --dev-client",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web",
     "eject": "expo eject",
     "debug": "xdg-open 'rndebugger://set-debugger-loc?host=localhost&port=8081'"
@@ -24,6 +23,7 @@
     "expo": "^44.0.0",
     "expo-cli": "^4.12.12 ",
     "expo-linear-gradient": "~11.0.3",
+    "expo-splash-screen": "~0.14.1",
     "expo-status-bar": "~1.2.0",
     "expo-updates": "~0.11.7",
     "formik": "^2.2.9",
@@ -66,5 +66,7 @@
     "babel-plugin-transform-remove-console": "^6.9.4",
     "babel-preset-expo": "9.0.2"
   },
-  "private": true
+  "private": true,
+  "name": "Tastebuds-Spree",
+  "version": "1.0.0"
 }

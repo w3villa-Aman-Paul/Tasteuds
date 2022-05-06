@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { connect, useSelector } from "react-redux";
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, KeyboardAvoidingView } from "react-native";
 import { globalStyles } from "../../styles/global";
 import { ChevronLeft, Eye } from "../../library/icons";
 import { colors } from "../../res/palette";
@@ -103,7 +103,15 @@ const SignUpScreen = ({ navigation, dispatch }) => {
         style={styles.loginLogo}
         source={require("../../../assets/images/logo-mark.png")}
       />
-      <Text style={{ ...styles.title, left: 27 }}>bli med i familien vår</Text>
+      <Text
+        style={{
+          ...styles.title,
+          textAlign: "center",
+          width: "100%",
+        }}
+      >
+        bli med i familien vår
+      </Text>
       <View
         style={[
           globalStyles.containerFluid,
@@ -143,7 +151,7 @@ const SignUpScreen = ({ navigation, dispatch }) => {
             touched,
             isValid,
           }) => (
-            <View style={{ ...styles.mainContainer, top: 330 }}>
+            <KeyboardAvoidingView style={{ ...styles.mainContainer, top: 330 }}>
               <TextField
                 placeholder="Email"
                 inputStyle={styles.inputStyle}
@@ -233,7 +241,7 @@ const SignUpScreen = ({ navigation, dispatch }) => {
                   Logg inn
                 </Text>
               </View>
-            </View>
+            </KeyboardAvoidingView>
           )}
         </Formik>
         <View>
