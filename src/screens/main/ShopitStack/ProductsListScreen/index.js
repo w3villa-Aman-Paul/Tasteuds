@@ -12,7 +12,7 @@ import { globalStyles } from "../../../../styles/global";
 import { colors } from "../../../../res/palette";
 import { styles } from "./styles";
 import { connect } from "react-redux";
-import { BottomSheet, ListItem } from "react-native-elements";
+import { BottomSheet, Icon, ListItem } from "react-native-elements";
 import ActivityIndicatorCard from "../../../../library/components/ActivityIndicatorCard";
 import {
   getProductsList,
@@ -26,60 +26,13 @@ import {
   getMenus,
   getSubMenu,
   getSubMenuProducts,
+  addItem,
+  getCart,
 } from "../../../../redux";
 import { HOST } from "../../../../res/env";
 import { useSelector } from "react-redux";
 import { SafeAreaView } from "react-native-safe-area-context";
-import FilterFooter from "../../../../library/components/ActionButtonFooter/FilterFooter";
-
-const FlatListImageItem = ({
-  item,
-  onPress,
-  imageStyle,
-  itemContainerStyle,
-}) => {
-  const vendorList = useSelector((state) => state.taxons.vendors);
-
-  const resultVendor = (id) => {
-    const vendor = vendorList?.filter((vendor) => {
-      if (vendor?.id == id) return vendor;
-    });
-
-    let vendorName = vendor[0]?.name;
-    // console.log(">>>vendor", vendorName);
-    return vendorName;
-  };
-
-  return (
-    <TouchableOpacity onPress={onPress} style={{ ...itemContainerStyle }}>
-      <Image
-        source={{
-          uri: `${HOST}/${item.images[0]?.styles[3].url}`,
-        }}
-        style={{
-          width: imageStyle.width,
-          height: imageStyle.height,
-          resizeMode: "cover",
-        }}
-      />
-      <View style={styles.detailsContainer}>
-        <Text numberOfLines={1} style={styles.title}>
-          {item.name}
-        </Text>
-        <Text numberOfLines={1} style={styles.description}>
-          {`${resultVendor(item?.vendor?.id)}`}
-        </Text>
-        <View style={styles.pricingContainer}>
-          <Text style={[styles.prices, { color: colors.black }]}>
-            {item.display_price}
-          </Text>
-          {/* <Text style={[styles.prices, styles.price]}>${item.price}</Text> */}
-          {/* <Text style={[styles.prices, styles.discountPercent]}>(30% OFF)</Text> */}
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
-};
+import { Snackbar } from "react-native-paper";
 
 const ProductListScreen = ({
   navigation,
@@ -92,6 +45,97 @@ const ProductListScreen = ({
   meta,
   pageIndex,
 }) => {
+  const checkout = useSelector((state) => state.checkout);
+  const errMessage = useSelector((state) => state.checkout.error);
+  const [snackbarVisible, setSnackbarVisible] = React.useState(false);
+  const cart = useSelector((state) => state.checkout.cart);
+
+  React.useEffect(() => {
+    dispatch(getCart(cart.token));
+  }, []);
+
+  const dismissSnackbar = () => setSnackbarVisible(false);
+
+  const handleAddToBag = async (item) => {
+    let vari = item.variants[0].id;
+    dispatch(
+      addItem(cart.token, {
+        variant_id: vari.toString(),
+        quantity: 1,
+      })
+    );
+    return setSnackbarVisible(true);
+  };
+
+  // Item Rendering..............................................................
+  const FlatListImageItem = ({
+    item,
+    onPress,
+    imageStyle,
+    itemContainerStyle,
+  }) => {
+    const vendorList = useSelector((state) => state.taxons.vendors);
+
+    const resultVendor = (id) => {
+      const vendor = vendorList?.filter((vendor) => {
+        if (vendor?.id == id) return vendor;
+      });
+
+      let vendorName = vendor[0]?.name;
+      // console.log(">>>vendor", vendorName);
+      return vendorName;
+    };
+
+    return (
+      <TouchableOpacity onPress={onPress} style={{ ...itemContainerStyle }}>
+        <View style={{ position: "relative" }}>
+          <Image
+            source={{
+              uri: `${HOST}/${item?.images[0]?.styles[3].url}`
+                ? `${HOST}/${item?.images[0]?.styles[3].url}`
+                : "",
+            }}
+            style={{
+              width: imageStyle.width,
+              height: imageStyle.height,
+              resizeMode: "cover",
+            }}
+          />
+          <TouchableOpacity
+            style={{ position: "absolute", bottom: 0, right: 0 }}
+            onPress={() => handleAddToBag(item)}
+          >
+            <Icon
+              name="pluscircleo"
+              type="ant-design"
+              size={34}
+              borderRadius={34}
+              color={colors.btnLink}
+              backgroundColor={colors.white}
+            />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.detailsContainer}>
+          <Text numberOfLines={1} style={styles.title}>
+            {item.name}
+          </Text>
+          <Text numberOfLines={1} style={styles.description}>
+            {`${resultVendor(item?.vendor?.id)}`}
+          </Text>
+          <View style={styles.pricingContainer}>
+            <Text style={[styles.prices, { color: colors.black }]}>
+              {item.display_price}
+            </Text>
+            {/* <Text style={[styles.prices, styles.price]}>${item.price}</Text> */}
+            {/* <Text style={[styles.prices, styles.discountPercent]}>(30% OFF)</Text> */}
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  //..........................................................................................
+
   const [isSortOverlayVisible, setIsSortOverlayVisible] = React.useState(false);
   const [filterSheet, setFilterSheet] = React.useState(false);
 
@@ -203,9 +247,13 @@ const ProductListScreen = ({
   };
 
   let data = taxons?.subMenuProducts?.products?.map((el) => {
-    let arr = productsList.filter((ele) => ele.id == el.id);
-    return arr[0];
+    console.log(el.id);
+    let item = productsList.find((ele) => el.id === ele.id);
+    console.log("<<item", item);
+    return item;
   });
+
+  console.log(">>>", data);
 
   const newJustInRenderItem = ({ item, index }) => {
     return (
@@ -326,7 +374,6 @@ const ProductListScreen = ({
               <TouchableOpacity
                 onPress={() => {
                   dispatch(getSubMenuProducts(subLink));
-                  // console.log(">>>>", submenu?.name.toLowerCase());
                 }}
               ></TouchableOpacity>
               {submenus.children
@@ -499,6 +546,13 @@ const ProductListScreen = ({
             ListFooterComponent={flatListLowerElement}
             ref={scrollRef}
           />
+        )}
+        {checkout.error !== null && saving === false ? (
+          <Snackbar visible={snackbarVisible} onDismiss={dismissSnackbar}>
+            {errMessage}
+          </Snackbar>
+        ) : (
+          <></>
         )}
       </SafeAreaView>
     );

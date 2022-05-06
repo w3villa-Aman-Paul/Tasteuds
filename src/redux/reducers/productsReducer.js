@@ -216,9 +216,10 @@ export default function productsReducer(state = DEFAULT_STATE, action) {
 
     case "GET_PRODUCTS_LIST_FULFILLED":
       changes = {
-        productsList: state.isViewing
-          ? [...state.productsList, ...dataFormatter.deserialize(response)]
-          : dataFormatter.deserialize(response),
+        productsList: [
+          ...state.productsList,
+          ...dataFormatter.deserialize(response),
+        ],
         isViewing: true,
         saving: false,
         meta: response.meta,
