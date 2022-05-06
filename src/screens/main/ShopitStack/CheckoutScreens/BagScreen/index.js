@@ -24,12 +24,14 @@ import CartFooter from "../../../../../library/components/ActionButtonFooter/car
 import { useSelector } from "react-redux";
 import { HOST } from "../../../../../res/env";
 
-const BagScreen = ({ navigation, dispatch, saving, cart }) => {
+const BagScreen = ({ navigation, dispatch, saving }) => {
   const [promoCode, setPromoCode] = React.useState("");
   const [snackbarVisible, setSnackbarVisible] = React.useState(false);
 
   const productsList = useSelector((state) => state.products.productsList);
   const auth = useSelector((state) => state.auth.isAuth);
+
+  const cart = useSelector((state) => state.checkout.cart);
 
   React.useEffect(() => {
     dispatch(getCart(cart.token));
