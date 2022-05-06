@@ -147,6 +147,10 @@ const ProductListScreen = ({
   const menus = useSelector((state) => state.taxons.menus);
   const submenus = useSelector((state) => state.taxons.submenus);
 
+  // const toggleFilter = () => {
+  //   setFilterSheet(!filterSheet)
+  // }
+
   React.useEffect(() => {
     dispatch(getMenus());
   }, []);
@@ -478,6 +482,15 @@ const ProductListScreen = ({
             </TouchableOpacity>
           </View>
         </View>
+
+        {filterSheet && (
+          <FilterFooter
+            filterSheet={filterSheet}
+            onPress={() => {
+              setFilterSheet(!filterSheet);
+            }}
+          />
+        )}
         <BottomSheet isVisible={isSortOverlayVisible}>
           {productsSortList.map((l, i) => (
             <ListItem
@@ -492,7 +505,7 @@ const ProductListScreen = ({
           ))}
         </BottomSheet>
 
-        <BottomSheet isVisible={filterSheet}>
+        {/* <BottomSheet isVisible={filterSheet}>
           {filterList.map((l, i) => (
             <ListItem
               key={i}
@@ -504,7 +517,7 @@ const ProductListScreen = ({
               </ListItem.Content>
             </ListItem>
           ))}
-        </BottomSheet>
+        </BottomSheet> */}
       </>
     );
   };

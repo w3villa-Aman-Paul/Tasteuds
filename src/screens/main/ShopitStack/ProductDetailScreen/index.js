@@ -1,10 +1,18 @@
 import React, { useState } from "react";
-import { View, ScrollView, Text, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  ScrollView,
+  Text,
+  Image,
+  TouchableOpacity,
+  Pressable,
+} from "react-native";
 import { globalStyles } from "../../../../styles/global";
 import { colors } from "../../../../res/palette";
 import { Avatar, Button, Divider, Icon } from "react-native-elements";
 import { Snackbar } from "react-native-paper";
 import ActivityIndicatorCard from "../../../../library/components/ActivityIndicatorCard";
+
 import { addItem, getCart, setProductFavourite } from "../../../../redux";
 import { connect } from "react-redux";
 import { styles } from "./styles";
@@ -17,7 +25,9 @@ const ProductDetailScreen = ({ navigation, dispatch, product, auth, cart }) => {
   const [selectedVariant, setSelectedVariant] = useState({});
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [favsnackbar, setFavSnackbar] = useState(false);
-  const [cartLocal, setCartLocal] = useState([]);
+
+  const [color, setColor] = useState(0);
+
   const taxon = useSelector((state) => state.taxons.taxon);
   let { saving } = useSelector((state) => state.products && state.taxons);
 
@@ -138,6 +148,39 @@ const ProductDetailScreen = ({ navigation, dispatch, product, auth, cart }) => {
                     onPress={handleFav}
                   />
                 </View>
+              </View>
+
+              {/*......Vekt(Size).....*/}
+              <View style={styles.size}>
+                {product.variants.map((item, index) => (
+                  <TouchableOpacity
+                    style={color == index ? styles.active : styles.unactive}
+                    key={index}
+                    onPress={() => {
+                      setColor(index);
+                    }}
+                  >
+                    <Text
+                      style={
+                        color == index ? styles.size_text : styles.size_unactive
+                      }
+                    >
+                      {item.options_text.split(":")[1]}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+                {/* <TouchableOpacity style={styles.active}>
+                  <Text></Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.unactive}>
+                  <Text></Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.unactive}>
+                  <Text></Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.last}>
+                  <Text></Text>
+                </TouchableOpacity> */}
               </View>
 
               {/* ......Vendor..... */}
