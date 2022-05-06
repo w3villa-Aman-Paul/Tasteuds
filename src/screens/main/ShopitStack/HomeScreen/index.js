@@ -14,6 +14,7 @@ import { globalStyles } from "../../../../styles/global";
 import { styles } from "./styles";
 import {
   accountRetrieve,
+  createCart,
   getProduct,
   getProductsList,
   getTaxon,
@@ -83,6 +84,10 @@ const HomeComponent = ({
 }) => {
   const { isAuth } = useSelector((state) => state.auth);
   const { saving } = useSelector((state) => state.products);
+
+  React.useEffect(() => {
+    dispatch(createCart());
+  }, []);
 
   const handleProductsLoad = (pageIndexAfterDispatch = null) => {
     dispatch(

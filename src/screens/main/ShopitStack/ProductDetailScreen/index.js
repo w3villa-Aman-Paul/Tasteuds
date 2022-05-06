@@ -5,18 +5,13 @@ import { colors } from "../../../../res/palette";
 import { Avatar, Button, Divider, Icon } from "react-native-elements";
 import { Snackbar } from "react-native-paper";
 import ActivityIndicatorCard from "../../../../library/components/ActivityIndicatorCard";
-import {
-  addItem,
-  createCartToken,
-  getCart,
-  setProductFavourite,
-} from "../../../../redux";
+import { addItem, getCart, setProductFavourite } from "../../../../redux";
 import { connect } from "react-redux";
 import { styles } from "./styles";
 import { capitalizeFirstLetter } from "../../../../res/helperFunctions";
 import { HOST } from "../../../../res/env";
 import { useSelector } from "react-redux";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getData, storeData } from "../../../../redux/rootReducer";
 
 const ProductDetailScreen = ({ navigation, dispatch, product, auth, cart }) => {
   const [selectedVariant, setSelectedVariant] = useState({});
@@ -30,61 +25,21 @@ const ProductDetailScreen = ({ navigation, dispatch, product, auth, cart }) => {
   const errMessage = useSelector((state) => state.checkout.error);
 
   React.useEffect(() => {
-    dispatch(getCart());
+    dispatch(getCart(cart.token));
   }, []);
 
   const dismissSnackbar = () => setSnackbarVisible(false);
   const dismissFavSnackbar = () => setFavSnackbar(false);
 
-  const storeData = async (cartItem) => {
-    const circularReplacer = () => {
-      const seen = new WeakSet();
-
-      return (key, value) => {
-        if (typeof value === "object" && value !== null) {
-          if (seen.has(value)) {
-            return;
-          }
-          seen.add(value);
-        }
-        return value;
-      };
-    };
-
-    try {
-      // const jsonValue = JSON.stringify(cartItem, circularReplacer());
-      const jsonValue = JSON.stringify(cartItem, circularReplacer());
-
-      const value = `[${[...cartLocal, jsonValue]}]`;
-
-      await AsyncStorage.setItem("Cart", value);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const getData = async () => {
-    try {
-      const jsonValue = await AsyncStorage.getItem("Cart");
-      return jsonValue != null ? JSON.parse(jsonValue) : null;
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
   const handleAddToBag = async () => {
-    let vari = product.variants[0].product;
-    // dispatch(
-    //   addItem(cart.token, {
-    //     variant_id: vari.toString(),
-    //     quantity: 1,
-    //   })
-    // );
+    let vari = product.variants[0];
+    dispatch(
+      addItem(cart.token, {
+        variant_id: vari.id,
+        quantity: 1,
+      })
+    );
 
-    await storeData(vari);
-    console.log(...cartLocal, vari);
-
-    console.log("ddaattaa", await getData());
     return setSnackbarVisible(true);
   };
 
@@ -156,7 +111,7 @@ const ProductDetailScreen = ({ navigation, dispatch, product, auth, cart }) => {
                   titleStyle={{ ...styles.titleStyle, fontSize: 18 }}
                   buttonStyle={{
                     ...globalStyles.btn,
-                    width: "85%",
+                    width: "95%",
                     height: 60,
                   }}
                   onPress={() => {
@@ -231,8 +186,8 @@ const ProductDetailScreen = ({ navigation, dispatch, product, auth, cart }) => {
                 >
                   <Text
                     style={{
-                      fontSize: 16,
-                      fontWeight: "700",
+                      fontSize: 13,
+                      fontFamily: "lato-bold",
                     }}
                   >
                     BLI KJENT MED PRODUSENTEN

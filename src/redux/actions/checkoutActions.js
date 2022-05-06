@@ -124,7 +124,7 @@ export function addItem(auth_token, data) {
   };
 }
 
-export function getCart() {
+export function getCart(cartToken) {
   const url = `${API_VERSION_STOREFRONT}/cart`;
   const params = {
     include: "line_items.variant.option_values,line_items.variant.images",
@@ -132,17 +132,8 @@ export function getCart() {
   const method = "GET";
   return {
     type: "GET_CART",
-    payload: handleAPI(url, params, method),
+    payload: handleAddCartItem(url, params, method, null, cartToken),
   };
-}
-
-export function createCartToken() {
-  const url = `${API_VERSION_STOREFRONT}/cart`;
-  const method = "POST";
-  const params = {
-    include: "line_items.variant.option_values,line_items.variant.images",
-  };
-  return handleAPI(url, params, method);
 }
 
 export function createCart() {
@@ -157,7 +148,7 @@ export function createCart() {
   };
 }
 
-export function removeLineItem(lineItemId, filters = {}) {
+export function removeLineItem(lineItemId, filters = {}, auth_token) {
   const url = `${API_VERSION_STOREFRONT}/cart/remove_line_item/${lineItemId}`;
   const params = {
     include: "line_items.variant.option_values,line_items.variant.images",
@@ -165,11 +156,11 @@ export function removeLineItem(lineItemId, filters = {}) {
   const method = "DELETE";
   return {
     type: "REMOVE_LINE_ITEM",
-    payload: handleAPI(url, params, method, filters),
+    payload: handleAddCartItem(url, params, method, null, auth_token),
   };
 }
 
-export function setQuantity(data, filters = {}) {
+export function setQuantity(data, filters = {}, auth_token) {
   const url = `${API_VERSION_STOREFRONT}/cart/set_quantity`;
   const params = {
     include: "line_items.variant.option_values,line_items.variant.images",
@@ -177,6 +168,6 @@ export function setQuantity(data, filters = {}) {
   const method = "PATCH";
   return {
     type: "SET_QUANTITY",
-    payload: handleAPI(url, params, method, data, filters),
+    payload: handleAddCartItem(url, params, method, data, auth_token),
   };
 }

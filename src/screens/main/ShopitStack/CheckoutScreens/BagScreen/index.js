@@ -29,9 +29,10 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
   const [snackbarVisible, setSnackbarVisible] = React.useState(false);
 
   const productsList = useSelector((state) => state.products.productsList);
+  const auth = useSelector((state) => state.auth.isAuth);
 
   React.useEffect(() => {
-    dispatch(getCart());
+    dispatch(getCart(cart.token));
   }, []);
 
   const onDismiss = () => setSnackbarVisible(false);
@@ -63,15 +64,19 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
   // }
 
   const handleRemoveLineItem = (lineItemId) => {
-    dispatch(removeLineItem(lineItemId));
+    dispatch(removeLineItem(lineItemId, {}, cart.token));
   };
 
   const handleIncrementQuantity = (lineItemId, lineItemQuantity) => {
     dispatch(
-      setQuantity({
-        line_item_id: lineItemId,
-        quantity: lineItemQuantity + 1,
-      })
+      setQuantity(
+        {
+          line_item_id: lineItemId,
+          quantity: lineItemQuantity + 1,
+        },
+        {},
+        cart.token
+      )
     );
     setTimeout(() => {
       setSnackbarVisible(true);
@@ -83,10 +88,14 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
       handleRemoveLineItem(lineItemId);
     } else {
       dispatch(
-        setQuantity({
-          line_item_id: lineItemId,
-          quantity: lineItemQuantity - 1,
-        })
+        setQuantity(
+          {
+            line_item_id: lineItemId,
+            quantity: lineItemQuantity - 1,
+          },
+          {},
+          cart.token
+        )
       );
       setTimeout(() => {
         setSnackbarVisible(true);

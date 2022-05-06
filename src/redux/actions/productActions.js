@@ -8,6 +8,7 @@ export function getProductsList(data, { pageIndex, filter }) {
   const params = {
     include: "images",
     filter: {},
+    "Content-Type": "application/json",
     // page: pageIndex,
     // per_page: 10,
   };

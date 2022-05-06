@@ -51,7 +51,7 @@ const ProductListScreen = ({
   const cart = useSelector((state) => state.checkout.cart);
 
   React.useEffect(() => {
-    dispatch(getCart());
+    dispatch(getCart(cart.token));
   }, []);
 
   const dismissSnackbar = () => setSnackbarVisible(false);

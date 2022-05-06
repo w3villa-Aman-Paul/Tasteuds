@@ -29,7 +29,6 @@ import ActionButtonFooter from "../../../../../library/components/ActionButtonFo
 import {
   updateCheckout,
   completeCheckout,
-  createCart,
 } from "../../../../../redux";
 import ActivityIndicatorCard from "../../../../../library/components/ActivityIndicatorCard";
 import { connect } from "react-redux";
@@ -77,7 +76,6 @@ const PaymentScreen = ({ navigation, dispatch, saving, cart }) => {
       })
     );
     await dispatch(completeCheckout());
-    await dispatch(createCart());
     toggleOverlay();
   };
 
