@@ -33,6 +33,7 @@ import { HOST } from "../../../../res/env";
 import { useSelector } from "react-redux";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Snackbar } from "react-native-paper";
+import FilterFooter from "../../../../library/components/ActionButtonFooter/FilterFooter";
 
 const ProductListScreen = ({
   navigation,
@@ -252,8 +253,6 @@ const ProductListScreen = ({
     console.log("<<item", item);
     return item;
   });
-
-  console.log(">>>", data);
 
   const newJustInRenderItem = ({ item, index }) => {
     return (

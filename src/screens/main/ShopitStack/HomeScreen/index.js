@@ -123,7 +123,7 @@ const HomeComponent = ({
 
   React.useEffect(() => {
     handleProductsLoad();
-    dispatch(accountRetrieve(null, {}));
+    // dispatch(accountRetrieve(null, {}));
   }, [isAuth, route.params]);
 
   const flatListHeaderComponent = () => {

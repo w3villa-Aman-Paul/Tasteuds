@@ -319,7 +319,6 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
       changes = {
         saving: false,
         error: response.data.error,
-        isAuth: false,
         status: response.status,
       };
       return { ...state, ...changes };
@@ -330,7 +329,6 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
         saving: false,
         error: null,
         isAuth: true,
-
         status: action.payload.status,
       };
       return { ...state, ...changes };
