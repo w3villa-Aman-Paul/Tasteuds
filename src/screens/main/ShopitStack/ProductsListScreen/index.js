@@ -29,6 +29,7 @@ import {
   addItem,
   getCart,
 } from "../../../../redux";
+import FilterFooter from "../../../../library/components/ActionButtonFooter/FilterFooter";
 import { HOST } from "../../../../res/env";
 import { useSelector } from "react-redux";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -49,6 +50,16 @@ const ProductListScreen = ({
   const errMessage = useSelector((state) => state.checkout.error);
   const [snackbarVisible, setSnackbarVisible] = React.useState(false);
   const cart = useSelector((state) => state.checkout.cart);
+
+  const sheetRef = React.useRef(null);
+  const [isOpen, setIsOpen] = React.useState(false);
+
+  const snapPoints = ["40%"];
+
+  const handleSnapPress = React.useCallback((index) => {
+    sheetRef.current?.snapToIndex(index);
+    setIsOpen(true);
+  }, []);
 
   React.useEffect(() => {
     dispatch(getCart(cart.token));
@@ -191,12 +202,6 @@ const ProductListScreen = ({
       title: "PRODUSENTER",
       onPress: null,
     },
-    {
-      title: "Cancel",
-      containerStyle: { backgroundColor: colors.error },
-      titleStyle: { color: "white" },
-      onPress: () => setFilterSheet(false),
-    },
   ];
 
   // const handleEndReached = () => {
@@ -249,11 +254,8 @@ const ProductListScreen = ({
   let data = taxons?.subMenuProducts?.products?.map((el) => {
     console.log(el.id);
     let item = productsList.find((ele) => el.id === ele.id);
-    console.log("<<item", item);
     return item;
   });
-
-  console.log(">>>", data);
 
   const newJustInRenderItem = ({ item, index }) => {
     return (
@@ -462,7 +464,7 @@ const ProductListScreen = ({
                 borderRadius: 10,
                 alignItems: "center",
               }}
-              onPress={() => setFilterSheet(true)}
+              onPress={() => handleSnapPress(0)}
             >
               <Text>FILTER</Text>
             </TouchableOpacity>
@@ -483,30 +485,8 @@ const ProductListScreen = ({
           </View>
         </View>
 
-        {filterSheet && (
-          <FilterFooter
-            filterSheet={filterSheet}
-            onPress={() => {
-              setFilterSheet(!filterSheet);
-            }}
-          />
-        )}
-        <BottomSheet isVisible={isSortOverlayVisible}>
+        {/* <BottomSheet isVisible={isSortOverlayVisible}>
           {productsSortList.map((l, i) => (
-            <ListItem
-              key={i}
-              containerStyle={l.containerStyle}
-              onPress={l.onPress}
-            >
-              <ListItem.Content>
-                <ListItem.Title style={l.titleStyle}>{l.title}</ListItem.Title>
-              </ListItem.Content>
-            </ListItem>
-          ))}
-        </BottomSheet>
-
-        {/* <BottomSheet isVisible={filterSheet}>
-          {filterList.map((l, i) => (
             <ListItem
               key={i}
               containerStyle={l.containerStyle}
@@ -522,17 +502,44 @@ const ProductListScreen = ({
     );
   };
 
+  const bottomSheetContent = () => {
+    return (
+      <View>
+        <Text
+          style={{
+            color: "#fff",
+            textAlign: "center",
+            fontSize: 14,
+            fontFamily: "lato-medium",
+          }}
+        >
+          FILTRER SØKET
+        </Text>
+
+        <View>
+          {filterList.map((ele, index) => {
+            return (
+              <View key={index}>
+                <Text style={{ color: colors.white }}>{ele.title}</Text>
+              </View>
+            );
+          })}
+        </View>
+      </View>
+    );
+  };
+
   if (saving) {
     return <ActivityIndicatorCard />;
   } else
     return (
       <SafeAreaView
-        style={{
-          ...globalStyles.containerFluid,
-          ...styles.bgwhite,
-          width: "100%",
-          flex: 1,
-        }}
+        style={[
+          globalStyles.containerFluid,
+          styles.bgwhite,
+          { width: "100%" },
+          { flex: 1 },
+        ]}
       >
         {saving ? (
           <ActivityIndicatorCard />
@@ -553,6 +560,15 @@ const ProductListScreen = ({
           </Snackbar>
         ) : (
           <></>
+        )}
+
+        {isOpen && (
+          <FilterFooter
+            value={sheetRef}
+            snapPoints={snapPoints}
+            onClose={() => setIsOpen(false)}
+            bottomSheetContent={bottomSheetContent}
+          />
         )}
       </SafeAreaView>
     );

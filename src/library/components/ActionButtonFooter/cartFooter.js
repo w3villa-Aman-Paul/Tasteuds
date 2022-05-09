@@ -23,7 +23,8 @@ const CartFooter = ({ title, onPress, cart, navigation }) => {
         type="solid"
         buttonStyle={styles.footerAction}
         titleStyle={globalStyles.latoBold16}
-        onPress={auth ? onPress : setLogin(false)}
+        // onPress={auth ? onPress : setLogin(false)}
+        onPress={onPress}
       />
     </View>
   );

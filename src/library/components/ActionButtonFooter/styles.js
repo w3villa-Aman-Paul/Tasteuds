@@ -46,6 +46,7 @@ export const styles = StyleSheet.create({
     bottom: 0,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
+    elevation: 10,
   },
   filter_text: {
     color: "#FFFFFF",

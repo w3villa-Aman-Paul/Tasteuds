@@ -25,13 +25,13 @@ import { useSelector } from "react-redux";
 import { HOST } from "../../../../../res/env";
 
 const BagScreen = ({ navigation, dispatch, saving }) => {
-  const [promoCode, setPromoCode] = React.useState("");
-  const [snackbarVisible, setSnackbarVisible] = React.useState(false);
-
   const productsList = useSelector((state) => state.products.productsList);
   const auth = useSelector((state) => state.auth.isAuth);
 
   const cart = useSelector((state) => state.checkout.cart);
+
+  const [promoCode, setPromoCode] = React.useState("");
+  const [snackbarVisible, setSnackbarVisible] = React.useState(false);
 
   React.useEffect(() => {
     dispatch(getCart(cart.token));
@@ -43,7 +43,6 @@ const BagScreen = ({ navigation, dispatch, saving }) => {
     const product = productsList?.find(
       (element) => cartPro?.variant?.product.id === element.id
     );
-
     return product?.images[0].styles[1];
   };
 
@@ -59,11 +58,6 @@ const BagScreen = ({ navigation, dispatch, saving }) => {
     //   navigation.navigate('CheckoutPayment')
     // }
   };
-
-  // const handleVarientImage = (pro) => {
-
-  //   const url = productList.map(ele => if(ele.id == pro))
-  // }
 
   const handleRemoveLineItem = (lineItemId) => {
     dispatch(removeLineItem(lineItemId, {}, cart.token));
