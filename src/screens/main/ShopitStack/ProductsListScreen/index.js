@@ -33,7 +33,8 @@ import FilterFooter from "../../../../library/components/ActionButtonFooter/Filt
 import { HOST } from "../../../../res/env";
 import { useSelector } from "react-redux";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Snackbar } from "react-native-paper";
+import { Divider, Snackbar } from "react-native-paper";
+import { createStackNavigator } from "@react-navigation/stack";
 
 const ProductListScreen = ({
   navigation,
@@ -51,10 +52,12 @@ const ProductListScreen = ({
   const [snackbarVisible, setSnackbarVisible] = React.useState(false);
   const cart = useSelector((state) => state.checkout.cart);
 
+  const filterNavigator = createStackNavigator();
+
   const sheetRef = React.useRef(null);
   const [isOpen, setIsOpen] = React.useState(false);
 
-  const snapPoints = ["40%"];
+  const snapPoints = ["35%"];
 
   const handleSnapPress = React.useCallback((index) => {
     sheetRef.current?.snapToIndex(index);
@@ -516,14 +519,71 @@ const ProductListScreen = ({
           FILTRER SØKET
         </Text>
 
-        <View>
-          {filterList.map((ele, index) => {
-            return (
-              <View key={index}>
-                <Text style={{ color: colors.white }}>{ele.title}</Text>
-              </View>
-            );
-          })}
+        <View style={{ marginTop: 20 }}>
+          <View>
+            {filterList.map((ele, index) => {
+              return (
+                <TouchableOpacity
+                  key={index}
+                  style={{
+                    padding: 5,
+                    flexDirection: "row",
+                    borderBottomColor: "#3A3A59",
+                    borderBottomWidth: 1,
+                    alignItems: "center",
+                  }}
+                >
+                  <View
+                    style={{
+                      flex: 1,
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: colors.white,
+                        fontFamily: "lato-medium",
+                        fontSize: 14,
+                      }}
+                    >
+                      {ele.title}
+                    </Text>
+
+                    <Icon
+                      name="navigate-next"
+                      type="material-icons"
+                      color="#fff"
+                    />
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </View>
+
+        <View style={{ marginTop: 30, alignSelf: "center" }}>
+          <TouchableOpacity
+            style={{
+              backgroundColor: colors.btnLink,
+              width: 180,
+              height: 26,
+              borderRadius: 20,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text
+              style={{
+                color: colors.white,
+                fontSize: 14,
+                fontFamily: "lato-medium",
+              }}
+            >
+              VIS 89 VARER
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
     );

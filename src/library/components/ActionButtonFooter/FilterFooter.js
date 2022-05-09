@@ -11,12 +11,12 @@ const FilterFooter = ({ value, snapPoints, onClose, bottomSheetContent }) => {
       snapPoints={snapPoints}
       enablePanDownToClose={true}
       onClose={onClose}
-      // style={{ backgroundColor: "#232332" }}
+      style={{ flex: 1 }}
       handleStyle={styles.handle}
       handleIndicatorStyle={styles.indicator}
     >
       <BottomSheetView style={styles.container}>
-        <View>{bottomSheetContent()}</View>
+        <View style={{ width: "100%" }}>{bottomSheetContent()}</View>
       </BottomSheetView>
     </BottomSheet>
   );
