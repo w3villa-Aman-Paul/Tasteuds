@@ -9,9 +9,6 @@ import { createStackNavigator } from "@react-navigation/stack";
 const socialStack = createStackNavigator();
 
 const CartFooter = ({ title, onPress, cart, navigation }) => {
-  // const [login, setLogin] = React.useState(true);
-  // const auth = useSelector((state) => state.auth.isAuth);
-
   return (
     <View style={styles.cart_total_price}>
       <View style={styles.cart_footer_body}>
@@ -23,7 +20,7 @@ const CartFooter = ({ title, onPress, cart, navigation }) => {
         type="solid"
         buttonStyle={styles.footerAction}
         titleStyle={globalStyles.latoBold16}
-        // onPress={auth ? onPress : setLogin(false)}
+        onPress={onPress}
       />
     </View>
   );
