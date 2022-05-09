@@ -165,7 +165,7 @@ const ProductDetailScreen = ({ navigation, dispatch, product, auth, cart }) => {
                         color == index ? styles.size_text : styles.size_unactive
                       }
                     >
-                      {item.options_text.split(":")[1]}
+                      {item?.options_text.split(":")[1]}
                     </Text>
                   </TouchableOpacity>
                 ))}
