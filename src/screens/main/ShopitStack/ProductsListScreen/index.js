@@ -35,6 +35,8 @@ import { useSelector } from "react-redux";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Divider, Snackbar } from "react-native-paper";
 import { createStackNavigator } from "@react-navigation/stack";
+import FoodFooter from "../../../../library/components/ActionButtonFooter/FoodFooter";
+import { isEqualWith } from "lodash";
 
 const ProductListScreen = ({
   navigation,
@@ -51,8 +53,6 @@ const ProductListScreen = ({
   const errMessage = useSelector((state) => state.checkout.error);
   const [snackbarVisible, setSnackbarVisible] = React.useState(false);
   const cart = useSelector((state) => state.checkout.cart);
-
-  const filterNavigator = createStackNavigator();
 
   const sheetRef = React.useRef(null);
   const [isOpen, setIsOpen] = React.useState(false);
@@ -96,7 +96,7 @@ const ProductListScreen = ({
       });
 
       let vendorName = vendor[0]?.name;
-      // console.log(">>>vendor", vendorName);
+
       return vendorName;
     };
 
@@ -150,9 +150,6 @@ const ProductListScreen = ({
 
   //..........................................................................................
 
-  const [isSortOverlayVisible, setIsSortOverlayVisible] = React.useState(false);
-  const [filterSheet, setFilterSheet] = React.useState(false);
-
   const [all, setAll] = React.useState(true);
   const [subLink, setSubLink] = React.useState("");
 
@@ -195,17 +192,6 @@ const ProductListScreen = ({
     productsList.sort((a, b) => (a.price > b.price ? 1 : -1));
     setIsSortOverlayVisible(false);
   };
-
-  const filterList = [
-    {
-      title: "MATVARER",
-      onPress: null,
-    },
-    {
-      title: "PRODUSENTER",
-      onPress: null,
-    },
-  ];
 
   // const handleEndReached = () => {
   //   const response = dispatch(setPageIndex(pageIndex + 1));
@@ -505,9 +491,20 @@ const ProductListScreen = ({
     );
   };
 
-  const bottomSheetContent = () => {
+  const filterList = [
+    {
+      title: "MATVARER",
+      name: "food",
+    },
+    {
+      title: "PRODUSENTER",
+      name: null,
+    },
+  ];
+
+  const bottomSheetContent = ({ navigation }) => {
     return (
-      <View>
+      <View style={{ backgroundColor: "#232332", flex: 1 }}>
         <Text
           style={{
             color: "#fff",
@@ -532,6 +529,7 @@ const ProductListScreen = ({
                     borderBottomWidth: 1,
                     alignItems: "center",
                   }}
+                  onPress={() => navigation.navigate(ele.name)}
                 >
                   <View
                     style={{
@@ -605,7 +603,7 @@ const ProductListScreen = ({
           <ActivityIndicatorCard />
         ) : (
           <FlatList
-            data={all ? productsList : data}
+            data={all ? productsList.slice(0, 50) : data}
             keyExtractor={(item, index) => index.toString()}
             renderItem={newJustInRenderItem}
             numColumns={2}

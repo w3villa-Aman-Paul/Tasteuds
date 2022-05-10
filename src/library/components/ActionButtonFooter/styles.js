@@ -19,7 +19,7 @@ export const styles = StyleSheet.create({
   cart_total_price: {
     height: 135,
     justifyContent: "center",
-    backgroundColor: colors.white,
+    backgroundColor: "#232332",
     borderTopWidth: 1,
     borderColor: "transparent",
     elevation: 10,
@@ -34,9 +34,11 @@ export const styles = StyleSheet.create({
   },
   total_text: {
     fontSize: 18,
+    color: colors.white,
   },
   total_price: {
     fontSize: 14,
+    color: colors.white,
   },
   container: {
     height: 280,

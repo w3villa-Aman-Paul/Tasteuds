@@ -31,12 +31,12 @@ const RootStack = createStackNavigator();
 function RootStackNavigator({ authState, dispatch }) {
   React.useEffect(() => {
     const bootstrapAsync = async () => {
-      dispatch(
-        userLogin({
-          refresh_token: await AsyncStorage.getItem("refreshToken"),
-          grant_type: "refresh_token",
-        })
-      );
+      // dispatch(
+      //   userLogin({
+      //     refresh_token: await AsyncStorage.getItem("refreshToken"),
+      //     grant_type: "refresh_token",
+      //   })
+      // );
     };
 
     bootstrapAsync();

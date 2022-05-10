@@ -23,15 +23,19 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import CartFooter from "../../../../../library/components/ActionButtonFooter/cartFooter";
 import { useSelector } from "react-redux";
 import { HOST } from "../../../../../res/env";
+import FilterFooter from "../../../../../library/components/ActionButtonFooter/FilterFooter";
 
 const BagScreen = ({ navigation, dispatch, saving }) => {
   const productsList = useSelector((state) => state.products.productsList);
-  const auth = useSelector((state) => state.auth.isAuth);
+  const { isAuth } = useSelector((state) => state.auth);
 
   const cart = useSelector((state) => state.checkout.cart);
 
-  const [promoCode, setPromoCode] = React.useState("");
   const [snackbarVisible, setSnackbarVisible] = React.useState(false);
+
+  const sheetRef = React.useRef(null);
+  const [isOpen, setIsOpen] = React.useState(false);
+  const snapPoints = ["45%"];
 
   React.useEffect(() => {
     dispatch(getCart(cart.token));
@@ -57,6 +61,83 @@ const BagScreen = ({ navigation, dispatch, saving }) => {
     // } else  {
     //   navigation.navigate('CheckoutPayment')
     // }
+  };
+
+  const bottomSheetContent = () => {
+    return (
+      <View style={styles.login_container}>
+        <Text style={styles.main_text}>LOGG INN ELLER REGISTRER DEG</Text>
+        <View style={styles.login_body}>
+          <View style={styles.login_content}>
+            <TouchableOpacity style={styles.login_btn}>
+              <Image
+                style={styles.login_image}
+                source={require("../../../../../../assets/images/Header-Icon/apple.png")}
+              />
+
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={styles.link_text}>LOGG INN MED APPLE</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.login_content}>
+            <TouchableOpacity style={styles.login_btn}>
+              <Image
+                style={styles.login_image}
+                source={require("../../../../../../assets/images/Header-Icon/google.png")}
+              />
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={styles.link_text}>LOGG INN MED GOOGLE</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.login_content}>
+            <TouchableOpacity style={styles.login_btn}>
+              <Image
+                style={styles.login_image}
+                source={require("../../../../../../assets/images/Header-Icon/fb.png")}
+              />
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={styles.link_text}>LOGG INN MED FACEBOOK</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View>
+          <Text
+            style={styles.bottom_text}
+            onPress={() => navigation.navigate("SignIn")}
+          >
+            FORTSETT MED E-POST
+          </Text>
+        </View>
+      </View>
+    );
+  };
+
+  const loginFooterCheckout = () => {
+    setIsOpen(true);
   };
 
   const handleRemoveLineItem = (lineItemId) => {
@@ -307,7 +388,23 @@ const BagScreen = ({ navigation, dispatch, saving }) => {
             /> */}
           </ScrollView>
 
-          <CartFooter title="TIL BETALING" onPress={handleToCheckout} />
+          {isOpen ? (
+            <></>
+          ) : (
+            <CartFooter
+              title={"TIL BETALING"}
+              onPress={isAuth ? handleToCheckout : loginFooterCheckout}
+            />
+          )}
+
+          {isOpen && (
+            <FilterFooter
+              value={sheetRef}
+              snapPoints={snapPoints}
+              onClose={() => setIsOpen(false)}
+              bottomSheetContent={bottomSheetContent}
+            />
+          )}
         </View>
         <Snackbar visible={snackbarVisible} onDismiss={onDismiss}>
           SetQuantity Success !

@@ -1,10 +1,20 @@
 import React, { useCallback, useRef, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
-import { stubArray } from "lodash";
 import { colors } from "../../../res/palette";
+import { createStackNavigator } from "@react-navigation/stack";
+import FoodFooter from "./FoodFooter";
+import { connect } from "react-redux";
 
-const FilterFooter = ({ value, snapPoints, onClose, bottomSheetContent }) => {
+const filterNavigator = createStackNavigator();
+
+const FilterFooter = ({
+  value,
+  snapPoints,
+  onClose,
+  bottomSheetContent,
+  onPress,
+}) => {
   return (
     <BottomSheet
       ref={value}
@@ -16,13 +26,24 @@ const FilterFooter = ({ value, snapPoints, onClose, bottomSheetContent }) => {
       handleIndicatorStyle={styles.indicator}
     >
       <BottomSheetView style={styles.container}>
-        <View style={{ width: "100%" }}>{bottomSheetContent()}</View>
+        <filterNavigator.Navigator>
+          <filterNavigator.Screen
+            name="Main"
+            component={bottomSheetContent}
+            options={{ headerShown: false }}
+          />
+          <filterNavigator.Screen
+            name="food"
+            component={FoodFooter}
+            options={{ headerShown: false }}
+          />
+        </filterNavigator.Navigator>
       </BottomSheetView>
     </BottomSheet>
   );
 };
 
-export default FilterFooter;
+export default connect()(FilterFooter);
 
 const styles = StyleSheet.create({
   container: {

@@ -167,10 +167,55 @@ export const styles = StyleSheet.create({
   fontProgress: {
     fontFamily: "lato-medium",
     fontSize: 14,
-    // fontWeight: "500",
   },
 
   fontProgressBold: {
     fontFamily: "lato-bold",
+  },
+  login_container: {
+    // justifyContent: "center",
+    // width: "100%",
+  },
+  main_text: {
+    color: "#fff",
+    textAlign: "center",
+    marginTop: 15,
+    marginBottom: 15,
+    fontSize: 16,
+    fontFamily: "lato-medium",
+  },
+  login_body: {
+    flexDirection: "column",
+    marginBottom: 15,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  login_content: {
+    marginTop: 10,
+    marginBottom: 10,
+    width: "80%",
+  },
+  login_btn: {
+    alignItems: "center",
+    height: 40,
+    borderRadius: 10,
+    backgroundColor: "#fff",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+  },
+  login_image: {
+    height: 30,
+    width: 30,
+  },
+  link_text: {
+    textAlign: "left",
+    fontSize: 14,
+    color: colors.black,
+  },
+  bottom_text: {
+    textAlign: "center",
+    fontSize: 14,
+    color: colors.white,
   },
 });
