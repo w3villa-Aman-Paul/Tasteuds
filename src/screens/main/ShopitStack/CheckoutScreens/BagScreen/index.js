@@ -286,7 +286,7 @@ const BagScreen = ({ navigation, dispatch, saving }) => {
 
                 return (
                   <>
-                    <View key={index} style={styles.body}>
+                    <View key={index.toString()} style={styles.body}>
                       <View style={styles.cart_btn}>
                         <Text style={{ fontSize: 25 }}>{ele.quantity}</Text>
                         <View style={styles.inc_btn}>

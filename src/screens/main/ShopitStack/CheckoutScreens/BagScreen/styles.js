@@ -173,6 +173,8 @@ export const styles = StyleSheet.create({
     fontFamily: "lato-bold",
   },
   login_container: {
+    backgroundColor: "#232332",
+    flex: 1,
     // justifyContent: "center",
     // width: "100%",
   },

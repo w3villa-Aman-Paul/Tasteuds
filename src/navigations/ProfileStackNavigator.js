@@ -15,7 +15,7 @@ import SavedAddress from "../screens/main/ProfileStack/SavedAddress";
 import FavouritesScreen from "../screens/main/FavouritesStack/FavouritesScreen";
 import OffersScreen from "../screens/main/ProfileStack/OffersScreen";
 import updateAddress from "../screens/main/ProfileStack/updateAddress";
-import { useSelector } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import { Image, StyleSheet, TouchableOpacity } from "react-native";
 import { Icon } from "react-native-elements";
 
@@ -85,4 +85,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProfileStackNavigator;
+export default connect()(ProfileStackNavigator);

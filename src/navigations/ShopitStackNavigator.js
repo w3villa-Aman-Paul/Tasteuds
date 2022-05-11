@@ -17,6 +17,7 @@ import { Icon } from "react-native-elements";
 import HomeComponent from "../screens/main/ShopitStack/HomeScreen";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import FavouritesScreen from "../screens/main/FavouritesStack/FavouritesScreen";
+import SavedAddress from "../screens/main/ProfileStack/SavedAddress";
 
 const ShopitStack = createStackNavigator();
 
@@ -31,7 +32,7 @@ function ShopitStackNavigator({ navigation, route }) {
 
   React.useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route);
-    if (routeName === "Bag") {
+    if (routeName === "Bag" || routeName === "ShippingAddress") {
       navigation.setOptions({ tabBarVisible: false });
     } else {
       navigation.setOptions({ tabBarVisible: true });
@@ -361,6 +362,7 @@ function ShopitStackNavigator({ navigation, route }) {
           },
         }}
       />
+      <ShopitStack.Screen name="SavedAddress" component={SavedAddress} />
     </ShopitStack.Navigator>
   );
 }

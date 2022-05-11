@@ -5,6 +5,7 @@ import {
   Text,
   Dimensions,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import { globalStyles } from "../../../../../styles/global";
 import { colors } from "../../../../../res/palette";
@@ -19,12 +20,13 @@ import {
   getPaymentMethods,
   getOrderToken,
 } from "../../../../../redux/actions/checkoutActions";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
+import { retrieveAddress } from "../../../../../redux/actions/checkoutActions";
 import { styles } from "./styles";
 import { checkoutStyles } from "../styles";
-import CheckoutDetailsCard from "../../../../../library/components/CheckoutDetailsCard";
-import ActionButtonFooter from "../../../../../library/components/ActionButtonFooter";
+import CartFooter from "../../../../../library/components/ActionButtonFooter/cartFooter";
 import ActivityIndicatorCard from "../../../../../library/components/ActivityIndicatorCard";
+import cartFooter from "../../../../../library/components/ActionButtonFooter/cartFooter";
 
 const ShippingAddressScreen = ({
   navigation,
@@ -33,9 +35,8 @@ const ShippingAddressScreen = ({
   countriesList,
   saving,
   cart,
-  auth,
+  Address,
 }) => {
-  console.log("OrderToken", cart.token);
   const [statePickerSelectedValue, setStatePickerSelectedValue] = useState(
     country.states[0]
   );
@@ -48,8 +49,9 @@ const ShippingAddressScreen = ({
   const [pinCode, setPinCode] = useState("29387");
   const [city, setCity] = useState("Bahamas");
   const [phone, setPhone] = useState("1234567654");
-
   const [windowWidth] = useState(Dimensions.get("window").width);
+
+  const add = { ...Address };
 
   const handleUpdateCheckout = async () => {
     await dispatch(
@@ -101,13 +103,19 @@ const ShippingAddressScreen = ({
 
   useEffect(() => {
     setCountryPickerSelectedValue(country.iso);
+    dispatch(retrieveAddress());
   }, []);
 
   if (saving) {
     return <ActivityIndicatorCard />;
   } else {
     return (
-      <View style={globalStyles.containerFluid}>
+      <View
+        style={[
+          globalStyles.containerFluid,
+          { backgroundColor: colors.white, flex: 1 },
+        ]}
+      >
         <ScrollView>
           {/* Status Bar Starts */}
           <View style={checkoutStyles.statusBarWrapper}>
@@ -172,7 +180,75 @@ const ShippingAddressScreen = ({
           </View>
           {/* Status Bar Ends */}
 
-          <View style={globalStyles.container}>
+          <View style={styles.address_container}>
+            {Address ? (
+              <View style={styles.address_body}>
+                <View style={styles.address_title}>
+                  <Text style={styles.address_text}>LEVERINGS INFORMASJON</Text>
+                  <TouchableOpacity
+                    style={styles.address_btn}
+                    onPress={() => navigation.navigate("SavedAddress")}
+                  >
+                    <Text style={styles.address_btn_text}>ENDRE</Text>
+                  </TouchableOpacity>
+                </View>
+                <Text style={styles.title}>
+                  {add[0].firstname} {add[0].lastname}
+                </Text>
+                <View style={styles.sub_body}>
+                  <Text style={styles.subtitle}>{add[0].address1}</Text>
+                  <Text style={styles.subtitle}>
+                    {add[0].zipcode} {add[0].city}
+                  </Text>
+                </View>
+                <Text style={styles.profileContact}>+{add[0].phone}</Text>
+              </View>
+            ) : (
+              <TouchableOpacity>
+                <Text>Add Address</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
+            <View style={styles.payment_container}>
+              <Text style={styles.payment_title}>BETALINGSMÅTE</Text>
+              <View style={styles.payment_body}>
+                <View style={styles.payment_btn_body}>
+                  <TouchableOpacity style={styles.payment_btn}>
+                    <Image
+                      source={require("../../../../../../assets/images/Header-Icon/ipay.png")}
+                      style={styles.payment_img}
+                    />
+                  </TouchableOpacity>
+                </View>
+
+                <View style={styles.payment_btn_body}>
+                  <TouchableOpacity style={styles.payment_btn}>
+                    <Image
+                      source={require("../../../../../../assets/images/Header-Icon/vpay.png")}
+                      style={styles.payment_img}
+                    />
+                  </TouchableOpacity>
+                </View>
+
+                <View style={styles.payment_btn_body}>
+                  <TouchableOpacity style={styles.payment_btn}>
+                    <Image
+                      source={require("../../../../../../assets/images/Header-Icon/cardpay.png")}
+                      style={styles.payment_img}
+                    />
+                    <Text style={{ marginLeft: 10, fontSize: 14 }}>
+                      KORTBETALING
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </View>
+          {/* <View style={globalStyles.container}>
             <TextField
               placeholder="Name"
               inputStyle={styles.inputStyle}
@@ -181,6 +257,7 @@ const ShippingAddressScreen = ({
               value={name}
               onChangeText={(name) => setName(name)}
             />
+            
 
             <TextField
               placeholder="Email"
@@ -277,18 +354,12 @@ const ShippingAddressScreen = ({
               <CheckR size={16} style={styles.iconStyle} />
               <Text style={globalStyles.latoRegular14}>Default Address</Text>
             </View>
-          </View>
+          </View> */}
 
-          <CheckoutDetailsCard
-            title="Order Total"
-            display_total={cart.display_item_total}
-          />
+          <Text></Text>
         </ScrollView>
 
-        <ActionButtonFooter
-          title="Save Address & Continue"
-          onPress={handleUpdateCheckout}
-        />
+        <CartFooter title="FULLFØR BETALING" onPress={handleUpdateCheckout} />
       </View>
     );
   }
@@ -300,6 +371,7 @@ const mapStateToProps = (state) => ({
   saving: state.checkout.saving,
   cart: state.checkout.cart,
   auth: state.auth,
+  Address: state.checkout.address,
 });
 
 export default connect(mapStateToProps)(ShippingAddressScreen);
