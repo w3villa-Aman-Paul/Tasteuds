@@ -12,7 +12,7 @@ import { globalStyles } from "../../../../styles/global";
 import { colors } from "../../../../res/palette";
 import { styles } from "./styles";
 import { connect } from "react-redux";
-import { BottomSheet, Icon, ListItem } from "react-native-elements";
+import { Icon } from "react-native-elements";
 import ActivityIndicatorCard from "../../../../library/components/ActivityIndicatorCard";
 import {
   getProductsList,
@@ -33,10 +33,9 @@ import FilterFooter from "../../../../library/components/ActionButtonFooter/Filt
 import { HOST } from "../../../../res/env";
 import { useSelector } from "react-redux";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Divider, Snackbar } from "react-native-paper";
-import { createStackNavigator } from "@react-navigation/stack";
-import FoodFooter from "../../../../library/components/ActionButtonFooter/FoodFooter";
-import { isEqualWith } from "lodash";
+import { Snackbar } from "react-native-paper";
+import { getData, removeData, storeData } from "../../../../redux/rootReducer";
+import { array } from "yup";
 
 const ProductListScreen = ({
   navigation,
@@ -164,6 +163,7 @@ const ProductListScreen = ({
 
   React.useEffect(() => {
     dispatch(getMenus());
+    removeData("food");
   }, []);
 
   const productsSortList = [
@@ -376,7 +376,6 @@ const ProductListScreen = ({
                       dispatch(
                         getSubMenuProducts(submenu.permalink.toLowerCase())
                       );
-                      // console.log(">>>>", submenu?.name.toLowerCase());
                     }}
                   >
                     <Text
@@ -407,90 +406,6 @@ const ProductListScreen = ({
 
   // flatListLowerElement
 
-  const flatListLowerElement = () => {
-    return (
-      <>
-        <View
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            marginBottom: 25,
-          }}
-        >
-          <Text style={{ textAlign: "center" }}>Ingen flere produkter</Text>
-
-          <TouchableOpacity
-            style={{
-              width: 120,
-              marginTop: 30,
-              marginBottom: 10,
-              borderWidth: 1,
-              borderRadius: 10,
-              paddingHorizontal: 10,
-              paddingVertical: 3,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            onPress={onScroll}
-          >
-            <Text>TIL TOPPEN</Text>
-          </TouchableOpacity>
-
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <TouchableOpacity
-              style={{
-                width: 100,
-                marginRight: 30,
-                paddingHorizontal: 20,
-                paddingVertical: 3,
-                borderWidth: 1,
-                borderRadius: 10,
-                alignItems: "center",
-              }}
-              onPress={() => handleSnapPress(0)}
-            >
-              <Text>FILTER</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                width: 100,
-                marginLeft: 30,
-                paddingHorizontal: 20,
-                paddingVertical: 3,
-                borderWidth: 1,
-                borderRadius: 10,
-                alignItems: "center",
-              }}
-              onPress={() => setIsSortOverlayVisible(true)}
-            >
-              <Text>SORTER</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* <BottomSheet isVisible={isSortOverlayVisible}>
-          {productsSortList.map((l, i) => (
-            <ListItem
-              key={i}
-              containerStyle={l.containerStyle}
-              onPress={l.onPress}
-            >
-              <ListItem.Content>
-                <ListItem.Title style={l.titleStyle}>{l.title}</ListItem.Title>
-              </ListItem.Content>
-            </ListItem>
-          ))}
-        </BottomSheet> */}
-      </>
-    );
-  };
-
   const filterList = [
     {
       title: "MATVARER",
@@ -503,6 +418,31 @@ const ProductListScreen = ({
   ];
 
   const bottomSheetContent = ({ navigation }) => {
+    const [selectedCategory, setSelectedCategory] = React.useState([]);
+
+    const selectedFood = async () => {
+      setSelectedCategory(await getData("food"));
+    };
+
+    const handleDeselectFood = async (item) => {
+      let data = [...selectedCategory];
+      let index = data.indexOf(item);
+      console.log(data, index, item);
+
+      if (index > -1) {
+        data.splice(index, 1);
+      }
+
+      console.log("data", data);
+
+      setSelectedCategory(data);
+      storeData("food", data);
+    };
+
+    React.useEffect(() => {
+      selectedFood();
+    }, [selectedCategory]);
+
     return (
       <View
         style={{
@@ -556,11 +496,45 @@ const ProductListScreen = ({
                         {ele.title}
                       </Text>
 
-                      <Icon
-                        name="navigate-next"
-                        type="material-icons"
-                        color="#fff"
-                      />
+                      <View style={{ flexDirection: "row" }}>
+                        {ele.name === "food" &&
+                          selectedCategory !== [] &&
+                          selectedCategory?.map((item, index) => (
+                            <View
+                              key={index}
+                              flexDirection={"row"}
+                              style={{
+                                backgroundColor: colors.btnLink,
+                                marginRight: 8,
+                                borderRadius: 3,
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  color: colors.white,
+                                }}
+                              >
+                                {item.name}
+                              </Text>
+
+                              <TouchableOpacity
+                                onPress={() => handleDeselectFood(item)}
+                              >
+                                <Icon
+                                  name="close"
+                                  type="material-icons"
+                                  size={20}
+                                  color={colors.white}
+                                />
+                              </TouchableOpacity>
+                            </View>
+                          ))}
+                        <Icon
+                          name="navigate-next"
+                          type="material-icons"
+                          color="#fff"
+                        />
+                      </View>
                     </View>
                   </TouchableOpacity>
                 );
@@ -623,7 +597,6 @@ const ProductListScreen = ({
             renderItem={newJustInRenderItem}
             numColumns={2}
             ListHeaderComponent={flatListUpperElement}
-            ListFooterComponent={flatListLowerElement}
             ref={scrollRef}
           />
         )}
@@ -634,6 +607,71 @@ const ProductListScreen = ({
         ) : (
           <></>
         )}
+
+        {/* //*Bottom Buttons */}
+        <View
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            marginBottom: 15,
+          }}
+        >
+          <Text style={{ textAlign: "center" }}>Ingen flere produkter</Text>
+
+          <TouchableOpacity
+            style={{
+              width: 120,
+              marginTop: 20,
+              marginBottom: 10,
+              borderWidth: 1,
+              borderRadius: 10,
+              paddingHorizontal: 10,
+              paddingVertical: 3,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            onPress={onScroll}
+          >
+            <Text>TIL TOPPEN</Text>
+          </TouchableOpacity>
+
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <TouchableOpacity
+              style={{
+                width: 100,
+                marginRight: 30,
+                paddingHorizontal: 20,
+                paddingVertical: 3,
+                borderWidth: 1,
+                borderRadius: 10,
+                alignItems: "center",
+              }}
+              onPress={() => handleSnapPress(0)}
+            >
+              <Text>FILTER</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                width: 100,
+                marginLeft: 30,
+                paddingHorizontal: 20,
+                paddingVertical: 3,
+                borderWidth: 1,
+                borderRadius: 10,
+                alignItems: "center",
+              }}
+              onPress={() => setIsSortOverlayVisible(true)}
+            >
+              <Text>SORTER</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
 
         {isOpen && (
           <FilterFooter

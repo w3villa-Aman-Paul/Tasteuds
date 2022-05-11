@@ -1,4 +1,5 @@
 import {
+  AsyncStorage,
   ScrollView,
   StyleSheet,
   Text,
@@ -10,11 +11,26 @@ import { useSelector } from "react-redux";
 import { Icon, CheckBox } from "react-native-elements";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { colors } from "../../../res/palette";
+import { getData, storeData } from "../../../redux/rootReducer";
 
 const FoodFooter = ({ navigation }) => {
   const menus = useSelector((state) => state.taxons.menus);
 
   const [checked, setChecked] = useState([]);
+  const [selectedFood, setSelectedFood] = useState([]);
+
+  useEffect(async () => {
+    let data = await getData("food");
+
+    {
+      data !== null ? setChecked(data) : <></>;
+    }
+  }, []);
+
+  useEffect(() => {
+    let data = checked.filter((ele) => ele?.isChecked === true);
+    setSelectedFood(data);
+  }, [checked]);
 
   useEffect(() => {
     setChecked(
@@ -99,7 +115,6 @@ const FoodFooter = ({ navigation }) => {
             )
             // ?.sort((a, b) => a.name.localeCompare(b.name))
             ?.map((menu, index) => {
-              console.log(checked);
               return (
                 <CheckBox
                   key={menu.id}
@@ -144,6 +159,10 @@ const FoodFooter = ({ navigation }) => {
               justifyContent: "center",
               alignItems: "center",
               backgroundColor: colors.btnLink,
+            }}
+            onPress={() => {
+              storeData("food", selectedFood);
+              navigation.goBack();
             }}
           >
             <Text
