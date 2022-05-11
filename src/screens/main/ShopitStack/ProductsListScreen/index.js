@@ -57,7 +57,7 @@ const ProductListScreen = ({
   const sheetRef = React.useRef(null);
   const [isOpen, setIsOpen] = React.useState(false);
 
-  const snapPoints = ["35%"];
+  const snapPoints = ["50%"];
 
   const handleSnapPress = React.useCallback((index) => {
     sheetRef.current?.snapToIndex(index);

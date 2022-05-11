@@ -12,16 +12,16 @@ import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 const FoodFooter = ({ navigation }) => {
   const menus = useSelector((state) => state.taxons.menus);
 
-  const [checked, setChecked] = useState([]);
+  const [checked, setChecked] = useState(false);
 
-  // const handleChecked = (id, newValue) => {
-  //   const index = menus.menu_items.findIndex((item) => item.id === id);
-
-  //   if (index > -1) {
-  //     let newArray = [];
-  //     newArray[index].checked = newValue;
-  //   }
-  // };
+  const handleChecked = (id) => {
+    let res = menus.menu_items.filter((menu) => {
+      if (menu.id === id) {
+        return { ...menu, is_root: true };
+      }
+    });
+    setChecked(menus.menu_items.filter((menu) => menu.is_root === true));
+  };
 
   return (
     <>
@@ -73,23 +73,25 @@ const FoodFooter = ({ navigation }) => {
             )
             // ?.sort((a, b) => a.name.localeCompare(b.name))
             ?.map((menu, index) => {
-              // setChecked((oldArray) => [...oldArray, false]);
-
-              console.log(checked);
               return (
-                <CheckBox
-                  key={menu.id}
-                  title={menu.name}
-                  checked={checked}
-                  // onValueChange={(newValue) => handleChecked(newValue, menu.id)}
-                  onPress={() => {
-                    let data = checked;
-                    data[index] = !data[index];
-
-                    setChecked(data);
-                    console.log(checked);
+                <View
+                  key={index}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
                   }}
-                />
+                >
+                  <CheckBox
+                    key={menu.id}
+                    checked={checked}
+                    onPress={() => {
+                      handleChecked(menu.id);
+                    }}
+                  />
+                  <Text style={{ color: "#fff", fontSize: 14 }}>
+                    {menu.name}
+                  </Text>
+                </View>
               );
             })}
         </BottomSheetScrollView>
