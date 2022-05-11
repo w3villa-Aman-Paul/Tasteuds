@@ -57,7 +57,7 @@ const ProductListScreen = ({
   const sheetRef = React.useRef(null);
   const [isOpen, setIsOpen] = React.useState(false);
 
-  const snapPoints = ["35%"];
+  const snapPoints = ["40%"];
 
   const handleSnapPress = React.useCallback((index) => {
     sheetRef.current?.snapToIndex(index);
@@ -504,64 +504,79 @@ const ProductListScreen = ({
 
   const bottomSheetContent = ({ navigation }) => {
     return (
-      <View style={{ backgroundColor: "#232332", flex: 1 }}>
-        <Text
-          style={{
-            color: "#fff",
-            textAlign: "center",
-            fontSize: 14,
-            fontFamily: "lato-medium",
-          }}
-        >
-          FILTRER SØKET
-        </Text>
+      <View
+        style={{
+          backgroundColor: "#232332",
+          flex: 1,
+          justifyContent: "space-between",
+        }}
+      >
+        <View>
+          <Text
+            style={{
+              color: "#fff",
+              textAlign: "center",
+              fontSize: 14,
+              fontFamily: "lato-medium",
+            }}
+          >
+            FILTRER SØKET
+          </Text>
 
-        <View style={{ marginTop: 20 }}>
-          <View>
-            {filterList.map((ele, index) => {
-              return (
-                <TouchableOpacity
-                  key={index}
-                  style={{
-                    padding: 5,
-                    flexDirection: "row",
-                    borderBottomColor: "#3A3A59",
-                    borderBottomWidth: 1,
-                    alignItems: "center",
-                  }}
-                  onPress={() => navigation.navigate(ele.name)}
-                >
-                  <View
+          <View style={{ marginTop: 20 }}>
+            <View>
+              {filterList.map((ele, index) => {
+                return (
+                  <TouchableOpacity
+                    key={index}
                     style={{
-                      flex: 1,
+                      padding: 5,
                       flexDirection: "row",
-                      justifyContent: "space-between",
+                      borderBottomColor: "#3A3A59",
+                      borderBottomWidth: 1,
                       alignItems: "center",
                     }}
+                    onPress={() => navigation.navigate(ele.name)}
                   >
-                    <Text
+                    <View
                       style={{
-                        color: colors.white,
-                        fontFamily: "lato-medium",
-                        fontSize: 14,
+                        flex: 1,
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
                       }}
                     >
-                      {ele.title}
-                    </Text>
+                      <Text
+                        style={{
+                          color: colors.white,
+                          fontFamily: "lato-medium",
+                          fontSize: 14,
+                        }}
+                      >
+                        {ele.title}
+                      </Text>
 
-                    <Icon
-                      name="navigate-next"
-                      type="material-icons"
-                      color="#fff"
-                    />
-                  </View>
-                </TouchableOpacity>
-              );
-            })}
+                      <Icon
+                        name="navigate-next"
+                        type="material-icons"
+                        color="#fff"
+                      />
+                    </View>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
           </View>
         </View>
 
-        <View style={{ marginTop: 30, alignSelf: "center" }}>
+        <View
+          style={{
+            marginTop: 30,
+            alignSelf: "center",
+            flex: 1,
+            justifyContent: "center",
+          }}
+        >
           <TouchableOpacity
             style={{
               backgroundColor: colors.btnLink,
