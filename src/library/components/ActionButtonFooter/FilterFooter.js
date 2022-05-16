@@ -5,6 +5,7 @@ import { colors } from "../../../res/palette";
 import { createStackNavigator } from "@react-navigation/stack";
 import FoodFooter from "./FoodFooter";
 import { connect } from "react-redux";
+import ProducersFooter from "./ProducersFooter";
 
 const filterNavigator = createStackNavigator();
 
@@ -35,6 +36,11 @@ const FilterFooter = ({
           <filterNavigator.Screen
             name="food"
             component={FoodFooter}
+            options={{ headerShown: false }}
+          />
+          <filterNavigator.Screen
+            name="producers"
+            component={ProducersFooter}
             options={{ headerShown: false }}
           />
         </filterNavigator.Navigator>

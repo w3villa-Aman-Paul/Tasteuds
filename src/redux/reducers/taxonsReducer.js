@@ -37,6 +37,7 @@ const DEFAULT_STATE = {
   menus: [{}],
   submenus: [{}],
   vendors: [{}],
+  vendorImages: [{}],
   subMenuProducts: [{}],
 };
 
@@ -98,6 +99,7 @@ export default function taxonsReducer(state = DEFAULT_STATE, action) {
     case "GET_VENDOR_LIST_FULFILLED":
       changes = {
         vendors: dataFormatter.deserialize(response),
+        vendorImages: response.included,
         saving: false,
       };
       return { ...state, ...changes };

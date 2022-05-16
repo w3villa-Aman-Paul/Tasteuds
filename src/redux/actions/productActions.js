@@ -7,10 +7,10 @@ export function getProductsList(data, { pageIndex, filter }) {
   const url = `${API_VERSION_STOREFRONT}/products`;
   const params = {
     include: "images",
-    filter: {},
+    filter: filter,
     "Content-Type": "application/json",
-    // page: pageIndex,
-    // per_page: 10,
+    page: pageIndex,
+    per_page: 11,
   };
   const method = "GET";
   return {

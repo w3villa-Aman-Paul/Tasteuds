@@ -6,55 +6,45 @@ import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { colors } from "../../../res/palette";
 import { getData, storeData } from "../../../redux/rootReducer";
 
-const FoodFooter = ({ navigation }) => {
-  const menus = useSelector((state) => state.taxons.menus);
+const ProducersFooter = ({ navigation }) => {
+  const vendors = useSelector((state) => state.taxons.vendors);
 
   const [checked, setChecked] = useState([]);
-  const [selectedFood, setSelectedFood] = useState([]);
-
-  useEffect(() => {
-    const getFood = async () => {
-      let data = await getData("food");
-      {
-        data !== null ? setChecked(data) : <></>;
-      }
-    };
-
-    getFood();
-  }, []);
-
-  useEffect(() => {
-    let data = checked.filter((ele) => ele?.isChecked === true);
-    setSelectedFood(data);
-  }, [checked]);
-
   useEffect(() => {
     setChecked(
-      menus?.menu_items
-        ?.filter(
-          (menu) =>
-            menu.name !== "PRODUSENTER" &&
-            menu.name !== "Categories" &&
-            menu.name !== "Kategorier" &&
-            menu.name !== "Lokalprodukter"
-        )
+      vendors
+        // ?.sort((a, b) => a.name.localeCompare(b.name))
         .map((ele) => {
           return { name: ele.name };
         })
     );
   }, []);
 
+  useEffect(() => {
+    const getVendors = async () => {
+      let data = await getData("vendors");
+      {
+        data !== null ? setChecked(data) : <></>;
+      }
+    };
+
+    getVendors();
+  }, []);
+
   const handleChange = (name) => {
-    let tempMenu = checked.map((menu) => {
-      if (menu.name === name && Object.values(menu).includes(true) === false) {
-        return { ...menu, isChecked: true };
-      } else if (
-        menu.name === name &&
-        Object.values(menu).includes(true) === true
+    let tempMenu = checked.map((vendor) => {
+      if (
+        vendor.name === name &&
+        Object.values(vendor).includes(true) === false
       ) {
-        return { ...menu, isChecked: false };
+        return { ...vendor, isChecked: true };
+      } else if (
+        vendor.name === name &&
+        Object.values(vendor).includes(true) === true
+      ) {
+        return { ...vendor, isChecked: false };
       } else {
-        return menu;
+        return vendor;
       }
     });
 
@@ -64,7 +54,7 @@ const FoodFooter = ({ navigation }) => {
   return (
     <>
       <View style={{ backgroundColor: "#232332", flex: 1 }}>
-        {/* // *HEADER-MATVARER */}
+        {/* // *HEADER-PRODUSENTER */}
         <View
           style={{
             flexDirection: "row",
@@ -94,29 +84,22 @@ const FoodFooter = ({ navigation }) => {
                 fontFamily: "lato-medium",
               }}
             >
-              MATVARER
+              PRODUSENTER
             </Text>
           </View>
         </View>
 
-        {/* // *RENDER CATEGORIES LIST */}
+        {/* // *RENDER VENDORS LIST */}
         <BottomSheetScrollView containerStyle={{ width: "90%", flex: 1 }}>
-          {menus?.menu_items
-            ?.filter(
-              (menu) =>
-                menu.name !== "PRODUSENTER" &&
-                menu.name !== "Categories" &&
-                menu.name !== "Kategorier" &&
-                menu.name !== "Lokalprodukter"
-            )
+          {vendors
             // ?.sort((a, b) => a.name.localeCompare(b.name))
-            ?.map((menu, index) => {
+            ?.map((vendor, index) => {
               return (
                 <CheckBox
-                  key={menu.id}
-                  title={menu.name}
+                  key={vendor.id}
+                  title={vendor.name}
                   checked={checked[index]?.isChecked || false}
-                  onPress={() => handleChange(menu.name)}
+                  onPress={() => handleChange(vendor.name)}
                   size={24}
                   iconType="material"
                   checkedIcon="check-box"
@@ -157,7 +140,7 @@ const FoodFooter = ({ navigation }) => {
               backgroundColor: colors.btnLink,
             }}
             onPress={() => {
-              storeData("food", selectedFood);
+              storeData("vendors", checked);
               navigation.goBack();
             }}
           >
@@ -177,6 +160,6 @@ const FoodFooter = ({ navigation }) => {
   );
 };
 
-export default FoodFooter;
+export default ProducersFooter;
 
 const styles = StyleSheet.create({});
