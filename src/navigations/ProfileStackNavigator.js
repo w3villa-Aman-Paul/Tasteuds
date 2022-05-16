@@ -18,6 +18,7 @@ import updateAddress from "../screens/main/ProfileStack/updateAddress";
 import { connect, useSelector } from "react-redux";
 import { Image, StyleSheet, TouchableOpacity } from "react-native";
 import { Icon } from "react-native-elements";
+import AddAddress from "../screens/main/ProfileStack/AddAddress";
 
 const ProfileStack = createStackNavigator();
 
@@ -71,7 +72,8 @@ function ProfileStackNavigator({ navigation }) {
       <ProfileStack.Screen name="Account" component={AccountScreen} />
       <ProfileStack.Screen name="SavedAddress" component={SavedAddress} />
       <ProfileStack.Screen name="Favourites" component={FavouritesScreen} />
-      <ProfileStack.Screen name="updateAdd" component={updateAddress} />
+      <ProfileStack.Screen name="updateAddress" component={updateAddress} />
+      <ProfileStack.Screen name="AddAdress" component={AddAddress} />
       <ProfileStack.Screen name="Offers" component={OffersScreen} />
     </ProfileStack.Navigator>
   );

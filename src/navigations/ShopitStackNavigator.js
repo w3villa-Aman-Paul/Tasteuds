@@ -18,6 +18,7 @@ import HomeComponent from "../screens/main/ShopitStack/HomeScreen";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import FavouritesScreen from "../screens/main/FavouritesStack/FavouritesScreen";
 import SavedAddress from "../screens/main/ProfileStack/SavedAddress";
+import AddAddress from "../screens/main/ProfileStack/AddAddress";
 
 const ShopitStack = createStackNavigator();
 
@@ -32,7 +33,12 @@ function ShopitStackNavigator({ navigation, route }) {
 
   React.useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route);
-    if (routeName === "Bag" || routeName === "ShippingAddress") {
+    if (
+      routeName === "Bag" ||
+      routeName === "ShippingAddress" ||
+      routeName === "SavedAddress" ||
+      routeName === "AddAdress"
+    ) {
       navigation.setOptions({ tabBarVisible: false });
     } else {
       navigation.setOptions({ tabBarVisible: true });
@@ -363,6 +369,7 @@ function ShopitStackNavigator({ navigation, route }) {
         }}
       />
       <ShopitStack.Screen name="SavedAddress" component={SavedAddress} />
+      <ShopitStack.Screen name="AddAdress" component={AddAddress} />
     </ShopitStack.Navigator>
   );
 }

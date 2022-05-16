@@ -1,27 +1,27 @@
-import { StyleSheet } from 'react-native'
-import { globalStyles } from '../../../../styles/global'
-import { colors } from '../../../../res/palette'
+import { StyleSheet } from "react-native";
+import { globalStyles } from "../../../../styles/global";
+import { colors } from "../../../../res/palette";
 
 export const checkoutStyles = StyleSheet.create({
   statusBarWrapper: {
     ...globalStyles.containerFluid,
     ...globalStyles.bgWhite,
     borderBottomWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
   },
   statusBarContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     padding: 16,
   },
-  inputStyle: { 
+  inputStyle: {
     ...globalStyles.latoRegular14,
-    color: colors.gray
+    color: colors.gray,
   },
   inputWrapperStyle: {
     ...globalStyles.mb16,
-    backgroundColor: '#fff', 
-    height: 52, 
+    backgroundColor: "#fff",
+    height: 52,
     borderRadius: 4,
     borderWidth: 1,
   },
@@ -31,33 +31,33 @@ export const checkoutStyles = StyleSheet.create({
   },
   inputContainerStyle: {
     paddingLeft: 5,
-    borderBottomColor: '#fff'
+    borderBottomColor: "#fff",
   },
   containerStyle: {
     ...globalStyles.mt16,
-    backgroundColor: '#fff', 
-    height: 52, 
+    backgroundColor: "#fff",
+    height: 52,
     borderRadius: 4,
   },
   rowContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   w48: {
-    width: '48%',
+    width: "48%",
   },
   inlineContainer: {
-    justifyContent: 'space-between',
-    flexWrap: 'wrap',
-    width: '100%',
+    justifyContent: "space-between",
+    flexWrap: "wrap",
+    width: "100%",
   },
   iconStyle: {
     color: colors.primary,
-    marginRight: 8
+    marginRight: 8,
   },
   shippingIndicatorLine: {
     flex: 1,
-    borderBottomWidth: .8,
+    borderBottomWidth: 0.8,
     marginBottom: 10,
     marginHorizontal: 10,
   },
-})
+});
