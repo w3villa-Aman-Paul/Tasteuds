@@ -10,7 +10,7 @@ export function getProductsList(data, { pageIndex, filter }) {
     filter: filter,
     "Content-Type": "application/json",
     page: pageIndex,
-    per_page: 11,
+    per_page: 10,
   };
   const method = "GET";
   return {
