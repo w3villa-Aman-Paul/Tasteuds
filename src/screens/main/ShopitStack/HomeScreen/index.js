@@ -26,54 +26,7 @@ import { HOST } from "../../../../res/env";
 import { colors } from "../../../../res/palette";
 import { Icon } from "react-native-elements";
 import ActivityIndicatorCard from "../../../../library/components/ActivityIndicatorCard";
-
-const FlatListImageItem = ({
-  item,
-  onPress,
-  imageStyle,
-  itemContainerStyle,
-}) => {
-  return (
-    <TouchableOpacity onPress={onPress} style={{ ...itemContainerStyle }}>
-      <View style={{ position: "relative" }}>
-        <Image
-          source={{
-            uri: `${HOST}/${item.images[0].styles[3].url}`,
-          }}
-          style={{
-            width: imageStyle.width,
-            height: imageStyle.height,
-            resizeMode: "contain",
-          }}
-        />
-        <TouchableOpacity style={{ position: "absolute", bottom: 0, right: 0 }}>
-          <Icon
-            name="pluscircleo"
-            type="ant-design"
-            size={34}
-            color={colors.btnLink}
-            borderRadius={34}
-            backgroundColor={colors.white}
-          />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.detailsContainer}>
-        <Text numberOfLines={1} style={styles.title}>
-          {item.name}
-        </Text>
-        <Text numberOfLines={1} style={styles.description}>
-          {item.slug}
-        </Text>
-        <View style={styles.pricingContainer}>
-          <Text style={[styles.prices, { color: colors.black }]}>
-            {" "}
-            {item.display_price}
-          </Text>
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
-};
+import { storeData } from "../../../../redux/rootReducer";
 
 const HomeComponent = ({
   dispatch,
@@ -84,6 +37,67 @@ const HomeComponent = ({
 }) => {
   const { isAuth } = useSelector((state) => state.auth);
   const { saving } = useSelector((state) => state.products);
+  const vendorList = useSelector((state) => state.taxons.vendors);
+
+  const resultVendor = (id) => {
+    const vendor = vendorList?.filter((vendor) => {
+      if (vendor?.id == id) return vendor;
+    });
+
+    let vendorName = vendor[0]?.name;
+
+    return [vendorName, vendor];
+  };
+
+  const FlatListImageItem = ({
+    item,
+    onPress,
+    imageStyle,
+    itemContainerStyle,
+  }) => {
+    return (
+      <TouchableOpacity onPress={onPress} style={{ ...itemContainerStyle }}>
+        <View style={{ position: "relative" }}>
+          <Image
+            source={{
+              uri: `${HOST}/${item.images[0].styles[3].url}`,
+            }}
+            style={{
+              width: imageStyle.width,
+              height: imageStyle.height,
+              resizeMode: "contain",
+            }}
+          />
+          <TouchableOpacity
+            style={{ position: "absolute", bottom: 0, right: 0 }}
+          >
+            <Icon
+              name="pluscircleo"
+              type="ant-design"
+              size={34}
+              color={colors.btnLink}
+              borderRadius={34}
+              backgroundColor={colors.white}
+            />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.detailsContainer}>
+          <Text numberOfLines={1} style={styles.title}>
+            {item.name}
+          </Text>
+          <Text numberOfLines={1} style={styles.description}>
+            {`${resultVendor(item?.vendor?.id)[0]}`}
+          </Text>
+          <View style={styles.pricingContainer}>
+            <Text style={[styles.prices, { color: colors.black }]}>
+              {" "}
+              {item.display_price}
+            </Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   React.useEffect(() => {
     dispatch(createCart());
@@ -110,7 +124,11 @@ const HomeComponent = ({
         <FlatListImageItem
           key={index.toString()}
           item={item}
-          onPress={() => handleProductLoad(item?.id, item)}
+          onPress={() => {
+            console.log("");
+            storeData("selectedVendor", resultVendor(item?.vendor?.id)[1]);
+            handleProductLoad(item?.id, item);
+          }}
           imageStyle={styles.newJustInImage}
           itemContainerStyle={styles.newJustInItemContainer}
         />

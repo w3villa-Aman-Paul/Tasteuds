@@ -27,7 +27,9 @@ export function getTaxon(id) {
 export function getVendorsList() {
   const url = `${API_VERSION_STOREFRONT}/vendors`;
   const method = "GET";
-  const params = {};
+  const params = {
+    include: "image",
+  };
 
   return {
     type: "GET_VENDOR_LIST",
@@ -78,7 +80,7 @@ export function getSubMenuProducts(menuName) {
   const url = `${API_VERSION_STOREFRONT}/taxons/${menuName}`;
   const method = "GET";
   const params = {
-    include: "products,children,image",
+    include: "products.images.attachment",
   };
 
   return {

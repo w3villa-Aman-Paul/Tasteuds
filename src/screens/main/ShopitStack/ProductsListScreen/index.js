@@ -6,6 +6,8 @@ import {
   FlatList,
   TouchableOpacity,
   ScrollView,
+  ActivityIndicator,
+  Dimensions,
 } from "react-native";
 
 import { globalStyles } from "../../../../styles/global";
@@ -35,7 +37,6 @@ import { useSelector } from "react-redux";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Snackbar } from "react-native-paper";
 import { getData, removeData, storeData } from "../../../../redux/rootReducer";
-import { array } from "yup";
 
 const ProductListScreen = ({
   navigation,
@@ -53,6 +54,19 @@ const ProductListScreen = ({
   const [snackbarVisible, setSnackbarVisible] = React.useState(false);
   const [isSortOverlayVisible, setIsSortOverlayVisible] = React.useState(false);
   const cart = useSelector((state) => state.checkout.cart);
+  const vendorList = useSelector((state) => state.taxons.vendors);
+
+  const resultVendor = (id) => {
+    const vendor = vendorList?.filter((vendor) => {
+      if (vendor?.id == id) return vendor;
+    });
+
+    let vendorName = vendor[0]?.name;
+
+    return [vendorName, vendor];
+  };
+
+  const width = Dimensions.get("window").width - 10;
 
   const sheetRef = React.useRef(null);
   const [isOpen, setIsOpen] = React.useState(false);
@@ -88,20 +102,12 @@ const ProductListScreen = ({
     imageStyle,
     itemContainerStyle,
   }) => {
-    const vendorList = useSelector((state) => state.taxons.vendors);
-
-    const resultVendor = (id) => {
-      const vendor = vendorList?.filter((vendor) => {
-        if (vendor?.id == id) return vendor;
-      });
-
-      let vendorName = vendor[0]?.name;
-
-      return vendorName;
-    };
-
     return (
-      <TouchableOpacity onPress={onPress} style={{ ...itemContainerStyle }}>
+      <TouchableOpacity
+        // vendor={resultVendor(item?.vendor?.id)[1]}
+        onPress={onPress}
+        style={{ ...itemContainerStyle, width: width / 2 - 5 }}
+      >
         <View style={{ position: "relative" }}>
           <Image
             source={{
@@ -116,7 +122,7 @@ const ProductListScreen = ({
             }}
           />
           <TouchableOpacity
-            style={{ position: "absolute", bottom: 0, right: 0 }}
+            style={{ position: "absolute", bottom: 0, right: 10 }}
             onPress={() => handleAddToBag(item)}
           >
             <Icon
@@ -134,7 +140,7 @@ const ProductListScreen = ({
             {item.name}
           </Text>
           <Text numberOfLines={1} style={styles.description}>
-            {`${resultVendor(item?.vendor?.id)}`}
+            {`${resultVendor(item?.vendor?.id)[0]}`}
           </Text>
           <View style={styles.pricingContainer}>
             <Text style={[styles.prices, { color: colors.black }]}>
@@ -165,6 +171,7 @@ const ProductListScreen = ({
   React.useEffect(() => {
     dispatch(getMenus());
     removeData("food");
+    removeData("vendors");
   }, []);
 
   const productsSortList = [
@@ -194,10 +201,10 @@ const ProductListScreen = ({
     setIsSortOverlayVisible(false);
   };
 
-  // const handleEndReached = () => {
-  //   const response = dispatch(setPageIndex(pageIndex + 1));
-  //   handleProductsLoad(response.payload);
-  // };
+  const handleEndReached = () => {
+    const response = dispatch(setPageIndex(pageIndex + 1));
+    handleProductsLoad(response.payload);
+  };
 
   const handleProductsLoad = (pageIndexAfterDispatch = null) => {
     dispatch(
@@ -236,25 +243,29 @@ const ProductListScreen = ({
   }, []);
 
   const handleProductLoad = async (id, item) => {
+    // dispatch(setSelectedVendor(vendor));
     dispatch(getProduct(id));
     dispatch(getTaxon(item.taxons[0].id));
+
     navigation.navigate("ProductDetail");
   };
 
-  let data = taxons?.subMenuProducts?.products?.map((el) => {
-    console.log(el.id);
-    let item = productsList.find((ele) => el.id === ele.id);
-    return item;
-  });
+  let data = taxons?.subMenuProducts?.products?.map((el) => el);
 
   const newJustInRenderItem = ({ item, index }) => {
     return (
       <FlatListImageItem
         key={index.toString()}
         item={item}
-        onPress={() => handleProductLoad(item?.id, item)}
+        onPress={() => {
+          console.log("");
+
+          storeData("selectedVendor", resultVendor(item?.vendor?.id)[1]);
+
+          handleProductLoad(item?.id, item);
+        }}
         imageStyle={styles.newJustInImage}
-        itemContainerStyle={styles.newJustInItemContainer}
+        itemContainerStyle={[styles.newJustInItemContainer]}
       />
     );
   };
@@ -414,35 +425,53 @@ const ProductListScreen = ({
     },
     {
       title: "PRODUSENTER",
-      name: null,
+      name: "producers",
     },
   ];
 
   const bottomSheetContent = ({ navigation }) => {
     const [selectedCategory, setSelectedCategory] = React.useState([]);
+    const [selectedVendors, setSelectedvendors] = React.useState([]);
+
+    React.useEffect(() => {
+      selectedFood();
+    }, [selectedCategory]);
+
+    React.useEffect(() => {
+      selectedVendor();
+    }, [selectedVendors]);
 
     const selectedFood = async () => {
       setSelectedCategory(await getData("food"));
     };
 
+    const selectedVendor = async () => {
+      setSelectedvendors(await getData("vendors"));
+    };
+
     const handleDeselectFood = async (item) => {
       let data = [...selectedCategory];
       let index = data.indexOf(item);
-      console.log(data, index, item);
 
       if (index > -1) {
-        data.splice(index, 1);
+        data[index].isChecked = false;
       }
-
-      console.log("data", data);
 
       setSelectedCategory(data);
       storeData("food", data);
     };
 
-    React.useEffect(() => {
-      selectedFood();
-    }, [selectedCategory]);
+    const handleDeselectVendor = async (item) => {
+      let data = [...selectedVendors];
+      let index = data.indexOf(item);
+
+      if (index > -1) {
+        data[index].isChecked = false;
+      }
+
+      setSelectedvendors(data);
+      storeData("vendors", data);
+    };
 
     return (
       <View
@@ -500,36 +529,74 @@ const ProductListScreen = ({
                       <View style={{ flexDirection: "row" }}>
                         {ele.name === "food" &&
                           selectedCategory !== [] &&
-                          selectedCategory?.map((item, index) => (
-                            <View
-                              key={index}
-                              flexDirection={"row"}
-                              style={{
-                                backgroundColor: colors.btnLink,
-                                marginRight: 8,
-                                borderRadius: 3,
-                              }}
-                            >
-                              <Text
+                          selectedCategory
+                            ?.filter((ele) => ele?.isChecked === true)
+                            ?.map((item, index) => (
+                              <View
+                                key={index}
+                                flexDirection={"row"}
                                 style={{
-                                  color: colors.white,
+                                  backgroundColor: colors.btnLink,
+                                  marginRight: 8,
+                                  borderRadius: 3,
                                 }}
                               >
-                                {item.name}
-                              </Text>
+                                <Text
+                                  style={{
+                                    color: colors.white,
+                                  }}
+                                >
+                                  {item.name}
+                                </Text>
 
-                              <TouchableOpacity
-                                onPress={() => handleDeselectFood(item)}
+                                <TouchableOpacity
+                                  onPress={() => handleDeselectFood(item)}
+                                >
+                                  <Icon
+                                    name="close"
+                                    type="material-icons"
+                                    size={20}
+                                    color={colors.white}
+                                  />
+                                </TouchableOpacity>
+                              </View>
+                            ))}
+
+                        {/* // *producers */}
+                        {ele.name === "producers" &&
+                          selectedVendors !== [] &&
+                          selectedVendors
+                            ?.filter((ele) => ele?.isChecked === true)
+                            ?.map((item, index) => (
+                              <View
+                                key={index}
+                                flexDirection={"row"}
+                                style={{
+                                  backgroundColor: colors.btnLink,
+                                  marginRight: 8,
+                                  borderRadius: 3,
+                                }}
                               >
-                                <Icon
-                                  name="close"
-                                  type="material-icons"
-                                  size={20}
-                                  color={colors.white}
-                                />
-                              </TouchableOpacity>
-                            </View>
-                          ))}
+                                <Text
+                                  style={{
+                                    color: colors.white,
+                                  }}
+                                >
+                                  {item.name}
+                                </Text>
+
+                                <TouchableOpacity
+                                  onPress={() => handleDeselectVendor(item)}
+                                >
+                                  <Icon
+                                    name="close"
+                                    type="material-icons"
+                                    size={20}
+                                    color={colors.white}
+                                  />
+                                </TouchableOpacity>
+                              </View>
+                            ))}
                         <Icon
                           name="navigate-next"
                           type="material-icons"
@@ -585,7 +652,7 @@ const ProductListScreen = ({
         style={[
           globalStyles.containerFluid,
           styles.bgwhite,
-          { width: "100%" },
+          // { width: "100%" },
           { flex: 1 },
         ]}
       >
@@ -593,12 +660,26 @@ const ProductListScreen = ({
           <ActivityIndicatorCard />
         ) : (
           <FlatList
-            data={all ? productsList.slice(0, 50) : data}
+            data={all ? productsList : data}
             keyExtractor={(item, index) => index.toString()}
             renderItem={newJustInRenderItem}
             numColumns={2}
             ListHeaderComponent={flatListUpperElement}
+            ListFooterComponent={() =>
+              meta.total_count !== productsList.length && (
+                <ActivityIndicator size="large" />
+              )
+            }
             ref={scrollRef}
+            onEndReachedThreshold={0.3}
+            onEndReached={() => {
+              meta.total_count !== productsList.length && handleEndReached();
+            }}
+            columnWrapperStyle={{
+              // flex: 0.8,
+              width: "100%",
+              justifyContent: "space-evenly",
+            }}
           />
         )}
         {checkout.error !== null && saving === false ? (
@@ -692,6 +773,7 @@ const mapStateToProps = (state) => ({
   minimumPriceRange: state.products.params.priceRange.minimum,
   maximumPriceRange: state.products.params.priceRange.maximum,
   pageIndex: state.products.pageIndex,
+  meta: state.products.meta,
 });
 
 export default connect(mapStateToProps)(ProductListScreen);

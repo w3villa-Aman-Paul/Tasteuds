@@ -21,8 +21,9 @@ export const styles = StyleSheet.create({
     borderBottomWidth: 0.2,
   },
   newJustInImage: {
-    width: (windowWidth / 100) * 45,
+    // width: (windowWidth / 100) * 45,
     height: 200,
+    resizeMode: "contain",
   },
   newJustInItemContainer: {
     flex: 1,

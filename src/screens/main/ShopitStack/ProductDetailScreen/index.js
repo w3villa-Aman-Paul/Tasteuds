@@ -19,12 +19,24 @@ import { styles } from "./styles";
 import { capitalizeFirstLetter } from "../../../../res/helperFunctions";
 import { HOST } from "../../../../res/env";
 import { useSelector } from "react-redux";
-import { getData, storeData } from "../../../../redux/rootReducer";
+import { getData } from "../../../../redux/rootReducer";
 
-const ProductDetailScreen = ({ navigation, dispatch, product, auth, cart }) => {
+const ProductDetailScreen = ({
+  navigation,
+  dispatch,
+  product,
+  auth,
+  cart,
+  route,
+}) => {
   const [selectedVariant, setSelectedVariant] = useState({});
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [favsnackbar, setFavSnackbar] = useState(false);
+  const [selectedVendor, setSelectedVendor] = useState([]);
+
+  const vendor = async () => {
+    setSelectedVendor(await getData("selectedVendor"));
+  };
 
   const [color, setColor] = useState(0);
 
@@ -36,6 +48,7 @@ const ProductDetailScreen = ({ navigation, dispatch, product, auth, cart }) => {
 
   React.useEffect(() => {
     dispatch(getCart(cart.token));
+    vendor();
   }, []);
 
   const dismissSnackbar = () => setSnackbarVisible(false);
@@ -99,7 +112,10 @@ const ProductDetailScreen = ({ navigation, dispatch, product, auth, cart }) => {
               <Text style={styles.productName}>{product.name}</Text>
               <Text
                 style={styles.price}
-              >{`${product.price} ${product.currency}`}</Text>
+              >{`${product?.price} ${product?.currency}`}</Text>
+              <Text
+                style={styles.vendorName}
+              >{`${selectedVendor[0]?.name}`}</Text>
             </View>
           </View>
           <View style={[styles.containerFluid, globalStyles.mt8]}>
@@ -212,14 +228,20 @@ const ProductDetailScreen = ({ navigation, dispatch, product, auth, cart }) => {
                   }}
                 >
                   <Image
-                    source={require("../../../../../assets/images/vendor.png")}
+                    source={{
+                      uri: `${HOST}${selectedVendor[0]?.image?.styles[2].url}`,
+                    }}
                     style={{
                       width: "100%",
                       height: "100%",
                       overflow: "hidden",
+                      resizeMode: "contain",
                     }}
                   />
                 </View>
+                {console.log(
+                  `${HOST}${selectedVendor[0]?.image?.styles[0].url}`
+                )}
 
                 <View
                   style={{

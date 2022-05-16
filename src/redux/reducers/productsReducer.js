@@ -5,6 +5,7 @@ const DEFAULT_STATE = {
   saving: false,
   favorites: [],
   pageIndex: 1,
+  selectedVendor: {},
   params: {
     priceRange: {
       minimum: 20,
@@ -358,6 +359,15 @@ export default function productsReducer(state = DEFAULT_STATE, action) {
             },
           ],
         },
+      };
+    /**
+     * SET_SELECTED_VENDOR
+     */
+    case "SET_SELECTED_VENDOR":
+      return {
+        ...state,
+
+        selectedVendor: action.payload,
       };
 
     /**

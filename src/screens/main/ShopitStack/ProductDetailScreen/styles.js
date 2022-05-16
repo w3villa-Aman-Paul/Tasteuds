@@ -224,4 +224,10 @@ export const styles = StyleSheet.create({
   size_unactive: {
     color: colors.black,
   },
+  vendorName: {
+    color: colors.btnLink,
+    fontSize: 16,
+    fontFamily: "lato-bold",
+    marginTop: 10,
+  },
 });
