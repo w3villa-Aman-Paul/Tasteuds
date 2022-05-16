@@ -11,12 +11,18 @@ import { connect, useSelector } from "react-redux";
 import { Divider, RadioButton } from "react-native-paper";
 import { deleteAdd, getCountriesList, retrieveAddress } from "../../../redux";
 import ActivityIndicatorCard from "../../../library/components/ActivityIndicatorCard";
+import { CheckBox } from "react-native-elements";
 
 const SavedAddress = ({ dispatch, navigation, address, saving }) => {
+  const [check, setCheck] = useState(false);
   const { status } = useSelector((state) => state.checkout);
 
   const deleteAddress = (id) => {
     dispatch(deleteAdd(null, id, {}));
+  };
+
+  const setAddress = (id) => {
+    navigation.navigate("ShippingAddress", { Id: id });
   };
 
   useEffect(() => {
@@ -37,15 +43,25 @@ const SavedAddress = ({ dispatch, navigation, address, saving }) => {
       <>
         <ScrollView>
           <View style={styles.body}>
-            {address?.map((add) => {
+            {address?.map((add, index) => {
               return (
                 <View key={add.id} style={styles.addContent}>
                   <View style={styles.addList}>
-                    <Text style={styles.addText}>{add.address1}</Text>
-                    <Text style={styles.addSubText}>
-                      {add.city}, {add.zipcode}
-                    </Text>
-                    <Text style={styles.addSubText}>{add.country_name}</Text>
+                    <View style={styles.content}>
+                      <CheckBox
+                        checked={check === index ? true : false}
+                        onPress={() => setCheck(index)}
+                      />
+                      <View style={styles.second}>
+                        <Text style={styles.addText}>{add.address1}</Text>
+                        <Text style={styles.addSubText}>
+                          {add.city}, {add.zipcode}
+                        </Text>
+                        <Text style={styles.addSubText}>
+                          {add.country_name}
+                        </Text>
+                      </View>
+                    </View>
                     <Divider style={styles.divider} />
                     <View style={styles.btnGroup}>
                       <TouchableOpacity
@@ -59,6 +75,12 @@ const SavedAddress = ({ dispatch, navigation, address, saving }) => {
                         onPress={() => deleteAddress(add.id)}
                       >
                         <Text style={styles.btnText}>Delete</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.btn}
+                        onPress={() => setAddress(add.id)}
+                      >
+                        <Text style={styles.btnText}>Set</Text>
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -156,4 +178,10 @@ const styles = StyleSheet.create({
     fontFamily: "lato-medium",
     fontSize: 14,
   },
+  content: {
+    flexDirection: "row",
+  },
+  // second: {
+  //   width: 100,
+  // },
 });
