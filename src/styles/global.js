@@ -7,13 +7,11 @@ export const globalStyles = StyleSheet.create({
    */
   container: {
     flex: 1,
-    width: '90%',
+    width: "90%",
     alignSelf: "center",
-
   },
   containerFluid: {
     flex: 1,
-    // backgroundColor: '#fff'
   },
 
   /**

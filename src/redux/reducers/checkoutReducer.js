@@ -4,7 +4,7 @@ const dataFormatter = new Jsona();
 const DEFAULT_STATE = {
   saving: false,
   status: null,
-  address: null,
+  address: [],
   error: null,
   country: {
     states: [],
@@ -225,14 +225,13 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
       return { ...state, ...changes };
 
     case "CREATE_ADDRESS_FULFILLED":
-      changes = {
-        address: dataFormatter.deserialize(response),
+      return {
+        ...state,
         saving: false,
         error: null,
         isAuth: true,
-        status: action.payload.status,
+        address: [...state.address, action.payload.data.data.attributes],
       };
-      return { ...state, ...changes };
 
     case "RETRIEVE_ADDRESS_PENDING":
       return { ...state, saving: true, error: null, isAuth: false, status: "" };

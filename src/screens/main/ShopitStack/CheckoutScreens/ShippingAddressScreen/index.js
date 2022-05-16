@@ -26,48 +26,15 @@ import { styles } from "./styles";
 import { checkoutStyles } from "../styles";
 import CartFooter from "../../../../../library/components/ActionButtonFooter/cartFooter";
 import ActivityIndicatorCard from "../../../../../library/components/ActivityIndicatorCard";
-import cartFooter from "../../../../../library/components/ActionButtonFooter/cartFooter";
 
 const ShippingAddressScreen = ({
   navigation,
   dispatch,
-  country,
-  countriesList,
   saving,
   cart,
   Address,
 }) => {
-  const [statePickerSelectedValue, setStatePickerSelectedValue] = useState(
-    country.states[0]
-  );
-  const [countryPickerSelectedValue, setCountryPickerSelectedValue] = useState(
-    country.iso
-  );
-  const [name, setName] = useState("Aman Paul");
-  const [email, setEmail] = useState("aman.paul@w3villa.com");
-  const [address, setAddress] = useState("House no. 24, Blueberry Street");
-  const [pinCode, setPinCode] = useState("29387");
-  const [city, setCity] = useState("Bahamas");
-  const [phone, setPhone] = useState("1234567654");
-  const [windowWidth] = useState(Dimensions.get("window").width);
-
-  const add = { ...Address };
-
   const handleUpdateCheckout = async () => {
-    await dispatch(
-      createAddress({
-        address: {
-          firstname: name,
-          lastname: name,
-          address1: address,
-          city: city,
-          phone: phone,
-          zipcode: pinCode,
-          state_name: statePickerSelectedValue.abbr,
-          country_iso: countryPickerSelectedValue,
-        },
-      })
-    );
     await dispatch(
       updateCheckout(cart.token, {
         order: {
@@ -96,13 +63,12 @@ const ShippingAddressScreen = ({
         },
       })
     );
-    await dispatch(getPaymentMethods());
-    await dispatch(checkoutNext(cart.token));
-    navigation.navigate("CheckoutPayment");
+    // await dispatch(getPaymentMethods());
+    // await dispatch(checkoutNext(cart.token));
+    // navigation.navigate("CheckoutPayment");
   };
 
   useEffect(() => {
-    setCountryPickerSelectedValue(country.iso);
     dispatch(retrieveAddress());
   }, []);
 
@@ -181,33 +147,25 @@ const ShippingAddressScreen = ({
           {/* Status Bar Ends */}
 
           <View style={styles.address_container}>
-            {Address ? (
-              <View style={styles.address_body}>
-                <View style={styles.address_title}>
-                  <Text style={styles.address_text}>LEVERINGS INFORMASJON</Text>
-                  <TouchableOpacity
-                    style={styles.address_btn}
-                    onPress={() => navigation.navigate("SavedAddress")}
-                  >
-                    <Text style={styles.address_btn_text}>ENDRE</Text>
-                  </TouchableOpacity>
-                </View>
-                <Text style={styles.title}>
-                  {add[0].firstname} {add[0].lastname}
-                </Text>
-                <View style={styles.sub_body}>
-                  <Text style={styles.subtitle}>{add[0].address1}</Text>
-                  <Text style={styles.subtitle}>
-                    {add[0].zipcode} {add[0].city}
-                  </Text>
-                </View>
-                <Text style={styles.profileContact}>+{add[0].phone}</Text>
+            <View style={styles.address_body}>
+              <View style={styles.address_title}>
+                <Text style={styles.address_text}>LEVERINGS INFORMASJON</Text>
+                <TouchableOpacity
+                  style={styles.address_btn}
+                  onPress={() => navigation.navigate("SavedAddress")}
+                >
+                  <Text style={styles.address_btn_text}>ENDRE</Text>
+                </TouchableOpacity>
               </View>
-            ) : (
-              <TouchableOpacity>
-                <Text>Add Address</Text>
-              </TouchableOpacity>
-            )}
+              <Text style={styles.title}>{Address[0]?.firstname}</Text>
+              <View style={styles.sub_body}>
+                <Text style={styles.subtitle}>{Address[0]?.address1}</Text>
+                <Text style={styles.subtitle}>
+                  {Address[0]?.zipcode} {Address[0]?.city}
+                </Text>
+              </View>
+              <Text style={styles.profileContact}>+{Address[0]?.phone}</Text>
+            </View>
           </View>
 
           <View
@@ -248,113 +206,6 @@ const ShippingAddressScreen = ({
               </View>
             </View>
           </View>
-          {/* <View style={globalStyles.container}>
-            <TextField
-              placeholder="Name"
-              inputStyle={styles.inputStyle}
-              containerStyle={styles.containerStyle}
-              inputContainerStyle={styles.inputContainerStyle}
-              value={name}
-              onChangeText={(name) => setName(name)}
-            />
-            
-
-            <TextField
-              placeholder="Email"
-              inputStyle={styles.inputStyle}
-              containerStyle={styles.containerStyle}
-              inputContainerStyle={styles.inputContainerStyle}
-              value={email}
-              onChangeText={(email) => setEmail(email)}
-            />
-            <TextField
-              placeholder="Phone No."
-              inputStyle={styles.inputStyle}
-              containerStyle={styles.containerStyle}
-              inputContainerStyle={styles.inputContainerStyle}
-              value={phone}
-              onChangeText={(phone) => setPhone(phone)}
-            />
-            <TextField
-              placeholder="Pin Code"
-              inputStyle={styles.inputStyle}
-              containerStyle={styles.containerStyle}
-              inputContainerStyle={styles.inputContainerStyle}
-              value={pinCode}
-              onChangeText={(pinCode) => setPinCode(pinCode)}
-            />
-            <TextField
-              placeholder="Address ( House No, Street, Area )"
-              inputStyle={styles.inputStyle}
-              containerStyle={styles.containerStyle}
-              inputContainerStyle={styles.inputContainerStyle}
-              value={address}
-              onChangeText={(address) => setAddress(address)}
-            />
-            <View style={[checkoutStyles.rowContainer, styles.inlineContainer]}>
-              <TextField
-                placeholder="City"
-                keyboardType="default"
-                inputStyle={styles.inputStyle}
-                inputContainerStyle={styles.inputContainerStyle}
-                value={city}
-                onChangeText={(city) => setCity(city)}
-                containerStyle={[
-                  styles.containerStyle,
-                  {
-                    paddingTop: 5,
-                    width: windowWidth / 2.3,
-                  },
-                ]}
-              />
-              <Picker
-                mode="dialog"
-                selectedValue={statePickerSelectedValue}
-                style={[
-                  styles.containerStyle,
-                  styles.inputStyle,
-                  {
-                    paddingTop: 5,
-                    width: windowWidth / 2.3,
-                  },
-                ]}
-                itemStyle={styles.inputStyle}
-                onValueChange={(itemValue, itemIndex) =>
-                  setStatePickerSelectedValue(itemValue)
-                }
-              >
-                {country.states.map((state) => (
-                  <Picker.Item
-                    key={state.id}
-                    label={state.name}
-                    value={state}
-                  />
-                ))}
-              </Picker>
-            </View>
-            <Picker
-              mode="dialog"
-              selectedValue={countryPickerSelectedValue}
-              style={styles.containerStyle}
-              itemStyle={styles.inputStyle}
-              onValueChange={(itemValue, itemIndex) => {
-                setCountryPickerSelectedValue(itemValue);
-                dispatch(getCountry(itemValue));
-              }}
-            >
-              {countriesList.map((country) => (
-                <Picker.Item
-                  key={country.id}
-                  label={country.name}
-                  value={country.iso}
-                />
-              ))}
-            </Picker>
-            <View style={[checkoutStyles.rowContainer, globalStyles.mt24]}>
-              <CheckR size={16} style={styles.iconStyle} />
-              <Text style={globalStyles.latoRegular14}>Default Address</Text>
-            </View>
-          </View> */}
 
           <Text></Text>
         </ScrollView>

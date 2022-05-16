@@ -281,12 +281,12 @@ const BagScreen = ({ navigation, dispatch, saving }) => {
               </Text>
             </View>
             <View style={globalStyles.containerFluid}>
-              {cart.line_items.map((ele, index) => {
+              {cart.line_items.map((ele) => {
                 let cartProductImage = handleCartProductImage(ele);
 
                 return (
                   <>
-                    <View key={index.toString()} style={styles.body}>
+                    <View key={ele.id} style={styles.body}>
                       <View style={styles.cart_btn}>
                         <Text style={{ fontSize: 25 }}>{ele.quantity}</Text>
                         <View style={styles.inc_btn}>
