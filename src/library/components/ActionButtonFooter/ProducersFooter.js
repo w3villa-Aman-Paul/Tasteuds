@@ -20,6 +20,8 @@ const ProducersFooter = ({ navigation }) => {
     );
   }, []);
 
+  console.log("checked", checked);
+
   useEffect(() => {
     const getVendors = async () => {
       let data = await getData("vendors");

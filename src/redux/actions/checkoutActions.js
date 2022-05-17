@@ -2,6 +2,7 @@ import {
   handleAPI,
   API_VERSION_STOREFRONT,
   handleAddCartItem,
+  handleAPIWithoutToken,
 } from "../../library/utils/apiUtils";
 
 export function getDefaultCountry(data, params = {}) {
@@ -144,7 +145,7 @@ export function createCart() {
   };
   return {
     type: "CREATE_CART",
-    payload: handleAPI(url, params, method),
+    payload: handleAPIWithoutToken(url, params, method),
   };
 }
 

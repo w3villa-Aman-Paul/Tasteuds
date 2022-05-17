@@ -1,13 +1,7 @@
 import * as React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import ProfileScreen from "../screens/main/ProfileStack/ProfileScreen";
-import {
-  Menu,
-  ShoppingBag,
-  Search,
-  User,
-  ShoppingCart,
-} from "../library/icons";
+
 import { colors } from "../res/palette";
 import { globalStyles } from "../styles/global";
 import AccountScreen from "../screens/main/ProfileStack/AccountScreen";

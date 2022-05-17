@@ -1,6 +1,7 @@
 import {
   handleAPI,
   API_VERSION_STOREFRONT,
+  handleAPIWithoutToken,
 } from "../../library/utils/apiUtils";
 
 export function getProductsList(data, { pageIndex, filter }) {
@@ -15,7 +16,7 @@ export function getProductsList(data, { pageIndex, filter }) {
   const method = "GET";
   return {
     type: "GET_PRODUCTS_LIST",
-    payload: handleAPI(url, params, method, data),
+    payload: handleAPIWithoutToken(url, params, method, data),
   };
 }
 
@@ -27,7 +28,7 @@ export function getProduct(id, filters = {}) {
   const method = "GET";
   return {
     type: "GET_PRODUCT",
-    payload: handleAPI(url, params, method, filters),
+    payload: handleAPIWithoutToken(url, params, method, filters),
   };
 }
 
