@@ -162,14 +162,25 @@ const ShippingAddressScreen = ({
                   <Text style={styles.address_btn_text}>ENDRE</Text>
                 </TouchableOpacity>
               </View>
-              <Text style={styles.title}>{newAddress[0]?.firstname}</Text>
+              <Text style={styles.title}>
+                {newAddress[0]
+                  ? newAddress[0]?.firstname
+                  : Address[0]?.firstname}
+              </Text>
               <View style={styles.sub_body}>
-                <Text style={styles.subtitle}>{newAddress[0]?.address1}</Text>
                 <Text style={styles.subtitle}>
-                  {newAddress[0]?.zipcode} {newAddress[0]?.city}
+                  {newAddress[0]
+                    ? newAddress[0]?.address1
+                    : Address[0]?.address1}
+                </Text>
+                <Text style={styles.subtitle}>
+                  {newAddress[0] ? newAddress[0]?.zipcode : Address[0]?.zipcode}{" "}
+                  {newAddress[0] ? newAddress[0]?.city : Address[0]?.city}
                 </Text>
               </View>
-              <Text style={styles.profileContact}>+{newAddress[0]?.phone}</Text>
+              <Text style={styles.profileContact}>
+                +{newAddress[0] ? newAddress[0]?.phone : Address[0]?.phone}
+              </Text>
             </View>
           </View>
 
