@@ -171,7 +171,10 @@ const HomeComponent = ({
               </Text>
             </ImageBackground>
           </View>
-          <View style={styles.second}>
+          <TouchableOpacity
+            style={styles.second}
+            onPress={() => navigation.navigate("ProducersListScreen")}
+          >
             <ImageBackground
               source={require("../../../../../assets/images/Header-Icon/home_second_2.png")}
               style={{
@@ -191,7 +194,7 @@ const HomeComponent = ({
                 SE ALLE PRODUSENTER
               </Text>
             </ImageBackground>
-          </View>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.third}>

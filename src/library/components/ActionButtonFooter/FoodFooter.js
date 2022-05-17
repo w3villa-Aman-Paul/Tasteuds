@@ -10,23 +10,6 @@ const FoodFooter = ({ navigation }) => {
   const menus = useSelector((state) => state.taxons.menus);
 
   const [checked, setChecked] = useState([]);
-  const [selectedFood, setSelectedFood] = useState([]);
-
-  useEffect(() => {
-    const getFood = async () => {
-      let data = await getData("food");
-      {
-        data !== null ? setChecked(data) : <></>;
-      }
-    };
-
-    getFood();
-  }, []);
-
-  useEffect(() => {
-    let data = checked.filter((ele) => ele?.isChecked === true);
-    setSelectedFood(data);
-  }, [checked]);
 
   useEffect(() => {
     setChecked(
@@ -42,6 +25,20 @@ const FoodFooter = ({ navigation }) => {
           return { name: ele.name };
         })
     );
+  }, []);
+
+  console.log("checked2", checked);
+
+  useEffect(() => {
+    const getFood = async () => {
+      let data = await getData("food");
+      console.log("data", data);
+      {
+        data !== null && data !== [] ? setChecked(data) : <></>;
+      }
+    };
+
+    getFood();
   }, []);
 
   const handleChange = (name) => {
@@ -157,7 +154,7 @@ const FoodFooter = ({ navigation }) => {
               backgroundColor: colors.btnLink,
             }}
             onPress={() => {
-              storeData("food", selectedFood);
+              storeData("food", checked);
               navigation.goBack();
             }}
           >

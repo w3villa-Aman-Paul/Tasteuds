@@ -1,6 +1,7 @@
 import {
   handleAPI,
   API_VERSION_STOREFRONT,
+  handleAPIWithoutToken,
 } from "../../library/utils/apiUtils";
 
 export function getTaxonsList(filters = {}) {
@@ -8,7 +9,7 @@ export function getTaxonsList(filters = {}) {
   const method = "GET";
   return {
     type: "GET_TAXONS_LIST",
-    payload: handleAPI(url, filters, method),
+    payload: handleAPIWithoutToken(url, filters, method),
   };
 }
 
@@ -20,7 +21,7 @@ export function getTaxon(id) {
   };
   return {
     type: "GET_TAXON",
-    payload: handleAPI(url, params, method),
+    payload: handleAPIWithoutToken(url, params, method),
   };
 }
 
@@ -33,7 +34,7 @@ export function getVendorsList() {
 
   return {
     type: "GET_VENDOR_LIST",
-    payload: handleAPI(url, params, method),
+    payload: handleAPIWithoutToken(url, params, method),
   };
 }
 
@@ -46,7 +47,7 @@ export function getCategories() {
 
   return {
     type: "GET_CATEGORIES",
-    payload: handleAPI(url, params, method),
+    payload: handleAPIWithoutToken(url, params, method),
   };
 }
 
@@ -59,7 +60,7 @@ export function getMenus() {
 
   return {
     type: "GET_MENU_ITEMS",
-    payload: handleAPI(url, params, method),
+    payload: handleAPIWithoutToken(url, params, method),
   };
 }
 
@@ -72,7 +73,7 @@ export function getSubMenu(menuName) {
 
   return {
     type: "GET_SUB_MENU",
-    payload: handleAPI(url, params, method),
+    payload: handleAPIWithoutToken(url, params, method),
   };
 }
 
@@ -85,6 +86,6 @@ export function getSubMenuProducts(menuName) {
 
   return {
     type: "GET_SUB_MENU_PRODUCTS",
-    payload: handleAPI(url, params, method),
+    payload: handleAPIWithoutToken(url, params, method),
   };
 }

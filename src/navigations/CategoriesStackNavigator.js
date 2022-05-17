@@ -1,19 +1,11 @@
 import * as React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import CategoriesScreen from "../screens/main/CategoriesStack/CategoriesScreen";
-import {
-  Menu,
-  ShoppingBag,
-  Search,
-  User,
-  ShoppingCart,
-} from "../library/icons";
 import { colors } from "../res/palette";
 import { globalStyles } from "../styles/global";
 import { Image, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
 import { Icon } from "react-native-elements";
-import { ChevronLeft, Eye } from "../library/icons";
 
 const CategoriesStack = createStackNavigator();
 
@@ -25,16 +17,21 @@ function CategoriesStackNavigator({ navigation }) {
       screenOptions={{
         headerTitle: "",
         headerLeft: () => (
-          <Icon name='arrowleft' type='ant-design' onPress={() => navigation.goBack()} title="Back" />
+          <Icon
+            name="arrowleft"
+            type="ant-design"
+            onPress={() => navigation.goBack()}
+            title="Back"
+          />
         ),
         title: "",
         headerLeftContainerStyle: {
           paddingHorizontal: 10,
           top: 4,
           left: 20,
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: '#ffffff',
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#ffffff",
           borderRadius: 50,
           elevation: 10,
           height: 40,
@@ -42,19 +39,19 @@ function CategoriesStackNavigator({ navigation }) {
         },
         headerRight: () => (
           <Icon
-              name="search"
-              type="font-awesome"
-              size={25}
-              color={colors.primary}
-              onPress={() => navigation.navigate("Profile")}
-            />
+            name="search"
+            type="font-awesome"
+            size={25}
+            color={colors.primary}
+            onPress={() => navigation.navigate("Profile")}
+          />
         ),
         headerRightContainerStyle: {
           top: 4,
           right: 20,
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: '#ffffff',
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#ffffff",
           borderRadius: 50,
           elevation: 10,
           height: 40,

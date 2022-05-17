@@ -20,6 +20,10 @@ import FavouritesScreen from "../screens/main/FavouritesStack/FavouritesScreen";
 import SavedAddress from "../screens/main/ProfileStack/SavedAddress";
 import AddAddress from "../screens/main/ProfileStack/AddAddress";
 
+import ProducersListScreen from "../screens/main/ProducersStack/ProducersListScreen";
+
+import ProducerDetailScreen from "../screens/main/ProducersStack/ProducerDetailScreen";
+
 const ShopitStack = createStackNavigator();
 
 function ShopitStackNavigator({ navigation, route }) {
@@ -46,30 +50,7 @@ function ShopitStackNavigator({ navigation, route }) {
   }, [navigation, route]);
 
   return (
-    <ShopitStack.Navigator
-      screenOptions={{
-        headerRight: () => (
-          <Icon
-            name="search"
-            type="font-awesome"
-            size={25}
-            color={colors.primary}
-            onPress={() => navigation.navigate("Profile")}
-          />
-        ),
-        headerRightContainerStyle: {
-          top: 4,
-          right: 20,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#ffffff",
-          borderRadius: 50,
-          elevation: 10,
-          height: 40,
-          width: 40,
-        },
-      }}
-    >
+    <ShopitStack.Navigator>
       <ShopitStack.Screen
         name="Shop"
         component={HomeComponent}
@@ -81,12 +62,48 @@ function ShopitStackNavigator({ navigation, route }) {
               style={styles.header}
             />
           ),
+          headerRight: () => (
+            <Icon
+              name="search"
+              type="font-awesome"
+              size={25}
+              color={colors.primary}
+              onPress={() => navigation.navigate("Profile")}
+            />
+          ),
+          headerRightContainerStyle: {
+            top: 4,
+            right: 20,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#ffffff",
+            borderRadius: 50,
+            elevation: 10,
+            height: 40,
+            width: 40,
+          },
           title: "",
           headerLeftContainerStyle: {
             paddingHorizontal: 10,
           },
         }}
       />
+      <ShopitStack.Screen
+        name="ProducersListScreen"
+        component={ProducersListScreen}
+        options={{
+          headerTitle: "PRODUSENTER",
+          headerTitleAlign: "center",
+        }}
+      />
+      <ShopitStack.Screen
+        name="ProducersDetailScreen"
+        component={ProducerDetailScreen}
+        options={{
+          headerTitle: "",
+        }}
+      />
+
       <ShopitStack.Screen
         name="ProductsList"
         component={ProductsListScreen}
