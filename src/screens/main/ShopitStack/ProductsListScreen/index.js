@@ -50,26 +50,22 @@ const ProductListScreen = ({
   meta,
   pageIndex,
 }) => {
-  const checkout = useSelector((state) => state.checkout);
-  const errMessage = useSelector((state) => state.checkout.error);
   const [snackbarVisible, setSnackbarVisible] = React.useState(false);
   const [isSortOverlayVisible, setIsSortOverlayVisible] = React.useState(false);
+  const [all, setAll] = React.useState(true);
+  const [subLink, setSubLink] = React.useState("");
+  const [activeMenus, setActiveMenus] = React.useState([]);
+  const [isAll, setIsAll] = React.useState(true);
+
+  const checkout = useSelector((state) => state.checkout);
+  const errMessage = useSelector((state) => state.checkout.error);
   const cart = useSelector((state) => state.checkout.cart);
   const vendorList = useSelector((state) => state.taxons.vendors);
-  const width = Dimensions.get("window").width - 10;
-  const sheetRef = React.useRef(null);
-  const [isOpen, setIsOpen] = React.useState(false);
-  const dismissSnackbar = () => setSnackbarVisible(false);
-  const snapPoints = ["40%"];
-  const [active, setActive] = React.useState(false);
 
-  // const activeHandler = (id) => {
-  //   dispatch(activeFunction(id));
-
-  //   let result = menus.menu_items.filter((x) => x.is_root === true);
-  //   console.log("gyghyjy", result[0].is_root);
-  //   setActive(result[0].is_root);
-  // };
+  const taxons = useSelector((state) => state.taxons);
+  const cate = useSelector((state) => state.taxons.categories);
+  const menus = useSelector((state) => state.taxons.menus);
+  const submenus = useSelector((state) => state.taxons.submenus);
 
   const resultVendor = (id) => {
     const vendor = vendorList?.filter((vendor) => {
@@ -80,6 +76,54 @@ const ProductListScreen = ({
 
     return [vendorName, vendor];
   };
+
+  React.useEffect(() => {
+    handleActiveMenu();
+  }, [menus]);
+
+  const handleActiveMenu = () => {
+    const unactive = menus?.menu_items
+      ?.filter(
+        (menu) =>
+          menu.name !== "PRODUSENTER" &&
+          menu.name !== "Categories" &&
+          menu.name !== "Kategorier" &&
+          menu.name !== "Lokalprodukter"
+      )
+      // ?.sort((a, b) => a.name.localeCompare(b.name))
+      ?.map((item) => {
+        return { ...item, isActive: false };
+      });
+
+    setActiveMenus(unactive);
+  };
+
+  const handleClick = (activeMenus, menu) => {
+    const newArr = [...activeMenus];
+    const index = newArr.findIndex((item) => item.id === menu.id);
+    newArr[index].isActive = true;
+    setActiveMenus(newArr);
+  };
+
+  const handleAllClick = (array) => {
+    setActiveMenus(handleUncheckAllMenus(array));
+    setIsAll(true);
+  };
+
+  const handleUncheckAllMenus = (arr) => {
+    const newArray = arr.map((item) => {
+      return { ...item, isActive: false };
+    });
+
+    return newArray;
+  };
+
+  const width = Dimensions.get("window").width - 10;
+
+  const sheetRef = React.useRef(null);
+  const [isOpen, setIsOpen] = React.useState(false);
+
+  const snapPoints = ["40%"];
 
   const handleSnapPress = React.useCallback((index) => {
     sheetRef.current?.snapToIndex(index);
@@ -158,14 +202,6 @@ const ProductListScreen = ({
   };
 
   //..........................................................................................
-
-  const [all, setAll] = React.useState(true);
-  const [subLink, setSubLink] = React.useState("");
-
-  const taxons = useSelector((state) => state.taxons);
-  const cate = useSelector((state) => state.taxons.categories);
-  const menus = useSelector((state) => state.taxons.menus);
-  const submenus = useSelector((state) => state.taxons.submenus);
 
   // const toggleFilter = () => {
   //   setFilterSheet(!filterSheet)
@@ -322,62 +358,51 @@ const ProductListScreen = ({
               key={"alle"}
               onPress={() => {
                 setAll(true);
+                handleAllClick(activeMenus);
               }}
             >
               <Text
-                style={{
-                  padding: 8,
-                  fontSize: 20,
-                  fontWeight: "700",
-                  color: colors.primary,
-                  // ...styles.active,
-                }}
+                style={[
+                  isAll ? styles.active : {},
+                  {
+                    padding: 8,
+                    fontSize: 20,
+                    fontWeight: "700",
+                    color: colors.primary,
+                  },
+                ]}
               >
                 Alle
               </Text>
             </TouchableOpacity>
-            {menus?.menu_items
-              ?.filter(
-                (menu) =>
-                  menu.name !== "PRODUSENTER" &&
-                  menu.name !== "Categories" &&
-                  menu.name !== "Kategorier" &&
-                  menu.name !== "Lokalprodukter"
-              )
-              // ?.sort((a, b) => a.name.localeCompare(b.name))
-              ?.map((menu, index) => (
-                <TouchableOpacity
-                  key={index.toString()}
-                  onPress={() => {
-                    dispatch(getSubMenu(menu.link.slice(2).toLowerCase()));
-                    setAll(false);
-                    setSubLink(menu.link.slice(2).toLowerCase());
-                    dispatch(getSubMenuProducts(subLink));
-                    // activeHandler(menu.id);
-                  }}
+
+            {activeMenus?.map((menu, index, arr) => (
+              <TouchableOpacity
+                key={index.toString()}
+                onPress={async () => {
+                  await dispatch(getSubMenu(menu.link.slice(2).toLowerCase()));
+                  setAll(false);
+                  setIsAll(false);
+                  setSubLink(menu.link.slice(2).toLowerCase());
+                  handleClick(handleUncheckAllMenus(arr), menu);
+                  dispatch(getSubMenuProducts(subLink));
+                }}
+              >
+                <Text
+                  style={[
+                    menu.isActive ? styles.active : styles.unactive,
+                    {
+                      padding: 8,
+                      fontSize: 20,
+                      fontWeight: "700",
+                      color: colors.primary,
+                    },
+                  ]}
                 >
-                  <Text
-                    style={[
-                      active ? styles.active : null,
-                      {
-                        padding: 8,
-                        fontSize: 20,
-                        fontWeight: "700",
-                        color: colors.primary,
-                      },
-                    ]}
-                    // style={{
-                    //   padding: 8,
-                    //   fontSize: 20,
-                    //   fontWeight: "700",
-                    //   color: colors.primary,
-                    //   ...styles.active,
-                    // }}
-                  >
-                    {menu.name}
-                  </Text>
-                </TouchableOpacity>
-              ))}
+                  {menu.name}
+                </Text>
+              </TouchableOpacity>
+            ))}
           </ScrollView>
 
           {all ? (

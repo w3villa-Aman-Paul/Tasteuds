@@ -36,6 +36,7 @@ const DEFAULT_STATE = {
   categories: [{}],
   menus: [{}],
   submenus: [{}],
+  selectedVendor: [{}],
   vendors: [{}],
   vendorImages: [{}],
   subMenuProducts: [{}],
@@ -100,6 +101,22 @@ export default function taxonsReducer(state = DEFAULT_STATE, action) {
       changes = {
         vendors: dataFormatter.deserialize(response),
         vendorImages: response.included,
+        saving: false,
+      };
+      return { ...state, ...changes };
+
+    case "GET_SELECTED_VENDOR_PENDING":
+      return { ...state, saving: true };
+
+    case "GET_SELECTED_VENDOR_REJECTED":
+      changes = {
+        saving: false,
+      };
+      return { ...state, ...changes };
+
+    case "GET_SELECTED_VENDOR_FULFILLED":
+      changes = {
+        selectedVendor: dataFormatter.deserialize(response),
         saving: false,
       };
       return { ...state, ...changes };

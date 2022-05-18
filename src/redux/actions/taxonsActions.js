@@ -38,6 +38,19 @@ export function getVendorsList() {
   };
 }
 
+export function getSelectedVendor(vendor) {
+  const url = `${API_VERSION_STOREFRONT}/vendors/${vendor}`;
+  const method = "GET";
+  const params = {
+    include: "image,products.images.attachment",
+  };
+
+  return {
+    type: "GET_SELECTED_VENDOR",
+    payload: handleAPIWithoutToken(url, params, method),
+  };
+}
+
 export function getCategories() {
   const url = `${API_VERSION_STOREFRONT}/taxons/kategorier/`;
   const method = "GET";
