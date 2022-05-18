@@ -41,7 +41,8 @@ function ShopitStackNavigator({ navigation, route }) {
       routeName === "Bag" ||
       routeName === "ShippingAddress" ||
       routeName === "SavedAddress" ||
-      routeName === "AddAdress"
+      routeName === "AddAdress" ||
+      routeName === "ProducersDetailScreen"
     ) {
       navigation.setOptions({ tabBarVisible: false });
     } else {
@@ -101,6 +102,7 @@ function ShopitStackNavigator({ navigation, route }) {
         component={ProducerDetailScreen}
         options={{
           headerTitle: "",
+          headerShown: false,
         }}
       />
 
@@ -156,7 +158,7 @@ function ShopitStackNavigator({ navigation, route }) {
           headerLeft: () => (
             <ChevronLeft
               size={29}
-              onPress={() => navigation.navigate("ProductsList")}
+              onPress={() => navigation.goBack()}
               style={styles.chevron}
               title="Back"
             />

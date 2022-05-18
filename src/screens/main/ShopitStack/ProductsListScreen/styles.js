@@ -78,4 +78,7 @@ export const styles = StyleSheet.create({
     borderColor: "transparent",
     borderBottomColor: colors.primary,
   },
+  unactive: {
+    borderBottomColor: "transparent",
+  },
 });
