@@ -56,6 +56,11 @@ export const setProductFavourite = (variant) => ({
   payload: variant,
 });
 
+export const deleteFavourite = (id) => ({
+  type: "DELETE_PRODUCT_FAVOURITE",
+  payload: id,
+});
+
 export const resetProductsList = () => ({
   type: "RESET_PRODUCTS_LIST",
 });

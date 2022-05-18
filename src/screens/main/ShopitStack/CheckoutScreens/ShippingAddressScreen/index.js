@@ -35,9 +35,7 @@ const ShippingAddressScreen = ({
   Address,
   route,
 }) => {
-  const { Id } = route.params;
-
-  let newAddress = Address.filter((x) => x.id === Id);
+  let newAddress = Address.filter((x) => x.id === route.params?.Id);
 
   const handleUpdateCheckout = async () => {
     await dispatch(

@@ -308,6 +308,13 @@ export default function productsReducer(state = DEFAULT_STATE, action) {
 
         favorites: [...new Set([...state.favorites, action.payload])],
       };
+
+    case "DELETE_PRODUCT_FAVOURITE":
+      return {
+        ...state,
+
+        favorites: state.favorites.filter((fav) => fav.id !== action.payload),
+      };
     /**
      * SET_PAGE_INDEX
      */

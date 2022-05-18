@@ -64,6 +64,13 @@ export function getMenus() {
   };
 }
 
+// export function activeFunction(id) {
+//   return {
+//     type: "SET_MENU_ITEM_CHECK",
+//     payload: id,
+//   };
+// }
+
 export function getSubMenu(menuName) {
   const url = `${API_VERSION_STOREFRONT}/taxons/${menuName}`;
   const method = "GET";

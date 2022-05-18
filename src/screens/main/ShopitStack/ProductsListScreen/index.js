@@ -30,6 +30,7 @@ import {
   getSubMenuProducts,
   addItem,
   getCart,
+  activeFunction,
 } from "../../../../redux";
 import FilterFooter from "../../../../library/components/ActionButtonFooter/FilterFooter";
 import { HOST } from "../../../../res/env";
@@ -55,6 +56,20 @@ const ProductListScreen = ({
   const [isSortOverlayVisible, setIsSortOverlayVisible] = React.useState(false);
   const cart = useSelector((state) => state.checkout.cart);
   const vendorList = useSelector((state) => state.taxons.vendors);
+  const width = Dimensions.get("window").width - 10;
+  const sheetRef = React.useRef(null);
+  const [isOpen, setIsOpen] = React.useState(false);
+  const dismissSnackbar = () => setSnackbarVisible(false);
+  const snapPoints = ["40%"];
+  const [active, setActive] = React.useState(false);
+
+  // const activeHandler = (id) => {
+  //   dispatch(activeFunction(id));
+
+  //   let result = menus.menu_items.filter((x) => x.is_root === true);
+  //   console.log("gyghyjy", result[0].is_root);
+  //   setActive(result[0].is_root);
+  // };
 
   const resultVendor = (id) => {
     const vendor = vendorList?.filter((vendor) => {
@@ -66,13 +81,6 @@ const ProductListScreen = ({
     return [vendorName, vendor];
   };
 
-  const width = Dimensions.get("window").width - 10;
-
-  const sheetRef = React.useRef(null);
-  const [isOpen, setIsOpen] = React.useState(false);
-
-  const snapPoints = ["40%"];
-
   const handleSnapPress = React.useCallback((index) => {
     sheetRef.current?.snapToIndex(index);
     setIsOpen(true);
@@ -81,8 +89,6 @@ const ProductListScreen = ({
   React.useEffect(() => {
     dispatch(getCart(cart.token));
   }, []);
-
-  const dismissSnackbar = () => setSnackbarVisible(false);
 
   const handleAddToBag = async (item) => {
     let vari = item.variants[0].id;
@@ -104,7 +110,6 @@ const ProductListScreen = ({
   }) => {
     return (
       <TouchableOpacity
-        // vendor={resultVendor(item?.vendor?.id)[1]}
         onPress={onPress}
         style={{ ...itemContainerStyle, width: width / 2 - 5 }}
       >
@@ -146,8 +151,6 @@ const ProductListScreen = ({
             <Text style={[styles.prices, { color: colors.black }]}>
               {item.display_price}
             </Text>
-            {/* <Text style={[styles.prices, styles.price]}>${item.price}</Text> */}
-            {/* <Text style={[styles.prices, styles.discountPercent]}>(30% OFF)</Text> */}
           </View>
         </View>
       </TouchableOpacity>
@@ -327,7 +330,7 @@ const ProductListScreen = ({
                   fontSize: 20,
                   fontWeight: "700",
                   color: colors.primary,
-                  ...styles.active,
+                  // ...styles.active,
                 }}
               >
                 Alle
@@ -350,15 +353,26 @@ const ProductListScreen = ({
                     setAll(false);
                     setSubLink(menu.link.slice(2).toLowerCase());
                     dispatch(getSubMenuProducts(subLink));
+                    // activeHandler(menu.id);
                   }}
                 >
                   <Text
-                    style={{
-                      padding: 8,
-                      fontSize: 20,
-                      fontWeight: "700",
-                      color: colors.primary,
-                    }}
+                    style={[
+                      active ? styles.active : null,
+                      {
+                        padding: 8,
+                        fontSize: 20,
+                        fontWeight: "700",
+                        color: colors.primary,
+                      },
+                    ]}
+                    // style={{
+                    //   padding: 8,
+                    //   fontSize: 20,
+                    //   fontWeight: "700",
+                    //   color: colors.primary,
+                    //   ...styles.active,
+                    // }}
                   >
                     {menu.name}
                   </Text>
