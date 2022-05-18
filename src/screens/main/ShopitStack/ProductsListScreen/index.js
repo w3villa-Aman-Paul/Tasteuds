@@ -100,6 +100,7 @@ const ProductListScreen = ({
     const newArr = [...activeMenus];
     const index = newArr.findIndex((item) => item.id === menu.id);
     newArr[index].isActive = true;
+
     setActiveMenus(newArr);
   };
 
