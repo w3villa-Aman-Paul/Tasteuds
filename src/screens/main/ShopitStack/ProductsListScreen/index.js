@@ -30,6 +30,7 @@ import {
   getSubMenuProducts,
   addItem,
   getCart,
+  activeFunction,
 } from "../../../../redux";
 import FilterFooter from "../../../../library/components/ActionButtonFooter/FilterFooter";
 import { HOST } from "../../../../res/env";
@@ -60,6 +61,7 @@ const ProductListScreen = ({
   const errMessage = useSelector((state) => state.checkout.error);
   const cart = useSelector((state) => state.checkout.cart);
   const vendorList = useSelector((state) => state.taxons.vendors);
+
   const taxons = useSelector((state) => state.taxons);
   const cate = useSelector((state) => state.taxons.categories);
   const menus = useSelector((state) => state.taxons.menus);
@@ -133,8 +135,6 @@ const ProductListScreen = ({
     dispatch(getCart(cart.token));
   }, []);
 
-  const dismissSnackbar = () => setSnackbarVisible(false);
-
   const handleAddToBag = async (item) => {
     let vari = item.variants[0].id;
     dispatch(
@@ -155,7 +155,6 @@ const ProductListScreen = ({
   }) => {
     return (
       <TouchableOpacity
-        // vendor={resultVendor(item?.vendor?.id)[1]}
         onPress={onPress}
         style={{ ...itemContainerStyle, width: width / 2 - 5 }}
       >
@@ -197,8 +196,6 @@ const ProductListScreen = ({
             <Text style={[styles.prices, { color: colors.black }]}>
               {item.display_price}
             </Text>
-            {/* <Text style={[styles.prices, styles.price]}>${item.price}</Text> */}
-            {/* <Text style={[styles.prices, styles.discountPercent]}>(30% OFF)</Text> */}
           </View>
         </View>
       </TouchableOpacity>
@@ -379,6 +376,7 @@ const ProductListScreen = ({
                 Alle
               </Text>
             </TouchableOpacity>
+
             {activeMenus?.map((menu, index, arr) => (
               <TouchableOpacity
                 key={index.toString()}

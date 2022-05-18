@@ -160,6 +160,18 @@ export default function taxonsReducer(state = DEFAULT_STATE, action) {
       };
       return { ...state, ...changes };
 
+    // case "SET_MENU_ITEM_CHECK":
+    //   let res = state.menus.menu_items.find(
+    //     (menu) => menu.id === action.payload
+    //   );
+    //   console.log(">>>>", res);
+    //   return {
+    //     ...state,
+    //     menus: state.menus.menu_items.map((x) =>
+    //       x.id === action.payload ? { ...res, is_root: true } : x
+    //     ),
+    //   };
+
     /**
      * SUB_MENU
      */

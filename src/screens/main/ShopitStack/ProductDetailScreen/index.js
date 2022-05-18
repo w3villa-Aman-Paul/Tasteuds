@@ -187,18 +187,6 @@ const ProductDetailScreen = ({
                     </Text>
                   </TouchableOpacity>
                 ))}
-                {/* <TouchableOpacity style={styles.active}>
-                  <Text></Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.unactive}>
-                  <Text></Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.unactive}>
-                  <Text></Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.last}>
-                  <Text></Text>
-                </TouchableOpacity> */}
               </View>
 
               {/* ......Vendor..... */}
@@ -239,9 +227,6 @@ const ProductDetailScreen = ({
                     }}
                   />
                 </View>
-                {console.log(
-                  `${HOST}${selectedVendor[0]?.image?.styles[0].url}`
-                )}
 
                 <View
                   style={{

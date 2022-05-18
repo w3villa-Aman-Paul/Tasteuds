@@ -15,6 +15,7 @@ import { CheckBox } from "react-native-elements";
 
 const SavedAddress = ({ dispatch, navigation, address, saving }) => {
   const [check, setCheck] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState(null);
   const { status } = useSelector((state) => state.checkout);
 
   const deleteAddress = (id) => {
@@ -36,6 +37,8 @@ const SavedAddress = ({ dispatch, navigation, address, saving }) => {
     dispatch(getCountriesList());
   }, []);
 
+  console.log(">>>>>", selectedAddress);
+
   if (saving) {
     return <ActivityIndicatorCard />;
   } else {
@@ -44,13 +47,17 @@ const SavedAddress = ({ dispatch, navigation, address, saving }) => {
         <ScrollView>
           <View style={styles.body}>
             {address?.map((add, index) => {
+              let itemId = add.id;
               return (
                 <View key={add.id} style={styles.addContent}>
                   <View style={styles.addList}>
                     <View style={styles.content}>
                       <CheckBox
                         checked={check === index ? true : false}
-                        onPress={() => setCheck(index)}
+                        onPress={() => {
+                          setCheck(index);
+                          setSelectedAddress(add);
+                        }}
                       />
                       <View style={styles.second}>
                         <Text style={styles.addText}>{add.address1}</Text>
@@ -76,12 +83,12 @@ const SavedAddress = ({ dispatch, navigation, address, saving }) => {
                       >
                         <Text style={styles.btnText}>Delete</Text>
                       </TouchableOpacity>
-                      <TouchableOpacity
+                      {/* <TouchableOpacity
                         style={styles.btn}
                         onPress={() => setAddress(add.id)}
                       >
                         <Text style={styles.btnText}>Set</Text>
-                      </TouchableOpacity>
+                      </TouchableOpacity> */}
                     </View>
                   </View>
                 </View>
@@ -93,9 +100,15 @@ const SavedAddress = ({ dispatch, navigation, address, saving }) => {
           <View style={styles.btn_container}>
             <TouchableOpacity
               style={styles.btn_body}
-              onPress={() => navigation.navigate("AddAdress")}
+              onPress={
+                selectedAddress !== null
+                  ? () => setAddress(selectedAddress.id)
+                  : () => navigation.navigate("AddAdress")
+              }
             >
-              <Text style={styles.text}>Add Address</Text>
+              <Text style={styles.text}>
+                {selectedAddress !== null ? "Apply" : "Add Address"}
+              </Text>
             </TouchableOpacity>
           </View>
         </SafeAreaView>

@@ -356,37 +356,7 @@ function ShopitStackNavigator({ navigation, route }) {
           },
         }}
       />
-      <ShopitStack.Screen
-        name="Favorites"
-        component={FavouritesScreen}
-        options={{
-          headerTitle: "",
-          headerLeft: () => (
-            <Image
-              source={require("../../assets/images/Header-Icon/header_logo.png")}
-              style={styles.header}
-            />
-          ),
-          headerRight: () => (
-            <Heart
-              size={24}
-              style={{ color: colors.black }}
-              onPress={() => navigation.navigate("Favorites")}
-            />
-          ),
-          headerRightContainerStyle: {
-            top: 4,
-            right: 20,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "#ffffff",
-            borderRadius: 50,
-            elevation: 10,
-            height: 40,
-            width: 40,
-          },
-        }}
-      />
+      <ShopitStack.Screen name="Favorites" component={FavouritesScreen} />
       <ShopitStack.Screen name="SavedAddress" component={SavedAddress} />
       <ShopitStack.Screen name="AddAdress" component={AddAddress} />
     </ShopitStack.Navigator>

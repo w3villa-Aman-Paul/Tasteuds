@@ -8,8 +8,6 @@ import { checkoutStyles } from "../styles";
 import { connect } from "react-redux";
 import { Divider } from "react-native-elements";
 import { Snackbar } from "react-native-paper";
-import CheckoutDetailsCard from "../../../../../library/components/CheckoutDetailsCard";
-import ActionButtonFooter from "../../../../../library/components/ActionButtonFooter";
 import ActivityIndicatorCard from "../../../../../library/components/ActivityIndicatorCard";
 import {
   getCart,
@@ -286,7 +284,7 @@ const BagScreen = ({ navigation, dispatch, saving }) => {
 
                 return (
                   <>
-                    <View key={idx.toString()} style={styles.body}>
+                    <View key={ele.id} style={styles.body}>
                       <View style={styles.cart_btn}>
                         <Text style={{ fontSize: 25 }}>{ele.quantity}</Text>
                         <View style={styles.inc_btn}>

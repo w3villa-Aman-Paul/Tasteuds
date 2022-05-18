@@ -19,27 +19,23 @@ function FavouritesStackNavigator({ navigation }) {
   return (
     <FavouritesStack.Navigator
       screenOptions={{
-        headerTitle: "",
+        headerTitle: "FAVORITTER",
         headerLeft: () => (
-           <Icon name='arrowleft' type='ant-design' onPress={() => navigation.goBack()} title="Back" />
-        ),
-        headerRight: () => (
           <Icon
-              name="search"
-              type="font-awesome"
-              size={25}
-              color={colors.primary}
-              onPress={() => navigation.navigate("Profile")}
-            />
+            name="arrowleft"
+            type="ant-design"
+            onPress={() => navigation.goBack()}
+            title="Back"
+          />
         ),
-        title: "",
+        headerTitleAlign: "center",
         headerLeftContainerStyle: {
           paddingHorizontal: 10,
           top: 4,
           left: 20,
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: '#ffffff',
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#ffffff",
           borderRadius: 50,
           elevation: 10,
           height: 40,
@@ -48,9 +44,9 @@ function FavouritesStackNavigator({ navigation }) {
         headerRightContainerStyle: {
           top: 4,
           right: 20,
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: '#ffffff',
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#ffffff",
           borderRadius: 50,
           elevation: 10,
           height: 40,
@@ -58,16 +54,7 @@ function FavouritesStackNavigator({ navigation }) {
         },
       }}
     >
-      <FavouritesStack.Screen
-        name="Favorites"
-        component={FavouritesScreen}
-        options={{
-          // headerTitle: (
-          //   <CustomTitle title="Favorites" length={favorites.length} />
-          // ),
-          title:'',
-        }}
-      />
+      <FavouritesStack.Screen name="Favorites" component={FavouritesScreen} />
     </FavouritesStack.Navigator>
   );
 }

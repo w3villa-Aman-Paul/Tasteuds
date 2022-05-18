@@ -113,7 +113,6 @@ const HomeComponent = ({
   };
 
   const handleProductLoad = async (id, item) => {
-    // dispatch(setSelectedVendor(vendor));
     dispatch(getProduct(id));
     dispatch(getTaxon(item.taxons[0].id));
 
@@ -143,7 +142,6 @@ const HomeComponent = ({
 
   React.useEffect(() => {
     handleProductsLoad();
-    // dispatch(accountRetrieve(null, {}));
   }, [isAuth, route.params]);
 
   const flatListHeaderComponent = () => {
