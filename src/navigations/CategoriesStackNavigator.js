@@ -17,11 +17,9 @@ function CategoriesStackNavigator({ navigation }) {
       screenOptions={{
         headerTitle: "",
         headerLeft: () => (
-          <Icon
-            name="arrowleft"
-            type="ant-design"
-            onPress={() => navigation.goBack()}
-            title="Back"
+          <Image
+            source={require("../../assets/images/Header-Icon/header_logo.png")}
+            style={styles.header}
           />
         ),
         title: "",
@@ -37,6 +35,7 @@ function CategoriesStackNavigator({ navigation }) {
           height: 40,
           width: 40,
         },
+
         headerRight: () => (
           <Icon
             name="search"
@@ -56,6 +55,9 @@ function CategoriesStackNavigator({ navigation }) {
           elevation: 10,
           height: 40,
           width: 40,
+        },
+        headerLeftContainerStyle: {
+          paddingHorizontal: 10,
         },
       }}
     >

@@ -115,6 +115,7 @@ const HomeComponent = ({
   const handleProductLoad = async (id, item) => {
     dispatch(getProduct(id));
     dispatch(getTaxon(item.taxons[0].id));
+
     navigation.navigate("ProductDetail");
   };
 
