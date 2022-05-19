@@ -68,7 +68,7 @@ export function getMenus() {
   const url = `${API_VERSION_STOREFRONT}/menus/2`;
   const method = "GET";
   const params = {
-    include: "menu_items",
+    include: "menu_items.icon",
   };
 
   return {

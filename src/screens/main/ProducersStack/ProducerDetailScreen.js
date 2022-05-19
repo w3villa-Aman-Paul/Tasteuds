@@ -33,8 +33,8 @@ const ProducerDetailScreen = ({ dispatch, navigation }) => {
   };
 
   const handleProductLoad = async (id, item) => {
-    dispatch(getProduct(id));
-    dispatch(getTaxon(item.taxons[0].id));
+    await dispatch(getProduct(id));
+    await dispatch(getTaxon(item.taxons[0].id));
     navigation.navigate("ProductDetail");
   };
 
