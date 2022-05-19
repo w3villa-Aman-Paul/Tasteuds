@@ -14,9 +14,9 @@ const AddAddress = ({ navigation, dispatch, country, countriesList, cart }) => {
     setCountryPickerSelectedValue(country.iso);
   }, []);
 
-  const [statePickerSelectedValue, setStatePickerSelectedValue] = useState(
-    country.states[0]
-  );
+  // const [statePickerSelectedValue, setStatePickerSelectedValue] = useState(
+  //   country.states[0]
+  // );
   const [countryPickerSelectedValue, setCountryPickerSelectedValue] = useState(
     country.iso
   );

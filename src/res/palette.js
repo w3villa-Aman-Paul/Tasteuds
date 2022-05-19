@@ -8,4 +8,5 @@ export const colors = {
   success: "#2AA952",
   icon: "white",
   btnLink: "#ed3c61",
+  skyBlue: "#0080ff",
 };

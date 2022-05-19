@@ -120,15 +120,14 @@ const BagScreen = ({ navigation, dispatch, saving }) => {
               </View>
             </TouchableOpacity>
           </View>
-        </View>
-
-        <View>
-          <Text
-            style={styles.bottom_text}
-            onPress={() => navigation.navigate("SignIn")}
-          >
-            FORTSETT MED E-POST
-          </Text>
+          <View style={styles.login_content}>
+            <Text
+              style={styles.bottom_text}
+              onPress={() => navigation.navigate("SignIn")}
+            >
+              FORTSETT MED E-POST
+            </Text>
+          </View>
         </View>
       </View>
     );

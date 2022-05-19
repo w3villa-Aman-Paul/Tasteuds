@@ -89,6 +89,15 @@ export function retrieveAddress(data = {}, filters = {}) {
   };
 }
 
+export function updateAddressFunc(data, filters = {}, id) {
+  const url = `${API_VERSION_STOREFRONT}/account/addresses/${id}`;
+  const method = "PATCH";
+  return {
+    type: "UPDATE_ADDRESS",
+    payload: handleAPI(url, filters, method, data),
+  };
+}
+
 export function deleteAdd(data = null, id, filters = {}) {
   const url = `${API_VERSION_STOREFRONT}/account/addresses/${id}`;
   const method = "DELETE";
