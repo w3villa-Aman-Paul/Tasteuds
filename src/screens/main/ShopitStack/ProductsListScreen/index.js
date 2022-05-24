@@ -80,6 +80,8 @@ const ProductListScreen = ({
     return [vendorName, vendor];
   };
 
+  const dismissSnackbar = () => setSnackbarVisible(false);
+
   React.useEffect(() => {
     handleActiveMenu();
   }, [menus]);
@@ -232,10 +234,6 @@ const ProductListScreen = ({
   };
 
   //..........................................................................................
-
-  // const toggleFilter = () => {
-  //   setFilterSheet(!filterSheet)
-  // }
 
   React.useEffect(() => {
     dispatch(getMenus());

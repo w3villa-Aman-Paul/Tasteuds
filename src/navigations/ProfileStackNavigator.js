@@ -13,6 +13,7 @@ import { connect, useSelector } from "react-redux";
 import { Image, StyleSheet, TouchableOpacity } from "react-native";
 import { Icon } from "react-native-elements";
 import AddAddress from "../screens/main/ProfileStack/AddAddress";
+import ResetPasswordScreen from "../screens/auth/ResetPasswordScreen";
 
 const ProfileStack = createStackNavigator();
 
@@ -62,13 +63,41 @@ function ProfileStackNavigator({ navigation }) {
         },
       }}
     >
-      <ProfileStack.Screen name="Profile" component={ProfileScreen} />
-      <ProfileStack.Screen name="Account" component={AccountScreen} />
-      <ProfileStack.Screen name="SavedAddress" component={SavedAddress} />
-      <ProfileStack.Screen name="Favourites" component={FavouritesScreen} />
-      <ProfileStack.Screen name="updateAddress" component={updateAddress} />
-      <ProfileStack.Screen name="AddAdress" component={AddAddress} />
-      <ProfileStack.Screen name="Offers" component={OffersScreen} />
+      <ProfileStack.Screen
+        name="Account"
+        component={AccountScreen}
+        options={{ headerTitle: "ACCOUNT", headerTitleAlign: "center" }}
+      />
+      <ProfileStack.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{ headerTitle: "PROFIL", headerTitleAlign: "center" }}
+      />
+      <ProfileStack.Screen
+        name="SavedAddress"
+        component={SavedAddress}
+        options={{ headerTitle: "SAVED ADDRESS", headerTitleAlign: "center" }}
+      />
+      <ProfileStack.Screen
+        name="ResetPassword"
+        component={ResetPasswordScreen}
+        options={{ headerTitle: "RESET PASSWORD", headerTitleAlign: "center" }}
+      />
+      <ProfileStack.Screen
+        name="updateAddress"
+        component={updateAddress}
+        options={{ headerTitle: "UPDATE ADDRESS", headerTitleAlign: "center" }}
+      />
+      <ProfileStack.Screen
+        name="AddAdress"
+        component={AddAddress}
+        options={{ headerTitle: "ADD ADDRESS", headerTitleAlign: "center" }}
+      />
+      <ProfileStack.Screen
+        name="Offers"
+        component={OffersScreen}
+        options={{ headerTitle: "OFFERS", headerTitleAlign: "center" }}
+      />
     </ProfileStack.Navigator>
   );
 }

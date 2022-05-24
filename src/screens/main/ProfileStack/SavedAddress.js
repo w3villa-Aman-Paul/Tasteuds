@@ -5,26 +5,21 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { connect, useSelector } from "react-redux";
 import { Divider, RadioButton } from "react-native-paper";
 import { deleteAdd, getCountriesList, retrieveAddress } from "../../../redux";
 import ActivityIndicatorCard from "../../../library/components/ActivityIndicatorCard";
-import { CheckBox } from "react-native-elements";
+import { CheckBox, Icon } from "react-native-elements";
+import { colors } from "../../../res/palette";
 
 const SavedAddress = ({ dispatch, navigation, address, saving }) => {
   const [check, setCheck] = useState(false);
+  const [index, setIndex] = useState(null);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const { status } = useSelector((state) => state.checkout);
-
-  const deleteAddress = (id) => {
-    dispatch(deleteAdd(null, id, {}));
-  };
-
-  const setAddress = (id) => {
-    navigation.navigate("ShippingAddress", { Id: id });
-  };
 
   useEffect(() => {
     if (status === 204) {
@@ -37,7 +32,31 @@ const SavedAddress = ({ dispatch, navigation, address, saving }) => {
     dispatch(getCountriesList());
   }, []);
 
-  console.log(">>>>>", selectedAddress);
+  const setAddress = (id) => {
+    navigation.navigate("ShippingAddress", { Id: id });
+  };
+
+  const updateAdd = (id) => {
+    navigation.navigate("updateAddress", { updateId: id });
+  };
+
+  const deleteAddress = (id) => {
+    Alert.alert(
+      "Warning",
+      "Are you sure you want to delete ?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          onPress: () => dispatch(deleteAdd(null, id, {})),
+          style: "destructive",
+        },
+      ],
+      {
+        cancelable: true,
+      }
+    );
+  };
 
   if (saving) {
     return <ActivityIndicatorCard />;
@@ -46,20 +65,22 @@ const SavedAddress = ({ dispatch, navigation, address, saving }) => {
       <>
         <ScrollView>
           <View style={styles.body}>
-            {address?.map((add, index) => {
-              let itemId = add.id;
+            {address?.map((add, i) => {
               return (
                 <View key={add.id} style={styles.addContent}>
                   <View style={styles.addList}>
                     <View style={styles.content}>
                       <CheckBox
-                        checked={check === index ? true : false}
+                        size={28}
+                        checked={index === i ? check : false}
                         onPress={() => {
-                          setCheck(index);
+                          setIndex(i);
+                          setCheck(!check);
                           setSelectedAddress(add);
                         }}
                       />
                       <View style={styles.second}>
+                        <Text style={styles.addText}>{add.firstname}</Text>
                         <Text style={styles.addText}>{add.address1}</Text>
                         <Text style={styles.addSubText}>
                           {add.city}, {add.zipcode}
@@ -69,26 +90,38 @@ const SavedAddress = ({ dispatch, navigation, address, saving }) => {
                         </Text>
                       </View>
                     </View>
-                    <Divider style={styles.divider} />
+                    <Divider
+                      style={styles.divider}
+                      orietation="horizontal"
+                      width="100%"
+                      height="11"
+                    />
                     <View style={styles.btnGroup}>
                       <TouchableOpacity
-                        style={styles.btn}
-                        onPress={() => navigation.navigate("updateAdd")}
+                        style={styles.btn1}
+                        onPress={() => updateAdd(add.id)}
                       >
-                        <Text style={styles.btnText}>Update</Text>
+                        <Icon
+                          name="update"
+                          type="material-icons"
+                          color={colors.white}
+                          size={28}
+                        />
+                        <Text style={styles.text}>Update</Text>
                       </TouchableOpacity>
+
                       <TouchableOpacity
-                        style={styles.btn}
+                        style={styles.btn2}
                         onPress={() => deleteAddress(add.id)}
                       >
-                        <Text style={styles.btnText}>Delete</Text>
+                        <Icon
+                          name="delete"
+                          type="ant-design"
+                          color={colors.white}
+                          size={28}
+                        />
+                        <Text style={styles.text}>Delete</Text>
                       </TouchableOpacity>
-                      {/* <TouchableOpacity
-                        style={styles.btn}
-                        onPress={() => setAddress(add.id)}
-                      >
-                        <Text style={styles.btnText}>Set</Text>
-                      </TouchableOpacity> */}
                     </View>
                   </View>
                 </View>
@@ -107,7 +140,7 @@ const SavedAddress = ({ dispatch, navigation, address, saving }) => {
               }
             >
               <Text style={styles.text}>
-                {selectedAddress !== null ? "Apply" : "Add Address"}
+                {selectedAddress !== null && check ? "Select" : "Add Address"}
               </Text>
             </TouchableOpacity>
           </View>
@@ -131,15 +164,23 @@ const styles = StyleSheet.create({
   addContent: {
     flexDirection: "row",
     backgroundColor: "#ffffff",
-    elevation: 5,
+    elevation: 10,
+    borderWidth: 1,
+    borderColor: "transparent",
     margin: 10,
     paddingVertical: 15,
     paddingHorizontal: 10,
+    borderRadius: 10,
+  },
+  second: {
+    width: "80%",
+    marginRight: 5,
   },
   addText: {
     fontSize: 18,
     textAlign: "left",
     color: "#000000",
+    fontFamily: "lato-bold",
   },
   addSubText: {
     fontSize: 14,
@@ -149,16 +190,12 @@ const styles = StyleSheet.create({
   divider: {
     marginTop: 10,
     marginBottom: 10,
-    width: "100%",
+    color: "#fff",
   },
   btnGroup: {
     flexDirection: "row",
-    // justifyContent: "center",
-  },
-  btn: {
-    margin: 5,
-    borderRadius: 10,
-    backgroundColor: "#0080ff",
+    marginLeft: 15,
+    alignItems: "center",
   },
   btnText: {
     paddingVertical: 10,
@@ -194,7 +231,27 @@ const styles = StyleSheet.create({
   content: {
     flexDirection: "row",
   },
-  // second: {
-  //   width: 100,
-  // },
+  btn1: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 5,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    backgroundColor: colors.skyBlue,
+    marginRight: 10,
+  },
+  btn2: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 5,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    backgroundColor: colors.btnLink,
+  },
+  text: {
+    color: colors.white,
+    marginLeft: 5,
+  },
 });

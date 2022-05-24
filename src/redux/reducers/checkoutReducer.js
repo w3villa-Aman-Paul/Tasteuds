@@ -255,6 +255,37 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
       };
       return { ...state, ...changes };
 
+    case "UPDATE_ADDRESS_PENDING":
+      return { ...state, saving: true, error: null, isAuth: false, status: "" };
+
+    case "UPDATE_ADDRESS_REJECTED":
+      changes = {
+        saving: false,
+        error: response.data.error,
+        isAuth: false,
+        status: response.status,
+      };
+      return { ...state, ...changes };
+
+    case "UPDATE_ADDRESS_FULFILLED":
+      const existItem = state.address.filter(
+        (x) => x.id === action.payload.data.data.id
+      );
+      if (existItem) {
+        return {
+          ...state,
+          address: state.address.map((x) =>
+            x.id === action.payload.data.data.id
+              ? action.payload.data.data.attributes
+              : x
+          ),
+          saving: false,
+          error: null,
+          isAuth: true,
+        };
+      }
+      ohsi;
+
     case "DELETE_ADDRESS_PENDING":
       return {
         ...state,

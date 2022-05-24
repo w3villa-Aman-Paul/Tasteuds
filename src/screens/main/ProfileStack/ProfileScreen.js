@@ -38,11 +38,6 @@ const list = [
     name: "Orders",
   },
   {
-    title: "Favourites",
-    icon: <Heart size={24} style={{ color: colors.black }} />,
-    name: "Favourites",
-  },
-  {
     title: "Offers",
     icon: <Gift size={24} style={{ color: colors.black }} />,
     name: "Offers",

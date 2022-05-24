@@ -107,11 +107,13 @@ export const styles = StyleSheet.create({
   },
   title: {
     marginBottom: 10,
-    fontSize: 14,
+    fontSize: 18,
+    fontFamily: "lato-bold",
   },
   sub_body: {
     flexDirection: "row",
     justifyContent: "space-between",
+    flexWrap: "wrap",
   },
   subtitle: {
     paddingRight: 10,
