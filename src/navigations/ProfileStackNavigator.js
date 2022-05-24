@@ -64,14 +64,14 @@ function ProfileStackNavigator({ navigation }) {
       }}
     >
       <ProfileStack.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{ headerTitle: "PROFIL", headerTitleAlign: "center" }}
-      />
-      <ProfileStack.Screen
         name="Account"
         component={AccountScreen}
         options={{ headerTitle: "ACCOUNT", headerTitleAlign: "center" }}
+      />
+      <ProfileStack.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{ headerTitle: "PROFIL", headerTitleAlign: "center" }}
       />
       <ProfileStack.Screen
         name="SavedAddress"

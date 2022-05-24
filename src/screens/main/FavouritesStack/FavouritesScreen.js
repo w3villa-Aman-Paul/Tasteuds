@@ -22,10 +22,19 @@ const FavouritesScreen = ({ favorites, vendors, dispatch, navigation }) => {
   };
 
   const deleteFav = (id) => {
-    Alert.alert("Warning", "Are you sure you want to delete ?", [
-      { text: "Yes", onPress: () => dispatch(deleteFavourite(id)) },
-      { text: "Cancel" },
-    ]);
+    Alert.alert(
+      "Warning",
+      "Are you sure you want to delete ?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          onPress: () => dispatch(deleteFavourite(id)),
+          style: "destructive",
+        },
+      ],
+      { cancelable: true }
+    );
   };
 
   return (

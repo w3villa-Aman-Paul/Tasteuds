@@ -1,139 +1,217 @@
-import { Button, SafeAreaView, StyleSheet, Text, View, Image, ScrollView, TouchableOpacity } from "react-native";
-import * as React from "react";
-import { connect, useSelector } from 'react-redux';
-import { styles } from "./styles";
-import { LinearGradient } from "expo-linear-gradient";
-import { Divider } from "react-native-elements";
-import { TextInput } from "react-native-paper";
-import { retrieveAddress } from "../../../redux";
+import {
+  StyleSheet,
+  Text,
+  Button,
+  View,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
+import { useState, useEffect } from "react";
+import { connect, useSelector } from "react-redux";
+import { colors } from "../../../res/palette";
+import { accountRetrieve, retrieveAddress } from "../../../redux";
 
-const AccountScreen = ({ dispatch, navigation }) => {
-  const Address = useSelector(state => state.checkout.address);
-  const { account } = useSelector((state) => state.account);
-  const add = { ...Address };
-  const { email } = account;
-  React.useEffect(() => {
+const AccountScreen = ({ dispatch, navigation, address, account, acc }) => {
+  const { isAuth } = useSelector((state) => state.auth);
+
+  let user = address.filter((add) => add.id === account?.id);
+
+  useEffect(() => {
+    dispatch(accountRetrieve());
     dispatch(retrieveAddress());
-  }, [])
+  }, []);
 
   return (
-    <ScrollView>
-      <View style={styles.mainContainer}>
-        <View style={styles.profile_container}>
-          <LinearGradient
-            // Background Linear Gradient
-            start={[1, 0]}
-            end={[1, 1]}
-            colors={["#0080ff", "#000000"]}
-            style={styles.centeredContent}
-          >
-            <View style={styles.centeredContent}>
-              <Image
-                source={{
-                  uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeNWA656CRe97bqFdSiLSLH-gp6tfGFKMURg&usqp=CAU",
-                }}
-                style={styles.avatar}
-              />
-              <View style={styles.profileDetails}>
-                <Text style={styles.profileName}>{add[0].firstname}</Text>
-                <Text style={styles.profileContact}>{add[0].phone}</Text>
-                <Text style={styles.profileContact}>{email}</Text>
+    <ScrollView style={styles.scrollContainer}>
+      {isAuth ? (
+        <>
+          <View style={styles.container}>
+            <View style={styles.header}>
+              <Text style={styles.text}>MIN SIDE</Text>
+              <View style={styles.ImageContainer}>
+                <Image
+                  style={styles.image}
+                  source={require("../../../../assets/images/Header-Icon/red_circle.png")}
+                />
               </View>
             </View>
-          </LinearGradient>
-        </View>
 
-        <View style={styles.content}>
-          <View style={styles.inputBox}>
-            <Text style={styles.formText}>First Name</Text>
-            <TextInput
-              style={styles.formInput}
-             value={add[0].firstname}
-            />
-          </View>
-          <View style={styles.inputBox}>
-            <Text style={styles.formText}>Last Name</Text>
-            <TextInput
-              style={styles.formInput}
-              value={add[0].firstname}
-            />
-          </View>
-          <View style={styles.inputBox}>
-            <Text style={styles.formText}>Email</Text>
-            <TextInput
-              style={styles.formInput}
-              value={email}
-            />
-          </View>
-          <View style={styles.inputBox}>
-            <Text style={styles.formText}>Contact Number</Text>
-            <TextInput
-              style={styles.formInput}
-              value={add[0].phone}
-            />
-          </View>
-          <View style={styles.inputBox}>
-            <Text style={styles.formText}>Address</Text>
-            <TextInput
-              style={styles.formInput}
-              multiline
-             value={add[0].address1}
-            />
-          </View>
+            <View style={styles.body}>
+              <View style={styles.first}>
+                <Text style={styles.textbtn}>KONTOINFORMASJON</Text>
+                <TouchableOpacity>
+                  <Text style={styles.textbtn}>ENDRE</Text>
+                </TouchableOpacity>
+              </View>
 
-          <View style={styles.formBtn}>
+              <View style={styles.second}>
+                <Text style={styles.text}>E-POST</Text>
+                <Text>{acc.email}</Text>
+              </View>
+
+              <View style={styles.second}>
+                <Text style={styles.text}>TELEFONNUMMER</Text>
+                <Text>{user[0]?.phone}</Text>
+              </View>
+
+              <View style={styles.second}>
+                <Text style={styles.text}>ADRESSE</Text>
+                <Text>{user[0]?.address1}</Text>
+                <Text>
+                  {user[0]?.zipcode} {user[0]?.country_name}
+                </Text>
+              </View>
+            </View>
+
+            <View style={styles.body}>
+              <View style={styles.first}>
+                <Text style={styles.textbtn}>MINE BESTILLINGER</Text>
+              </View>
+              <View style={styles.first}>
+                <Text>24/04/2022</Text>
+                <Text>KR 2 155,00</Text>
+                <TouchableOpacity>
+                  <Text style={styles.textbtn}>SE DETALJER</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.first}>
+                <Text>28/04/2022 </Text>
+                <Text>KR 455,00</Text>
+                <TouchableOpacity>
+                  <Text style={styles.textbtn}>SE DETALJER</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </>
+      ) : (
+        <View style={styles.loginContainer}>
+          <View style={styles.btnbody}>
+            <Image
+              source={require("../../../../assets/images/logo-mark.png")}
+              style={styles.image}
+            />
             <TouchableOpacity
-              style={styles.primary}
+              style={{ ...styles.button, marginBottom: 10 }}
+              onPress={() => {
+                navigation.navigate("SignIn");
+              }}
             >
-              <Text style={styles.textBtn}>Edit</Text>
+              <Text style={styles.text}>SignIn</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={styles.primary}
+              style={styles.button}
+              onPress={() => {
+                navigation.navigate("SignUp");
+              }}
             >
-              <Text style={styles.textBtn}>Submit</Text>
+              <Text style={styles.text}>SignUp</Text>
             </TouchableOpacity>
           </View>
-
         </View>
-        {/* <View style={styles.content}>
-          <Text style={styles.orderText}>My Orders</Text>
-          <Divider />
-          <TouchableOpacity 
-          onPress={() => navigation.navigate('Orders')}
-          >
-            <Text style={styles.linkText}>VIEW ALL ORDERS</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.content}>
-          <Text style={styles.orderText}>My Orders</Text>
-          <Divider />
-          <TouchableOpacity 
-          onPress={() => navigation.navigate('Orders')}
-          >
-            <Text style={styles.linkText}>VIEW ALL ORDERS</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.content}>
-          <Text style={styles.orderText}>My Orders</Text>
-          <Divider />
-          <TouchableOpacity 
-          onPress={() => navigation.navigate('Orders')}
-          >
-            <Text style={styles.linkText}>VIEW ALL ORDERS</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.content}>
-          <Text style={styles.orderText}>My Orders</Text>
-          <Divider />
-          <TouchableOpacity 
-          onPress={() => navigation.navigate('Orders')}
-          >
-            <Text style={styles.linkText}>VIEW ALL ORDERS</Text>
-          </TouchableOpacity>
-        </View> */}
-      </View>
+      )}
     </ScrollView>
   );
 };
 
-export default connect()(AccountScreen);
+const mapStateToProps = (state) => ({
+  address: state.checkout.address,
+  account: state.account.account.default_shipping_address,
+  acc: state.account.account,
+});
+
+export default connect(mapStateToProps)(AccountScreen);
+
+const styles = StyleSheet.create({
+  scrollContainer: {
+    backgroundColor: colors.white,
+  },
+  container: {
+    flex: 1,
+    width: "100%",
+    alignSelf: "center",
+  },
+  header: {
+    flexDirection: "column",
+    marginTop: 30,
+    marginBottom: 30,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  text: {
+    fontSize: 14,
+    fontFamily: "lato-bold",
+  },
+  textbtn: {
+    color: colors.btnLink,
+    fontSize: 14,
+  },
+  ImageContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 100,
+    borderColor: colors.black,
+    borderWidth: 1,
+    width: 80,
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  image: {
+    width: 80,
+    height: 80,
+    resizeMode: "contain",
+  },
+  body: {
+    borderRadius: 10,
+    borderWidth: 1,
+    marginLeft: 10,
+    marginRight: 10,
+    borderColor: "transparent",
+    padding: 10,
+    elevation: 5,
+    backgroundColor: colors.white,
+    marginBottom: 30,
+  },
+  first: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginRight: 5,
+    marginBottom: 15,
+  },
+  second: {
+    marginBottom: 15,
+  },
+  loginContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: colors.white,
+  },
+  btnbody: {
+    width: "70%",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  button: {
+    width: "70%",
+    height: 50,
+    paddingVertical: 15,
+    paddingHorizontal: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 10,
+    backgroundColor: colors.btnLink,
+    borderWidth: 1,
+    borderColor: "transparent",
+  },
+  text: {
+    color: colors.white,
+    fontSize: 14,
+    fontFamily: "lato-bold",
+  },
+  image: {
+    width: "80%",
+    resizeMode: "contain",
+  },
+});

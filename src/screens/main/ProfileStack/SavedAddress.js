@@ -41,10 +41,21 @@ const SavedAddress = ({ dispatch, navigation, address, saving }) => {
   };
 
   const deleteAddress = (id) => {
-    Alert.alert("Warning", "Are you sure you want to delete ?", [
-      { text: "Cancel" },
-      { text: "Delete", onPress: () => dispatch(deleteAdd(null, id, {})) },
-    ]);
+    Alert.alert(
+      "Warning",
+      "Are you sure you want to delete ?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          onPress: () => dispatch(deleteAdd(null, id, {})),
+          style: "destructive",
+        },
+      ],
+      {
+        cancelable: true,
+      }
+    );
   };
 
   if (saving) {
@@ -69,6 +80,7 @@ const SavedAddress = ({ dispatch, navigation, address, saving }) => {
                         }}
                       />
                       <View style={styles.second}>
+                        <Text style={styles.addText}>{add.firstname}</Text>
                         <Text style={styles.addText}>{add.address1}</Text>
                         <Text style={styles.addSubText}>
                           {add.city}, {add.zipcode}
@@ -78,7 +90,12 @@ const SavedAddress = ({ dispatch, navigation, address, saving }) => {
                         </Text>
                       </View>
                     </View>
-                    <Divider style={styles.divider} />
+                    <Divider
+                      style={styles.divider}
+                      orietation="horizontal"
+                      width="100%"
+                      height="11"
+                    />
                     <View style={styles.btnGroup}>
                       <TouchableOpacity
                         style={styles.btn1}
@@ -123,7 +140,7 @@ const SavedAddress = ({ dispatch, navigation, address, saving }) => {
               }
             >
               <Text style={styles.text}>
-                {selectedAddress !== null ? "Select" : "Add Address"}
+                {selectedAddress !== null && check ? "Select" : "Add Address"}
               </Text>
             </TouchableOpacity>
           </View>
@@ -173,7 +190,7 @@ const styles = StyleSheet.create({
   divider: {
     marginTop: 10,
     marginBottom: 10,
-    width: "100%",
+    color: "#fff",
   },
   btnGroup: {
     flexDirection: "row",

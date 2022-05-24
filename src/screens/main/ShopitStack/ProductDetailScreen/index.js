@@ -137,8 +137,9 @@ const ProductDetailScreen = ({
                   titleStyle={{ ...styles.titleStyle, fontSize: 18 }}
                   buttonStyle={{
                     ...globalStyles.btn,
-                    width: "95%",
-                    height: 60,
+                    // width: "95%",
+                    height: 50,
+                    flex: 0.8,
                   }}
                   onPress={() => {
                     setSelectedVariant(product);
@@ -147,13 +148,15 @@ const ProductDetailScreen = ({
                 />
                 <View
                   style={{
-                    height: 60,
+                    height: 50,
                     width: 60,
                     borderWidth: 2,
                     borderColor: colors.btnLink,
                     borderRadius: 10,
                     justifyContent: "center",
                     alignItems: "center",
+                    flex: 0.2,
+                    marginLeft: 10,
                   }}
                 >
                   <Icon
