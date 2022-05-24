@@ -7,7 +7,7 @@ import ProductDetailScreen from "../screens/main/ShopitStack/ProductDetailScreen
 import ShippingAddressScreen from "../screens/main/ShopitStack/CheckoutScreens/ShippingAddressScreen";
 import PaymentScreen from "../screens/main/ShopitStack/CheckoutScreens/PaymentScreen";
 import BagScreen from "../screens/main/ShopitStack/CheckoutScreens/BagScreen";
-import FiltersTabNavigator from "./FiltersTabNavigator";
+
 import { ShoppingBag, Heart, Share, ChevronLeft } from "../library/icons";
 import { colors } from "../res/palette";
 import { globalStyles } from "../styles/global";
@@ -294,14 +294,7 @@ function ShopitStackNavigator({ navigation, route }) {
           },
         }}
       />
-      <ShopitStack.Screen
-        name="FiltersTabNavigator"
-        component={FiltersTabNavigator}
-        options={{
-          headerTitle: "Filters",
-          headerRight: () => <Text style={styles.resetButton}>Reset All</Text>,
-        }}
-      />
+
       <ShopitStack.Screen
         name="ShippingAddress"
         component={ShippingAddressScreen}

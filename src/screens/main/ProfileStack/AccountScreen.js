@@ -10,7 +10,7 @@ import {
 import { useState, useEffect } from "react";
 import { connect, useSelector } from "react-redux";
 import { colors } from "../../../res/palette";
-import { accountRetrieve, retrieveAddress } from "../../../redux";
+import { accountRetrieve, retrieveAddress, userLogout } from "../../../redux";
 
 const AccountScreen = ({ dispatch, navigation, address, account, acc }) => {
   const { isAuth } = useSelector((state) => state.auth);
@@ -83,6 +83,17 @@ const AccountScreen = ({ dispatch, navigation, address, account, acc }) => {
                 </TouchableOpacity>
               </View>
             </View>
+
+            <View style={{ flex: 1, alignItems: "center" }}>
+              <TouchableOpacity
+                style={{ ...styles.button, marginBottom: 10 }}
+                onPress={() => {
+                  dispatch(userLogout());
+                }}
+              >
+                <Text style={styles.text2}>Log Out</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </>
       ) : (
@@ -90,7 +101,7 @@ const AccountScreen = ({ dispatch, navigation, address, account, acc }) => {
           <View style={styles.btnbody}>
             <Image
               source={require("../../../../assets/images/logo-mark.png")}
-              style={styles.image}
+              style={styles.image2}
             />
             <TouchableOpacity
               style={{ ...styles.button, marginBottom: 10 }}
@@ -98,7 +109,7 @@ const AccountScreen = ({ dispatch, navigation, address, account, acc }) => {
                 navigation.navigate("SignIn");
               }}
             >
-              <Text style={styles.text}>SignIn</Text>
+              <Text style={styles.text2}>SignIn</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.button}
@@ -106,7 +117,7 @@ const AccountScreen = ({ dispatch, navigation, address, account, acc }) => {
                 navigation.navigate("SignUp");
               }}
             >
-              <Text style={styles.text}>SignUp</Text>
+              <Text style={styles.text2}>SignUp</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -205,12 +216,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "transparent",
   },
-  text: {
+  text2: {
     color: colors.white,
     fontSize: 14,
     fontFamily: "lato-bold",
   },
-  image: {
+  image2: {
     width: "80%",
     resizeMode: "contain",
   },

@@ -30,7 +30,6 @@ const ProducersListScreen = ({ dispatch, navigation }) => {
       >
         <ImageBackground
           source={{
-            // uri: "https://tastebuds-aws.s3.eu-north-1.amazonaws.com/eozy6zww9hpbn0vp304dtsw73w7s?response-content-disposition=inline%3B%20filename%3D%2232690001_1665576066895645_5949294621455548416_n.jpg%22%3B%20filename%2A%3DUTF-8%27%2732690001_1665576066895645_5949294621455548416_n.jpg&response-content-type=image%2Fjpeg&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAW5XFXMM6XIKDCN4K%2F20220517%2Feu-north-1%2Fs3%2Faws4_request&X-Amz-Date=20220517T100653Z&X-Amz-Expires=300&X-Amz-SignedHeaders=host&X-Amz-Signature=7bdacc3bacfd264f2b9713237b8f4e380a8e5ac5e1403888677427372d89b77f",
             uri: `${HOST}/${item?.image?.styles[5]?.url}`,
           }}
           style={styles.producerCoverImage}

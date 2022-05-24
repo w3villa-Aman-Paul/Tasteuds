@@ -87,8 +87,7 @@ const ProducerDetailScreen = ({ dispatch, navigation }) => {
             <Text style={[styles.prices, { color: colors.black }]}>
               {item.display_price}
             </Text>
-            {/* <Text style={[styles.prices, styles.price]}>${item.price}</Text> */}
-            {/* <Text style={[styles.prices, styles.discountPercent]}>(30% OFF)</Text> */}
+           
           </View>
         </View>
       </TouchableOpacity>
