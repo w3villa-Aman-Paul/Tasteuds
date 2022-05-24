@@ -53,8 +53,11 @@ const ProductListScreen = ({
   const [snackbarVisible, setSnackbarVisible] = React.useState(false);
   const [isSortOverlayVisible, setIsSortOverlayVisible] = React.useState(false);
   const [all, setAll] = React.useState(true);
+  const [isSubAll, setIsSubAll] = React.useState(true);
   const [subLink, setSubLink] = React.useState("");
+  const [isSubLink, setIsSubLink] = React.useState(false);
   const [activeMenus, setActiveMenus] = React.useState([]);
+  const [activeSubMenu, setActiveSubMenu] = React.useState(false);
   const [isAll, setIsAll] = React.useState(true);
 
   const checkout = useSelector((state) => state.checkout);
@@ -81,6 +84,10 @@ const ProductListScreen = ({
     handleActiveMenu();
   }, [menus]);
 
+  React.useEffect(() => {
+    handleActiveSubMenu();
+  }, [submenus]);
+
   const handleActiveMenu = () => {
     const unactive = menus?.menu_items
       ?.filter(
@@ -98,12 +105,29 @@ const ProductListScreen = ({
     setActiveMenus(unactive);
   };
 
+  const handleActiveSubMenu = () => {
+    const unactive = submenus?.children?.map((item) => {
+      return { ...item, isActive: false };
+    });
+
+    setActiveSubMenu(unactive);
+  };
+
+  console.log("active>>>", activeSubMenu);
   const handleClick = (activeMenus, menu) => {
     const newArr = [...activeMenus];
     const index = newArr.findIndex((item) => item.id === menu.id);
     newArr[index].isActive = true;
 
     setActiveMenus(newArr);
+  };
+
+  const handleSubClick = (activeMenus, menu) => {
+    const newArr = [...activeMenus];
+    const index = newArr.findIndex((item) => item.id === menu.id);
+    newArr[index].isActive = true;
+
+    setActiveSubMenu(newArr);
   };
 
   const handleAllClick = (array) => {
@@ -117,6 +141,11 @@ const ProductListScreen = ({
     });
 
     return newArray;
+  };
+
+  const handleSubAllClick = (array) => {
+    setActiveSubMenu(handleUncheckAllMenus(array));
+    setIsSubAll(true);
   };
 
   const width = Dimensions.get("window").width - 10;
@@ -310,6 +339,8 @@ const ProductListScreen = ({
     );
   };
 
+  console.log("subMenus", submenus);
+
   const flatListUpperElement = () => {
     return (
       <>
@@ -360,6 +391,7 @@ const ProductListScreen = ({
               onPress={() => {
                 setAll(true);
                 handleAllClick(activeMenus);
+                setIsSubLink(false);
               }}
             >
               <Text
@@ -386,7 +418,8 @@ const ProductListScreen = ({
                   setIsAll(false);
                   setSubLink(menu.link.slice(2).toLowerCase());
                   handleClick(handleUncheckAllMenus(arr), menu);
-                  dispatch(getSubMenuProducts(subLink));
+                  await dispatch(getSubMenuProducts(subLink));
+                  setIsSubLink(true);
                 }}
               >
                 <Text
@@ -405,8 +438,7 @@ const ProductListScreen = ({
               </TouchableOpacity>
             ))}
           </ScrollView>
-
-          {all ? (
+          {isSubLink === false ? (
             <></>
           ) : (
             <ScrollView
@@ -415,35 +447,34 @@ const ProductListScreen = ({
               showsHorizontalScrollIndicator={false}
             >
               <TouchableOpacity
+                key={"alle"}
                 onPress={() => {
-                  dispatch(getSubMenuProducts(subLink));
+                  setIsSubAll(true);
+                  handleSubAllClick(activeSubMenu);
                 }}
-              ></TouchableOpacity>
-              {submenus.children
+              >
+                <Text style={isSubAll ? styles.subActive : styles.subUnactive}>
+                  Alle
+                </Text>
+              </TouchableOpacity>
+              {activeSubMenu
                 // ?.sort((a, b) => a.name.localeCompare(b.name))
-                ?.map((submenu, index) => (
+                ?.map((submenu, index, arr) => (
                   <TouchableOpacity
                     key={index.toString()}
                     onPress={() => {
+                      setIsSubAll(false);
+
                       dispatch(
                         getSubMenuProducts(submenu.permalink.toLowerCase())
                       );
+                      handleSubClick(handleUncheckAllMenus(arr), submenu);
                     }}
                   >
                     <Text
-                      style={{
-                        marginRight: 10,
-                        paddingTop: 2,
-                        paddingBottom: 2,
-                        paddingRight: 4,
-                        paddingLeft: 4,
-                        fontSize: 15,
-                        fontWeight: "700",
-                        color: colors.white,
-                        borderWidth: 1,
-                        borderRadius: 10,
-                        backgroundColor: colors.primary,
-                      }}
+                      style={
+                        submenu.isActive ? styles.subActive : styles.subUnactive
+                      }
                     >
                       {submenu?.name}
                     </Text>
