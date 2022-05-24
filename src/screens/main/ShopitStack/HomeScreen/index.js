@@ -20,6 +20,7 @@ import {
   getTaxon,
   getVendorsList,
   resetProductsList,
+  retrieveAddress,
 } from "../../../../redux";
 import { connect, useSelector } from "react-redux";
 import { HOST } from "../../../../res/env";
@@ -101,6 +102,8 @@ const HomeComponent = ({
 
   React.useEffect(() => {
     dispatch(createCart());
+    dispatch(accountRetrieve());
+    dispatch(retrieveAddress());
   }, []);
 
   const handleProductsLoad = (pageIndexAfterDispatch = null) => {

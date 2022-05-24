@@ -90,7 +90,7 @@ const AccountScreen = ({ dispatch, navigation, address, account, acc }) => {
           <View style={styles.btnbody}>
             <Image
               source={require("../../../../assets/images/logo-mark.png")}
-              style={styles.image}
+              style={styles.image2}
             />
             <TouchableOpacity
               style={{ ...styles.button, marginBottom: 10 }}
@@ -98,7 +98,7 @@ const AccountScreen = ({ dispatch, navigation, address, account, acc }) => {
                 navigation.navigate("SignIn");
               }}
             >
-              <Text style={styles.text}>SignIn</Text>
+              <Text style={styles.text2}>SignIn</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.button}
@@ -140,6 +140,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   text: {
+    color: colors.black,
     fontSize: 14,
     fontFamily: "lato-bold",
   },
@@ -205,12 +206,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "transparent",
   },
-  text: {
+  text2: {
     color: colors.white,
     fontSize: 14,
     fontFamily: "lato-bold",
   },
-  image: {
+  image2: {
     width: "80%",
     resizeMode: "contain",
   },
