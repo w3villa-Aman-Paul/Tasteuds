@@ -10,7 +10,7 @@ import {
 import { useState, useEffect } from "react";
 import { connect, useSelector } from "react-redux";
 import { colors } from "../../../res/palette";
-import { accountRetrieve, retrieveAddress } from "../../../redux";
+import { accountRetrieve, retrieveAddress, userLogout } from "../../../redux";
 
 const AccountScreen = ({ dispatch, navigation, address, account, acc }) => {
   const { isAuth } = useSelector((state) => state.auth);
@@ -83,6 +83,17 @@ const AccountScreen = ({ dispatch, navigation, address, account, acc }) => {
                 </TouchableOpacity>
               </View>
             </View>
+
+            <View style={{ flex: 1, alignItems: "center" }}>
+              <TouchableOpacity
+                style={{ ...styles.button, marginBottom: 10 }}
+                onPress={() => {
+                  dispatch(userLogout());
+                }}
+              >
+                <Text style={styles.text2}>Log Out</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </>
       ) : (
@@ -106,7 +117,7 @@ const AccountScreen = ({ dispatch, navigation, address, account, acc }) => {
                 navigation.navigate("SignUp");
               }}
             >
-              <Text style={styles.text}>SignUp</Text>
+              <Text style={styles.text2}>SignUp</Text>
             </TouchableOpacity>
           </View>
         </View>

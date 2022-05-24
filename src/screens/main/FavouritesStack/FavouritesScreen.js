@@ -13,7 +13,6 @@ import { Icon } from "react-native-elements";
 import { colors } from "../../../res/palette";
 import { HOST } from "../../../res/env/";
 import { deleteFavourite } from "../../../redux";
-import { NavigationContainer } from "@react-navigation/native";
 
 const FavouritesScreen = ({ favorites, vendors, dispatch, navigation }) => {
   const producer = (Id) => {
