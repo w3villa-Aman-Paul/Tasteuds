@@ -20,7 +20,7 @@ const AccountScreen = ({ dispatch, navigation, address, account, acc }) => {
   useEffect(() => {
     dispatch(accountRetrieve());
     dispatch(retrieveAddress());
-  }, []);
+  }, [isAuth]);
 
   return (
     <ScrollView style={styles.scrollContainer}>

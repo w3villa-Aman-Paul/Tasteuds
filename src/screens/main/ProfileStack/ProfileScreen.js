@@ -60,7 +60,7 @@ const ProfileScreen = ({ dispatch, navigation }) => {
 
   React.useEffect(() => {
     dispatch(retrieveAddress());
-  }, []);
+  }, [isAuth]);
 
   return (
     <ScrollView>

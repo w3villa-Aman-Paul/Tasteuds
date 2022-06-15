@@ -6,7 +6,7 @@ import { ChevronLeft, Eye } from "../../library/icons";
 import { colors } from "../../res/palette";
 import { Button, Input } from "react-native-elements";
 import { styles } from "./styles";
-import { userLogin } from "../../redux";
+import { retrieveAddress, userLogin } from "../../redux";
 import TextField from "../../library/components/TextField";
 import { Snackbar } from "react-native-paper";
 import { Formik } from "formik";

@@ -39,6 +39,18 @@ const HomeComponent = ({
   const { saving } = useSelector((state) => state.products);
   const vendorList = useSelector((state) => state.taxons.vendors);
 
+  React.useEffect(() => {
+    dispatch(getVendorsList());
+  }, []);
+
+  React.useEffect(() => {
+    handleProductsLoad();
+  }, [isAuth, route.params]);
+
+  React.useEffect(() => {
+    dispatch(createCart());
+  }, []);
+
   const resultVendor = (id) => {
     const vendor = vendorList?.filter((vendor) => {
       if (vendor?.id == id) return vendor;
@@ -99,10 +111,6 @@ const HomeComponent = ({
     );
   };
 
-  React.useEffect(() => {
-    dispatch(createCart());
-  }, []);
-
   const handleProductsLoad = (pageIndexAfterDispatch = null) => {
     dispatch(
       getProductsList(null, {
@@ -136,13 +144,6 @@ const HomeComponent = ({
       </TouchableOpacity>
     );
   };
-  React.useEffect(() => {
-    dispatch(getVendorsList());
-  }, []);
-
-  React.useEffect(() => {
-    handleProductsLoad();
-  }, [isAuth, route.params]);
 
   const flatListHeaderComponent = () => {
     return (

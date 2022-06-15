@@ -63,9 +63,20 @@ const CategoriesScreen = ({ navigation, dispatch, taxonomy, saving }) => {
                   menu.name !== "Lokalprodukter"
               )
               // ?.sort((a, b) => a.name.localeCompare(b.name))
-              ?.map((item) => {
+              ?.map((item, index, array) => {
                 return (
-                  <TouchableOpacity style={styles.lowerOptions} key={item.id}>
+                  <TouchableOpacity
+                    style={[
+                      styles.lowerOptions,
+                      index === array.length - 1
+                        ? { borderBottomColor: "transparent" }
+                        : {},
+                    ]}
+                    key={item.id}
+                    onPress={() =>
+                      navigation.navigate("ProductsList", { menu: item })
+                    }
+                  >
                     <View
                       style={[
                         styles.container,

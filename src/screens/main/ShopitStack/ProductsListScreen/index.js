@@ -8,6 +8,7 @@ import {
   ScrollView,
   ActivityIndicator,
   Dimensions,
+  LogBox,
 } from "react-native";
 
 import { globalStyles } from "../../../../styles/global";
@@ -17,6 +18,7 @@ import { connect } from "react-redux";
 import { Icon } from "react-native-elements";
 import ActivityIndicatorCard from "../../../../library/components/ActivityIndicatorCard";
 import {
+  savingTaxon,
   getProductsList,
   getProduct,
   resetProductsList,
@@ -70,6 +72,39 @@ const ProductListScreen = ({
   const menus = useSelector((state) => state.taxons.menus);
   const submenus = useSelector((state) => state.taxons.submenus);
 
+  React.useEffect(() => {
+    handleActiveMenu();
+  }, [menus]);
+
+  React.useEffect(() => {
+    handleActiveSubMenu();
+  }, [submenus, menus]);
+
+  React.useEffect(() => {
+    if (params) handleAfterMenuSelect(params);
+  }, [menus, params, route]);
+
+  LogBox.ignoreLogs([
+    "Non-serializable values were found in the navigation state",
+  ]);
+
+  const params = route?.params;
+  console.log(">>Params", params);
+
+  const handleAfterMenuSelect = async (params) => {
+    console.log("Active>>", activeMenus);
+    await dispatch(getSubMenu(params.menu.link.slice(2).toLowerCase()));
+    setAll(false);
+    setIsAll(false);
+    setSubLink(params.menu.link.slice(2).toLowerCase());
+
+    console.log("SubLink", subLink);
+    handleClick(handleUncheckAllMenus(activeMenus), params.menu);
+    await dispatch(getSubMenuProducts(subLink));
+    setIsSubLink(true);
+    setIsSubAll(true);
+  };
+
   const resultVendor = (id) => {
     const vendor = vendorList?.filter((vendor) => {
       if (vendor?.id == id) return vendor;
@@ -81,14 +116,6 @@ const ProductListScreen = ({
   };
 
   const dismissSnackbar = () => setSnackbarVisible(false);
-
-  React.useEffect(() => {
-    handleActiveMenu();
-  }, [menus]);
-
-  React.useEffect(() => {
-    handleActiveSubMenu();
-  }, [submenus]);
 
   const handleActiveMenu = () => {
     const unactive = menus?.menu_items
@@ -713,7 +740,7 @@ const ProductListScreen = ({
     );
   };
 
-  if (saving) {
+  if (saving || savingTaxon) {
     return <ActivityIndicatorCard />;
   } else
     return (
@@ -838,6 +865,7 @@ const ProductListScreen = ({
 
 const mapStateToProps = (state) => ({
   saving: state.products.saving,
+  savingTaxon: state.taxons.saving,
   productsList: state.products.productsList,
   minimumPriceRange: state.products.params.priceRange.minimum,
   maximumPriceRange: state.products.params.priceRange.maximum,
