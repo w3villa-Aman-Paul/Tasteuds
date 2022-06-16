@@ -7,7 +7,6 @@ import ProductDetailScreen from "../screens/main/ShopitStack/ProductDetailScreen
 import ShippingAddressScreen from "../screens/main/ShopitStack/CheckoutScreens/ShippingAddressScreen";
 import PaymentScreen from "../screens/main/ShopitStack/CheckoutScreens/PaymentScreen";
 import BagScreen from "../screens/main/ShopitStack/CheckoutScreens/BagScreen";
-
 import { ShoppingBag, Heart, Share, ChevronLeft } from "../library/icons";
 import { colors } from "../res/palette";
 import { globalStyles } from "../styles/global";
@@ -42,7 +41,8 @@ function ShopitStackNavigator({ navigation, route }) {
       routeName === "ShippingAddress" ||
       routeName === "SavedAddress" ||
       routeName === "AddAdress" ||
-      routeName === "ProducersDetailScreen"
+      routeName === "ProducersDetailScreen" ||
+      routeName === "Favorites"
     ) {
       navigation.setOptions({ tabBarVisible: false });
     } else {

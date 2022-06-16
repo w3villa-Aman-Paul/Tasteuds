@@ -40,6 +40,10 @@ const HomeComponent = ({
   const { saving } = useSelector((state) => state.products);
   const vendorList = useSelector((state) => state.taxons.vendors);
 
+  React.useEffect(() => {
+    dispatch(createCart());
+  }, []);
+
   const resultVendor = (id) => {
     const vendor = vendorList?.filter((vendor) => {
       if (vendor?.id == id) return vendor;
@@ -99,12 +103,6 @@ const HomeComponent = ({
       </TouchableOpacity>
     );
   };
-
-  React.useEffect(() => {
-    dispatch(createCart());
-    dispatch(accountRetrieve());
-    dispatch(retrieveAddress());
-  }, []);
 
   const handleProductsLoad = (pageIndexAfterDispatch = null) => {
     dispatch(

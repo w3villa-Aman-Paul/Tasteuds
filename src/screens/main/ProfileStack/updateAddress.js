@@ -15,7 +15,6 @@ import { Picker } from "@react-native-community/picker";
 import { connect } from "react-redux";
 import { checkoutStyles } from "../ShopitStack/CheckoutScreens/styles";
 import ActionButtonFooter from "../../../library/components/ActionButtonFooter";
-import { NavigationContainer } from "@react-navigation/native";
 
 const updateAddress = ({
   dispatch,
