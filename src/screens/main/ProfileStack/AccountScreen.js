@@ -151,6 +151,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   text: {
+    color: colors.black,
     fontSize: 14,
     fontFamily: "lato-bold",
   },

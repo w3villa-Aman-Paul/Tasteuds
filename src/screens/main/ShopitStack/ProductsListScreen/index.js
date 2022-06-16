@@ -364,8 +364,6 @@ const ProductListScreen = ({
     );
   };
 
-  console.log("subMenus", submenus);
-
   const flatListUpperElement = () => {
     return (
       <>

@@ -20,6 +20,7 @@ import {
   getTaxon,
   getVendorsList,
   resetProductsList,
+  retrieveAddress,
 } from "../../../../redux";
 import { connect, useSelector } from "react-redux";
 import { HOST } from "../../../../res/env";

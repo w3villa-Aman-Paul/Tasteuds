@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState, useRef } from "react";
 import {
   View,
   ScrollView,
@@ -12,12 +12,31 @@ import { connect, useSelector } from "react-redux";
 import { Icon } from "react-native-elements";
 import { colors } from "../../../res/palette";
 import { HOST } from "../../../res/env/";
-import { deleteFavourite } from "../../../redux";
+import { deleteFavourite, setQuantity } from "../../../redux";
+import FilterFooter from "../../../library/components/ActionButtonFooter/FilterFooter";
 
-const FavouritesScreen = ({ favorites, vendors, dispatch, navigation }) => {
+const FavouritesScreen = ({
+  favorites,
+  vendors,
+  dispatch,
+  navigation,
+  cart,
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [nextOpen, setNextOpen] = useState(false);
+  const [itemId, setItemId] = useState(null);
+  const [qtyBtn, setQtyBtn] = useState(false);
+  const sheetRef = useRef(null);
+  const snapPoints = ["35%"];
+
   const producer = (Id) => {
     const res = vendors.find((ven) => ven.id === Id);
     return res;
+  };
+
+  const qtyFindHandler = (name) => {
+    const match_res = cart.line_items.filter((x) => x.name === name);
+    return match_res[0];
   };
 
   const deleteFav = (id) => {
@@ -28,7 +47,10 @@ const FavouritesScreen = ({ favorites, vendors, dispatch, navigation }) => {
         { text: "Cancel", style: "cancel" },
         {
           text: "Delete",
-          onPress: () => dispatch(deleteFavourite(id)),
+          onPress: () => {
+            dispatch(deleteFavourite(id));
+            setIsOpen(false);
+          },
           style: "destructive",
         },
       ],
@@ -36,54 +58,199 @@ const FavouritesScreen = ({ favorites, vendors, dispatch, navigation }) => {
     );
   };
 
-  return (
-    <ScrollView>
-      <View style={styles.container}>
-        {favorites.map((fav) => {
-          let result = producer(fav.vendor.id);
+  const bottomSheetContent = (Id) => {
+    let fav_res = favorites.filter((x) => x.id === Id);
 
-          return (
-            <View key={fav.id} style={styles.contentContainer}>
-              <View style={styles.first_content}>
-                <Image
-                  source={{ uri: `${HOST}/${fav.images[0].styles[3].url}` }}
-                  style={styles.fav_image}
-                />
-                <View style={styles.first_body}>
-                  <Text style={{ color: colors.black, fontSize: 14 }}>
-                    {fav.name}
-                  </Text>
-                  <Text style={{ color: colors.btnLink, fontSize: 14 }}>
-                    {result.name}
-                  </Text>
-                </View>
-                <Icon
-                  type="ant-design"
-                  name="delete"
-                  size={25}
-                  color={colors.btnLink}
-                  onPress={() => deleteFav(fav.id)}
-                />
-              </View>
-              <View style={styles.second_content}>
-                <TouchableOpacity style={styles.first_btn}>
-                  <Text style={{ color: colors.white, fontSize: 14 }}>
-                    LEGG TIL I HANDLEKURV
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={styles.sec_btn}
-                  onPress={() => navigation.goBack()}
-                >
-                  <Text>LES MER</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          );
-        })}
+    return nextOpen ? (
+      <View style={styles.fav_contain}>
+        <View style={styles.fav_first}>
+          {fav_res[0]?.variants.map((q, i) => {
+            return (
+              <TouchableOpacity style={styles.fav_qty} key={i}>
+                <Text>
+                  {q.options_text
+                    ? q.options_text.split(" ")[3] ||
+                      q.options_text.split(" ")[1]
+                    : "No available Quantity"}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+        <View style={styles.back_btn}>
+          <TouchableOpacity
+            style={styles.fav_Back_btn}
+            onPress={() => setNextOpen(false)}
+          >
+            <Text style={{ color: colors.white }}>TILBAKE</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </ScrollView>
+    ) : (
+      <View style={styles.fav_contain}>
+        <TouchableOpacity
+          style={styles.fav_close_container}
+          onPress={() => setIsOpen(false)}
+        >
+          <Icon type="entypo" name="cross" size={28} style={styles.fav_close} />
+        </TouchableOpacity>
+        <View style={styles.fav_first}>
+          <TouchableOpacity
+            style={styles.fav_btn}
+            onPress={() => {
+              setNextOpen(true);
+              navigation.replace("Fav Quantity");
+            }}
+          >
+            <Text>ENDRE STØRRELSE</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.fav_second}>
+          <TouchableOpacity
+            style={styles.fav_btn}
+            onPress={() => deleteFav(Id)}
+          >
+            <Text>FJERN FRA FAVORITTER</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  };
+
+  const handleIncrementQuantity = (lineItemId, lineItemQuantity) => {
+    dispatch(
+      setQuantity(
+        {
+          line_item_id: lineItemId,
+          quantity: lineItemQuantity + 1,
+        },
+        {},
+        cart.token
+      )
+    );
+  };
+
+  const handleDecrementQuantity = (lineItemId, lineItemQuantity) => {
+    if (lineItemQuantity === 0) {
+      setQtyBtn(false);
+    } else {
+      dispatch(
+        setQuantity(
+          {
+            line_item_id: lineItemId,
+            quantity: lineItemQuantity - 1,
+          },
+          {},
+          cart.token
+        )
+      );
+    }
+  };
+
+  return (
+    <>
+      <ScrollView>
+        <View style={styles.container}>
+          {favorites.map((fav) => {
+            let result = producer(fav.vendor.id);
+            let matchFav = qtyFindHandler(fav.name);
+
+            return (
+              <TouchableOpacity
+                key={fav.id}
+                style={styles.contentContainer}
+                onPress={() => navigation.goBack()}
+              >
+                <View style={styles.first_content}>
+                  <Image
+                    source={{ uri: `${HOST}/${fav.images[0].styles[3].url}` }}
+                    style={styles.fav_image}
+                  />
+                  <View style={styles.first_body}>
+                    <Text style={{ color: colors.black, fontSize: 14 }}>
+                      {fav.name}
+                    </Text>
+                    <Text style={{ color: colors.btnLink, fontSize: 14 }}>
+                      {result.name}
+                    </Text>
+                    <Text style={{ color: colors.black, fontSize: 14 }}>
+                      {fav.display_price} |{" "}
+                      {fav?.variants[0].options_text
+                        ? fav?.variants[0].options_text.split(" ")[3] ||
+                          fav?.variants[0].options_text.split(" ")[1]
+                        : ""}
+                    </Text>
+                  </View>
+                  <Icon
+                    type="entypo"
+                    name="dots-three-horizontal"
+                    size={25}
+                    color={colors.black}
+                    onPress={() => {
+                      setIsOpen(true);
+                      setItemId(fav.id);
+                    }}
+                  />
+                </View>
+                <View style={styles.second_content}>
+                  {qtyBtn ? (
+                    <View style={styles.fav_qty_style}>
+                      <TouchableOpacity
+                        style={styles.qty_icon_first}
+                        onPress={() =>
+                          handleDecrementQuantity(
+                            matchFav?.id,
+                            matchFav?.quantity
+                          )
+                        }
+                      >
+                        <Icon type="ant-design" name="minus" size={22} />
+                      </TouchableOpacity>
+                      <Text>{matchFav ? matchFav?.quantity : "0"}</Text>
+                      <TouchableOpacity
+                        style={styles.qty_icon_second}
+                        onPress={() =>
+                          handleIncrementQuantity(
+                            matchFav?.id,
+                            matchFav?.quantity
+                          )
+                        }
+                      >
+                        <Icon type="ant-design" name="plus" size={22} />
+                      </TouchableOpacity>
+                    </View>
+                  ) : (
+                    <>
+                      <TouchableOpacity
+                        style={styles.sec_btn}
+                        onPress={() => setQtyBtn(true)}
+                      >
+                        <Icon
+                          type="ant-design"
+                          name="shoppingcart"
+                          size={18}
+                          color={colors.white}
+                          style={{ marginRight: 6 }}
+                        />
+                        <Text style={{ color: colors.white }}>KJØP</Text>
+                      </TouchableOpacity>
+                    </>
+                  )}
+                </View>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      </ScrollView>
+      {isOpen && (
+        <FilterFooter
+          value={sheetRef}
+          snapPoints={snapPoints}
+          onClose={() => setIsOpen(false)}
+          bottomSheetContent={() => bottomSheetContent(itemId)}
+        />
+      )}
+    </>
   );
 };
 
@@ -122,6 +289,7 @@ const styles = StyleSheet.create({
   },
   second_content: {
     flexDirection: "row",
+    alignSelf: "flex-end",
     paddingHorizontal: 15,
     paddingVertical: 10,
   },
@@ -136,20 +304,94 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   sec_btn: {
-    flex: 0.3,
+    flexDirection: "row",
+    alignItems: "center",
+    borderColor: "transparent",
+    backgroundColor: colors.btnLink,
+    paddingVertical: 5,
+    paddingHorizontal: 5,
+    borderRadius: 5,
+  },
+  fav_contain: {
+    flex: 1,
+    backgroundColor: "#232332",
     justifyContent: "center",
     alignItems: "center",
-    borderWidth: 1,
-    borderColor: colors.btnLink,
-    paddingVertical: 5,
+    borderTopRightRadius: 10,
+    borderTopLeftRadius: 10,
+  },
+  fav_first: {
+    width: "90%",
+    marginBottom: 10,
+  },
+  fav_second: {
+    width: "90%",
+    marginTop: 10,
+  },
+  fav_btn: {
+    backgroundColor: colors.white,
+    borderRadius: 8,
+    paddingVertical: 12,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  fav_close_container: {
+    flexDirection: "row",
+    alignSelf: "flex-end",
+    position: "absolute",
+    right: 12,
+    top: 10,
+  },
+  fav_close: {
+    borderRadius: 30,
+    backgroundColor: colors.white,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  fav_qty: {
+    backgroundColor: colors.white,
+    borderRadius: 8,
+    paddingVertical: 12,
     paddingHorizontal: 10,
-    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "flex-start",
+    marginBottom: 5,
+  },
+  back_btn: {
+    alignSelf: "center",
+    justifyContent: "center",
+  },
+  fav_Back_btn: {
+    marginTop: 5,
+    fontSize: 20,
+    color: colors.white,
+  },
+  fav_qty_style: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  qty_icon_first: {
+    backgroundColor: colors.btnLink,
+    borderRadius: 20,
+    marginRight: 10,
+    padding: 4,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  qty_icon_second: {
+    backgroundColor: colors.btnLink,
+    borderRadius: 20,
+    padding: 4,
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft: 10,
   },
 });
 
 const mapStateToProps = (state) => ({
   favorites: state.products.favorites,
   vendors: state.taxons.vendors,
+  cart: state.checkout.cart,
 });
 
 export default connect(mapStateToProps)(FavouritesScreen);

@@ -24,7 +24,6 @@ const FilterFooter = ({
       onClose={onClose}
       style={{ flex: 1 }}
       handleStyle={styles.handle}
-      handleIndicatorStyle={styles.indicator}
     >
       <BottomSheetView style={styles.container}>
         <filterNavigator.Navigator>
@@ -43,6 +42,11 @@ const FilterFooter = ({
             component={ProducersFooter}
             options={{ headerShown: false }}
           />
+          <filterNavigator.Screen
+            name="Fav Quantity"
+            component={bottomSheetContent}
+            options={{ headerShown: false }}
+          />
         </filterNavigator.Navigator>
       </BottomSheetView>
     </BottomSheet>
@@ -57,11 +61,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#232332",
   },
   handle: {
-    backgroundColor: "#232332",
-    borderTopRightRadius: 10,
-    borderTopLeftRadius: 10,
-  },
-  indicator: {
-    backgroundColor: colors.white,
+    display: "none",
   },
 });

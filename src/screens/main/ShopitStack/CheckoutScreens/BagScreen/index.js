@@ -33,7 +33,7 @@ const BagScreen = ({ navigation, dispatch, saving }) => {
 
   const sheetRef = React.useRef(null);
   const [isOpen, setIsOpen] = React.useState(false);
-  const snapPoints = ["45%"];
+  const snapPoints = ["50%"];
 
   React.useEffect(() => {
     dispatch(getCart(cart.token));
