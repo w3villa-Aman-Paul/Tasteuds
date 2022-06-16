@@ -2,6 +2,7 @@
   "expo": {
     "name": "TasteBuds",
     "slug": "Tastebuds-app-slug",
+    "owner": "aman.paul",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
