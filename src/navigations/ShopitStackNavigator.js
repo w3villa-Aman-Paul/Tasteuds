@@ -41,8 +41,7 @@ function ShopitStackNavigator({ navigation, route }) {
       routeName === "ShippingAddress" ||
       routeName === "SavedAddress" ||
       routeName === "AddAdress" ||
-      routeName === "ProducersDetailScreen" ||
-      routeName === "Favorites"
+      routeName === "ProducersDetailScreen"
     ) {
       navigation.setOptions({ tabBarVisible: false });
     } else {

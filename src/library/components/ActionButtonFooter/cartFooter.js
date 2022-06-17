@@ -4,9 +4,6 @@ import { globalStyles } from "../../../styles/global";
 import { connect, useSelector } from "react-redux";
 import { Button } from "react-native-elements";
 import { styles } from "./styles";
-import { createStackNavigator } from "@react-navigation/stack";
-
-const socialStack = createStackNavigator();
 
 const CartFooter = ({ title, onPress, cart, navigation }) => {
   return (

@@ -6,7 +6,7 @@ export const styles = StyleSheet.create({
   footer: {
     height: 80,
     justifyContent: "center",
-    backgroundColor: colors.white,
+    backgroundColor: colors.primary,
     borderTopWidth: 2,
     borderTopColor: colors.background,
   },

@@ -40,7 +40,9 @@ const AccountScreen = ({ dispatch, navigation, address, account, acc }) => {
             <View style={styles.body}>
               <View style={styles.first}>
                 <Text style={styles.textbtn}>KONTOINFORMASJON</Text>
-                <TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate("SavedAddress")}
+                >
                   <Text style={styles.textbtn}>ENDRE</Text>
                 </TouchableOpacity>
               </View>
