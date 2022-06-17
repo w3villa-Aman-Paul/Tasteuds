@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   ScrollView,
@@ -24,10 +24,18 @@ const FavouritesScreen = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [nextOpen, setNextOpen] = useState(false);
+  const [qtyIndicator, setQtyIndicator] = useState(null);
   const [itemId, setItemId] = useState(null);
   const [qtyBtn, setQtyBtn] = useState(false);
   const sheetRef = useRef(null);
   const snapPoints = ["35%"];
+
+  useEffect(() => {
+    if (favorites.length === 0) {
+      setQtyBtn(false);
+    }
+    setQtyIndicator(cart.item_count);
+  }, [favorites, cart.item_count]);
 
   const producer = (Id) => {
     const res = vendors.find((ven) => ven.id === Id);
@@ -131,7 +139,7 @@ const FavouritesScreen = ({
   };
 
   const handleDecrementQuantity = (lineItemId, lineItemQuantity) => {
-    if (lineItemQuantity === 0) {
+    if (lineItemQuantity === 1) {
       setQtyBtn(false);
     } else {
       dispatch(
@@ -204,9 +212,16 @@ const FavouritesScreen = ({
                           )
                         }
                       >
-                        <Icon type="ant-design" name="minus" size={22} />
+                        <Icon
+                          type="ant-design"
+                          name="minus"
+                          size={22}
+                          color={colors.white}
+                        />
                       </TouchableOpacity>
-                      <Text>{matchFav ? matchFav?.quantity : "0"}</Text>
+                      <Text style={{ fontWeight: "bold" }}>
+                        {matchFav ? matchFav?.quantity : "1"}
+                      </Text>
                       <TouchableOpacity
                         style={styles.qty_icon_second}
                         onPress={() =>
@@ -216,7 +231,12 @@ const FavouritesScreen = ({
                           )
                         }
                       >
-                        <Icon type="ant-design" name="plus" size={22} />
+                        <Icon
+                          type="ant-design"
+                          name="plus"
+                          size={22}
+                          color={colors.white}
+                        />
                       </TouchableOpacity>
                     </View>
                   ) : (
@@ -242,6 +262,22 @@ const FavouritesScreen = ({
           })}
         </View>
       </ScrollView>
+      {qtyBtn ? (
+        <View style={styles.qty_footer}>
+          <Text
+            style={{ color: colors.white, fontSize: 15, fontWeight: "bold" }}
+          >
+            {qtyIndicator ? qtyIndicator : "1"} VARE
+          </Text>
+          <TouchableOpacity onPress={() => navigation.navigate("Bag")}>
+            <Text
+              style={{ color: colors.white, fontSize: 15, fontWeight: "bold" }}
+            >
+              SE HANDLEVOGN
+            </Text>
+          </TouchableOpacity>
+        </View>
+      ) : null}
       {isOpen && (
         <FilterFooter
           value={sheetRef}
@@ -385,6 +421,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginLeft: 10,
+  },
+  qty_footer: {
+    backgroundColor: colors.btnLink,
+    width: "100%",
+    maxHeight: 50,
+    borderWidth: 1,
+    borderColor: "transparent",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingVertical: 10,
+    paddingHorizontal: 8,
+    alignItems: "center",
   },
 });
 
