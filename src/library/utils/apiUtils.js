@@ -40,13 +40,7 @@ async function handleAPI(path, params, method, data = null) {
   return await axios({ url, headers, method, data });
 }
 
-async function handleAddCartItem(
-  path,
-  params,
-  method,
-  data = null,
-  auth_token
-) {
+async function handleAddCartItem(path, params, method, data, auth_token) {
   const headers = {
     "Content-Type": "application/vnd.api+json",
     Accept: "application/json",

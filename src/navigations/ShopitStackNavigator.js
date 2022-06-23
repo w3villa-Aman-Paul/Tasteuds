@@ -22,7 +22,7 @@ import AddAddress from "../screens/main/ProfileStack/AddAddress";
 import ProducersListScreen from "../screens/main/ProducersStack/ProducersListScreen";
 
 import ProducerDetailScreen from "../screens/main/ProducersStack/ProducerDetailScreen";
-import SearchScreen from "../screens/main/ShopitStack/SearchScreen";
+import SearchScreen from "../screens/main/ShopitStack/SearchScreen/index";
 
 const ShopitStack = createStackNavigator();
 
@@ -64,37 +64,84 @@ function ShopitStackNavigator({ navigation, route }) {
             />
           ),
           headerRight: () => (
-            <Icon
-              name="search"
-              type="font-awesome"
-              size={25}
-              color={colors.primary}
-              onPress={() => navigation.navigate("SearchScreen")}
-            />
+            <View
+              style={{
+                flex: 1,
+                flexDirection: "row",
+                marginRight: 10,
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <TouchableOpacity
+                style={{
+                  flex: 1,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                onPress={() => navigation.navigate("Profile")}
+              >
+                <Icon
+                  name="person"
+                  type="ionicons"
+                  size={30}
+                  color={colors.primary}
+                  style={{ marginRight: 10 }}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  flex: 1,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                onPress={() => navigation.navigate("Bag")}
+              >
+                <Icon
+                  name="shoppingcart"
+                  type="ant-design"
+                  size={30}
+                  color={colors.primary}
+                />
+
+                {cartCount > 0 ? (
+                  <View
+                    style={{
+                      position: "absolute",
+                      backgroundColor: "red",
+                      width: 16,
+                      height: 16,
+                      borderRadius: 15 / 2,
+                      right: 0,
+                      top: 0,
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        alignItems: "center",
+                        justifyContent: "center",
+                        color: "#FFFFFF",
+                        fontSize: 10,
+                      }}
+                    >
+                      {cartCount}
+                    </Text>
+                  </View>
+                ) : null}
+              </TouchableOpacity>
+            </View>
           ),
           headerRightContainerStyle: {
-            top: 4,
-            right: 20,
-            justifyContent: "center",
+            flex: 0.2,
+            justifyContent: "space-between",
             alignItems: "center",
-            backgroundColor: "#ffffff",
-            borderRadius: 50,
-            elevation: 10,
-            height: 40,
-            width: 40,
           },
           title: "",
           headerLeftContainerStyle: {
             paddingHorizontal: 10,
           },
-        }}
-      />
-      <ShopitStack.Screen
-        name="ProducersListScreen"
-        component={ProducersListScreen}
-        options={{
-          headerTitle: "PRODUSENTER",
-          headerTitleAlign: "center",
         }}
       />
       <ShopitStack.Screen
@@ -119,6 +166,76 @@ function ShopitStackNavigator({ navigation, route }) {
               title="Back"
             />
           ),
+          headerRight: () => (
+            <View
+              style={{
+                flex: 1,
+                flexDirection: "row",
+                marginRight: 10,
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <TouchableOpacity
+                style={{
+                  flex: 1,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                onPress={() => navigation.navigate("Profile")}
+              >
+                <Icon
+                  name="person"
+                  type="ionicons"
+                  size={30}
+                  color={colors.primary}
+                  style={{ marginRight: 10 }}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  flex: 1,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                onPress={() => navigation.navigate("Bag")}
+              >
+                <Icon
+                  name="shoppingcart"
+                  type="ant-design"
+                  size={30}
+                  color={colors.primary}
+                />
+
+                {cartCount > 0 ? (
+                  <View
+                    style={{
+                      position: "absolute",
+                      backgroundColor: "red",
+                      width: 16,
+                      height: 16,
+                      borderRadius: 15 / 2,
+                      right: 0,
+                      top: 0,
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        alignItems: "center",
+                        justifyContent: "center",
+                        color: "#FFFFFF",
+                        fontSize: 10,
+                      }}
+                    >
+                      {cartCount}
+                    </Text>
+                  </View>
+                ) : null}
+              </TouchableOpacity>
+            </View>
+          ),
           headerTitleAlign: "center",
           headerTitleStyle: {
             color: colors.primary,
@@ -137,15 +254,9 @@ function ShopitStackNavigator({ navigation, route }) {
             width: 40,
           },
           headerRightContainerStyle: {
-            top: 4,
-            right: 20,
-            justifyContent: "center",
+            flex: 0.2,
+            justifyContent: "space-between",
             alignItems: "center",
-            backgroundColor: "#ffffff",
-            borderRadius: 50,
-            elevation: 10,
-            height: 40,
-            width: 40,
           },
         })}
       />

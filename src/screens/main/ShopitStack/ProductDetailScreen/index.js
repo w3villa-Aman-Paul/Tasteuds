@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  ScrollView,
-  Text,
-  Image,
-  TouchableOpacity,
-  Pressable,
-} from "react-native";
+import { View, ScrollView, Text, Image, TouchableOpacity } from "react-native";
 import { globalStyles } from "../../../../styles/global";
 import { colors } from "../../../../res/palette";
 import { Button, Icon } from "react-native-elements";
@@ -27,11 +20,9 @@ import { useSelector } from "react-redux";
 import { getData } from "../../../../redux/rootReducer";
 
 const ProductDetailScreen = ({ navigation, dispatch, auth, cart, route }) => {
-  const [selectedVariant, setSelectedVariant] = useState({});
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [favsnackbar, setFavSnackbar] = useState(false);
   const [selectedVendor, setSelectedVendor] = useState([]);
-  const [product, setProduct] = useState({});
 
   const vendor = async () => {
     setSelectedVendor(await getData("selectedVendor"));
@@ -41,13 +32,7 @@ const ProductDetailScreen = ({ navigation, dispatch, auth, cart, route }) => {
 
   const taxon = useSelector((state) => state.taxons.taxon);
   let { saving } = useSelector((state) => state.products && state.taxons);
-  const productActual = useSelector((state) => state.products.product);
-
-  React.useEffect(() => {
-    if (productActual) {
-      setProduct(productActual);
-    }
-  }, [productActual]);
+  const { product } = useSelector((state) => state.products);
 
   const checkout = useSelector((state) => state.checkout);
   const errMessage = useSelector((state) => state.checkout.error);
@@ -85,7 +70,6 @@ const ProductDetailScreen = ({ navigation, dispatch, auth, cart, route }) => {
   const handleProducerClick = async (vendor) => {
     await dispatch(getSelectedVendor(vendor.slug));
     navigation.navigate("ProducersDetailScreen");
-    // console.log(">>>>vendor", vendor.slug);
   };
 
   if (saving) {
@@ -150,10 +134,7 @@ const ProductDetailScreen = ({ navigation, dispatch, auth, cart, route }) => {
                     height: 50,
                     flex: 0.8,
                   }}
-                  onPress={() => {
-                    setSelectedVariant(product);
-                    handleAddToBag();
-                  }}
+                  onPress={() => handleAddToBag()}
                 />
                 <View
                   style={{
