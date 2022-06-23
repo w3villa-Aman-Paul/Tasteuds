@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   Dimensions,
   LogBox,
+  Platform,
 } from "react-native";
 import { globalStyles } from "../../../../styles/global";
 import { colors } from "../../../../res/palette";
@@ -88,7 +89,6 @@ const ProductListScreen = ({
   ]);
 
   const params = route?.params;
-  console.log(">>Params", params);
 
   const handleAfterMenuSelect = async (params) => {
     console.log("Active>>", activeMenus);
@@ -180,7 +180,7 @@ const ProductListScreen = ({
   const sheetRef = React.useRef(null);
   const [isOpen, setIsOpen] = React.useState(false);
 
-  const snapPoints = ["40%"];
+  const snapPoints = ["50%"];
 
   const handleSnapPress = React.useCallback((index) => {
     sheetRef.current?.snapToIndex(index);
@@ -371,17 +371,20 @@ const ProductListScreen = ({
           }}
         >
           <View
-            style={{
-              padding: 10,
-              marginTop: 10,
-              borderWidth: 1,
-              borderRadius: 10,
-              flex: 1,
-              flexDirection: "row",
-              elevation: 3,
-              backgroundColor: "#fff",
-              borderColor: "transparent",
-            }}
+            style={[
+              {
+                padding: 10,
+                borderWidth: 1,
+                borderRadius: 10,
+                flex: 1,
+                flexDirection: "row",
+                elevation: 3,
+                backgroundColor: "#fff",
+                borderColor: "transparent",
+              },
+              globalStyles.iosShadow,
+              Platform.OS === "android" ? { marginTop: 10 } : { marginTop: 0 },
+            ]}
           >
             <Image
               source={require("../../../../../assets/images/components/truck.png")}
@@ -556,13 +559,13 @@ const ProductListScreen = ({
         }}
       >
         <TouchableOpacity
-          style={styles.stickyBottomBtn}
+          style={[styles.stickyBottomBtn, globalStyles.iosShadow]}
           onPress={() => handleSnapPress(0)}
         >
           <Text>FILTER</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={styles.stickyBottomBtn}
+          style={[styles.stickyBottomBtn, globalStyles.iosShadow]}
           onPress={() => setIsSortOverlayVisible(true)}
         >
           <Text>SORTER</Text>
@@ -639,7 +642,7 @@ const ProductListScreen = ({
             style={{
               color: "#fff",
               textAlign: "center",
-              fontSize: 14,
+              fontSize: 20,
               fontFamily: "lato-medium",
               paddingTop: 20,
             }}
@@ -674,7 +677,7 @@ const ProductListScreen = ({
                         style={{
                           color: colors.white,
                           fontFamily: "lato-medium",
-                          fontSize: 14,
+                          fontSize: 16,
                         }}
                       >
                         {ele.title}
@@ -768,17 +771,18 @@ const ProductListScreen = ({
         <View
           style={{
             marginTop: 30,
-            alignSelf: "center",
+            width: "100%",
             flex: 1,
             justifyContent: "center",
+            alignItems: "center",
           }}
         >
           <TouchableOpacity
             style={{
               backgroundColor: colors.btnLink,
-              width: 180,
-              height: 26,
-              borderRadius: 20,
+              width: "90%",
+              height: 30,
+              borderRadius: 10,
               justifyContent: "center",
               alignItems: "center",
             }}

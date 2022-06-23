@@ -60,7 +60,7 @@ const FoodFooter = ({ navigation }) => {
 
   return (
     <>
-      <View style={{ backgroundColor: "#232332", flex: 1 }}>
+      <View style={{ backgroundColor: "#232332", flex: 1, paddingTop: 10 }}>
         {/* // *HEADER-MATVARER */}
         <View
           style={{
@@ -70,14 +70,19 @@ const FoodFooter = ({ navigation }) => {
           }}
         >
           <TouchableOpacity
+            style={{
+              position: "absolute",
+              zIndex: 99,
+              top: 0,
+              left: 10,
+            }}
             onPress={() => navigation.goBack()}
-            style={{ position: "absolute", top: 0, left: 0 }}
           >
             <Icon
               name="chevron-left"
               type="material-icons"
               color="#fff"
-              size={24}
+              size={30}
             />
           </TouchableOpacity>
           <View
@@ -87,7 +92,7 @@ const FoodFooter = ({ navigation }) => {
               style={{
                 color: "#fff",
                 // textAlign: "center",
-                fontSize: 14,
+                fontSize: 20,
                 fontFamily: "lato-medium",
               }}
             >

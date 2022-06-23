@@ -35,7 +35,9 @@ const FilterFooter = ({
           <filterNavigator.Screen
             name="food"
             component={FoodFooter}
-            options={{ headerShown: false }}
+            options={{
+              headerShown: false,
+            }}
           />
           <filterNavigator.Screen
             name="producers"

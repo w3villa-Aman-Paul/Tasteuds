@@ -164,4 +164,13 @@ export const globalStyles = StyleSheet.create({
   pv16: {
     paddingVertical: 16,
   },
+
+  iosShadow: {
+    shadowOffset: {
+      width: 2,
+      height: 2,
+    },
+    shadowColor: "black",
+    shadowOpacity: 0.3,
+  },
 });

@@ -77,7 +77,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     height: 40,
-    // marginTop: 30,
+
     position: "relative",
   },
 
