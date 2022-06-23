@@ -20,15 +20,16 @@ export function getProductsList(data, { pageIndex, filter }) {
   };
 }
 
-export function getProduct(id, filters = {}) {
+export function getProduct(id) {
   const url = `${API_VERSION_STOREFRONT}/products/${id}`;
   const params = {
     include: "images,variants,product_properties",
+    data: null,
   };
   const method = "GET";
   return {
     type: "GET_PRODUCT",
-    payload: handleAPIWithoutToken(url, params, method, filters),
+    payload: handleAPIWithoutToken(url, params, method, null),
   };
 }
 

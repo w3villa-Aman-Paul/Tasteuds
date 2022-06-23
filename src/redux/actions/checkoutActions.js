@@ -80,7 +80,7 @@ export function createAddress(data, filters = {}) {
   };
 }
 
-export function retrieveAddress(data = {}, filters = {}) {
+export function retrieveAddress(data = null, filters = {}) {
   const url = `${API_VERSION_STOREFRONT}/account/addresses`;
   const method = "GET";
   return {

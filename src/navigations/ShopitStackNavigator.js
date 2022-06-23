@@ -156,10 +156,10 @@ function ShopitStackNavigator({ navigation, route }) {
           headerTitle: "",
 
           headerLeft: () => (
-            <ChevronLeft
-              size={29}
+            <Icon
+              name="arrowleft"
+              type="ant-design"
               onPress={() => navigation.goBack()}
-              style={styles.chevron}
               title="Back"
             />
           ),
@@ -239,8 +239,16 @@ function ShopitStackNavigator({ navigation, route }) {
             flex: 0.6,
           },
           headerLeftContainerStyle: {
-            flex: 0.2,
-            paddingHorizontal: 15,
+            paddingHorizontal: 10,
+            top: 4,
+            left: 20,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#ffffff",
+            borderRadius: 50,
+            elevation: 10,
+            height: 40,
+            width: 40,
           },
           headerRightContainerStyle: {
             flex: 0.2,

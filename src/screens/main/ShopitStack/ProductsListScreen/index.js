@@ -141,7 +141,6 @@ const ProductListScreen = ({
     setActiveSubMenu(unactive);
   };
 
-  console.log("active>>>", activeSubMenu);
   const handleClick = (activeMenus, menu) => {
     const newArr = [...activeMenus];
     const index = newArr.findIndex((item) => item.id === menu.id);
@@ -351,8 +350,6 @@ const ProductListScreen = ({
         key={index.toString()}
         item={item}
         onPress={() => {
-          console.log("");
-
           storeData("selectedVendor", resultVendor(item?.vendor?.id)[1]);
 
           handleProductLoad(item?.id, item);
@@ -415,10 +412,10 @@ const ProductListScreen = ({
                 handleAllClick(activeMenus);
                 setIsSubLink(false);
               }}
+              style={[isAll ? styles.active : {}]}
             >
               <Text
                 style={[
-                  isAll ? styles.active : {},
                   {
                     padding: 8,
                     fontSize: 20,
@@ -443,10 +440,10 @@ const ProductListScreen = ({
                   await dispatch(getSubMenuProducts(subLink));
                   setIsSubLink(true);
                 }}
+                style={[menu.isActive ? styles.active : styles.unactive]}
               >
                 <Text
                   style={[
-                    menu.isActive ? styles.active : styles.unactive,
                     {
                       padding: 8,
                       fontSize: 20,
@@ -644,6 +641,7 @@ const ProductListScreen = ({
               textAlign: "center",
               fontSize: 14,
               fontFamily: "lato-medium",
+              paddingTop: 20,
             }}
           >
             FILTRER SØKET

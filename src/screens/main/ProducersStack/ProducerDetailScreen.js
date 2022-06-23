@@ -120,6 +120,12 @@ const ProducerDetailScreen = ({ dispatch, navigation }) => {
             marginVertical: 20,
             borderRadius: 20,
             elevation: 5,
+            shadowOffset: {
+              width: 2,
+              height: 2,
+            },
+            shadowColor: "black",
+            shadowOpacity: 0.3,
           }}
         >
           <Image
@@ -138,7 +144,6 @@ const ProducerDetailScreen = ({ dispatch, navigation }) => {
           style={{
             height: 219,
             borderRadius: 10,
-            backgroundColor: "pink",
             overflow: "hidden",
             marginVertical: 10,
           }}
@@ -164,6 +169,12 @@ const ProducerDetailScreen = ({ dispatch, navigation }) => {
             border: 1,
             borderColor: "transparent",
             elevation: 5,
+            shadowOffset: {
+              width: 2,
+              height: 2,
+            },
+            shadowColor: "black",
+            shadowOpacity: 0.3,
           }}
         >
           <Text style={styles.descriptionTitle}>Om oss</Text>
@@ -205,7 +216,11 @@ const ProducerDetailScreen = ({ dispatch, navigation }) => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, alignItems: "center", backgroundColor: "#fff" }}
+      style={{
+        flex: 1,
+        alignItems: "center",
+        backgroundColor: "#fff",
+      }}
     >
       {/*//* Header */}
 

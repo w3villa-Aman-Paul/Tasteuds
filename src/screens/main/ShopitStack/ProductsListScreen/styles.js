@@ -92,6 +92,7 @@ export const styles = StyleSheet.create({
     color: colors.white,
     borderWidth: 1,
     borderRadius: 10,
+    overflow: "hidden",
     backgroundColor: colors.primary,
   },
   subUnactive: {

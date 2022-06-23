@@ -9,11 +9,16 @@ import {
 } from "react-native";
 import { globalStyles } from "../../../../styles/global";
 import { colors } from "../../../../res/palette";
-import { Avatar, Button, Divider, Icon } from "react-native-elements";
+import { Button, Icon } from "react-native-elements";
 import { Snackbar } from "react-native-paper";
 import ActivityIndicatorCard from "../../../../library/components/ActivityIndicatorCard";
 
-import { addItem, getCart, setProductFavourite } from "../../../../redux";
+import {
+  addItem,
+  getCart,
+  getSelectedVendor,
+  setProductFavourite,
+} from "../../../../redux";
 import { connect } from "react-redux";
 import { styles } from "./styles";
 import { capitalizeFirstLetter } from "../../../../res/helperFunctions";
@@ -21,18 +26,12 @@ import { HOST } from "../../../../res/env";
 import { useSelector } from "react-redux";
 import { getData } from "../../../../redux/rootReducer";
 
-const ProductDetailScreen = ({
-  navigation,
-  dispatch,
-  product,
-  auth,
-  cart,
-  route,
-}) => {
+const ProductDetailScreen = ({ navigation, dispatch, auth, cart, route }) => {
   const [selectedVariant, setSelectedVariant] = useState({});
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [favsnackbar, setFavSnackbar] = useState(false);
   const [selectedVendor, setSelectedVendor] = useState([]);
+  const [product, setProduct] = useState({});
 
   const vendor = async () => {
     setSelectedVendor(await getData("selectedVendor"));
@@ -42,6 +41,13 @@ const ProductDetailScreen = ({
 
   const taxon = useSelector((state) => state.taxons.taxon);
   let { saving } = useSelector((state) => state.products && state.taxons);
+  const productActual = useSelector((state) => state.products.product);
+
+  React.useEffect(() => {
+    if (productActual) {
+      setProduct(productActual);
+    }
+  }, [productActual]);
 
   const checkout = useSelector((state) => state.checkout);
   const errMessage = useSelector((state) => state.checkout.error);
@@ -55,7 +61,7 @@ const ProductDetailScreen = ({
   const dismissFavSnackbar = () => setFavSnackbar(false);
 
   const handleAddToBag = async () => {
-    let vari = product.variants[0];
+    let vari = product?.variants[0];
     dispatch(
       addItem(cart.token, {
         variant_id: vari.id,
@@ -67,13 +73,19 @@ const ProductDetailScreen = ({
   };
 
   const handleFav = () => {
-    let variant = product.variants[0].product;
+    let variant = product?.variants[0].product;
     dispatch(setProductFavourite(variant));
 
     setTimeout(() => {
       navigation.navigate("Favorites");
     }, 1000);
     return setFavSnackbar(true);
+  };
+
+  const handleProducerClick = async (vendor) => {
+    await dispatch(getSelectedVendor(vendor.slug));
+    navigation.navigate("ProducersDetailScreen");
+    // console.log(">>>>vendor", vendor.slug);
   };
 
   if (saving) {
@@ -109,13 +121,10 @@ const ProductDetailScreen = ({
 
           <View style={styles.containerFluid}>
             <View style={[globalStyles.container, globalStyles.pb16]}>
-              <Text style={styles.productName}>{product.name}</Text>
+              <Text style={styles.productName}>{product?.name}</Text>
               <Text
                 style={styles.price}
               >{`${product?.price} ${product?.currency}`}</Text>
-              <Text
-                style={styles.vendorName}
-              >{`${selectedVendor[0]?.name}`}</Text>
             </View>
           </View>
           <View style={[styles.containerFluid, globalStyles.mt8]}>
@@ -171,7 +180,7 @@ const ProductDetailScreen = ({
 
               {/*......Vekt(Size).....*/}
               <View style={styles.size}>
-                {product.variants.map((item, index) => (
+                {product?.variants.map((item, index) => (
                   <TouchableOpacity
                     style={color == index ? styles.active : styles.unactive}
                     key={index}
@@ -231,12 +240,15 @@ const ProductDetailScreen = ({
                   />
                 </View>
 
-                <View
+                <TouchableOpacity
                   style={{
                     width: "65%",
                     height: "100%",
                     justifyContent: "center",
                     alignItems: "center",
+                  }}
+                  onPress={() => {
+                    handleProducerClick(selectedVendor[0]);
                   }}
                 >
                   <Text
@@ -247,12 +259,12 @@ const ProductDetailScreen = ({
                   >
                     BLI KJENT MED PRODUSENTEN
                   </Text>
-                </View>
+                </TouchableOpacity>
               </View>
 
               <View style={styles.description}>
                 <Text style={styles.desc__title}>BESKRIVELSE</Text>
-                <Text style={styles.desc__content}>{product.description}</Text>
+                <Text style={styles.desc__content}>{product?.description}</Text>
               </View>
 
               <View
@@ -276,7 +288,7 @@ const ProductDetailScreen = ({
               >
                 <Text style={styles.desc__title}>DETALJER</Text>
                 <View>
-                  {product.product_properties.map((item) => (
+                  {product?.product_properties.map((item) => (
                     <View
                       key={item.id}
                       style={{
@@ -343,7 +355,7 @@ const ProductDetailScreen = ({
 };
 
 const mapStateToProps = (state) => ({
-  product: state.products.product,
+  // product: state.products.product,
   auth: state.auth,
   saving: state.products.saving,
   cart: state.checkout.cart,
