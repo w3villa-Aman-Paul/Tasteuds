@@ -87,7 +87,6 @@ const ProducerDetailScreen = ({ dispatch, navigation }) => {
             <Text style={[styles.prices, { color: colors.black }]}>
               {item.display_price}
             </Text>
-           
           </View>
         </View>
       </TouchableOpacity>
@@ -155,7 +154,18 @@ const ProducerDetailScreen = ({ dispatch, navigation }) => {
         </View>
 
         {/* // *Description */}
-        <View style={{ marginVertical: 10 }}>
+        <View
+          style={{
+            marginVertical: 10,
+            marginHorizontal: 2,
+            padding: 10,
+            borderRadius: 10,
+            backgroundColor: "white",
+            border: 1,
+            borderColor: "transparent",
+            elevation: 5,
+          }}
+        >
           <Text style={styles.descriptionTitle}>Om oss</Text>
           <HTML
             source={{ html: selectedVendor?.about_us }}

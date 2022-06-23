@@ -22,6 +22,7 @@ import AddAddress from "../screens/main/ProfileStack/AddAddress";
 import ProducersListScreen from "../screens/main/ProducersStack/ProducersListScreen";
 
 import ProducerDetailScreen from "../screens/main/ProducersStack/ProducerDetailScreen";
+import SearchScreen from "../screens/main/ShopitStack/SearchScreen";
 
 const ShopitStack = createStackNavigator();
 
@@ -68,7 +69,7 @@ function ShopitStackNavigator({ navigation, route }) {
               type="font-awesome"
               size={25}
               color={colors.primary}
-              onPress={() => navigation.navigate("Profile")}
+              onPress={() => navigation.navigate("SearchScreen")}
             />
           ),
           headerRightContainerStyle: {
@@ -351,6 +352,8 @@ function ShopitStackNavigator({ navigation, route }) {
       <ShopitStack.Screen name="Favorites" component={FavouritesScreen} />
       <ShopitStack.Screen name="SavedAddress" component={SavedAddress} />
       <ShopitStack.Screen name="AddAdress" component={AddAddress} />
+
+      <ShopitStack.Screen name="SearchScreen" component={SearchScreen} />
     </ShopitStack.Navigator>
   );
 }

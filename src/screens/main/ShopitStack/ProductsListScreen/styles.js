@@ -107,4 +107,16 @@ export const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: colors.white,
   },
+  stickyBottomBtn: {
+    width: 100,
+    backgroundColor: colors.white,
+    marginHorizontal: 30,
+    paddingHorizontal: 20,
+    paddingVertical: 6,
+    borderWidth: 1,
+    borderColor: "transparent",
+    borderRadius: 10,
+    alignItems: "center",
+    elevation: 5,
+  },
 });

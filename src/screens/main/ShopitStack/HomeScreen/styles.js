@@ -231,7 +231,7 @@ export const styles = StyleSheet.create({
     marginLeft: 10,
     color: "#000000",
     fontSize: 25,
-    textAlign: "left",
+    textAlign: "center",
     fontWeight: "700",
   },
   bg_white: {

@@ -10,7 +10,6 @@ import {
   Dimensions,
   LogBox,
 } from "react-native";
-
 import { globalStyles } from "../../../../styles/global";
 import { colors } from "../../../../res/palette";
 import { styles } from "./styles";
@@ -511,6 +510,69 @@ const ProductListScreen = ({
   };
 
   // flatListLowerElement
+  const flatListLowerElement = () => {
+    return (
+      <>
+        {/* //*Bottom Buttons */}
+        <View
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            marginBottom: 40,
+          }}
+        >
+          <Text style={{ textAlign: "center" }}>Ingen flere produkter</Text>
+
+          <TouchableOpacity
+            style={{
+              width: 120,
+              marginTop: 20,
+              marginBottom: 10,
+              borderWidth: 1,
+              borderRadius: 10,
+              backgroundColor: "transparent",
+              paddingVertical: 3,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            onPress={onScroll}
+          >
+            <Text>TIL TOPPEN</Text>
+          </TouchableOpacity>
+        </View>
+      </>
+    );
+  };
+
+  const stikyOptions = () => {
+    return (
+      <View
+        style={{
+          position: "absolute",
+          bottom: 0,
+          alignSelf: "center",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "transparent",
+          paddingVertical: 10,
+        }}
+      >
+        <TouchableOpacity
+          style={styles.stickyBottomBtn}
+          onPress={() => handleSnapPress(0)}
+        >
+          <Text>FILTER</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.stickyBottomBtn}
+          onPress={() => setIsSortOverlayVisible(true)}
+        >
+          <Text>SORTER</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
 
   const filterList = [
     {
@@ -759,10 +821,11 @@ const ProductListScreen = ({
             renderItem={newJustInRenderItem}
             numColumns={2}
             ListHeaderComponent={flatListUpperElement}
-            ListFooterComponent={() =>
-              meta.total_count !== productsList.length && (
-                <ActivityIndicator size="large" />
-              )
+            ListFooterComponent={
+              flatListLowerElement
+              // meta.total_count !== productsList.length && (
+              //   <ActivityIndicator size="large" />
+              // )
             }
             ref={scrollRef}
             onEndReachedThreshold={0.3}
@@ -776,6 +839,8 @@ const ProductListScreen = ({
             }}
           />
         )}
+        {stikyOptions()}
+
         {checkout.error !== null && saving === false ? (
           <Snackbar visible={snackbarVisible} onDismiss={dismissSnackbar}>
             {errMessage}
@@ -783,71 +848,6 @@ const ProductListScreen = ({
         ) : (
           <></>
         )}
-
-        {/* //*Bottom Buttons */}
-        <View
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            marginBottom: 15,
-          }}
-        >
-          <Text style={{ textAlign: "center" }}>Ingen flere produkter</Text>
-
-          <TouchableOpacity
-            style={{
-              width: 120,
-              marginTop: 20,
-              marginBottom: 10,
-              borderWidth: 1,
-              borderRadius: 10,
-              paddingHorizontal: 10,
-              paddingVertical: 3,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            onPress={onScroll}
-          >
-            <Text>TIL TOPPEN</Text>
-          </TouchableOpacity>
-
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <TouchableOpacity
-              style={{
-                width: 100,
-                marginRight: 30,
-                paddingHorizontal: 20,
-                paddingVertical: 3,
-                borderWidth: 1,
-                borderRadius: 10,
-                alignItems: "center",
-              }}
-              onPress={() => handleSnapPress(0)}
-            >
-              <Text>FILTER</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                width: 100,
-                marginLeft: 30,
-                paddingHorizontal: 20,
-                paddingVertical: 3,
-                borderWidth: 1,
-                borderRadius: 10,
-                alignItems: "center",
-              }}
-              onPress={() => setIsSortOverlayVisible(true)}
-            >
-              <Text>SORTER</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
 
         {isOpen && (
           <FilterFooter

@@ -4,9 +4,12 @@ import { styles } from "./styles";
 import { getMenus, getTaxonsList } from "../../../redux";
 import { connect, useSelector } from "react-redux";
 import ActivityIndicatorCard from "../../../library/components/ActivityIndicatorCard";
+import { colors } from "../../../res/palette";
 
 const CategoriesScreen = ({ navigation, dispatch, taxonomy, saving }) => {
   const menus = useSelector((state) => state.taxons.menus);
+
+  const [activeCategory, setActiveCategory] = React.useState({});
 
   const handleDisplayTaxon = ({ title, id }) => {
     navigation.navigate("ProductsList", { title: title, id: id });
@@ -16,6 +19,7 @@ const CategoriesScreen = ({ navigation, dispatch, taxonomy, saving }) => {
     dispatch(getMenus());
   }, []);
 
+  console.log(">>>>>", activeCategory);
   if (saving) {
     return <ActivityIndicatorCard />;
   } else
@@ -38,12 +42,15 @@ const CategoriesScreen = ({ navigation, dispatch, taxonomy, saving }) => {
             <Text style={styles.optionText}>Nyheter</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.upperOptions}>
+          <TouchableOpacity
+            style={styles.upperOptions}
+            onPress={() => navigation.navigate("ProducersListScreen")}
+          >
             <Image
               source={require("../../../../assets/images/category-images/producers.png")}
               style={styles.icon}
             />
-            <Text style={styles.optionText}>Dine mest kjøpte varer</Text>
+            <Text style={styles.optionText}>Velg Produsent</Text>
           </TouchableOpacity>
         </View>
 
@@ -73,9 +80,10 @@ const CategoriesScreen = ({ navigation, dispatch, taxonomy, saving }) => {
                         : {},
                     ]}
                     key={item.id}
-                    onPress={() =>
-                      navigation.navigate("ProductsList", { menu: item })
-                    }
+                    onPress={() => {
+                      setActiveCategory({ name: item.name });
+                      navigation.navigate("ProductsList", { menu: item });
+                    }}
                   >
                     <View
                       style={[
@@ -92,7 +100,18 @@ const CategoriesScreen = ({ navigation, dispatch, taxonomy, saving }) => {
                         source={require("../../../../assets/images/category-images/food.png")}
                         style={styles.icon}
                       />
-                      <Text style={styles.optionText}>{item.name}</Text>
+                      <Text
+                        style={[
+                          styles.optionText,
+                          activeCategory?.name === item?.name
+                            ? {
+                                borderSize: 1,
+                              }
+                            : {},
+                        ]}
+                      >
+                        {item.name}
+                      </Text>
                     </View>
                   </TouchableOpacity>
                 );
