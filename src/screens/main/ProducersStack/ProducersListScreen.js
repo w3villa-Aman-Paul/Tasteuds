@@ -44,8 +44,6 @@ const ProducersListScreen = ({ dispatch, navigation }) => {
   const producerListUpperComponent = () => {
     return (
       <View style={[styles.container]}>
-        {/* // * notification */}
-
         <View style={[styles.notificationContainer]}>
           <Image
             source={require("../../../../assets/images/producersImage/producerNotification.png")}

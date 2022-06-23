@@ -3,24 +3,21 @@ import {
   Image,
   ImageBackground,
   SafeAreaView,
-  ScrollView,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { globalStyles } from "../../../../styles/global";
 import { styles } from "./styles";
+import { Snackbar } from "react-native-paper";
 import {
-  accountRetrieve,
+  addItem,
   createCart,
   getProduct,
   getProductsList,
   getTaxon,
   getVendorsList,
-  resetProductsList,
-  retrieveAddress,
 } from "../../../../redux";
 import { connect, useSelector } from "react-redux";
 import { HOST } from "../../../../res/env";
@@ -29,16 +26,11 @@ import { Icon } from "react-native-elements";
 import ActivityIndicatorCard from "../../../../library/components/ActivityIndicatorCard";
 import { storeData } from "../../../../redux/rootReducer";
 
-const HomeComponent = ({
-  dispatch,
-  navigation,
-  route,
-  pageIndex,
-  productsList,
-}) => {
+const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   const { isAuth } = useSelector((state) => state.auth);
   const { saving } = useSelector((state) => state.products);
   const vendorList = useSelector((state) => state.taxons.vendors);
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
 
   React.useEffect(() => {
     dispatch(getVendorsList());
@@ -52,6 +44,8 @@ const HomeComponent = ({
     dispatch(createCart());
   }, []);
 
+  const dismissSnackbar = () => setSnackbarVisible(false);
+
   const resultVendor = (id) => {
     const vendor = vendorList?.filter((vendor) => {
       if (vendor?.id == id) return vendor;
@@ -60,6 +54,17 @@ const HomeComponent = ({
     let vendorName = vendor[0]?.name;
 
     return [vendorName, vendor];
+  };
+
+  const cartHandler = (itemId) => {
+    let item = productsList.find((x) => x.id === itemId);
+    dispatch(
+      addItem(cart.token, {
+        variant_id: item.default_variant?.id,
+        quantity: 1,
+      })
+    );
+    return setSnackbarVisible(true);
   };
 
   const FlatListImageItem = ({
@@ -91,6 +96,7 @@ const HomeComponent = ({
               color={colors.btnLink}
               borderRadius={34}
               backgroundColor={colors.white}
+              onPress={() => cartHandler(item?.id)}
             />
           </TouchableOpacity>
         </View>
@@ -124,7 +130,6 @@ const HomeComponent = ({
   const handleProductLoad = async (id, item) => {
     dispatch(getProduct(id));
     dispatch(getTaxon(item.taxons[0].id));
-
     navigation.navigate("ProductDetail");
   };
 
@@ -135,7 +140,6 @@ const HomeComponent = ({
           key={index.toString()}
           item={item}
           onPress={() => {
-            console.log("");
             storeData("selectedVendor", resultVendor(item?.vendor?.id)[1]);
             handleProductLoad(item?.id, item);
           }}
@@ -347,14 +351,16 @@ const HomeComponent = ({
             ...globalStyles.container,
             ...globalStyles.mt8,
             ...styles.bg_white,
-            // alignItems: "center",
-            // justifyContent: "space-between",
           }}
           showsVerticalScrollIndicator={false}
           ListHeaderComponent={flatListHeaderComponent}
           ListFooterComponent={flatListlowerComponent}
         />
       )}
+
+      <Snackbar visible={snackbarVisible} onDismiss={dismissSnackbar}>
+        Added to Cart !
+      </Snackbar>
     </SafeAreaView>
   );
 };
@@ -363,6 +369,7 @@ const mapStateToProps = (state) => ({
   productsList: state.products.productsList,
   pageIndex: state.products.pageIndex,
   meta: state.products.meta,
+  cart: state.checkout.cart,
 });
 
 export default connect(mapStateToProps)(HomeComponent);
