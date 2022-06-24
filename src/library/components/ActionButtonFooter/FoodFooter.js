@@ -22,7 +22,7 @@ const FoodFooter = ({ navigation }) => {
             menu.name !== "Lokalprodukter"
         )
         .map((ele) => {
-          return { name: ele.name };
+          return { id: ele.id, name: ele.name };
         })
     );
   }, []);
@@ -129,9 +129,10 @@ const FoodFooter = ({ navigation }) => {
                     borderColor: "transparent",
                     borderBottomColor: "rgba(58, 58, 89, 1)",
                     padding: 5,
+                    justifyContent: "center",
                   }}
-                  // checkedColor={colors.btnLink}
                   textStyle={{
+                    flex: 1,
                     color: "#fff",
                     fontFamily: "lato-medium",
                     fontSize: 14,

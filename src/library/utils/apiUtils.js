@@ -26,7 +26,7 @@ async function handleAPIWithoutToken(path, params, method, data = null) {
   return await axios({ url, headers, method, data });
 }
 
-async function handleAPI(path, params, method, data = null) {
+async function handleAPI(path, params, method, data = null, filter = null) {
   const authToken = await getAuthToken();
 
   const headers = {

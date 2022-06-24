@@ -13,6 +13,7 @@ import { Icon } from "react-native-elements";
 import { connect, useSelector } from "react-redux";
 import { HOST } from "../../../res/env";
 import { getSelectedVendor } from "../../../redux/actions/taxonsActions";
+import { globalStyles } from "../../../styles/global";
 
 const ProducersListScreen = ({ dispatch, navigation }) => {
   const vendors = useSelector((state) => state.taxons.vendors);
@@ -43,7 +44,7 @@ const ProducersListScreen = ({ dispatch, navigation }) => {
 
   const producerListUpperComponent = () => {
     return (
-      <View style={[styles.container]}>
+      <View style={[styles.container, globalStyles.iosShadow]}>
         <View style={[styles.notificationContainer]}>
           <Image
             source={require("../../../../assets/images/producersImage/producerNotification.png")}
@@ -67,14 +68,17 @@ const ProducersListScreen = ({ dispatch, navigation }) => {
           }}
         >
           <TouchableOpacity
-            style={{
-              width: 100,
-              borderWidth: 1,
-              borderRadius: 10,
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
+            style={[
+              {
+                width: 100,
+                borderWidth: 1,
+                borderRadius: 10,
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+              },
+              globalStyles.iosShadow,
+            ]}
             // onPress={() => handleSnapPress(0)}
           >
             <Icon name="filter-list" type="material-icons" />

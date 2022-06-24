@@ -227,7 +227,7 @@ const ProducerDetailScreen = ({ dispatch, navigation }) => {
         ]}
       >
         <TouchableOpacity
-          style={styles.detailHeaderContainer}
+          style={[styles.detailHeaderContainer, globalStyles.iosShadow]}
           onPress={() => navigation.goBack()}
         >
           <Icon

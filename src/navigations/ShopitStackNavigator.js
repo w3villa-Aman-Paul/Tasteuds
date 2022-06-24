@@ -73,7 +73,7 @@ function ShopitStackNavigator({ navigation, route }) {
                 alignItems: "center",
               }}
             >
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={{
                   flex: 1,
                   alignItems: "center",
@@ -88,7 +88,7 @@ function ShopitStackNavigator({ navigation, route }) {
                   color={colors.primary}
                   style={{ marginRight: 10 }}
                 />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
               <TouchableOpacity
                 style={{
                   flex: 1,
@@ -142,6 +142,40 @@ function ShopitStackNavigator({ navigation, route }) {
           headerLeftContainerStyle: {
             paddingHorizontal: 10,
           },
+        }}
+      />
+      <ShopitStack.Screen
+        name="ProducersListScreen"
+        component={ProducersListScreen}
+        options={{
+          headerTitle: "PRODUSENTER",
+          headerShown: true,
+          headerTitleAlign: "center",
+
+          headerLeft: () => (
+            <Icon
+              name="arrowleft"
+              type="ant-design"
+              onPress={() => navigation.goBack()}
+              title="Back"
+            />
+          ),
+
+          headerLeftContainerStyle: [
+            {
+              paddingHorizontal: 10,
+              top: 4,
+              left: 20,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "#ffffff",
+              borderRadius: 50,
+              elevation: 10,
+              height: 40,
+              width: 40,
+            },
+            globalStyles.iosShadow,
+          ],
         }}
       />
       <ShopitStack.Screen
@@ -284,22 +318,6 @@ function ShopitStackNavigator({ navigation, route }) {
                 alignItems: "center",
               }}
             >
-              <TouchableOpacity
-                style={{
-                  flex: 1,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-                onPress={() => navigation.navigate("Profile")}
-              >
-                <Icon
-                  name="person"
-                  type="ionicons"
-                  size={30}
-                  color={colors.primary}
-                  style={{ marginRight: 10 }}
-                />
-              </TouchableOpacity>
               <TouchableOpacity
                 style={{
                   flex: 1,
@@ -472,7 +490,37 @@ function ShopitStackNavigator({ navigation, route }) {
       <ShopitStack.Screen name="SavedAddress" component={SavedAddress} />
       <ShopitStack.Screen name="AddAdress" component={AddAddress} />
 
-      <ShopitStack.Screen name="SearchScreen" component={SearchScreen} />
+      <ShopitStack.Screen
+        name="SearchScreen"
+        component={SearchScreen}
+        options={{
+          headerTitle: "Søk",
+          headerTitleAlign: "center",
+          headerLeft: () => (
+            <Icon
+              name="arrowleft"
+              type="ant-design"
+              onPress={() => navigation.goBack()}
+              title="Back"
+            />
+          ),
+          headerLeftContainerStyle: [
+            {
+              paddingHorizontal: 10,
+              top: 4,
+              left: 20,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "#ffffff",
+              borderRadius: 50,
+              elevation: 10,
+              height: 40,
+              width: 40,
+            },
+            globalStyles.iosShadow,
+          ],
+        }}
+      />
     </ShopitStack.Navigator>
   );
 }

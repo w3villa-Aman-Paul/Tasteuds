@@ -41,7 +41,7 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.white,
     elevation: 5,
     borderRadius: 10,
-    overflow: "hidden",
+    ...globalStyles.iosShadow,
   },
   producerCoverImage: {
     width: "100%",

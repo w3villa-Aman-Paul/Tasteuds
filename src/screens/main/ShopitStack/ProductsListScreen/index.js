@@ -33,6 +33,7 @@ import {
   addItem,
   getCart,
   activeFunction,
+  getSearchProduct,
 } from "../../../../redux";
 import FilterFooter from "../../../../library/components/ActionButtonFooter/FilterFooter";
 import { HOST } from "../../../../res/env";
@@ -201,6 +202,8 @@ const ProductListScreen = ({
     );
     return setSnackbarVisible(true);
   };
+
+  console.log("products>>", productsList.length);
 
   // Item Rendering..............................................................
   const FlatListImageItem = ({
@@ -405,7 +408,7 @@ const ProductListScreen = ({
 
           <ScrollView
             horizontal={true}
-            style={{ ...globalStyles.mt24, ...styles.bgwhite }}
+            style={{ ...globalStyles.mt16, ...styles.bgwhite }}
             showsHorizontalScrollIndicator={false}
           >
             <TouchableOpacity
@@ -465,7 +468,7 @@ const ProductListScreen = ({
           ) : (
             <ScrollView
               horizontal={true}
-              style={{ ...globalStyles.mt24 }}
+              style={{ ...globalStyles.mt16, marginBottom: 10 }}
               showsHorizontalScrollIndicator={false}
             >
               <TouchableOpacity
@@ -493,6 +496,7 @@ const ProductListScreen = ({
                       handleSubClick(handleUncheckAllMenus(arr), submenu);
                     }}
                   >
+                    Tastebuds project
                     <Text
                       style={
                         submenu.isActive ? styles.subActive : styles.subUnactive
@@ -627,6 +631,14 @@ const ProductListScreen = ({
 
       setSelectedvendors(data);
       storeData("vendors", data);
+    };
+
+    const handleFilterSearch = async (categories, vendors) => {
+      let filterData = categories
+        .filter((item) => item.isChecked)
+        .map((item) => Number(item.id));
+      console.log("categories", filterData);
+      dispatch(getSearchProduct(null, filterData));
     };
 
     return (
@@ -781,11 +793,12 @@ const ProductListScreen = ({
             style={{
               backgroundColor: colors.btnLink,
               width: "90%",
-              height: 30,
+              height: 35,
               borderRadius: 10,
               justifyContent: "center",
               alignItems: "center",
             }}
+            onPress={() => handleFilterSearch(selectedCategory, selectedVendor)}
           >
             <Text
               style={{
@@ -794,7 +807,7 @@ const ProductListScreen = ({
                 fontFamily: "lato-medium",
               }}
             >
-              VIS 89 VARER
+              {`VIS ${productsList.length} VARER`}
             </Text>
           </TouchableOpacity>
         </View>

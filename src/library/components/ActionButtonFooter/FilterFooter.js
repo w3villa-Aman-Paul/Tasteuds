@@ -1,7 +1,6 @@
-import React, { useCallback, useRef, useState } from "react";
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import React from "react";
+import { StyleSheet } from "react-native";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
-import { colors } from "../../../res/palette";
 import { createStackNavigator } from "@react-navigation/stack";
 import FoodFooter from "./FoodFooter";
 import { connect } from "react-redux";
