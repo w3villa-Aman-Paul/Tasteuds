@@ -85,7 +85,7 @@ export const getSearchProduct = (data = null, filter = null) => {
     // page: pageIndex,
     per_page: 10,
     filter: {
-      taxons: "[18,8]",
+      taxons: "" + filter,
     },
   };
   console.log(params);
