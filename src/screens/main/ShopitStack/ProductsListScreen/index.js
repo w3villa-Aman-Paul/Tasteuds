@@ -20,8 +20,6 @@ import {
   savingTaxon,
   getProductsList,
   getProduct,
-  resetProductsList,
-  resetProductsFilter,
   setPageIndex,
   getTaxonsList,
   getTaxon,
@@ -31,7 +29,6 @@ import {
   getSubMenuProducts,
   addItem,
   getCart,
-  activeFunction,
 } from "../../../../redux";
 import FilterFooter from "../../../../library/components/ActionButtonFooter/FilterFooter";
 import { HOST } from "../../../../res/env";
@@ -52,7 +49,6 @@ const ProductListScreen = ({
   pageIndex,
 }) => {
   const [snackbarVisible, setSnackbarVisible] = React.useState(false);
-  const [isSortOverlayVisible, setIsSortOverlayVisible] = React.useState(false);
   const [all, setAll] = React.useState(true);
   const [isSubAll, setIsSubAll] = React.useState(true);
   const [subLink, setSubLink] = React.useState("");
@@ -60,6 +56,7 @@ const ProductListScreen = ({
   const [activeMenus, setActiveMenus] = React.useState([]);
   const [activeSubMenu, setActiveSubMenu] = React.useState(false);
   const [isAll, setIsAll] = React.useState(true);
+  const [sort, setSort] = React.useState(false);
 
   const checkout = useSelector((state) => state.checkout);
   const errMessage = useSelector((state) => state.checkout.error);
@@ -88,7 +85,6 @@ const ProductListScreen = ({
   ]);
 
   const params = route?.params;
-  console.log(">>Params", params);
 
   const handleAfterMenuSelect = async (params) => {
     console.log("Active>>", activeMenus);
@@ -97,7 +93,6 @@ const ProductListScreen = ({
     setIsAll(false);
     setSubLink(params.menu.link.slice(2).toLowerCase());
 
-    console.log("SubLink", subLink);
     handleClick(handleUncheckAllMenus(activeMenus), params.menu);
     await dispatch(getSubMenuProducts(subLink));
     setIsSubLink(true);
@@ -182,10 +177,13 @@ const ProductListScreen = ({
 
   const snapPoints = ["40%"];
 
-  const handleSnapPress = React.useCallback((index) => {
-    sheetRef.current?.snapToIndex(index);
+  const handleFilter = () => {
     setIsOpen(true);
-  }, []);
+  };
+
+  const handleSort = () => {
+    setSort(true);
+  };
 
   React.useEffect(() => {
     dispatch(getCart(cart.token));
@@ -266,31 +264,14 @@ const ProductListScreen = ({
     removeData("vendors");
   }, []);
 
-  const productsSortList = [
-    {
-      title: "Price: lowest to high",
-      onPress: () => setProductListLowToHigh(),
-    },
-    {
-      title: "Price: highest to low",
-      onPress: () => setProductListHighToLow(),
-    },
-    {
-      title: "Cancel",
-      containerStyle: { backgroundColor: colors.error },
-      titleStyle: { color: "white" },
-      onPress: () => setIsSortOverlayVisible(false),
-    },
-  ];
-
   const setProductListHighToLow = () => {
     productsList.sort((a, b) => (a.price < b.price ? 1 : -1));
-    setIsSortOverlayVisible(false);
+    setSort(false);
   };
 
   const setProductListLowToHigh = () => {
     productsList.sort((a, b) => (a.price > b.price ? 1 : -1));
-    setIsSortOverlayVisible(false);
+    setSort(false);
   };
 
   const handleEndReached = () => {
@@ -557,19 +538,36 @@ const ProductListScreen = ({
       >
         <TouchableOpacity
           style={styles.stickyBottomBtn}
-          onPress={() => handleSnapPress(0)}
+          onPress={() => handleFilter()}
         >
           <Text>FILTER</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.stickyBottomBtn}
-          onPress={() => setIsSortOverlayVisible(true)}
+          onPress={() => handleSort()}
         >
           <Text>SORTER</Text>
         </TouchableOpacity>
       </View>
     );
   };
+
+  const productsSortList = [
+    {
+      title: "Price: lowest to high",
+      onPress: () => setProductListHighToLow(),
+    },
+    {
+      title: "Price: highest to low",
+      onPress: () => setProductListLowToHigh(),
+    },
+    {
+      title: "Cancel",
+      containerStyle: { backgroundColor: colors.error },
+      titleStyle: { color: "white" },
+      onPress: () => setSort(false),
+    },
+  ];
 
   const filterList = [
     {
@@ -581,6 +579,54 @@ const ProductListScreen = ({
       name: "producers",
     },
   ];
+
+  const sortContent = () => {
+    return (
+      <View
+        style={{
+          backgroundColor: "#232332",
+          flex: 1,
+          alignItems: "center",
+        }}
+      >
+        <Text
+          style={{
+            color: colors.white,
+            alignSelf: "center",
+            fontSize: 20,
+            marginTop: 5,
+            marginBottom: 5,
+          }}
+        >
+          Sort
+        </Text>
+        <View style={{ flex: 1, justifyContent: "space-around" }}>
+          {productsSortList.map((x, id) => {
+            return (
+              <View
+                key={id}
+                style={{
+                  paddingVertical: 10,
+                  paddingHorizontal: 10,
+                  borderRadius: 10,
+                  borderWidth: 1,
+                  borderColor: colors.white,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <TouchableOpacity onPress={x.onPress}>
+                  <Text style={{ color: colors.white, fontSize: 18 }}>
+                    {x.title}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            );
+          })}
+        </View>
+      </View>
+    );
+  };
 
   const bottomSheetContent = ({ navigation }) => {
     const [selectedCategory, setSelectedCategory] = React.useState([]);
@@ -853,6 +899,15 @@ const ProductListScreen = ({
             snapPoints={snapPoints}
             onClose={() => setIsOpen(false)}
             bottomSheetContent={bottomSheetContent}
+          />
+        )}
+
+        {sort && (
+          <FilterFooter
+            value={sheetRef}
+            snapPoints={snapPoints}
+            onClose={() => setSort(false)}
+            bottomSheetContent={sortContent}
           />
         )}
       </SafeAreaView>
