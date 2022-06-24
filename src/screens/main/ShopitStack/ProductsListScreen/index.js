@@ -6,7 +6,6 @@ import {
   FlatList,
   TouchableOpacity,
   ScrollView,
-  ActivityIndicator,
   Dimensions,
   LogBox,
   Platform,
@@ -62,6 +61,7 @@ const ProductListScreen = ({
   const [activeMenus, setActiveMenus] = React.useState([]);
   const [activeSubMenu, setActiveSubMenu] = React.useState(false);
   const [isAll, setIsAll] = React.useState(true);
+  const [sort, setSort] = React.useState(false);
 
   const checkout = useSelector((state) => state.checkout);
   const errMessage = useSelector((state) => state.checkout.error);
@@ -183,6 +183,14 @@ const ProductListScreen = ({
 
   const snapPoints = ["50%"];
 
+  const handleFilter = () => {
+    setIsOpen(true);
+  };
+
+  const handleSort = () => {
+    setSort(true);
+  };
+
   const handleSnapPress = React.useCallback((index) => {
     sheetRef.current?.snapToIndex(index);
     setIsOpen(true);
@@ -269,32 +277,32 @@ const ProductListScreen = ({
     removeData("vendors");
   }, []);
 
+  const setProductListHighToLow = () => {
+    productsList.sort((a, b) => (a.price < b.price ? 1 : -1));
+    setSort(false);
+  };
+
+  const setProductListLowToHigh = () => {
+    productsList.sort((a, b) => (a.price > b.price ? 1 : -1));
+    setSort(false);
+  };
+
   const productsSortList = [
     {
       title: "Price: lowest to high",
-      onPress: () => setProductListLowToHigh(),
+      onPress: () => setProductListHighToLow(),
     },
     {
       title: "Price: highest to low",
-      onPress: () => setProductListHighToLow(),
+      onPress: () => setProductListLowToHigh(),
     },
     {
       title: "Cancel",
       containerStyle: { backgroundColor: colors.error },
       titleStyle: { color: "white" },
-      onPress: () => setIsSortOverlayVisible(false),
+      onPress: () => setSort(false),
     },
   ];
-
-  const setProductListHighToLow = () => {
-    productsList.sort((a, b) => (a.price < b.price ? 1 : -1));
-    setIsSortOverlayVisible(false);
-  };
-
-  const setProductListLowToHigh = () => {
-    productsList.sort((a, b) => (a.price > b.price ? 1 : -1));
-    setIsSortOverlayVisible(false);
-  };
 
   const handleEndReached = () => {
     const response = dispatch(setPageIndex(pageIndex + 1));
@@ -496,7 +504,6 @@ const ProductListScreen = ({
                       handleSubClick(handleUncheckAllMenus(arr), submenu);
                     }}
                   >
-                    Tastebuds project
                     <Text
                       style={
                         submenu.isActive ? styles.subActive : styles.subUnactive
@@ -564,16 +571,64 @@ const ProductListScreen = ({
       >
         <TouchableOpacity
           style={[styles.stickyBottomBtn, globalStyles.iosShadow]}
-          onPress={() => handleSnapPress(0)}
+          onPress={() => handleFilter()}
         >
           <Text>FILTER</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.stickyBottomBtn, globalStyles.iosShadow]}
-          onPress={() => setIsSortOverlayVisible(true)}
+          onPress={() => handleSort()}
         >
           <Text>SORTER</Text>
         </TouchableOpacity>
+      </View>
+    );
+  };
+
+  const sortContent = () => {
+    return (
+      <View
+        style={{
+          backgroundColor: "#232332",
+          flex: 1,
+          alignItems: "center",
+        }}
+      >
+        <Text
+          style={{
+            color: colors.white,
+            alignSelf: "center",
+            fontSize: 20,
+            marginTop: 5,
+            marginBottom: 5,
+          }}
+        >
+          Sort
+        </Text>
+        <View style={{ flex: 1, justifyContent: "space-around" }}>
+          {productsSortList.map((x, id) => {
+            return (
+              <View
+                key={id}
+                style={{
+                  paddingVertical: 10,
+                  paddingHorizontal: 10,
+                  borderRadius: 10,
+                  borderWidth: 1,
+                  borderColor: colors.white,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <TouchableOpacity onPress={x.onPress}>
+                  <Text style={{ color: colors.white, fontSize: 18 }}>
+                    {x.title}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            );
+          })}
+        </View>
       </View>
     );
   };
@@ -870,6 +925,15 @@ const ProductListScreen = ({
             snapPoints={snapPoints}
             onClose={() => setIsOpen(false)}
             bottomSheetContent={bottomSheetContent}
+          />
+        )}
+
+        {sort && (
+          <FilterFooter
+            value={sheetRef}
+            snapPoints={snapPoints}
+            onClose={() => setSort(false)}
+            bottomSheetContent={sortContent}
           />
         )}
       </SafeAreaView>
