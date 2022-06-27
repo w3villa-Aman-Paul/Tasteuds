@@ -22,7 +22,7 @@ const FoodFooter = ({ navigation }) => {
             menu.name !== "Lokalprodukter"
         )
         .map((ele) => {
-          return { id: ele.id, name: ele.name };
+          return { id: ele?.linked_resource?.id, name: ele.name };
         })
     );
   }, []);

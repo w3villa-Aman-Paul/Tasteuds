@@ -95,7 +95,7 @@ const ProductListScreen = ({
     console.log("Active>>", activeMenus);
     await dispatch(getSubMenu(params.menu.link.slice(2).toLowerCase()));
     setAll(false);
-    setIsAll(false);
+    setIsAll(true);
     setSubLink(params.menu.link.slice(2).toLowerCase());
 
     console.log("SubLink", subLink);
@@ -142,12 +142,20 @@ const ProductListScreen = ({
     setActiveSubMenu(unactive);
   };
 
+  const handleMenuClick = async (categories, vendors) => {
+    let filterData = categories
+      .filter((item) => item.isActive)
+      .map((item) => Number(item.id));
+
+    dispatch(getSearchProduct(null, filterData));
+  };
+
   const handleClick = (activeMenus, menu) => {
     const newArr = [...activeMenus];
     const index = newArr.findIndex((item) => item.id === menu.id);
     newArr[index].isActive = true;
-
     setActiveMenus(newArr);
+    dispatch(getSearchProduct(null, handleMenuClick(activeMenus)));
   };
 
   const handleSubClick = (activeMenus, menu) => {
@@ -692,7 +700,7 @@ const ProductListScreen = ({
       let filterData = categories
         .filter((item) => item.isChecked)
         .map((item) => Number(item.id));
-      console.log("categories", filterData);
+
       dispatch(getSearchProduct(null, filterData));
     };
 
@@ -886,7 +894,7 @@ const ProductListScreen = ({
           <ActivityIndicatorCard />
         ) : (
           <FlatList
-            data={all ? productsList : data}
+            data={isAll ? productsList : data}
             keyExtractor={(item, index) => index.toString()}
             renderItem={newJustInRenderItem}
             numColumns={2}

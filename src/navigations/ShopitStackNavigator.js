@@ -215,15 +215,16 @@ function ShopitStackNavigator({ navigation, route }) {
                   flex: 1,
                   alignItems: "center",
                   justifyContent: "center",
+                  paddingHorizontal: 10,
                 }}
-                onPress={() => navigation.navigate("Profile")}
+                onPress={() => navigation.navigate("SearchScreen")}
               >
                 <Icon
-                  name="person"
-                  type="ionicons"
-                  size={30}
+                  name="search"
+                  type="font-awesome"
+                  size={25}
                   color={colors.primary}
-                  style={{ marginRight: 10 }}
+                  onPress={() => navigation.navigate("SearchScreen")}
                 />
               </TouchableOpacity>
               <TouchableOpacity
