@@ -23,6 +23,15 @@ const ProductDetailScreen = ({ navigation, dispatch, auth, cart, route }) => {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [favsnackbar, setFavSnackbar] = useState(false);
   const [selectedVendor, setSelectedVendor] = useState([]);
+  const [cartItems, setCartItems] = React.useState({});
+
+  React.useEffect(() => {
+    const getValue = async () => {
+      let cartData = await getData("cartItems");
+      setCartItems(cartData);
+    };
+    getValue();
+  }, [cartItems.cart]);
 
   const vendor = async () => {
     setSelectedVendor(await getData("selectedVendor"));
@@ -48,7 +57,7 @@ const ProductDetailScreen = ({ navigation, dispatch, auth, cart, route }) => {
   const handleAddToBag = async () => {
     let vari = product?.variants[0];
     dispatch(
-      addItem(cart.token, {
+      addItem(cartItems?.cart?.token, {
         variant_id: vari.id,
         quantity: 1,
       })

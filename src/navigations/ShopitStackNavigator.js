@@ -10,7 +10,6 @@ import BagScreen from "../screens/main/ShopitStack/CheckoutScreens/BagScreen";
 import { ShoppingBag, Heart, Share, ChevronLeft } from "../library/icons";
 import { colors } from "../res/palette";
 import { globalStyles } from "../styles/global";
-import { useSelector } from "react-redux";
 
 import { Icon } from "react-native-elements";
 import HomeComponent from "../screens/main/ShopitStack/HomeScreen";
@@ -19,21 +18,21 @@ import FavouritesScreen from "../screens/main/FavouritesStack/FavouritesScreen";
 import SavedAddress from "../screens/main/ProfileStack/SavedAddress";
 import AddAddress from "../screens/main/ProfileStack/AddAddress";
 
-import ProducersListScreen from "../screens/main/ProducersStack/ProducersListScreen";
-
 import ProducerDetailScreen from "../screens/main/ProducersStack/ProducerDetailScreen";
 import SearchScreen from "../screens/main/ShopitStack/SearchScreen/index";
+import { getData } from "../redux/rootReducer";
 
 const ShopitStack = createStackNavigator();
 
 function ShopitStackNavigator({ navigation, route }) {
-  const cart = useSelector((state) => state.checkout.cart);
-
-  const [cartCount, setCartCount] = React.useState(0);
-
+  const [cartItems, setCartItems] = React.useState({});
   React.useEffect(() => {
-    setCartCount(cart.item_count);
-  }, [cart]);
+    const getValue = async () => {
+      let cartData = await getData("cartItems");
+      setCartItems(cartData);
+    };
+    getValue();
+  }, [cartItems?.cart]);
 
   React.useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route);
@@ -104,7 +103,7 @@ function ShopitStackNavigator({ navigation, route }) {
                   color={colors.primary}
                 />
 
-                {cartCount > 0 ? (
+                {cartItems?.cart?.item_count > 0 ? (
                   <View
                     style={{
                       position: "absolute",
@@ -126,7 +125,7 @@ function ShopitStackNavigator({ navigation, route }) {
                         fontSize: 10,
                       }}
                     >
-                      {cartCount}
+                      {cartItems?.cart?.item_count}
                     </Text>
                   </View>
                 ) : null}
@@ -207,7 +206,7 @@ function ShopitStackNavigator({ navigation, route }) {
                   color={colors.primary}
                 />
 
-                {cartCount > 0 ? (
+                {cartItems?.cart?.item_count > 0 ? (
                   <View
                     style={{
                       position: "absolute",
@@ -229,7 +228,7 @@ function ShopitStackNavigator({ navigation, route }) {
                         fontSize: 10,
                       }}
                     >
-                      {cartCount}
+                      {cartItems?.cart?.item_count}
                     </Text>
                   </View>
                 ) : null}
@@ -315,7 +314,7 @@ function ShopitStackNavigator({ navigation, route }) {
                   color={colors.primary}
                 />
 
-                {cartCount > 0 ? (
+                {cartItems?.cart?.item_count > 0 ? (
                   <View
                     style={{
                       position: "absolute",
@@ -337,7 +336,7 @@ function ShopitStackNavigator({ navigation, route }) {
                         fontSize: 10,
                       }}
                     >
-                      {cartCount}
+                      {cartItems?.cart?.item_count}
                     </Text>
                   </View>
                 ) : null}

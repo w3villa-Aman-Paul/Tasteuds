@@ -1,10 +1,7 @@
 import * as React from "react";
 import { View, Text, ScrollView, Image, TextInput } from "react-native";
 import { globalStyles } from "../../../../../styles/global";
-import ProductCard from "../../../../../library/components/ProductCard";
-import TextField from "../../../../../library/components/TextField";
 import { styles } from "./styles";
-import { checkoutStyles } from "../styles";
 import { connect } from "react-redux";
 import { Divider } from "react-native-elements";
 import { Snackbar } from "react-native-paper";
@@ -22,14 +19,14 @@ import CartFooter from "../../../../../library/components/ActionButtonFooter/car
 import { useSelector } from "react-redux";
 import { HOST } from "../../../../../res/env";
 import FilterFooter from "../../../../../library/components/ActionButtonFooter/FilterFooter";
+import { getData } from "../../../../../redux/rootReducer";
 
-const BagScreen = ({ navigation, dispatch, saving }) => {
+const BagScreen = ({ navigation, dispatch, saving, cart }) => {
   const productsList = useSelector((state) => state.products.productsList);
   const { isAuth } = useSelector((state) => state.auth);
 
-  const cart = useSelector((state) => state.checkout.cart);
-
   const [snackbarVisible, setSnackbarVisible] = React.useState(false);
+  const [cartItems, setCartItems] = React.useState({});
 
   const sheetRef = React.useRef(null);
   const [isOpen, setIsOpen] = React.useState(false);
@@ -38,6 +35,14 @@ const BagScreen = ({ navigation, dispatch, saving }) => {
   React.useEffect(() => {
     dispatch(getCart(cart.token));
   }, []);
+
+  React.useEffect(() => {
+    const getValue = async () => {
+      let cartData = await getData("cartItems");
+      setCartItems(cartData);
+    };
+    getValue();
+  }, [cartItems.cart]);
 
   const onDismiss = () => setSnackbarVisible(false);
 
@@ -278,12 +283,12 @@ const BagScreen = ({ navigation, dispatch, saving }) => {
               </Text>
             </View>
             <View style={globalStyles.containerFluid}>
-              {cart.line_items.map((ele, idx) => {
+              {cartItems?.cart?.line_items?.map((ele, idx) => {
                 let cartProductImage = handleCartProductImage(ele);
 
                 return (
                   <>
-                    <View key={ele.id} style={styles.body}>
+                    <View key={idx} style={styles.body}>
                       <View style={styles.cart_btn}>
                         <Text style={{ fontSize: 25 }}>{ele.quantity}</Text>
                         <View style={styles.inc_btn}>
@@ -337,7 +342,6 @@ const BagScreen = ({ navigation, dispatch, saving }) => {
                   </>
                 );
               })}
-
               <View style={styles.continue}>
                 <Text
                   style={{ ...styles.continue_shop, ...globalStyles.container }}
@@ -378,11 +382,6 @@ const BagScreen = ({ navigation, dispatch, saving }) => {
             </View>
 
             <View></View>
-            {/* 
-            <CheckoutDetailsCard
-              title="Price Details"
-              display_total={cart && cart.display_total}
-            /> */}
           </ScrollView>
 
           {isOpen ? (

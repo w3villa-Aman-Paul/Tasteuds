@@ -24,13 +24,21 @@ import { HOST } from "../../../../res/env";
 import { colors } from "../../../../res/palette";
 import { Icon } from "react-native-elements";
 import ActivityIndicatorCard from "../../../../library/components/ActivityIndicatorCard";
-import { storeData } from "../../../../redux/rootReducer";
+import { getData, storeData } from "../../../../redux/rootReducer";
 
 const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   const { isAuth } = useSelector((state) => state.auth);
   const { saving } = useSelector((state) => state.products);
   const vendorList = useSelector((state) => state.taxons.vendors);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
+
+  React.useEffect(() => {
+    const getValue = async () => {
+      let cartData = await getData("cartItems");
+      console.log(">>>>>hwshhh", cartData);
+    };
+    getValue();
+  }, []);
 
   React.useEffect(() => {
     dispatch(getVendorsList());
