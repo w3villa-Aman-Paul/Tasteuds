@@ -1,3 +1,4 @@
+import { string } from "yup";
 import {
   handleAPI,
   API_VERSION_STOREFRONT,
@@ -74,3 +75,23 @@ export const setPageIndex = (pageIndex) => ({
 export const resetProductsFilter = () => ({
   type: "RESET_PRODUCTS_FILTER",
 });
+
+export const getSearchProduct = (data = null, filter = null) => {
+  const url = `${API_VERSION_STOREFRONT}/products`;
+  console.log("filter>>>", filter);
+  const params = {
+    include: "images",
+    "Content-Type": "application/json",
+    // page: pageIndex,
+    per_page: 10,
+    filter: {
+      taxons: "" + filter,
+    },
+  };
+  console.log(params);
+  const method = "GET";
+  return {
+    type: "GET_SEARCH_PRODUCTS_LIST",
+    payload: handleAPIWithoutToken(url, params, method, data, filter),
+  };
+};

@@ -55,7 +55,7 @@ const ProducersFooter = ({ navigation }) => {
 
   return (
     <>
-      <View style={{ backgroundColor: "#232332", flex: 1 }}>
+      <View style={{ backgroundColor: "#232332", flex: 1, paddingTop: 10 }}>
         {/* // *HEADER-PRODUSENTER */}
         <View
           style={{
@@ -66,13 +66,13 @@ const ProducersFooter = ({ navigation }) => {
         >
           <TouchableOpacity
             onPress={() => navigation.goBack()}
-            style={{ position: "absolute", top: 0, left: 0 }}
+            style={{ position: "absolute", top: 0, left: 0, zIndex: 99 }}
           >
             <Icon
               name="chevron-left"
               type="material-icons"
               color="#fff"
-              size={24}
+              size={30}
             />
           </TouchableOpacity>
           <View
@@ -82,7 +82,7 @@ const ProducersFooter = ({ navigation }) => {
               style={{
                 color: "#fff",
                 // textAlign: "center",
-                fontSize: 14,
+                fontSize: 20,
                 fontFamily: "lato-medium",
               }}
             >

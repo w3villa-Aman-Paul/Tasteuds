@@ -42,7 +42,7 @@ function CategoriesStackNavigator({ navigation }) {
             type="font-awesome"
             size={25}
             color={colors.primary}
-            onPress={() => navigation.navigate("Profile")}
+            onPress={() => navigation.navigate("SearchScreen")}
           />
         ),
         headerRightContainerStyle: {
@@ -55,6 +55,7 @@ function CategoriesStackNavigator({ navigation }) {
           elevation: 10,
           height: 40,
           width: 40,
+          ...globalStyles.iosShadow,
         },
         headerLeftContainerStyle: {
           paddingHorizontal: 10,

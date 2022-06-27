@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   View,
   Dimensions,
+  Platform,
 } from "react-native";
 import HTML from "react-native-render-html";
 import React from "react";
@@ -16,6 +17,7 @@ import { HOST } from "../../../res/env";
 import { Icon } from "react-native-elements";
 import { colors } from "../../../res/palette";
 import { getProduct, getTaxon } from "../../../redux";
+import { globalStyles } from "../../../styles/global";
 
 const ProducerDetailScreen = ({ dispatch, navigation }) => {
   const selectedVendor = useSelector((state) => state?.taxons?.selectedVendor);
@@ -111,22 +113,19 @@ const ProducerDetailScreen = ({ dispatch, navigation }) => {
     return (
       <>
         <View
-          style={{
-            height: 96,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            backgroundColor: "white",
-            padding: 10,
-            marginVertical: 20,
-            borderRadius: 20,
-            elevation: 5,
-            shadowOffset: {
-              width: 2,
-              height: 2,
+          style={[
+            {
+              height: 96,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              backgroundColor: "white",
+              padding: 10,
+              marginVertical: 20,
+              borderRadius: 20,
+              elevation: 5,
             },
-            shadowColor: "black",
-            shadowOpacity: 0.3,
-          }}
+            globalStyles.iosShadow,
+          ]}
         >
           <Image
             source={{ uri: `${HOST}/${selectedVendor?.image?.styles[2]?.url}` }}
@@ -160,22 +159,19 @@ const ProducerDetailScreen = ({ dispatch, navigation }) => {
 
         {/* // *Description */}
         <View
-          style={{
-            marginVertical: 10,
-            marginHorizontal: 2,
-            padding: 10,
-            borderRadius: 10,
-            backgroundColor: "white",
-            border: 1,
-            borderColor: "transparent",
-            elevation: 5,
-            shadowOffset: {
-              width: 2,
-              height: 2,
+          style={[
+            {
+              marginVertical: 10,
+              marginHorizontal: 2,
+              padding: 10,
+              borderRadius: 10,
+              backgroundColor: "white",
+              border: 1,
+              borderColor: "transparent",
+              elevation: 5,
             },
-            shadowColor: "black",
-            shadowOpacity: 0.3,
-          }}
+            globalStyles.iosShadow,
+          ]}
         >
           <Text style={styles.descriptionTitle}>Om oss</Text>
           <HTML
@@ -224,9 +220,14 @@ const ProducerDetailScreen = ({ dispatch, navigation }) => {
     >
       {/*//* Header */}
 
-      <View style={styles.detailHeader}>
+      <View
+        style={[
+          styles.detailHeader,
+          Platform.OS === "android" ? { marginTop: 30 } : { marginTop: 0 },
+        ]}
+      >
         <TouchableOpacity
-          style={styles.detailHeaderContainer}
+          style={[styles.detailHeaderContainer, globalStyles.iosShadow]}
           onPress={() => navigation.goBack()}
         >
           <Icon

@@ -227,6 +227,28 @@ export default function productsReducer(state = DEFAULT_STATE, action) {
       };
       return { ...state, ...changes };
 
+      /**
+       * GET_SEARCH_PRODUCTS_LIST
+       */
+      GET_SEARCH_PRODUCTS_LIST;
+    case "GET_SEARCH_PRODUCTS_LIST_PENDING":
+      return { ...state, saving: state.isViewing ? false : true };
+
+    case "GET_SEARCH_PRODUCTS_LIST_REJECTED":
+      changes = {
+        saving: false,
+      };
+      return { ...state, ...changes };
+
+    case "GET_SEARCH_PRODUCTS_LIST_FULFILLED":
+      changes = {
+        productsList: [...dataFormatter.deserialize(response)],
+        isViewing: true,
+        saving: false,
+        meta: response.meta,
+      };
+      return { ...state, ...changes };
+
     /**
      * GET_PRODUCT
      */

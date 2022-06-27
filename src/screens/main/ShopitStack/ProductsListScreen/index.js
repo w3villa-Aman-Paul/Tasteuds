@@ -6,9 +6,9 @@ import {
   FlatList,
   TouchableOpacity,
   ScrollView,
-  ActivityIndicator,
   Dimensions,
   LogBox,
+  Platform,
 } from "react-native";
 import { globalStyles } from "../../../../styles/global";
 import { colors } from "../../../../res/palette";
@@ -20,6 +20,8 @@ import {
   savingTaxon,
   getProductsList,
   getProduct,
+  resetProductsList,
+  resetProductsFilter,
   setPageIndex,
   getTaxonsList,
   getTaxon,
@@ -29,6 +31,8 @@ import {
   getSubMenuProducts,
   addItem,
   getCart,
+  activeFunction,
+  getSearchProduct,
 } from "../../../../redux";
 import FilterFooter from "../../../../library/components/ActionButtonFooter/FilterFooter";
 import { HOST } from "../../../../res/env";
@@ -49,6 +53,7 @@ const ProductListScreen = ({
   pageIndex,
 }) => {
   const [snackbarVisible, setSnackbarVisible] = React.useState(false);
+  const [isSortOverlayVisible, setIsSortOverlayVisible] = React.useState(false);
   const [all, setAll] = React.useState(true);
   const [isSubAll, setIsSubAll] = React.useState(true);
   const [subLink, setSubLink] = React.useState("");
@@ -90,9 +95,10 @@ const ProductListScreen = ({
     console.log("Active>>", activeMenus);
     await dispatch(getSubMenu(params.menu.link.slice(2).toLowerCase()));
     setAll(false);
-    setIsAll(false);
+    setIsAll(true);
     setSubLink(params.menu.link.slice(2).toLowerCase());
 
+    console.log("SubLink", subLink);
     handleClick(handleUncheckAllMenus(activeMenus), params.menu);
     await dispatch(getSubMenuProducts(subLink));
     setIsSubLink(true);
@@ -136,12 +142,20 @@ const ProductListScreen = ({
     setActiveSubMenu(unactive);
   };
 
+  const handleMenuClick = async (categories, vendors) => {
+    let filterData = categories
+      .filter((item) => item.isActive)
+      .map((item) => Number(item.id));
+
+    dispatch(getSearchProduct(null, filterData));
+  };
+
   const handleClick = (activeMenus, menu) => {
     const newArr = [...activeMenus];
     const index = newArr.findIndex((item) => item.id === menu.id);
     newArr[index].isActive = true;
-
     setActiveMenus(newArr);
+    dispatch(getSearchProduct(null, handleMenuClick(activeMenus)));
   };
 
   const handleSubClick = (activeMenus, menu) => {
@@ -175,7 +189,7 @@ const ProductListScreen = ({
   const sheetRef = React.useRef(null);
   const [isOpen, setIsOpen] = React.useState(false);
 
-  const snapPoints = ["40%"];
+  const snapPoints = ["50%"];
 
   const handleFilter = () => {
     setIsOpen(true);
@@ -184,6 +198,11 @@ const ProductListScreen = ({
   const handleSort = () => {
     setSort(true);
   };
+
+  const handleSnapPress = React.useCallback((index) => {
+    sheetRef.current?.snapToIndex(index);
+    setIsOpen(true);
+  }, []);
 
   React.useEffect(() => {
     dispatch(getCart(cart.token));
@@ -199,6 +218,8 @@ const ProductListScreen = ({
     );
     return setSnackbarVisible(true);
   };
+
+  console.log("products>>", productsList.length);
 
   // Item Rendering..............................................................
   const FlatListImageItem = ({
@@ -273,6 +294,23 @@ const ProductListScreen = ({
     productsList.sort((a, b) => (a.price > b.price ? 1 : -1));
     setSort(false);
   };
+
+  const productsSortList = [
+    {
+      title: "Price: lowest to high",
+      onPress: () => setProductListHighToLow(),
+    },
+    {
+      title: "Price: highest to low",
+      onPress: () => setProductListLowToHigh(),
+    },
+    {
+      title: "Cancel",
+      containerStyle: { backgroundColor: colors.error },
+      titleStyle: { color: "white" },
+      onPress: () => setSort(false),
+    },
+  ];
 
   const handleEndReached = () => {
     const response = dispatch(setPageIndex(pageIndex + 1));
@@ -352,17 +390,20 @@ const ProductListScreen = ({
           }}
         >
           <View
-            style={{
-              padding: 10,
-              marginTop: 10,
-              borderWidth: 1,
-              borderRadius: 10,
-              flex: 1,
-              flexDirection: "row",
-              elevation: 3,
-              backgroundColor: "#fff",
-              borderColor: "transparent",
-            }}
+            style={[
+              {
+                padding: 10,
+                borderWidth: 1,
+                borderRadius: 10,
+                flex: 1,
+                flexDirection: "row",
+                elevation: 3,
+                backgroundColor: "#fff",
+                borderColor: "transparent",
+              },
+              globalStyles.iosShadow,
+              Platform.OS === "android" ? { marginTop: 10 } : { marginTop: 0 },
+            ]}
           >
             <Image
               source={require("../../../../../assets/images/components/truck.png")}
@@ -383,7 +424,7 @@ const ProductListScreen = ({
 
           <ScrollView
             horizontal={true}
-            style={{ ...globalStyles.mt24, ...styles.bgwhite }}
+            style={{ ...globalStyles.mt16, ...styles.bgwhite }}
             showsHorizontalScrollIndicator={false}
           >
             <TouchableOpacity
@@ -443,7 +484,7 @@ const ProductListScreen = ({
           ) : (
             <ScrollView
               horizontal={true}
-              style={{ ...globalStyles.mt24 }}
+              style={{ ...globalStyles.mt16, marginBottom: 10 }}
               showsHorizontalScrollIndicator={false}
             >
               <TouchableOpacity
@@ -537,13 +578,13 @@ const ProductListScreen = ({
         }}
       >
         <TouchableOpacity
-          style={styles.stickyBottomBtn}
+          style={[styles.stickyBottomBtn, globalStyles.iosShadow]}
           onPress={() => handleFilter()}
         >
           <Text>FILTER</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={styles.stickyBottomBtn}
+          style={[styles.stickyBottomBtn, globalStyles.iosShadow]}
           onPress={() => handleSort()}
         >
           <Text>SORTER</Text>
@@ -551,34 +592,6 @@ const ProductListScreen = ({
       </View>
     );
   };
-
-  const productsSortList = [
-    {
-      title: "Price: lowest to high",
-      onPress: () => setProductListHighToLow(),
-    },
-    {
-      title: "Price: highest to low",
-      onPress: () => setProductListLowToHigh(),
-    },
-    {
-      title: "Cancel",
-      containerStyle: { backgroundColor: colors.error },
-      titleStyle: { color: "white" },
-      onPress: () => setSort(false),
-    },
-  ];
-
-  const filterList = [
-    {
-      title: "MATVARER",
-      name: "food",
-    },
-    {
-      title: "PRODUSENTER",
-      name: "producers",
-    },
-  ];
 
   const sortContent = () => {
     return (
@@ -628,6 +641,17 @@ const ProductListScreen = ({
     );
   };
 
+  const filterList = [
+    {
+      title: "MATVARER",
+      name: "food",
+    },
+    {
+      title: "PRODUSENTER",
+      name: "producers",
+    },
+  ];
+
   const bottomSheetContent = ({ navigation }) => {
     const [selectedCategory, setSelectedCategory] = React.useState([]);
     const [selectedVendors, setSelectedvendors] = React.useState([]);
@@ -672,6 +696,14 @@ const ProductListScreen = ({
       storeData("vendors", data);
     };
 
+    const handleFilterSearch = async (categories, vendors) => {
+      let filterData = categories
+        .filter((item) => item.isChecked)
+        .map((item) => Number(item.id));
+
+      dispatch(getSearchProduct(null, filterData));
+    };
+
     return (
       <View
         style={{
@@ -685,7 +717,7 @@ const ProductListScreen = ({
             style={{
               color: "#fff",
               textAlign: "center",
-              fontSize: 14,
+              fontSize: 20,
               fontFamily: "lato-medium",
               paddingTop: 20,
             }}
@@ -720,7 +752,7 @@ const ProductListScreen = ({
                         style={{
                           color: colors.white,
                           fontFamily: "lato-medium",
-                          fontSize: 14,
+                          fontSize: 16,
                         }}
                       >
                         {ele.title}
@@ -814,20 +846,22 @@ const ProductListScreen = ({
         <View
           style={{
             marginTop: 30,
-            alignSelf: "center",
+            width: "100%",
             flex: 1,
             justifyContent: "center",
+            alignItems: "center",
           }}
         >
           <TouchableOpacity
             style={{
               backgroundColor: colors.btnLink,
-              width: 180,
-              height: 26,
-              borderRadius: 20,
+              width: "90%",
+              height: 35,
+              borderRadius: 10,
               justifyContent: "center",
               alignItems: "center",
             }}
+            onPress={() => handleFilterSearch(selectedCategory, selectedVendor)}
           >
             <Text
               style={{
@@ -836,7 +870,7 @@ const ProductListScreen = ({
                 fontFamily: "lato-medium",
               }}
             >
-              VIS 89 VARER
+              {`VIS ${productsList.length} VARER`}
             </Text>
           </TouchableOpacity>
         </View>
@@ -860,7 +894,7 @@ const ProductListScreen = ({
           <ActivityIndicatorCard />
         ) : (
           <FlatList
-            data={all ? productsList : data}
+            data={isAll ? productsList : data}
             keyExtractor={(item, index) => index.toString()}
             renderItem={newJustInRenderItem}
             numColumns={2}
