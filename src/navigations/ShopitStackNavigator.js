@@ -94,6 +94,23 @@ function ShopitStackNavigator({ navigation, route }) {
                   flex: 1,
                   alignItems: "center",
                   justifyContent: "center",
+                  paddingHorizontal: 10,
+                }}
+                onPress={() => navigation.navigate("SearchScreen")}
+              >
+                <Icon
+                  name="search"
+                  type="font-awesome"
+                  size={25}
+                  color={colors.primary}
+                  onPress={() => navigation.navigate("SearchScreen")}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  flex: 1,
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
                 onPress={() => navigation.navigate("Bag")}
               >
@@ -414,7 +431,7 @@ function ShopitStackNavigator({ navigation, route }) {
                 type="entypo"
                 size={24}
                 style={{ color: colors.black }}
-                onPress={() => navigation.navigate("ProductDetail")}
+                onPress={() => navigation.goBack()}
               />
             </TouchableOpacity>
           ),

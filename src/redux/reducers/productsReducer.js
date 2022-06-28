@@ -149,6 +149,7 @@ const DEFAULT_STATE = {
       ],
     },
   },
+  searchedProducts: [],
   productsList: [
     {
       display_price: "$",
@@ -232,7 +233,7 @@ export default function productsReducer(state = DEFAULT_STATE, action) {
        */
       GET_SEARCH_PRODUCTS_LIST;
     case "GET_SEARCH_PRODUCTS_LIST_PENDING":
-      return { ...state, saving: state.isViewing ? false : true };
+      return { ...state, saving: true };
 
     case "GET_SEARCH_PRODUCTS_LIST_REJECTED":
       changes = {
@@ -242,7 +243,7 @@ export default function productsReducer(state = DEFAULT_STATE, action) {
 
     case "GET_SEARCH_PRODUCTS_LIST_FULFILLED":
       changes = {
-        productsList: [...dataFormatter.deserialize(response)],
+        searchedProducts: [...dataFormatter.deserialize(response)],
         isViewing: true,
         saving: false,
         meta: response.meta,

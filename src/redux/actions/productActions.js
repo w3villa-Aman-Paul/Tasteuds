@@ -85,10 +85,28 @@ export const getSearchProduct = (data = null, filter = null) => {
     // page: pageIndex,
     per_page: 10,
     filter: {
-      taxons: "" + filter,
+      Taxon: "" + filter,
     },
   };
-  console.log(params);
+  const method = "GET";
+  return {
+    type: "GET_SEARCH_PRODUCTS_LIST",
+    payload: handleAPIWithoutToken(url, params, method, data, filter),
+  };
+};
+
+export const getSearchByProductName = (data = null, filter = null) => {
+  const url = `${API_VERSION_STOREFRONT}/products`;
+  console.log("filter>>>", filter);
+  const params = {
+    include: "images",
+    "Content-Type": "application/json",
+    // page: pageIndex,
+    per_page: 10,
+    filter: {
+      name: "" + filter,
+    },
+  };
   const method = "GET";
   return {
     type: "GET_SEARCH_PRODUCTS_LIST",

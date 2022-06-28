@@ -95,7 +95,11 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
             }}
           />
           <TouchableOpacity
-            style={{ position: "absolute", bottom: 0, right: 0 }}
+            style={{
+              position: "absolute",
+              bottom: 0,
+              right: 0,
+            }}
           >
             <Icon
               name="pluscircleo"
@@ -103,7 +107,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
               size={34}
               color={colors.btnLink}
               borderRadius={34}
-              backgroundColor={colors.white}
+              backgroundColor={colors.background}
               onPress={() => cartHandler(item?.id)}
             />
           </TouchableOpacity>

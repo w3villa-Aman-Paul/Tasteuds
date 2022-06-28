@@ -53,7 +53,6 @@ const ProductListScreen = ({
   pageIndex,
 }) => {
   const [snackbarVisible, setSnackbarVisible] = React.useState(false);
-  const [isSortOverlayVisible, setIsSortOverlayVisible] = React.useState(false);
   const [all, setAll] = React.useState(true);
   const [isSubAll, setIsSubAll] = React.useState(true);
   const [subLink, setSubLink] = React.useState("");
