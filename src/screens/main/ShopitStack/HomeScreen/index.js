@@ -35,9 +35,17 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   React.useEffect(() => {
     const getValue = async () => {
       let cartData = await getData("cartItems");
-      console.log(">>>>>hwshhh", cartData);
+      console.log("cartItems", cartData);
     };
     getValue();
+  }, []);
+
+  React.useEffect(() => {
+    const getFavValue = async () => {
+      let favData = await getData("favItems");
+      console.log("favItems", favData);
+    };
+    getFavValue();
   }, []);
 
   React.useEffect(() => {

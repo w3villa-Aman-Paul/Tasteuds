@@ -198,10 +198,10 @@ const ProductListScreen = ({
     setSort(true);
   };
 
-  const handleSnapPress = React.useCallback((index) => {
-    sheetRef.current?.snapToIndex(index);
-    setIsOpen(true);
-  }, []);
+  // const handleSnapPress = React.useCallback((index) => {
+  //   sheetRef.current?.snapToIndex(index);
+  //   setIsOpen(true);
+  // }, []);
 
   React.useEffect(() => {
     dispatch(getCart(cart.token));
@@ -217,8 +217,6 @@ const ProductListScreen = ({
     );
     return setSnackbarVisible(true);
   };
-
-  console.log("products>>", productsList.length);
 
   // Item Rendering..............................................................
   const FlatListImageItem = ({

@@ -412,8 +412,8 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
         isAuth: true,
         status: action.payload.status,
       };
-      console.log("cafaatgayyjahj", changes);
       storeData("cartItems", changes);
+      console.log("cartItems", changes);
       // removeData("cartItems");
       return { ...state, ...changes };
 
