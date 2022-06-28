@@ -67,13 +67,13 @@ const ProductDetailScreen = ({ navigation, dispatch, auth, cart, route }) => {
   };
 
   const handleFav = () => {
-    let variant = product?.variants[0].product;
-    dispatch(setProductFavourite(variant));
+    let variant = product;
+    dispatch(setProductFavourite({ ...variant, fav_qty: 1 }));
 
-    setTimeout(() => {
-      navigation.navigate("Favorites");
-    }, 1000);
-    return setFavSnackbar(true);
+    // setTimeout(() => {
+    //   navigation.navigate("Favorites");
+    // }, 1000);
+    // return setFavSnackbar(true);
   };
 
   const handleProducerClick = async (vendor) => {

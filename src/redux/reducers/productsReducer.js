@@ -1,4 +1,5 @@
 import Jsona from "jsona";
+import { getData, removeData, storeData } from "../rootReducer";
 const dataFormatter = new Jsona();
 
 const DEFAULT_STATE = {
@@ -325,10 +326,38 @@ export default function productsReducer(state = DEFAULT_STATE, action) {
      * SET_PRODUCT_FAVOURITE
      */
     case "SET_PRODUCT_FAVOURITE":
+      let favorites = [...new Set([...state.favorites, action.payload])];
+
+      storeData("favItems", favorites);
+      console.log("favItems", favorites);
+      // removeData("favItems");
+      return { ...state, favorites };
+
+    case "SET_FAV_QTY_DEC":
+      let existFav = state.favorites.find(
+        (x) => x.id === action.payload.fav_item_id
+      );
       return {
         ...state,
+        favorites: state.favorites.map((x) =>
+          x.id === existFav.id
+            ? { ...existFav, fav_qty: action.payload.quantity }
+            : x
+        ),
+      };
 
-        favorites: [...new Set([...state.favorites, action.payload])],
+    case "SET_FAV_QTY_INC":
+      let existFav2 = state.favorites.find(
+        (x) => x.id === action.payload.fav_item_id
+      );
+      console.log("xsghxghwsxyasxhujs", existFav2);
+      return {
+        ...state,
+        favorites: state.favorites.map((x) =>
+          x.id === existFav2.id
+            ? { ...existFav2, fav_qty: action.payload.quantity }
+            : x
+        ),
       };
 
     case "DELETE_PRODUCT_FAVOURITE":

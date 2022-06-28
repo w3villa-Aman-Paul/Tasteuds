@@ -16,9 +16,22 @@ const rootReducer = combineReducers({
 
 export default rootReducer;
 
+const getCircularReplacer = () => {
+  const seen = new WeakSet();
+  return (key, value) => {
+    if (typeof value === "object" && value !== null) {
+      if (seen.has(value)) {
+        return;
+      }
+      seen.add(value);
+    }
+    return value;
+  };
+};
+
 export const storeData = async (name, value) => {
   try {
-    const jsonValue = JSON.stringify(value);
+    const jsonValue = JSON.stringify(value, getCircularReplacer());
     await AsyncStorage.setItem(name, jsonValue);
   } catch (e) {
     console.log(e);
@@ -30,7 +43,7 @@ export const getData = async (name) => {
     const jsonValue = await AsyncStorage.getItem(name);
     return jsonValue != null ? JSON.parse(jsonValue) : null;
   } catch (e) {
-    // error reading value
+    console.log(e);
   }
 };
 
@@ -38,7 +51,7 @@ export const removeData = async (name) => {
   try {
     await AsyncStorage.removeItem(name);
   } catch (e) {
-    // remove error
+    console.log(e);
   }
 
   console.log("Done.");

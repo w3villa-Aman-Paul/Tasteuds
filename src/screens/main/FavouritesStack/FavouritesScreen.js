@@ -11,41 +11,48 @@ import {
 import { connect, useSelector } from "react-redux";
 import { Icon } from "react-native-elements";
 import { colors } from "../../../res/palette";
-import { HOST } from "../../../res/env/";
-import { deleteFavourite, setQuantity } from "../../../redux";
+import {
+  deleteFavourite,
+  setFavQuantityDec,
+  setFavQuantityInc,
+} from "../../../redux";
 import FilterFooter from "../../../library/components/ActionButtonFooter/FilterFooter";
+import { getData } from "../../../redux/rootReducer";
+import { HOST } from "../../../res/env";
 
-const FavouritesScreen = ({
-  favorites,
-  vendors,
-  dispatch,
-  navigation,
-  cart,
-}) => {
+const FavouritesScreen = ({ vendors, dispatch, navigation, cart }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [nextOpen, setNextOpen] = useState(false);
   const [qtyIndicator, setQtyIndicator] = useState(null);
   const [itemId, setItemId] = useState(null);
   const [qtyBtn, setQtyBtn] = useState(false);
+  const [favoritesData, setFavoritesData] = useState(null);
   const sheetRef = useRef(null);
   const snapPoints = ["35%"];
 
   useEffect(() => {
-    if (favorites.length === 0) {
+    const getFavValue = async () => {
+      let favData = await getData("favItems");
+      console.log("ffff", favData);
+
+      setFavoritesData(favData);
+    };
+    getFavValue();
+  }, []);
+
+  useEffect(() => {
+    if (favoritesData?.length === 0) {
       setQtyBtn(false);
     }
     setQtyIndicator(cart.item_count);
-  }, [favorites, cart.item_count]);
+  }, [favoritesData, cart.item_count]);
 
   const producer = (Id) => {
     const res = vendors.find((ven) => ven.id === Id);
     return res;
   };
 
-  const qtyFindHandler = (name) => {
-    const match_res = cart.line_items.filter((x) => x.name === name);
-    return match_res[0];
-  };
+  console.log("favoritesDataa", favoritesData);
 
   const deleteFav = (id) => {
     Alert.alert(
@@ -67,7 +74,7 @@ const FavouritesScreen = ({
   };
 
   const bottomSheetContent = (Id) => {
-    let fav_res = favorites.filter((x) => x.id === Id);
+    let fav_res = favoritesData?.favorites?.filter((x) => x.id === Id);
 
     return nextOpen ? (
       <View style={styles.fav_contain}>
@@ -125,32 +132,24 @@ const FavouritesScreen = ({
     );
   };
 
-  const handleIncrementQuantity = (lineItemId, lineItemQuantity) => {
+  const handleIncrementQuantity = (fav_id, fav_quantity) => {
     dispatch(
-      setQuantity(
-        {
-          line_item_id: lineItemId,
-          quantity: lineItemQuantity + 1,
-        },
-        {},
-        cart.token
-      )
+      setFavQuantityInc({
+        fav_item_id: fav_id,
+        quantity: fav_quantity + 1,
+      })
     );
   };
 
-  const handleDecrementQuantity = (lineItemId, lineItemQuantity) => {
-    if (lineItemQuantity === 1) {
+  const handleDecrementQuantity = (fav_id, fav_quantity) => {
+    if (fav_quantity === 1) {
       setQtyBtn(false);
     } else {
       dispatch(
-        setQuantity(
-          {
-            line_item_id: lineItemId,
-            quantity: lineItemQuantity - 1,
-          },
-          {},
-          cart.token
-        )
+        setFavQuantityDec({
+          fav_item_id: fav_id,
+          quantity: fav_quantity - 1,
+        })
       );
     }
   };
@@ -159,107 +158,111 @@ const FavouritesScreen = ({
     <>
       <ScrollView>
         <View style={styles.container}>
-          {favorites.map((fav) => {
-            let result = producer(fav.vendor.id);
-            let matchFav = qtyFindHandler(fav.name);
+          {favoritesData ? (
+            favoritesData?.map((favourite) => {
+              let fav = favourite?.variants[0]?.product;
+              let result = producer(fav.vendor.id);
 
-            return (
-              <TouchableOpacity
-                key={fav.id}
-                style={styles.contentContainer}
-                onPress={() => navigation.goBack()}
-              >
-                <View style={styles.first_content}>
-                  <Image
-                    source={{ uri: `${HOST}/${fav.images[0].styles[3].url}` }}
-                    style={styles.fav_image}
-                  />
-                  <View style={styles.first_body}>
-                    <Text style={{ color: colors.black, fontSize: 14 }}>
-                      {fav.name}
-                    </Text>
-                    <Text style={{ color: colors.btnLink, fontSize: 14 }}>
-                      {result.name}
-                    </Text>
-                    <Text style={{ color: colors.black, fontSize: 14 }}>
-                      {fav.display_price} |{" "}
-                      {fav?.variants[0].options_text
-                        ? fav?.variants[0].options_text.split(" ")[3] ||
-                          fav?.variants[0].options_text.split(" ")[1]
-                        : ""}
-                    </Text>
-                  </View>
-                  <Icon
-                    type="entypo"
-                    name="dots-three-horizontal"
-                    size={25}
-                    color={colors.black}
-                    onPress={() => {
-                      setIsOpen(true);
-                      setItemId(fav.id);
-                    }}
-                  />
-                </View>
-                <View style={styles.second_content}>
-                  {qtyBtn ? (
-                    <View style={styles.fav_qty_style}>
-                      <TouchableOpacity
-                        style={styles.qty_icon_first}
-                        onPress={() =>
-                          handleDecrementQuantity(
-                            matchFav?.id,
-                            matchFav?.quantity
-                          )
-                        }
-                      >
-                        <Icon
-                          type="ant-design"
-                          name="minus"
-                          size={22}
-                          color={colors.white}
-                        />
-                      </TouchableOpacity>
-                      <Text style={{ fontWeight: "bold" }}>
-                        {matchFav ? matchFav?.quantity : "1"}
+              return (
+                <TouchableOpacity
+                  key={fav.id}
+                  style={styles.contentContainer}
+                  onPress={() => navigation.goBack()}
+                >
+                  <View style={styles.first_content}>
+                    <Image
+                      source={{ uri: `${HOST}/${fav.images[0].styles[3].url}` }}
+                      style={styles.fav_image}
+                    />
+                    <View style={styles.first_body}>
+                      <Text style={{ color: colors.black, fontSize: 14 }}>
+                        {fav.name}
                       </Text>
-                      <TouchableOpacity
-                        style={styles.qty_icon_second}
-                        onPress={() =>
-                          handleIncrementQuantity(
-                            matchFav?.id,
-                            matchFav?.quantity
-                          )
-                        }
-                      >
-                        <Icon
-                          type="ant-design"
-                          name="plus"
-                          size={22}
-                          color={colors.white}
-                        />
-                      </TouchableOpacity>
+                      <Text style={{ color: colors.btnLink, fontSize: 14 }}>
+                        {result.name}
+                      </Text>
+                      <Text style={{ color: colors.black, fontSize: 14 }}>
+                        {fav.display_price} |{" "}
+                        {favourite?.variants[0].options_text
+                          ? favourite?.variants[0].options_text.split(" ")[3] ||
+                            favourite?.variants[0].options_text.split(" ")[1]
+                          : ""}
+                      </Text>
                     </View>
-                  ) : (
-                    <>
-                      <TouchableOpacity
-                        style={styles.sec_btn}
-                        onPress={() => setQtyBtn(true)}
-                      >
-                        <Icon
-                          type="ant-design"
-                          name="shoppingcart"
-                          size={18}
-                          color={colors.white}
-                          style={{ marginRight: 6 }}
-                        />
-                        <Text style={{ color: colors.white }}>KJØP</Text>
-                      </TouchableOpacity>
-                    </>
-                  )}
-                </View>
-              </TouchableOpacity>
-            );
-          })}
+                    <Icon
+                      type="entypo"
+                      name="dots-three-horizontal"
+                      size={25}
+                      color={colors.black}
+                      onPress={() => {
+                        setIsOpen(true);
+                        setItemId(fav.id);
+                      }}
+                    />
+                  </View>
+                  <View style={styles.second_content}>
+                    {qtyBtn ? (
+                      <View style={styles.fav_qty_style}>
+                        <TouchableOpacity
+                          style={styles.qty_icon_first}
+                          onPress={() =>
+                            handleDecrementQuantity(
+                              favourite?.id,
+                              favourite?.fav_qty
+                            )
+                          }
+                        >
+                          <Icon
+                            type="ant-design"
+                            name="minus"
+                            size={22}
+                            color={colors.white}
+                          />
+                        </TouchableOpacity>
+                        <Text style={{ fontWeight: "bold" }}>
+                          {fav?.fav_qty ? fav?.fav_qty : 1}
+                        </Text>
+                        <TouchableOpacity
+                          style={styles.qty_icon_second}
+                          onPress={() =>
+                            handleIncrementQuantity(
+                              favourite?.id,
+                              favourite?.fav_qty
+                            )
+                          }
+                        >
+                          <Icon
+                            type="ant-design"
+                            name="plus"
+                            size={22}
+                            color={colors.white}
+                          />
+                        </TouchableOpacity>
+                      </View>
+                    ) : (
+                      <>
+                        <TouchableOpacity
+                          style={styles.sec_btn}
+                          onPress={() => setQtyBtn(true)}
+                        >
+                          <Icon
+                            type="ant-design"
+                            name="shoppingcart"
+                            size={18}
+                            color={colors.white}
+                            style={{ marginRight: 6 }}
+                          />
+                          <Text style={{ color: colors.white }}>KJØP</Text>
+                        </TouchableOpacity>
+                      </>
+                    )}
+                  </View>
+                </TouchableOpacity>
+              );
+            })
+          ) : (
+            <></>
+          )}
         </View>
       </ScrollView>
       {qtyBtn ? (

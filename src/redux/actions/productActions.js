@@ -58,6 +58,16 @@ export const setProductFavourite = (variant) => ({
   payload: variant,
 });
 
+export const setFavQuantityDec = (FavDecData) => ({
+  type: "SET_FAV_QTY_DEC",
+  payload: FavDecData,
+});
+
+export const setFavQuantityInc = (FavIncData) => ({
+  type: "SET_FAV_QTY_INC",
+  payload: FavIncData,
+});
+
 export const deleteFavourite = (id) => ({
   type: "DELETE_PRODUCT_FAVOURITE",
   payload: id,
