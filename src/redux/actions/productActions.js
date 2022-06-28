@@ -76,22 +76,23 @@ export const resetProductsFilter = () => ({
   type: "RESET_PRODUCTS_FILTER",
 });
 
-export const getSearchProduct = (data = null, filter = null) => {
+export const getSearchProduct = (data = null, taxon = [], vendorId = []) => {
   const url = `${API_VERSION_STOREFRONT}/products`;
-  console.log("filter>>>", filter);
+  console.log("filter>>>", taxon, vendorId);
   const params = {
     include: "images",
     "Content-Type": "application/json",
     // page: pageIndex,
     per_page: 10,
     filter: {
-      Taxon: "" + filter,
+      taxons: "" + taxon,
+      vendor_ids: "" + vendorId,
     },
   };
   const method = "GET";
   return {
     type: "GET_SEARCH_PRODUCTS_LIST",
-    payload: handleAPIWithoutToken(url, params, method, data, filter),
+    payload: handleAPIWithoutToken(url, params, method, data, null),
   };
 };
 
@@ -109,7 +110,7 @@ export const getSearchByProductName = (data = null, filter = null) => {
   };
   const method = "GET";
   return {
-    type: "GET_SEARCH_PRODUCTS_LIST",
+    type: "GET_SEARCH_BY_PRODUCTS_NAME",
     payload: handleAPIWithoutToken(url, params, method, data, filter),
   };
 };

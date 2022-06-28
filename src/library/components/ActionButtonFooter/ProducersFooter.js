@@ -15,7 +15,7 @@ const ProducersFooter = ({ navigation }) => {
       vendors
         // ?.sort((a, b) => a.name.localeCompare(b.name))
         .map((ele) => {
-          return { name: ele.name };
+          return { name: ele.name, id: ele.id };
         })
     );
   }, []);

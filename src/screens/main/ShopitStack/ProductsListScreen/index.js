@@ -142,11 +142,11 @@ const ProductListScreen = ({
   };
 
   const handleMenuClick = async (categories, vendors) => {
-    let filterData = categories
+    let taxonsArray = categories
       .filter((item) => item.isActive)
       .map((item) => Number(item.id));
 
-    dispatch(getSearchProduct(null, filterData));
+    dispatch(getSearchProduct(null, taxonsArray));
   };
 
   const handleClick = (activeMenus, menu) => {
@@ -432,6 +432,7 @@ const ProductListScreen = ({
                 setAll(true);
                 handleAllClick(activeMenus);
                 setIsSubLink(false);
+                dispatch(getProductsList(null, {}));
               }}
               style={[isAll ? styles.active : {}]}
             >
@@ -696,11 +697,15 @@ const ProductListScreen = ({
     };
 
     const handleFilterSearch = async (categories, vendors) => {
-      let filterData = categories
-        .filter((item) => item.isChecked)
-        .map((item) => Number(item.id));
+      let filterTaxons = categories
+        ?.filter((item) => item?.isChecked)
+        ?.map((item) => item?.id);
 
-      dispatch(getSearchProduct(null, filterData));
+      let filterVendor = vendors
+        ?.filter((item) => item?.isChecked)
+        .map((item) => item?.id);
+      console.log("vendors", vendors);
+      dispatch(getSearchProduct(null, filterTaxons, filterVendor));
     };
 
     return (
@@ -860,7 +865,10 @@ const ProductListScreen = ({
               justifyContent: "center",
               alignItems: "center",
             }}
-            onPress={() => handleFilterSearch(selectedCategory, selectedVendor)}
+            onPress={() => {
+              handleFilterSearch(selectedCategory, selectedVendors);
+              setIsOpen(false);
+            }}
           >
             <Text
               style={{
