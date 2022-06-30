@@ -13,13 +13,14 @@ const FilterFooter = ({
   snapPoints,
   onClose,
   bottomSheetContent,
-  onPress,
+  renderBackdrop,
 }) => {
   return (
     <BottomSheet
       ref={value}
       snapPoints={snapPoints}
       enablePanDownToClose={true}
+      backdropComponent={renderBackdrop}
       onClose={onClose}
       style={{ flex: 1 }}
       handleStyle={styles.handle}

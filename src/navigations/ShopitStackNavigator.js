@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 import { Text, StyleSheet, Image, View, TouchableOpacity } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 
@@ -20,22 +20,15 @@ import AddAddress from "../screens/main/ProfileStack/AddAddress";
 
 import ProducerDetailScreen from "../screens/main/ProducersStack/ProducerDetailScreen";
 import SearchScreen from "../screens/main/ShopitStack/SearchScreen/index";
-import { getData } from "../redux/rootReducer";
 import ProducersListScreen from "../screens/main/ProducersStack/ProducersListScreen";
+import { useSelector } from "react-redux";
 
 const ShopitStack = createStackNavigator();
 
 function ShopitStackNavigator({ navigation, route }) {
-  const [cartItems, setCartItems] = React.useState({});
-  React.useEffect(() => {
-    const getValue = async () => {
-      let cartData = await getData("cartItems");
-      setCartItems(cartData);
-    };
-    getValue();
-  }, [cartItems?.cart]);
+  const { cart } = useSelector((state) => state.checkout);
 
-  React.useLayoutEffect(() => {
+  useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route);
     if (
       routeName === "Bag" ||
@@ -104,7 +97,7 @@ function ShopitStackNavigator({ navigation, route }) {
                   color={colors.primary}
                 />
 
-                {cartItems?.cart?.item_count > 0 ? (
+                {cart?.item_count > 0 ? (
                   <View
                     style={{
                       position: "absolute",
@@ -126,7 +119,7 @@ function ShopitStackNavigator({ navigation, route }) {
                         fontSize: 10,
                       }}
                     >
-                      {cartItems?.cart?.item_count}
+                      {cart?.item_count}
                     </Text>
                   </View>
                 ) : null}
@@ -242,7 +235,7 @@ function ShopitStackNavigator({ navigation, route }) {
                   color={colors.primary}
                 />
 
-                {cartItems?.cart?.item_count > 0 ? (
+                {cart?.item_count > 0 ? (
                   <View
                     style={{
                       position: "absolute",
@@ -264,7 +257,7 @@ function ShopitStackNavigator({ navigation, route }) {
                         fontSize: 10,
                       }}
                     >
-                      {cartItems?.cart?.item_count}
+                      {cart?.item_count}
                     </Text>
                   </View>
                 ) : null}
@@ -334,7 +327,7 @@ function ShopitStackNavigator({ navigation, route }) {
                   color={colors.primary}
                 />
 
-                {cartItems?.cart?.item_count > 0 ? (
+                {cart?.item_count > 0 ? (
                   <View
                     style={{
                       position: "absolute",
@@ -356,7 +349,7 @@ function ShopitStackNavigator({ navigation, route }) {
                         fontSize: 10,
                       }}
                     >
-                      {cartItems?.cart?.item_count}
+                      {cart?.item_count}
                     </Text>
                   </View>
                 ) : null}
@@ -414,7 +407,7 @@ function ShopitStackNavigator({ navigation, route }) {
                 type="entypo"
                 size={24}
                 style={{ color: colors.black }}
-                onPress={() => navigation.navigate("ProductDetail")}
+                onPress={() => navigation.goBack()}
               />
             </TouchableOpacity>
           ),
@@ -437,29 +430,41 @@ function ShopitStackNavigator({ navigation, route }) {
         name="ShippingAddress"
         component={ShippingAddressScreen}
         options={{
-          headerTitle: "Shipping Address",
-          headerRight: () => (
-            <Heart
-              size={24}
-              style={{ color: colors.black }}
-              onPress={() => navigation.navigate("Favorites")}
-            />
-          ),
+          headerTitle: "BETALING",
           headerTitleStyle: {
             color: colors.primary,
             fontFamily: "lato-bold",
           },
-          headerRightContainerStyle: {
-            top: 4,
-            right: 20,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "#ffffff",
-            borderRadius: 50,
-            elevation: 10,
-            height: 40,
-            width: 40,
+          headerTitleAlign: "center",
+          headerLeftContainerStyle: {
+            paddingLeft: 10,
           },
+          headerRightContainerStyle: {
+            elevation: 0,
+          },
+          headerLeft: () => (
+            <TouchableOpacity
+              style={{
+                width: 30,
+                height: 30,
+                borderWidth: 1,
+                borderRadius: 50,
+                borderColor: "transparent",
+                elevation: 2,
+                backgroundColor: "white",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Icon
+                name="cross"
+                type="entypo"
+                size={24}
+                style={{ color: colors.black }}
+                onPress={() => navigation.goBack()}
+              />
+            </TouchableOpacity>
+          ),
         }}
       />
       <ShopitStack.Screen
@@ -471,7 +476,7 @@ function ShopitStackNavigator({ navigation, route }) {
             <Heart
               size={24}
               style={{ color: colors.black }}
-              onPress={() => navigation.navigate("Favorites")}
+              onPress={() => navigation.goBack()}
             />
           ),
           headerRightContainerStyle: {

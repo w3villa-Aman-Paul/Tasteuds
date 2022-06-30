@@ -40,6 +40,7 @@ import { useSelector } from "react-redux";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Snackbar } from "react-native-paper";
 import { getData, removeData, storeData } from "../../../../redux/rootReducer";
+import { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 
 const ProductListScreen = ({
   navigation,
@@ -198,6 +199,13 @@ const ProductListScreen = ({
   const handleSort = () => {
     setSort(true);
   };
+
+  const renderBackdrop = React.useCallback(
+    (props) => (
+      <BottomSheetBackdrop {...props} close={() => sheetRef.current.close()} />
+    ),
+    []
+  );
 
   // const handleSnapPress = React.useCallback((index) => {
   //   sheetRef.current?.snapToIndex(index);
@@ -939,6 +947,7 @@ const ProductListScreen = ({
             value={sheetRef}
             snapPoints={snapPoints}
             onClose={() => setSort(false)}
+            renderBackdrop={renderBackdrop}
             bottomSheetContent={sortContent}
           />
         )}

@@ -1,5 +1,4 @@
 import Jsona from "jsona";
-import { removeData, storeData } from "../rootReducer";
 const dataFormatter = new Jsona();
 
 const DEFAULT_STATE = {
@@ -412,9 +411,6 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
         isAuth: true,
         status: action.payload.status,
       };
-      storeData("cartItems", changes);
-      console.log("cartItems", changes);
-      // removeData("cartItems");
       return { ...state, ...changes };
 
     /**

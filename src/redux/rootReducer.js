@@ -6,7 +6,7 @@ import productsReducer from "./reducers/productsReducer";
 import taxonsReducer from "./reducers/taxonsReducer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const rootReducer = combineReducers({
+const reducer = combineReducers({
   auth: authReducer,
   account: accountReducer,
   checkout: checkoutReducer,
@@ -14,7 +14,7 @@ const rootReducer = combineReducers({
   taxons: taxonsReducer,
 });
 
-export default rootReducer;
+export default reducer;
 
 const getCircularReplacer = () => {
   const seen = new WeakSet();

@@ -3,7 +3,8 @@ import { Provider as PaperProvider } from "react-native-paper";
 import { ThemeProvider } from "react-native-elements";
 import RootStackNavigator from "./src/navigations/RootStackNavigator";
 import { Provider } from "react-redux";
-import store from "./src/redux/store";
+import { PersistGate } from "redux-persist/integration/react";
+import store, { persistor } from "./src/redux/store";
 import * as Font from "expo-font";
 import ActivityIndicatorCard from "./src/library/components/ActivityIndicatorCard";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -14,7 +15,6 @@ const getFonts = () =>
     "lato-regular": require("./assets/fonts/Montserrat-Regular.ttf"),
     "lato-medium": require("./assets/fonts/Montserrat-Medium.ttf"),
   });
-
 
 const App = () => {
   const [fontsLoaded, setFontsLoaded] = React.useState(false);
@@ -32,15 +32,17 @@ const App = () => {
 
   return (
     <Provider store={store}>
-      <SafeAreaProvider>
-        <ThemeProvider>
-          <PaperProvider>
-            <RootStackNavigator />
-          </PaperProvider>
-        </ThemeProvider>
-      </SafeAreaProvider>
+      <PersistGate loading={null} persistor={persistor}>
+        <SafeAreaProvider>
+          <ThemeProvider>
+            <PaperProvider>
+              <RootStackNavigator />
+            </PaperProvider>
+          </ThemeProvider>
+        </SafeAreaProvider>
+      </PersistGate>
     </Provider>
   );
-}
+};
 
 export default App;

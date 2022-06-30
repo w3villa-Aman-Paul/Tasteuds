@@ -53,20 +53,26 @@ export const toggleProductsSizeFilter = (size) => ({
   payload: size,
 });
 
-export const setProductFavourite = (variant) => ({
-  type: "SET_PRODUCT_FAVOURITE",
-  payload: variant,
-});
+export const setProductFavourite = (variant) => (dispatch, getState) => {
+  dispatch({
+    type: "SET_PRODUCT_FAVOURITE",
+    payload: variant,
+  });
+};
 
-export const setFavQuantityDec = (FavDecData) => ({
-  type: "SET_FAV_QTY_DEC",
-  payload: FavDecData,
-});
+export const setFavQuantityDec = (FavDecData) => (dispatch, getState) => {
+  dispatch({
+    type: "SET_FAV_QTY_DEC",
+    payload: FavDecData,
+  });
+};
 
-export const setFavQuantityInc = (FavIncData) => ({
-  type: "SET_FAV_QTY_INC",
-  payload: FavIncData,
-});
+export const setFavQuantityInc = (FavIncData) => (dispatch, getState) => {
+  dispatch({
+    type: "SET_FAV_QTY_INC",
+    payload: FavIncData,
+  });
+};
 
 export const deleteFavourite = (id) => ({
   type: "DELETE_PRODUCT_FAVOURITE",

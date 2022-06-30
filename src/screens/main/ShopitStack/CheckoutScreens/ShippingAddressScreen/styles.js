@@ -149,7 +149,6 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     width: "70%",
     borderWidth: 1,
-    // borderColor: "#000",
     elevation: 5,
     backgroundColor: colors.white,
     borderColor: "transparent",
@@ -161,5 +160,77 @@ export const styles = StyleSheet.create({
     width: 50,
     height: 50,
     resizeMode: "contain",
+  },
+  login_container: {
+    backgroundColor: "#232332",
+    flex: 1,
+  },
+
+  fav_close_container: {
+    position: "absolute",
+    right: 14,
+    top: 10,
+    marginBottom: 15,
+    elevation: 5,
+  },
+  fav_close: {
+    borderRadius: 30,
+    backgroundColor: colors.white,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  headerTextContainer: {
+    justifyContent: "center",
+    alignSelf: "center",
+  },
+  headerTitle: {
+    color: colors.white,
+    fontSize: 14,
+    fontFamily: "lato-bold",
+    marginTop: 15,
+    marginBottom: 15,
+  },
+  cardContainer: {
+    marginTop: 15,
+    marginBottom: 15,
+    marginLeft: 20,
+    marginRight: 20,
+  },
+  cardContent: {
+    marginBottom: 15,
+  },
+  cardText: {
+    color: colors.white,
+    marginBottom: 5,
+    fontSize: 14,
+  },
+  cardInput: {
+    borderColor: colors.white,
+    backgroundColor: colors.white,
+    borderRadius: 10,
+    width: "90%",
+    paddingHorizontal: 10,
+  },
+  cardInputDate: {
+    borderColor: colors.white,
+    backgroundColor: colors.white,
+    borderRadius: 10,
+    width: "100%",
+    paddingHorizontal: 10,
+  },
+  lastInputs: {
+    width: "90%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  cardBtn: {
+    paddingVertical: 7,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: colors.btnLink,
+    borderRadius: 10,
+  },
+  headerSection: {
+    flexDirection: "row",
   },
 });
