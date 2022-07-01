@@ -52,6 +52,7 @@ function RootStackNavigator({ authState, dispatch }) {
         screenOptions={{ headerShown: false }}
         detachInactiveScreens={"false"}
       >
+        <RootStack.Screen name="Splash" component={splash} />
         <RootStack.Screen name="Shopit" component={MainTabNavigator} />
 
         <RootStack.Screen name="Profile" component={ProfileStackNavigator} />

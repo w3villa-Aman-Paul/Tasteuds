@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -20,8 +20,6 @@ import {
   savingTaxon,
   getProductsList,
   getProduct,
-  resetProductsList,
-  resetProductsFilter,
   setPageIndex,
   getTaxonsList,
   getTaxon,
@@ -31,7 +29,6 @@ import {
   getSubMenuProducts,
   addItem,
   getCart,
-  activeFunction,
   getSearchProduct,
   createCart,
 } from "../../../../redux";
@@ -54,35 +51,35 @@ const ProductListScreen = ({
   meta,
   pageIndex,
 }) => {
-  const [snackbarVisible, setSnackbarVisible] = React.useState(false);
-  const [all, setAll] = React.useState(true);
-  const [isSubAll, setIsSubAll] = React.useState(true);
-  const [subLink, setSubLink] = React.useState("");
-  const [isSubLink, setIsSubLink] = React.useState(false);
-  const [activeMenus, setActiveMenus] = React.useState([]);
-  const [activeSubMenu, setActiveSubMenu] = React.useState(false);
-  const [isAll, setIsAll] = React.useState(true);
-  const [sort, setSort] = React.useState(false);
-
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const [all, setAll] = useState(true);
+  const [isSubAll, setIsSubAll] = useState(true);
+  const [subLink, setSubLink] = useState("");
+  const [isSubLink, setIsSubLink] = useState(false);
+  const [activeMenus, setActiveMenus] = useState([]);
+  const [activeSubMenu, setActiveSubMenu] = useState(false);
+  const [isAll, setIsAll] = useState(true);
+  const [sort, setSort] = useState(false);
   const checkout = useSelector((state) => state.checkout);
   const errMessage = useSelector((state) => state.checkout.error);
   const cart = useSelector((state) => state.checkout.cart);
   const vendorList = useSelector((state) => state.taxons.vendors);
-
+  const { products } = useSelector((state) => state);
   const taxons = useSelector((state) => state.taxons);
   const cate = useSelector((state) => state.taxons.categories);
   const menus = useSelector((state) => state.taxons.menus);
   const submenus = useSelector((state) => state.taxons.submenus);
+  const params = route?.params;
 
-  React.useEffect(() => {
+  useEffect(() => {
     handleActiveMenu();
   }, [menus]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     handleActiveSubMenu();
   }, [submenus, menus]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (params) handleAfterMenuSelect(params);
   }, [menus, params, route]);
 
@@ -90,14 +87,12 @@ const ProductListScreen = ({
     "Non-serializable values were found in the navigation state",
   ]);
 
-  const params = route?.params;
-
   const handleAfterMenuSelect = async (params) => {
+    await handleActiveMenuClick(params.menu);
+    setAll(true);
+    setIsAll(false);
     await dispatch(getSubMenu(params.menu.link.slice(2).toLowerCase()));
-    setAll(false);
-    setIsAll(true);
     setSubLink(params.menu.link.slice(2).toLowerCase());
-
     handleClick(handleUncheckAllMenus(activeMenus), params.menu);
     await dispatch(getSubMenuProducts(subLink));
     setIsSubLink(true);
@@ -125,7 +120,7 @@ const ProductListScreen = ({
           menu.name !== "Kategorier" &&
           menu.name !== "Lokalprodukter"
       )
-      // ?.sort((a, b) => a.name.localeCompare(b.name))
+      ?.sort((a, b) => a.name.localeCompare(b.name))
       ?.map((item) => {
         return { ...item, isActive: false };
       });
@@ -141,20 +136,11 @@ const ProductListScreen = ({
     setActiveSubMenu(unactive);
   };
 
-  const handleMenuClick = async (categories, vendors) => {
-    let taxonsArray = categories
-      .filter((item) => item.isActive)
-      .map((item) => Number(item.id));
-
-    dispatch(getSearchProduct(null, taxonsArray));
-  };
-
   const handleClick = (activeMenus, menu) => {
     const newArr = [...activeMenus];
     const index = newArr.findIndex((item) => item.id === menu.id);
     newArr[index].isActive = true;
     setActiveMenus(newArr);
-    dispatch(getSearchProduct(null, handleMenuClick(activeMenus)));
   };
 
   const handleSubClick = (activeMenus, menu) => {
@@ -186,7 +172,7 @@ const ProductListScreen = ({
   const width = Dimensions.get("window").width - 10;
 
   const sheetRef = React.useRef(null);
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const snapPoints = ["50%"];
 
@@ -205,19 +191,14 @@ const ProductListScreen = ({
     []
   );
 
-  // const handleSnapPress = React.useCallback((index) => {
-  //   sheetRef.current?.snapToIndex(index);
-  //   setIsOpen(true);
-  // }, []);
-
-  React.useEffect(() => {
+  useEffect(() => {
     dispatch(getCart(cart.token));
   }, []);
 
   const handleAddToBag = async (item) => {
     let vari = item.variants[0].id;
     await dispatch(createCart());
-    dispatch(
+    await dispatch(
       addItem(cart.token, {
         variant_id: vari.toString(),
         quantity: 1,
@@ -284,7 +265,7 @@ const ProductListScreen = ({
 
   //..........................................................................................
 
-  React.useEffect(() => {
+  useEffect(() => {
     dispatch(getMenus());
     removeData("food");
     removeData("vendors");
@@ -345,21 +326,19 @@ const ProductListScreen = ({
       : setTimeout(onPress, 50);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     handleProductsLoad();
     return () => {
-      // dispatch(resetProductsList());
       dispatch(setPageIndex(1));
     };
   }, [route.params]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     dispatch(getTaxonsList());
     dispatch(getCategories());
   }, []);
 
   const handleProductLoad = async (id, item) => {
-    // dispatch(setSelectedVendor(vendor));
     dispatch(getProduct(id));
     dispatch(getTaxon(item.taxons[0].id));
 
@@ -382,6 +361,14 @@ const ProductListScreen = ({
         itemContainerStyle={[styles.newJustInItemContainer]}
       />
     );
+  };
+
+  const handleActiveMenuClick = async (categories) => {
+    let activeTaxons = Number(categories.linked_resource.id);
+
+    console.log(activeTaxons);
+
+    dispatch(getSearchProduct(null, activeTaxons, []));
   };
 
   const flatListUpperElement = () => {
@@ -455,15 +442,17 @@ const ProductListScreen = ({
                 Alle
               </Text>
             </TouchableOpacity>
+            {console.log("active", activeMenus)}
 
             {activeMenus?.map((menu, index, arr) => (
               <TouchableOpacity
                 key={index.toString()}
                 onPress={async () => {
-                  await dispatch(getSubMenu(menu.link.slice(2).toLowerCase()));
-                  setAll(false);
+                  await handleActiveMenuClick(menu);
+                  setAll(true);
                   setIsAll(false);
                   setSubLink(menu.link.slice(2).toLowerCase());
+                  await dispatch(getSubMenu(menu.link.slice(2).toLowerCase()));
                   handleClick(handleUncheckAllMenus(arr), menu);
                   await dispatch(getSubMenuProducts(subLink));
                   setIsSubLink(true);
@@ -497,6 +486,7 @@ const ProductListScreen = ({
                 key={"alle"}
                 onPress={() => {
                   setIsSubAll(true);
+                  setAll(true);
                   handleSubAllClick(activeSubMenu);
                 }}
               >
@@ -505,13 +495,14 @@ const ProductListScreen = ({
                 </Text>
               </TouchableOpacity>
               {activeSubMenu
-                // ?.sort((a, b) => a.name.localeCompare(b.name))
+                ?.sort((a, b) => a.name.localeCompare(b.name))
                 ?.map((submenu, index, arr) => (
                   <TouchableOpacity
                     key={index.toString()}
                     onPress={() => {
                       setIsSubAll(false);
-
+                      setIsAll(false);
+                      setAll(false);
                       dispatch(
                         getSubMenuProducts(submenu.permalink.toLowerCase())
                       );
@@ -620,7 +611,7 @@ const ProductListScreen = ({
           Sort
         </Text>
         <View style={{ flex: 1, justifyContent: "space-around" }}>
-          {productsSortList.map((x, id) => {
+          {productsSortList.map((item, id) => {
             return (
               <View
                 key={id}
@@ -634,7 +625,7 @@ const ProductListScreen = ({
                   alignItems: "center",
                 }}
               >
-                <TouchableOpacity onPress={x.onPress}>
+                <TouchableOpacity onPress={item.onPress}>
                   <Text style={{ color: colors.white, fontSize: 18 }}>
                     {x.title}
                   </Text>
@@ -659,22 +650,22 @@ const ProductListScreen = ({
   ];
 
   const bottomSheetContent = ({ navigation }) => {
-    const [selectedCategory, setSelectedCategory] = React.useState([]);
-    const [selectedVendors, setSelectedvendors] = React.useState([]);
+    const [selectedCategory, setSelectedCategory] = useState([]);
+    const [selectedVendors, setSelectedvendors] = useState([]);
 
     const selectedFood = async () => {
       let data = await getData("food");
-      // setSelectedCategory(data);
+
       return data;
     };
 
     const selectedVendor = async () => {
       let vendor = await getData("vendors");
-      // setSelectedvendors(vendor);
+
       return vendor;
     };
 
-    React.useEffect(() => {
+    useEffect(() => {
       let isMounted = true;
       selectedFood().then((data) => {
         if (isMounted) setSelectedCategory(data);
@@ -685,7 +676,7 @@ const ProductListScreen = ({
       };
     }, [selectedCategory]);
 
-    React.useEffect(() => {
+    useEffect(() => {
       let isMounted = true;
       selectedVendor().then((data) => {
         if (isMounted) setSelectedvendors(data);
@@ -908,23 +899,18 @@ const ProductListScreen = ({
     );
   };
 
-  if (saving || savingTaxon) {
+  if (products.saving || savingTaxon) {
     return <ActivityIndicatorCard />;
   } else
     return (
       <SafeAreaView
-        style={[
-          globalStyles.containerFluid,
-          styles.bgwhite,
-          // { width: "100%" },
-          { flex: 1 },
-        ]}
+        style={[globalStyles.containerFluid, styles.bgwhite, { flex: 1 }]}
       >
-        {saving ? (
+        {products.saving || savingTaxon ? (
           <ActivityIndicatorCard />
         ) : (
           <FlatList
-            data={isAll ? productsList : data}
+            data={isAll || all ? productsList : data}
             keyExtractor={(item, index) => index.toString()}
             renderItem={newJustInRenderItem}
             numColumns={2}
