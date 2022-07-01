@@ -24,7 +24,7 @@ import { HOST } from "../../../../res/env";
 import { colors } from "../../../../res/palette";
 import { Icon } from "react-native-elements";
 import ActivityIndicatorCard from "../../../../library/components/ActivityIndicatorCard";
-import { getData, storeData } from "../../../../redux/rootReducer";
+import { storeData } from "../../../../redux/rootReducer";
 
 const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   const { isAuth } = useSelector((state) => state.auth);
@@ -33,32 +33,12 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
 
   React.useEffect(() => {
-    const getValue = async () => {
-      let cartData = await getData("cartItems");
-      console.log("cartItems", cartData);
-    };
-    getValue();
-  }, []);
-
-  React.useEffect(() => {
-    const getFavValue = async () => {
-      let favData = await getData("favItems");
-      console.log("favItems", favData);
-    };
-    getFavValue();
-  }, []);
-
-  React.useEffect(() => {
     dispatch(getVendorsList());
   }, []);
 
   React.useEffect(() => {
     handleProductsLoad();
   }, [isAuth, route.params]);
-
-  React.useEffect(() => {
-    dispatch(createCart());
-  }, []);
 
   const dismissSnackbar = () => setSnackbarVisible(false);
 
@@ -72,10 +52,11 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     return [vendorName, vendor];
   };
 
-  const cartHandler = (itemId) => {
+  const cartHandler = async (itemId) => {
     let item = productsList.find((x) => x.id === itemId);
+    await dispatch(createCart());
     dispatch(
-      addItem(cart.token, {
+      addItem(cart?.token, {
         variant_id: item.default_variant?.id,
         quantity: 1,
       })

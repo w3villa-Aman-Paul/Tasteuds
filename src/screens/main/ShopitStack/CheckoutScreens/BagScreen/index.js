@@ -19,30 +19,19 @@ import CartFooter from "../../../../../library/components/ActionButtonFooter/car
 import { useSelector } from "react-redux";
 import { HOST } from "../../../../../res/env";
 import FilterFooter from "../../../../../library/components/ActionButtonFooter/FilterFooter";
-import { getData } from "../../../../../redux/rootReducer";
+import { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 
 const BagScreen = ({ navigation, dispatch, saving, cart }) => {
   const productsList = useSelector((state) => state.products.productsList);
   const { isAuth } = useSelector((state) => state.auth);
-
   const [snackbarVisible, setSnackbarVisible] = React.useState(false);
-  const [cartItems, setCartItems] = React.useState({});
-
   const sheetRef = React.useRef(null);
   const [isOpen, setIsOpen] = React.useState(false);
   const snapPoints = ["50%"];
 
   React.useEffect(() => {
-    dispatch(getCart(cart.token));
+    dispatch(getCart(cart?.token));
   }, []);
-
-  React.useEffect(() => {
-    const getValue = async () => {
-      let cartData = await getData("cartItems");
-      setCartItems(cartData);
-    };
-    getValue();
-  }, [cartItems.cart]);
 
   const onDismiss = () => setSnackbarVisible(false);
 
@@ -144,7 +133,7 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
   };
 
   const handleRemoveLineItem = (lineItemId) => {
-    dispatch(removeLineItem(lineItemId, {}, cart.token));
+    dispatch(removeLineItem(lineItemId, {}, cart?.token));
   };
 
   const handleIncrementQuantity = (lineItemId, lineItemQuantity) => {
@@ -155,7 +144,7 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
           quantity: lineItemQuantity + 1,
         },
         {},
-        cart.token
+        cart?.token
       )
     );
     setTimeout(() => {
@@ -174,7 +163,7 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
             quantity: lineItemQuantity - 1,
           },
           {},
-          cart.token
+          cart?.token
         )
       );
       setTimeout(() => {
@@ -285,12 +274,12 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
               </Text>
             </View>
             <View style={globalStyles.containerFluid}>
-              {cartItems?.cart?.line_items?.map((ele, idx) => {
+              {cart?.line_items?.map((ele) => {
                 let cartProductImage = handleCartProductImage(ele);
 
                 return (
-                  <>
-                    <View key={idx} style={styles.body}>
+                  <View key={ele?.variant?.id.toString()}>
+                    <View style={styles.body}>
                       <View style={styles.cart_btn}>
                         <Text style={{ fontSize: 25 }}>{ele.quantity}</Text>
                         <View style={styles.inc_btn}>
@@ -341,7 +330,7 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
                       </View>
                     </View>
                     <Divider orientation="horizontal" />
-                  </>
+                  </View>
                 );
               })}
               <View style={styles.continue}>

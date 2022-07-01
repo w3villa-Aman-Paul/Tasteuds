@@ -8,6 +8,7 @@ import ActivityIndicatorCard from "../../../../library/components/ActivityIndica
 
 import {
   addItem,
+  createCart,
   getCart,
   getSelectedVendor,
   setProductFavourite,
@@ -23,15 +24,7 @@ const ProductDetailScreen = ({ navigation, dispatch, auth, cart, route }) => {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [favsnackbar, setFavSnackbar] = useState(false);
   const [selectedVendor, setSelectedVendor] = useState([]);
-  const [cartItems, setCartItems] = React.useState({});
-
-  React.useEffect(() => {
-    const getValue = async () => {
-      let cartData = await getData("cartItems");
-      setCartItems(cartData);
-    };
-    getValue();
-  }, [cartItems.cart]);
+  const [cartItems, setCartItems] = React.useState(null);
 
   const vendor = async () => {
     setSelectedVendor(await getData("selectedVendor"));
@@ -54,10 +47,10 @@ const ProductDetailScreen = ({ navigation, dispatch, auth, cart, route }) => {
   const dismissSnackbar = () => setSnackbarVisible(false);
   const dismissFavSnackbar = () => setFavSnackbar(false);
 
-  const handleAddToBag = async () => {
+  const handleAddToBag = () => {
     let vari = product?.variants[0];
     dispatch(
-      addItem(cartItems?.cart?.token, {
+      addItem(cart?.token, {
         variant_id: vari.id,
         quantity: 1,
       })
@@ -70,10 +63,10 @@ const ProductDetailScreen = ({ navigation, dispatch, auth, cart, route }) => {
     let variant = product;
     dispatch(setProductFavourite({ ...variant, fav_qty: 1 }));
 
-    // setTimeout(() => {
-    //   navigation.navigate("Favorites");
-    // }, 1000);
-    // return setFavSnackbar(true);
+    setTimeout(() => {
+      navigation.navigate("Favorites");
+    }, 1000);
+    return setFavSnackbar(true);
   };
 
   const handleProducerClick = async (vendor) => {

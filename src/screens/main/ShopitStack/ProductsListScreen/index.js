@@ -33,6 +33,7 @@ import {
   getCart,
   activeFunction,
   getSearchProduct,
+  createCart,
 } from "../../../../redux";
 import FilterFooter from "../../../../library/components/ActionButtonFooter/FilterFooter";
 import { HOST } from "../../../../res/env";
@@ -40,6 +41,7 @@ import { useSelector } from "react-redux";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Snackbar } from "react-native-paper";
 import { getData, removeData, storeData } from "../../../../redux/rootReducer";
+import { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 
 const ProductListScreen = ({
   navigation,
@@ -198,6 +200,13 @@ const ProductListScreen = ({
     setSort(true);
   };
 
+  const renderBackdrop = React.useCallback(
+    (props) => (
+      <BottomSheetBackdrop {...props} close={() => sheetRef.current.close()} />
+    ),
+    []
+  );
+
   // const handleSnapPress = React.useCallback((index) => {
   //   sheetRef.current?.snapToIndex(index);
   //   setIsOpen(true);
@@ -209,6 +218,7 @@ const ProductListScreen = ({
 
   const handleAddToBag = async (item) => {
     let vari = item.variants[0].id;
+    await dispatch(createCart());
     dispatch(
       addItem(cart.token, {
         variant_id: vari.toString(),
@@ -654,21 +664,39 @@ const ProductListScreen = ({
     const [selectedCategory, setSelectedCategory] = React.useState([]);
     const [selectedVendors, setSelectedvendors] = React.useState([]);
 
-    React.useEffect(() => {
-      selectedFood();
-    }, [selectedCategory]);
-
-    React.useEffect(() => {
-      selectedVendor();
-    }, [selectedVendors]);
-
     const selectedFood = async () => {
-      setSelectedCategory(await getData("food"));
+      let data = await getData("food");
+      // setSelectedCategory(data);
+      return data;
     };
 
     const selectedVendor = async () => {
-      setSelectedvendors(await getData("vendors"));
+      let vendor = await getData("vendors");
+      // setSelectedvendors(vendor);
+      return vendor;
     };
+
+    React.useEffect(() => {
+      let isMounted = true;
+      selectedFood().then((data) => {
+        if (isMounted) setSelectedCategory(data);
+      });
+
+      return () => {
+        isMounted = false;
+      };
+    }, [selectedCategory]);
+
+    React.useEffect(() => {
+      let isMounted = true;
+      selectedVendor().then((data) => {
+        if (isMounted) setSelectedvendors(data);
+      });
+
+      return () => {
+        isMounted = false;
+      };
+    }, [selectedVendors]);
 
     const handleDeselectFood = async (item) => {
       let data = [...selectedCategory];
@@ -946,6 +974,7 @@ const ProductListScreen = ({
             value={sheetRef}
             snapPoints={snapPoints}
             onClose={() => setSort(false)}
+            renderBackdrop={renderBackdrop}
             bottomSheetContent={sortContent}
           />
         )}

@@ -4,7 +4,6 @@ import { styles } from "./styles";
 import { getMenus, getTaxonsList } from "../../../redux";
 import { connect, useSelector } from "react-redux";
 import ActivityIndicatorCard from "../../../library/components/ActivityIndicatorCard";
-import { colors } from "../../../res/palette";
 
 const CategoriesScreen = ({ navigation, dispatch, taxonomy, saving }) => {
   const menus = useSelector((state) => state.taxons.menus);

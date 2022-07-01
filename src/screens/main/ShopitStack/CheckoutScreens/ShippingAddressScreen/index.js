@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   ScrollView,
   View,
   Text,
-  Dimensions,
   TouchableOpacity,
   Image,
+  TextInput,
 } from "react-native";
 import { globalStyles } from "../../../../../styles/global";
 import { colors } from "../../../../../res/palette";
 import { CheckR, CheckO } from "../../../../../library/icons";
-import TextField from "../../../../../library/components/TextField";
+import { Icon } from "react-native-elements";
 import { Picker } from "@react-native-community/picker";
 import {
   getCountry,
@@ -26,6 +26,7 @@ import { styles } from "./styles";
 import { checkoutStyles } from "../styles";
 import CartFooter from "../../../../../library/components/ActionButtonFooter/cartFooter";
 import ActivityIndicatorCard from "../../../../../library/components/ActivityIndicatorCard";
+import FilterFooter from "../../../../../library/components/ActionButtonFooter/FilterFooter";
 
 const ShippingAddressScreen = ({
   navigation,
@@ -37,43 +38,104 @@ const ShippingAddressScreen = ({
 }) => {
   let newAddress = Address.filter((x) => x.id === route.params?.Id);
 
-  const handleUpdateCheckout = async () => {
-    await dispatch(
-      updateCheckout(cart.token, {
-        order: {
-          email: email,
-          special_instructions: "Please leave at door",
-          bill_address_attributes: {
-            firstname: name,
-            lastname: name,
-            address1: address,
-            city: city,
-            phone: phone,
-            zipcode: pinCode,
-            state_name: statePickerSelectedValue.abbr,
-            country_iso: countryPickerSelectedValue,
-          },
-          ship_address_attributes: {
-            firstname: name,
-            lastname: name,
-            address1: address,
-            city: city,
-            phone: phone,
-            zipcode: pinCode,
-            state_name: statePickerSelectedValue.abbr,
-            country_iso: countryPickerSelectedValue,
-          },
-        },
-      })
-    );
-    // await dispatch(getPaymentMethods());
-    // await dispatch(checkoutNext(cart.token));
-    // navigation.navigate("CheckoutPayment");
-  };
-
   useEffect(() => {
     dispatch(retrieveAddress());
   }, []);
+
+  const sheetRef = useRef(null);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const snapPoints = ["55%"];
+
+  // const handleUpdateCheckout = async () => {
+  //   await dispatch(
+  //     updateCheckout(cart.token, {
+  //       order: {
+  //         email: email,
+  //         special_instructions: "Please leave at door",
+  //         bill_address_attributes: {
+  //           firstname: name,
+  //           lastname: name,
+  //           address1: address,
+  //           city: city,
+  //           phone: phone,
+  //           zipcode: pinCode,
+  //           state_name: statePickerSelectedValue.abbr,
+  //           country_iso: countryPickerSelectedValue,
+  //         },
+  //         ship_address_attributes: {
+  //           firstname: name,
+  //           lastname: name,
+  //           address1: address,
+  //           city: city,
+  //           phone: phone,
+  //           zipcode: pinCode,
+  //           state_name: statePickerSelectedValue.abbr,
+  //           country_iso: countryPickerSelectedValue,
+  //         },
+  //       },
+  //     })
+  //   );
+  //   // await dispatch(getPaymentMethods());
+  //   // await dispatch(checkoutNext(cart.token));
+  //   // navigation.navigate("CheckoutPayment");
+  // };
+
+  const bottomSheetContent = () => {
+    return (
+      <View style={styles.login_container}>
+        <View>
+          <TouchableOpacity
+            style={styles.fav_close_container}
+            onPress={() => setIsOpen(false)}
+          >
+            <Icon
+              type="entypo"
+              name="cross"
+              size={28}
+              style={styles.fav_close}
+            />
+          </TouchableOpacity>
+          <View style={styles.headerTextContainer}>
+            <Text style={styles.headerTitle}>REGISTRER KORT</Text>
+          </View>
+        </View>
+
+        <View style={styles.cardContainer}>
+          <View style={styles.cardContent}>
+            <Text style={styles.cardText}>KORTHOLDERS NAVN</Text>
+            <TextInput style={styles.cardInput} />
+          </View>
+          <View style={styles.cardContent}>
+            <Text style={styles.cardText}>KORTNUMMER</Text>
+            <TextInput style={styles.cardInput} />
+          </View>
+          <View style={styles.lastInputs}>
+            <View style={styles.cardContent}>
+              <Text style={styles.cardText}>UTLØPSDATO</Text>
+              <TextInput style={styles.cardInputDate} />
+            </View>
+            <View style={styles.cardContent}>
+              <Text style={styles.cardText}>CVC</Text>
+              <TextInput style={styles.cardInputDate} />
+            </View>
+          </View>
+
+          <View style={{ ...styles.cardContent, marginTop: 20 }}>
+            <TouchableOpacity style={styles.cardBtn}>
+              <Text style={{ ...styles.cardText, fontFamily: "lato-bold" }}>
+                LEGG TIL
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    );
+  };
+
+  const paymentHandler = () => {
+    setIsOpen(true);
+  };
 
   if (saving) {
     return <ActivityIndicatorCard />;
@@ -224,7 +286,20 @@ const ShippingAddressScreen = ({
           <Text></Text>
         </ScrollView>
 
-        <CartFooter title="FULLFØR BETALING" onPress={handleUpdateCheckout} />
+        {isOpen ? (
+          <></>
+        ) : (
+          <CartFooter title="FULLFØR BETALING" onPress={paymentHandler} />
+        )}
+
+        {isOpen && (
+          <FilterFooter
+            value={sheetRef}
+            snapPoints={snapPoints}
+            onClose={() => setIsOpen(false)}
+            bottomSheetContent={bottomSheetContent}
+          />
+        )}
       </View>
     );
   }

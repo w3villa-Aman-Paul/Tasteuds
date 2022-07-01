@@ -4,6 +4,7 @@ import {
   handleAddCartItem,
   handleAPIWithoutToken,
 } from "../../library/utils/apiUtils";
+import { removeData, storeData } from "../rootReducer";
 
 export function getDefaultCountry(data, params = {}) {
   const url = `${API_VERSION_STOREFRONT}/countries/default`;
@@ -122,17 +123,22 @@ export function completeCheckout() {
 /**
  * Bag Screen Actions
  */
-export function addItem(auth_token, data) {
+export const addItem = (auth_token, data) => async (dispatch, getState) => {
   const url = `${API_VERSION_STOREFRONT}/cart/add_item`;
   const method = "POST";
   const params = {
     include: "line_items.variant.option_values,line_items.variant.images",
   };
-  return {
+
+  dispatch({
     type: "ADD_ITEM",
     payload: handleAddCartItem(url, params, method, data, auth_token),
-  };
-}
+  });
+
+  // storeData("cartItems", getState().checkout.cart);
+  // console.log("cartItems", getState().checkout.cart);
+  // removeData("cartItems");
+};
 
 export function getCart(cartToken) {
   const url = `${API_VERSION_STOREFRONT}/cart`;
@@ -170,14 +176,19 @@ export function removeLineItem(lineItemId, filters = {}, auth_token) {
   };
 }
 
-export function setQuantity(data, filters = {}, auth_token) {
-  const url = `${API_VERSION_STOREFRONT}/cart/set_quantity`;
-  const params = {
-    include: "line_items.variant.option_values,line_items.variant.images",
+export const setQuantity =
+  (data, {}, auth_token) =>
+  async (dispatch, getState) => {
+    const url = `${API_VERSION_STOREFRONT}/cart/set_quantity`;
+    const params = {
+      include: "line_items.variant.option_values,line_items.variant.images",
+    };
+    const method = "PATCH";
+    dispatch({
+      type: "SET_QUANTITY",
+      payload: handleAddCartItem(url, params, method, data, auth_token),
+    });
+
+    // storeData("cartItems", getState().checkout.cart);
+    // removeData("cartItems");
   };
-  const method = "PATCH";
-  return {
-    type: "SET_QUANTITY",
-    payload: handleAddCartItem(url, params, method, data, auth_token),
-  };
-}
