@@ -13,6 +13,7 @@ import { styles } from "./styles";
 import { Snackbar } from "react-native-paper";
 import {
   addItem,
+  createCart,
   getProduct,
   getProductsList,
   getTaxon,
@@ -51,8 +52,9 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     return [vendorName, vendor];
   };
 
-  const cartHandler = (itemId) => {
+  const cartHandler = async (itemId) => {
     let item = productsList.find((x) => x.id === itemId);
+    await dispatch(createCart());
     dispatch(
       addItem(cart?.token, {
         variant_id: item.default_variant?.id,
@@ -82,7 +84,11 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
             }}
           />
           <TouchableOpacity
-            style={{ position: "absolute", bottom: 0, right: 0 }}
+            style={{
+              position: "absolute",
+              bottom: 0,
+              right: 0,
+            }}
           >
             <Icon
               name="pluscircleo"
@@ -90,7 +96,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
               size={34}
               color={colors.btnLink}
               borderRadius={34}
-              backgroundColor={colors.white}
+              backgroundColor={colors.background}
               onPress={() => cartHandler(item?.id)}
             />
           </TouchableOpacity>

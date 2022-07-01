@@ -33,6 +33,7 @@ import {
   getCart,
   activeFunction,
   getSearchProduct,
+  createCart,
 } from "../../../../redux";
 import FilterFooter from "../../../../library/components/ActionButtonFooter/FilterFooter";
 import { HOST } from "../../../../res/env";
@@ -54,7 +55,6 @@ const ProductListScreen = ({
   pageIndex,
 }) => {
   const [snackbarVisible, setSnackbarVisible] = React.useState(false);
-  const [isSortOverlayVisible, setIsSortOverlayVisible] = React.useState(false);
   const [all, setAll] = React.useState(true);
   const [isSubAll, setIsSubAll] = React.useState(true);
   const [subLink, setSubLink] = React.useState("");
@@ -144,11 +144,11 @@ const ProductListScreen = ({
   };
 
   const handleMenuClick = async (categories, vendors) => {
-    let filterData = categories
+    let taxonsArray = categories
       .filter((item) => item.isActive)
       .map((item) => Number(item.id));
 
-    dispatch(getSearchProduct(null, filterData));
+    dispatch(getSearchProduct(null, taxonsArray));
   };
 
   const handleClick = (activeMenus, menu) => {
@@ -218,6 +218,7 @@ const ProductListScreen = ({
 
   const handleAddToBag = async (item) => {
     let vari = item.variants[0].id;
+    await dispatch(createCart());
     dispatch(
       addItem(cart.token, {
         variant_id: vari.toString(),
@@ -439,6 +440,7 @@ const ProductListScreen = ({
                 setAll(true);
                 handleAllClick(activeMenus);
                 setIsSubLink(false);
+                dispatch(getProductsList(null, {}));
               }}
               style={[isAll ? styles.active : {}]}
             >
@@ -662,21 +664,39 @@ const ProductListScreen = ({
     const [selectedCategory, setSelectedCategory] = React.useState([]);
     const [selectedVendors, setSelectedvendors] = React.useState([]);
 
-    React.useEffect(() => {
-      selectedFood();
-    }, [selectedCategory]);
-
-    React.useEffect(() => {
-      selectedVendor();
-    }, [selectedVendors]);
-
     const selectedFood = async () => {
-      setSelectedCategory(await getData("food"));
+      let data = await getData("food");
+      // setSelectedCategory(data);
+      return data;
     };
 
     const selectedVendor = async () => {
-      setSelectedvendors(await getData("vendors"));
+      let vendor = await getData("vendors");
+      // setSelectedvendors(vendor);
+      return vendor;
     };
+
+    React.useEffect(() => {
+      let isMounted = true;
+      selectedFood().then((data) => {
+        if (isMounted) setSelectedCategory(data);
+      });
+
+      return () => {
+        isMounted = false;
+      };
+    }, [selectedCategory]);
+
+    React.useEffect(() => {
+      let isMounted = true;
+      selectedVendor().then((data) => {
+        if (isMounted) setSelectedvendors(data);
+      });
+
+      return () => {
+        isMounted = false;
+      };
+    }, [selectedVendors]);
 
     const handleDeselectFood = async (item) => {
       let data = [...selectedCategory];
@@ -703,11 +723,15 @@ const ProductListScreen = ({
     };
 
     const handleFilterSearch = async (categories, vendors) => {
-      let filterData = categories
-        .filter((item) => item.isChecked)
-        .map((item) => Number(item.id));
+      let filterTaxons = categories
+        ?.filter((item) => item?.isChecked)
+        ?.map((item) => item?.id);
 
-      dispatch(getSearchProduct(null, filterData));
+      let filterVendor = vendors
+        ?.filter((item) => item?.isChecked)
+        .map((item) => item?.id);
+      console.log("vendors", vendors);
+      dispatch(getSearchProduct(null, filterTaxons, filterVendor));
     };
 
     return (
@@ -867,7 +891,10 @@ const ProductListScreen = ({
               justifyContent: "center",
               alignItems: "center",
             }}
-            onPress={() => handleFilterSearch(selectedCategory, selectedVendor)}
+            onPress={() => {
+              handleFilterSearch(selectedCategory, selectedVendors);
+              setIsOpen(false);
+            }}
           >
             <Text
               style={{

@@ -51,6 +51,16 @@ const CategoriesScreen = ({ navigation, dispatch, taxonomy, saving }) => {
             />
             <Text style={styles.optionText}>Velg Produsent</Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.upperOptions}
+            onPress={() => navigation.navigate("ProductsList")}
+          >
+            <Image
+              source={require("../../../../assets/images/category-images/food.png")}
+              style={styles.icon}
+            />
+            <Text style={styles.optionText}>Se alle produkter</Text>
+          </TouchableOpacity>
         </View>
 
         {/* // Todo: category render */}
