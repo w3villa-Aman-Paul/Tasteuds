@@ -181,7 +181,7 @@ export const styles = StyleSheet.create({
   },
   headerTextContainer: {
     justifyContent: "center",
-    alignSelf: "center",
+    alignItems: "center",
   },
   headerTitle: {
     color: colors.white,
@@ -209,6 +209,7 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderRadius: 10,
     width: "90%",
+    paddingVertical: 5,
     paddingHorizontal: 10,
   },
   cardInputDate: {

@@ -185,7 +185,7 @@ const updateAddress = ({
             ))}
           </Picker>
         </View>
-        <ActionButtonFooter title="Save" onPress={updateAddressHandler} />
+        <ActionButtonFooter title="Update" onPress={updateAddressHandler} />
       </SafeAreaView>
     </ScrollView>
   );

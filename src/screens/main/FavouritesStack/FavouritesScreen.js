@@ -18,16 +18,8 @@ import {
 } from "../../../redux";
 import FilterFooter from "../../../library/components/ActionButtonFooter/FilterFooter";
 import { HOST } from "../../../res/env";
-import { initial } from "lodash";
-import { initialWindowMetrics } from "react-native-safe-area-context";
 
-const FavouritesScreen = ({
-  vendors,
-  dispatch,
-  navigation,
-  cart,
-  favorites,
-}) => {
+const FavouritesScreen = ({ vendors, dispatch, navigation, favorites }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [nextOpen, setNextOpen] = useState(false);
   const [qtyIndicator, setQtyIndicator] = useState(null);

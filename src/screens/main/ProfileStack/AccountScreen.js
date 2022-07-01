@@ -1,7 +1,6 @@
 import {
   StyleSheet,
   Text,
-  Button,
   View,
   Image,
   ScrollView,
@@ -86,9 +85,16 @@ const AccountScreen = ({ dispatch, navigation, address, account, acc }) => {
               </View>
             </View>
 
-            <View style={{ flex: 1, alignItems: "center" }}>
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: colors.primary,
+              }}
+            >
               <TouchableOpacity
-                style={{ ...styles.button, marginBottom: 10 }}
+                style={{ ...styles.button, marginBottom: 10, marginTop: 10 }}
                 onPress={() => {
                   dispatch(userLogout());
                 }}

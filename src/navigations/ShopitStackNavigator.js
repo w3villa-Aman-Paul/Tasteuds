@@ -34,7 +34,6 @@ function ShopitStackNavigator({ navigation, route }) {
       routeName === "Bag" ||
       routeName === "ShippingAddress" ||
       routeName === "SavedAddress" ||
-      routeName === "AddAdress" ||
       routeName === "ProducersDetailScreen"
     ) {
       navigation.setOptions({ tabBarVisible: false });

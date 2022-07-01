@@ -128,7 +128,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     );
   };
 
-  const handleProductLoad = async (id, item) => {
+  const handleProductLoad = (id, item) => {
     dispatch(getProduct(id));
     dispatch(getTaxon(item.taxons[0].id));
     navigation.navigate("ProductDetail");

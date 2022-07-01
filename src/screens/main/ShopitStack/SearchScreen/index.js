@@ -79,7 +79,6 @@ const SearchScreen = ({ navigation, dispatch }) => {
   };
 
   const handleSearchPress = () => {
-    console.log("qurery", text);
     dispatch(getSearchByProductName(null, text));
   };
 

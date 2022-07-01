@@ -94,7 +94,6 @@ export const resetProductsFilter = () => ({
 
 export const getSearchProduct = (data = null, taxon = [], vendorId = []) => {
   const url = `${API_VERSION_STOREFRONT}/products`;
-  console.log("filter>>>", taxon, vendorId);
   const params = {
     include: "images",
     "Content-Type": "application/json",
@@ -114,7 +113,6 @@ export const getSearchProduct = (data = null, taxon = [], vendorId = []) => {
 
 export const getSearchByProductName = (data = null, filter = null) => {
   const url = `${API_VERSION_STOREFRONT}/products`;
-  console.log("filter>>>", filter);
   const params = {
     include: "images",
     "Content-Type": "application/json",
