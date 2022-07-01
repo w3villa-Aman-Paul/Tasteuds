@@ -9,6 +9,8 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     borderTopWidth: 2,
     borderTopColor: colors.background,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
   },
   footerAction: {
     ...globalStyles.btn,

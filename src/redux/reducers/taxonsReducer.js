@@ -160,8 +160,6 @@ export default function taxonsReducer(state = DEFAULT_STATE, action) {
       };
       return { ...state, ...changes };
 
-
-
     /**
      * SUB_MENU
      */

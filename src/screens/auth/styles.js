@@ -12,17 +12,13 @@ export const styles = StyleSheet.create({
   title: {
     ...globalStyles.title,
     ...globalStyles.mt16,
-    position: "absolute",
-    top: 300,
-    left: 12,
-    fontSize: 30,
+    fontSize: 22,
     color: "#3A3A59",
   },
   mainContainer: {
     ...globalStyles.container,
-    justifyContent: "center",
-    position: "absolute",
-    top: 400,
+    flex: 0.6,
+    justifyContent: "flex-start",
   },
   inputMainContainer: {
     ...globalStyles.mb16,
@@ -90,13 +86,16 @@ export const styles = StyleSheet.create({
   inputRoundedContainer: {
     width: 73,
   },
+  screenLogo: {
+    flex: 0.4,
+    marginTop: 15,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   loginLogo: {
-    position: "absolute",
-    width: 238,
-    height: 145,
-    top: 90,
-    left: 50,
-    right: 72,
+    width: 200,
+    height: 100,
+    resizeMode: "contain",
   },
   primaryColor: {
     backgroundColor: colors.primary,

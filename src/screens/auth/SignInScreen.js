@@ -61,13 +61,16 @@ const SignInScreen = ({ navigation, dispatch }) => {
         onPress={navigation.goBack}
       />
 
-      <Image
-        style={styles.loginLogo}
-        source={require("../../../assets/images/logo-mark.png")}
-      />
-      <Text style={{ ...styles.title, textAlign: "center", width: "100%" }}>
-        Logg inn for å fortsette
-      </Text>
+      <View style={styles.screenLogo}>
+        <Image
+          style={styles.loginLogo}
+          source={require("../../../assets/images/logo-mark.png")}
+        />
+        <Text style={{ ...styles.title, textAlign: "center" }}>
+          Logg inn for å fortsette
+        </Text>
+      </View>
+
       <Formik
         validationSchema={loginValidationSchema}
         initialValues={{ email: "", password: "" }}
@@ -95,7 +98,7 @@ const SignInScreen = ({ navigation, dispatch }) => {
           touched,
           isValid,
         }) => (
-          <KeyboardAvoidingView style={styles.mainContainer}>
+          <View style={styles.mainContainer}>
             <TextField
               placeholder="E-mail eller telefonnummer"
               inputStyle={styles.inputStyle}
@@ -161,7 +164,7 @@ const SignInScreen = ({ navigation, dispatch }) => {
                 Opprett bruker
               </Text>
             </View>
-          </KeyboardAvoidingView>
+          </View>
         )}
       </Formik>
 

@@ -99,19 +99,22 @@ const SignUpScreen = ({ navigation, dispatch }) => {
         onPress={navigation.goBack}
       />
 
-      <Image
-        style={styles.loginLogo}
-        source={require("../../../assets/images/logo-mark.png")}
-      />
-      <Text
-        style={{
-          ...styles.title,
-          textAlign: "center",
-          width: "100%",
-        }}
-      >
-        bli med i familien vår
-      </Text>
+      <View style={styles.screenLogo}>
+        <Image
+          style={styles.loginLogo}
+          source={require("../../../assets/images/logo-mark.png")}
+        />
+        <Text
+          style={{
+            ...styles.title,
+            textAlign: "center",
+            width: "100%",
+          }}
+        >
+          bli med i familien vår
+        </Text>
+      </View>
+
       <View
         style={[
           globalStyles.containerFluid,
@@ -142,16 +145,8 @@ const SignUpScreen = ({ navigation, dispatch }) => {
             }
           }}
         >
-          {({
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            values,
-            errors,
-            touched,
-            isValid,
-          }) => (
-            <KeyboardAvoidingView style={{ ...styles.mainContainer, top: 330 }}>
+          {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
+            <View style={styles.mainContainer}>
               <TextField
                 placeholder="Email"
                 inputStyle={styles.inputStyle}
@@ -241,7 +236,7 @@ const SignUpScreen = ({ navigation, dispatch }) => {
                   Logg inn
                 </Text>
               </View>
-            </KeyboardAvoidingView>
+            </View>
           )}
         </Formik>
         <View>

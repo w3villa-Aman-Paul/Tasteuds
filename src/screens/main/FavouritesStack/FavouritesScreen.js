@@ -19,36 +19,35 @@ import {
 import FilterFooter from "../../../library/components/ActionButtonFooter/FilterFooter";
 import { HOST } from "../../../res/env";
 
-const FavouritesScreen = ({
-  vendors,
-  dispatch,
-  navigation,
-  cart,
-  favorites,
-}) => {
+const FavouritesScreen = ({ vendors, dispatch, navigation, favorites }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [nextOpen, setNextOpen] = useState(false);
   const [qtyIndicator, setQtyIndicator] = useState(null);
   const [itemId, setItemId] = useState(null);
   const [qtyBtn, setQtyBtn] = useState(false);
-  const [favoritesData, setFavoritesData] = useState(null);
   const sheetRef = useRef(null);
   const snapPoints = ["35%"];
 
-  // useEffect(() => {
-  //   const getFavValue = async () => {
-  //     let favData = await getData("favItems");
-  //     setFavoritesData(favData);
-  //   };
-  //   getFavValue();
-  // }, [favoritesData]);
+  const globalQty = () => {
+    let initial;
+    if (favorites.length === 0) {
+      initial = 0;
+    } else if (favorites.length !== 1) {
+      initial = favorites.reduce((x, y) => x + y?.fav_qty, 0);
+    } else {
+      initial = favorites[0].fav_qty;
+    }
+
+    return initial;
+  };
 
   useEffect(() => {
+    let varQty = globalQty();
     if (favorites?.length === 0) {
       setQtyBtn(false);
     }
-    setQtyIndicator(cart.item_count);
-  }, [favorites, cart.item_count]);
+    setQtyIndicator(varQty);
+  }, [favorites]);
 
   const producer = (Id) => {
     const res = vendors.find((ven) => ven.id === Id);
@@ -267,7 +266,7 @@ const FavouritesScreen = ({
           <Text
             style={{ color: colors.white, fontSize: 15, fontWeight: "bold" }}
           >
-            {qtyIndicator ? qtyIndicator : "1"} VARE
+            {qtyIndicator ? qtyIndicator : ""} VARE
           </Text>
           <TouchableOpacity onPress={() => navigation.navigate("Bag")}>
             <Text

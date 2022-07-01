@@ -171,10 +171,7 @@ const AddAddress = ({ navigation, dispatch, country, countriesList, cart }) => {
           </Picker>
         </View>
 
-        <ActionButtonFooter
-          title="Create Address"
-          onPress={createAddressHandler}
-        />
+        <ActionButtonFooter title="Create" onPress={createAddressHandler} />
       </SafeAreaView>
     </ScrollView>
   );

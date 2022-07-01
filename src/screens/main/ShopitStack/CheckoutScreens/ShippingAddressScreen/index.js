@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
+  KeyboardAvoidingView,
+  Dimensions,
 } from "react-native";
 import { globalStyles } from "../../../../../styles/global";
 import { colors } from "../../../../../res/palette";
@@ -45,7 +47,7 @@ const ShippingAddressScreen = ({
   const sheetRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
 
-  const snapPoints = ["55%"];
+  const snapPoints = [370, 500];
 
   // const handleUpdateCheckout = async () => {
   //   await dispatch(
@@ -101,7 +103,7 @@ const ShippingAddressScreen = ({
           </View>
         </View>
 
-        <View style={styles.cardContainer}>
+        <KeyboardAvoidingView style={{ ...styles.cardContainer, flex: 1 }}>
           <View style={styles.cardContent}>
             <Text style={styles.cardText}>KORTHOLDERS NAVN</Text>
             <TextInput style={styles.cardInput} />
@@ -128,7 +130,7 @@ const ShippingAddressScreen = ({
               </Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </View>
     );
   };
