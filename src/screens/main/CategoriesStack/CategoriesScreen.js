@@ -18,7 +18,6 @@ const CategoriesScreen = ({ navigation, dispatch, taxonomy, saving }) => {
     dispatch(getMenus());
   }, []);
 
-  console.log(">>>>>", activeCategory);
   if (saving) {
     return <ActivityIndicatorCard />;
   } else

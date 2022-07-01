@@ -93,13 +93,11 @@ const ProductListScreen = ({
   const params = route?.params;
 
   const handleAfterMenuSelect = async (params) => {
-    console.log("Active>>", activeMenus);
     await dispatch(getSubMenu(params.menu.link.slice(2).toLowerCase()));
     setAll(false);
     setIsAll(true);
     setSubLink(params.menu.link.slice(2).toLowerCase());
 
-    console.log("SubLink", subLink);
     handleClick(handleUncheckAllMenus(activeMenus), params.menu);
     await dispatch(getSubMenuProducts(subLink));
     setIsSubLink(true);
@@ -730,7 +728,6 @@ const ProductListScreen = ({
       let filterVendor = vendors
         ?.filter((item) => item?.isChecked)
         .map((item) => item?.id);
-      console.log("vendors", vendors);
       dispatch(getSearchProduct(null, filterTaxons, filterVendor));
     };
 
