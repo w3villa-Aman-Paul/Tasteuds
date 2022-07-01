@@ -1,3 +1,4 @@
+import "react-native-gesture-handler";
 import * as React from "react";
 import { Provider as PaperProvider } from "react-native-paper";
 import { ThemeProvider } from "react-native-elements";
@@ -14,7 +15,6 @@ const getFonts = () =>
     "lato-regular": require("./assets/fonts/Montserrat-Regular.ttf"),
     "lato-medium": require("./assets/fonts/Montserrat-Medium.ttf"),
   });
-
 
 const App = () => {
   const [fontsLoaded, setFontsLoaded] = React.useState(false);
@@ -41,6 +41,6 @@ const App = () => {
       </SafeAreaProvider>
     </Provider>
   );
-}
+};
 
 export default App;

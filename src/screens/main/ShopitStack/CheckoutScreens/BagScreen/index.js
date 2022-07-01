@@ -109,7 +109,10 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
           </View>
 
           <View style={styles.login_content}>
-            <TouchableOpacity style={styles.login_btn}>
+            <TouchableOpacity
+              style={styles.login_btn}
+              onPress={() => navigation.navigate("SignIn")}
+            >
               <Image
                 style={styles.login_image}
                 source={require("../../../../../../assets/images/Header-Icon/fb.png")}
@@ -125,14 +128,12 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
               </View>
             </TouchableOpacity>
           </View>
-          <View style={styles.login_content}>
-            <Text
-              style={styles.bottom_text}
-              onPress={() => navigation.navigate("SignIn")}
-            >
-              FORTSETT MED E-POST
-            </Text>
-          </View>
+          <TouchableOpacity
+            style={styles.login_content}
+            onPress={() => navigation.navigate("SignIn")}
+          >
+            <Text style={styles.bottom_text}>FORTSETT MED E-POST</Text>
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -263,6 +264,7 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
                 justifyContent: "center",
                 alignItems: "center",
                 height: 96,
+                ...globalStyles.iosShadow,
               }}
             >
               <Image
@@ -377,7 +379,7 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
 
             <View style={styles.offer}>
               <Text style={styles.continue_shop}>
-                BESTILL FOR 150,00 KR TIL OG FÅ GRATIS FRAKT
+                BESTILL FOR 750 KR TIL OG FÅ GRATIS FRAKT
               </Text>
             </View>
 

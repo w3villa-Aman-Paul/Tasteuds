@@ -15,7 +15,8 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.w3villa.tastebuds"
+      "bundleIdentifier": "com.w3villa.tastebuds",
+      "usesAppleSignIn": true
     },
     "android": {
       "package": "com.w3villa.tastebuds",

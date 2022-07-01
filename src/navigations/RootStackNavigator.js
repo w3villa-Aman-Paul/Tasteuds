@@ -1,3 +1,4 @@
+import "react-native-gesture-handler";
 import * as React from "react";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -47,9 +48,10 @@ function RootStackNavigator({ authState, dispatch }) {
   }
   return (
     <NavigationContainer ref={navigationRef} theme={MyTheme}>
-      <RootStack.Navigator screenOptions={{ headerShown: false }}>
-        <RootStack.Screen name="Splash" component={splash} />
-
+      <RootStack.Navigator
+        screenOptions={{ headerShown: false }}
+        detachInactiveScreens={"false"}
+      >
         <RootStack.Screen name="Shopit" component={MainTabNavigator} />
 
         <RootStack.Screen name="Profile" component={ProfileStackNavigator} />

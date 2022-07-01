@@ -128,8 +128,12 @@ const FoodFooter = ({ navigation }) => {
                     backgroundColor: "#232332",
                     borderColor: "transparent",
                     borderBottomColor: "rgba(58, 58, 89, 1)",
+
                     padding: 5,
+                    // paddingTop: 0,
+                    margin: 0,
                     justifyContent: "center",
+                    alignItems: "center",
                   }}
                   textStyle={{
                     flex: 1,

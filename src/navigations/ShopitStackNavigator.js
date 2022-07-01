@@ -7,7 +7,7 @@ import ProductDetailScreen from "../screens/main/ShopitStack/ProductDetailScreen
 import ShippingAddressScreen from "../screens/main/ShopitStack/CheckoutScreens/ShippingAddressScreen";
 import PaymentScreen from "../screens/main/ShopitStack/CheckoutScreens/PaymentScreen";
 import BagScreen from "../screens/main/ShopitStack/CheckoutScreens/BagScreen";
-import { ShoppingBag, Heart, Share, ChevronLeft } from "../library/icons";
+import { Heart } from "../library/icons";
 import { colors } from "../res/palette";
 import { globalStyles } from "../styles/global";
 
@@ -51,7 +51,7 @@ function ShopitStackNavigator({ navigation, route }) {
   }, [navigation, route]);
 
   return (
-    <ShopitStack.Navigator>
+    <ShopitStack.Navigator screenOptions={{}}>
       <ShopitStack.Screen
         name="Shop"
         component={HomeComponent}
@@ -73,22 +73,6 @@ function ShopitStackNavigator({ navigation, route }) {
                 alignItems: "center",
               }}
             >
-              {/* <TouchableOpacity
-                style={{
-                  flex: 1,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-                onPress={() => navigation.navigate("Profile")}
-              >
-                <Icon
-                  name="person"
-                  type="ionicons"
-                  size={30}
-                  color={colors.primary}
-                  style={{ marginRight: 10 }}
-                />
-              </TouchableOpacity> */}
               <TouchableOpacity
                 style={{
                   flex: 1,
