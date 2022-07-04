@@ -135,9 +135,6 @@ export const addItem = (auth_token, data) => async (dispatch, getState) => {
     payload: handleAddCartItem(url, params, method, data, auth_token),
   });
 
-  // storeData("cartItems", getState().checkout.cart);
-  // console.log("cartItems", getState().checkout.cart);
-  // removeData("cartItems");
 };
 
 export function getCart(cartToken) {

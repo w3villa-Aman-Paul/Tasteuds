@@ -48,10 +48,7 @@ function RootStackNavigator({ authState, dispatch }) {
   }
   return (
     <NavigationContainer ref={navigationRef} theme={MyTheme}>
-      <RootStack.Navigator
-        screenOptions={{ headerShown: false }}
-        detachInactiveScreens={"false"}
-      >
+      <RootStack.Navigator screenOptions={{ headerShown: false }}>
         <RootStack.Screen name="Splash" component={splash} />
         <RootStack.Screen name="Shopit" component={MainTabNavigator} />
 

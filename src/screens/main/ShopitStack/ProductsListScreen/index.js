@@ -39,6 +39,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Snackbar } from "react-native-paper";
 import { getData, removeData, storeData } from "../../../../redux/rootReducer";
 import { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
+import { ref } from "yup";
 
 const ProductListScreen = ({
   navigation,
@@ -60,6 +61,11 @@ const ProductListScreen = ({
   const [activeSubMenu, setActiveSubMenu] = useState(false);
   const [isAll, setIsAll] = useState(true);
   const [sort, setSort] = useState(false);
+  const [menuCords, setMenuCords] = useState([]);
+  const [offsetMenu, setoffsetMenu] = useState({ x: 0, y: 0 });
+  const [subMenuCords, setSubMenuCords] = useState([]);
+  const [offsetSubMenu, setoffsetSubMenu] = useState({ x: 0, y: 0 });
+
   const checkout = useSelector((state) => state.checkout);
   const errMessage = useSelector((state) => state.checkout.error);
   const cart = useSelector((state) => state.checkout.cart);
@@ -81,7 +87,7 @@ const ProductListScreen = ({
 
   useEffect(() => {
     if (params) handleAfterMenuSelect(params);
-  }, [menus, params, route]);
+  }, [params]);
 
   LogBox.ignoreLogs([
     "Non-serializable values were found in the navigation state",
@@ -366,10 +372,11 @@ const ProductListScreen = ({
   const handleActiveMenuClick = async (categories) => {
     let activeTaxons = Number(categories.linked_resource.id);
 
-    console.log(activeTaxons);
-
     dispatch(getSearchProduct(null, activeTaxons, []));
   };
+
+  const scrollMenuRef = React.useRef();
+  const scrollSubMenuRef = React.useRef();
 
   const flatListUpperElement = () => {
     return (
@@ -418,6 +425,8 @@ const ProductListScreen = ({
             horizontal={true}
             style={{ ...globalStyles.mt16, ...styles.bgwhite }}
             showsHorizontalScrollIndicator={false}
+            ref={scrollMenuRef}
+            contentOffset={offsetMenu}
           >
             <TouchableOpacity
               key={"alle"}
@@ -442,11 +451,15 @@ const ProductListScreen = ({
                 Alle
               </Text>
             </TouchableOpacity>
-            {console.log("active", activeMenus)}
 
             {activeMenus?.map((menu, index, arr) => (
               <TouchableOpacity
                 key={index.toString()}
+                onLayout={(event) => {
+                  const layout = event.nativeEvent.layout;
+                  menuCords[index] = layout.x;
+                  setMenuCords(menuCords);
+                }}
                 onPress={async () => {
                   await handleActiveMenuClick(menu);
                   setAll(true);
@@ -456,6 +469,8 @@ const ProductListScreen = ({
                   handleClick(handleUncheckAllMenus(arr), menu);
                   await dispatch(getSubMenuProducts(subLink));
                   setIsSubLink(true);
+
+                  setoffsetMenu({ x: menuCords[index], y: 0 });
                 }}
                 style={[menu.isActive ? styles.active : styles.unactive]}
               >
@@ -481,6 +496,8 @@ const ProductListScreen = ({
               horizontal={true}
               style={{ ...globalStyles.mt16, marginBottom: 10 }}
               showsHorizontalScrollIndicator={false}
+              ref={scrollSubMenuRef}
+              contentOffset={offsetSubMenu}
             >
               <TouchableOpacity
                 key={"alle"}
@@ -499,10 +516,16 @@ const ProductListScreen = ({
                 ?.map((submenu, index, arr) => (
                   <TouchableOpacity
                     key={index.toString()}
+                    onLayout={(event) => {
+                      const layout = event.nativeEvent.layout;
+                      subMenuCords[index] = layout.x;
+                      setSubMenuCords(subMenuCords);
+                    }}
                     onPress={() => {
                       setIsSubAll(false);
                       setIsAll(false);
                       setAll(false);
+                      setoffsetSubMenu({ x: subMenuCords[index], y: 0 });
                       dispatch(
                         getSubMenuProducts(submenu.permalink.toLowerCase())
                       );

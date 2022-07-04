@@ -27,12 +27,10 @@ const FoodFooter = ({ navigation }) => {
     );
   }, []);
 
-  console.log("checked2", checked);
-
   useEffect(() => {
     const getFood = async () => {
       let data = await getData("food");
-      console.log("data", data);
+
       {
         data !== null && data !== [] ? setChecked(data) : <></>;
       }

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { ScrollView, View, Text, Image, TouchableOpacity } from "react-native";
 import { styles } from "./styles";
-import { getMenus, getTaxonsList } from "../../../redux";
+import { getMenus } from "../../../redux";
 import { connect, useSelector } from "react-redux";
 import ActivityIndicatorCard from "../../../library/components/ActivityIndicatorCard";
 import { colors } from "../../../res/palette";
@@ -10,10 +10,6 @@ const CategoriesScreen = ({ navigation, dispatch, taxonomy, saving }) => {
   const menus = useSelector((state) => state.taxons.menus);
 
   const [activeCategory, setActiveCategory] = React.useState({});
-
-  const handleDisplayTaxon = ({ title, id }) => {
-    navigation.navigate("ProductsList", { title: title, id: id });
-  };
 
   React.useEffect(() => {
     dispatch(getMenus());
@@ -90,8 +86,14 @@ const CategoriesScreen = ({ navigation, dispatch, taxonomy, saving }) => {
                     ]}
                     key={item.id}
                     onPress={() => {
-                      setActiveCategory({ name: item.name });
-                      navigation.navigate("ProductsList", { menu: item });
+                      setActiveCategory({
+                        name: item.name,
+                        id: item.linked_resource.id,
+                      });
+                      navigation.navigate("ProductsList", {
+                        menu: item,
+                        id: item.linked_resource.id,
+                      });
                     }}
                   >
                     <View
@@ -114,9 +116,7 @@ const CategoriesScreen = ({ navigation, dispatch, taxonomy, saving }) => {
                           styles.optionText,
                           activeCategory?.name === item?.name
                             ? {
-                                borderWidth: 1,
-                                borderColor: "transparent",
-                                borderBottomColor: colors.primary,
+                                color: colors.btnLink,
                               }
                             : {},
                         ]}

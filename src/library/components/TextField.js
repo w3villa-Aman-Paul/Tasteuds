@@ -1,8 +1,8 @@
-import * as React from "react"
-import { View, StyleSheet } from "react-native"
-import { globalStyles } from '../../styles/global'
-import { colors } from '../../res/palette'
-import { Input } from 'react-native-elements'
+import * as React from "react";
+import { View, StyleSheet } from "react-native";
+import { globalStyles } from "../../styles/global";
+import { colors } from "../../res/palette";
+import { Input } from "react-native-elements";
 
 const TextField = ({
   placeholder,
@@ -14,7 +14,7 @@ const TextField = ({
   onChangeText,
   value,
 }) => {
-  const [inputBorder, setInputBorder] = React.useState(false)
+  const [inputBorder, setInputBorder] = React.useState(false);
 
   return (
     <View>
@@ -23,27 +23,31 @@ const TextField = ({
         keyboardType={keyboardType || "default"}
         onFocus={() => setInputBorder(true)}
         onBlur={() => setInputBorder(false)}
-        containerStyle={[containerStyle, {
-          borderColor: inputBorder ? colors.primary : '#ccc',
-        }]}
-        inputStyle={ inputStyle || globalStyles.latoRegular}
-        inputContainerStyle={inputContainerStyle || { borderBottomColor: '#fff'}}
+        containerStyle={[
+          containerStyle,
+          {
+            borderColor: inputBorder ? colors.primary : "#ccc",
+          },
+        ]}
+        inputStyle={inputStyle || globalStyles.latoRegular}
+        inputContainerStyle={
+          inputContainerStyle || { borderBottomColor: "#fff" }
+        }
         rightIcon={() => rightElement}
         onChangeText={onChangeText}
         value={value}
-        // onEndEditing={() => console.log(value)}      
       />
     </View>
-  )
-}
+  );
+};
 
-export default TextField
+export default TextField;
 
 const styles = StyleSheet.create({
   container: {
     ...globalStyles.mb16,
-    backgroundColor: '#fff', 
-    height: 52, 
+    backgroundColor: "#fff",
+    height: 52,
     borderRadius: 4,
     borderWidth: 1,
   },
@@ -51,4 +55,4 @@ const styles = StyleSheet.create({
     ...globalStyles.latoRegular,
     ...globalStyles.textPrimary,
   },
-})
+});

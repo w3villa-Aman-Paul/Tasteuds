@@ -135,6 +135,8 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   };
 
   const newJustInRenderItem = ({ item, index }) => {
+    if (saving) return <ActivityIndicatorCard />;
+
     return (
       <TouchableOpacity>
         <FlatListImageItem
@@ -339,25 +341,21 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     <SafeAreaView
       style={{ ...styles.containerFluid, ...styles.bg_white, flex: 1 }}
     >
-      {saving ? (
-        <ActivityIndicatorCard />
-      ) : (
-        <FlatList
-          data={productsList.slice(0, 10)}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={newJustInRenderItem}
-          numColumns={2}
-          columnWrapperStyle={{ justifyContent: "space-between" }}
-          style={{
-            ...globalStyles.container,
-            ...globalStyles.mt8,
-            ...styles.bg_white,
-          }}
-          showsVerticalScrollIndicator={false}
-          ListHeaderComponent={flatListHeaderComponent}
-          ListFooterComponent={flatListlowerComponent}
-        />
-      )}
+      <FlatList
+        data={productsList.slice(0, 10)}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={newJustInRenderItem}
+        numColumns={2}
+        columnWrapperStyle={{ justifyContent: "space-between" }}
+        style={{
+          ...globalStyles.container,
+          ...globalStyles.mt8,
+          ...styles.bg_white,
+        }}
+        showsVerticalScrollIndicator={false}
+        ListHeaderComponent={flatListHeaderComponent}
+        ListFooterComponent={flatListlowerComponent}
+      />
 
       <Snackbar visible={snackbarVisible} onDismiss={dismissSnackbar}>
         Added to Cart !

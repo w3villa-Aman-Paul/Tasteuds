@@ -14,10 +14,6 @@ import { Icon } from "react-native-elements";
 const Tab = createBottomTabNavigator();
 
 function MainTabNavigator({ navigation }) {
-  const openDrawer = () => {
-    navigation.openDrawer();
-  };
-
   return (
     <Tab.Navigator
       tabBarOptions={{

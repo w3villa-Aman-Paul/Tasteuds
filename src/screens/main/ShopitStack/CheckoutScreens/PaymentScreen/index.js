@@ -34,8 +34,7 @@ import ActivityIndicatorCard from "../../../../../library/components/ActivityInd
 import { connect } from "react-redux";
 
 const PaymentScreen = ({ navigation, dispatch, saving, cart }) => {
-  console.log("OrderToken", cart.token);
-  console.log("payment_id", cart.id);
+
   const [cardNumber, setCardNumber] = useState("4111111111111111");
   const [nameOnCard, setNameOnCard] = useState("John Snow");
   const [validThru, setValidThru] = useState("01/2022");
