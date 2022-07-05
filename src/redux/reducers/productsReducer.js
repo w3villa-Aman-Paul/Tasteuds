@@ -349,9 +349,36 @@ export default function productsReducer(state = DEFAULT_STATE, action) {
      * SET_PRODUCT_FAVOURITE
      */
     case "SET_PRODUCT_FAVOURITE":
+      let item = action.payload;
+      let existed = state.favorites.find((x) => x.id === item.id);
+
+      if (existed) {
+        return {
+          ...state,
+          favorites: state.favorites.map((x) =>
+            x.id === existed.id
+              ? { ...existed, fav_qty: existed.fav_qty + 1 }
+              : x
+          ),
+        };
+      } else {
+        return {
+          ...state,
+          favorites: [...state.favorites, action.payload],
+        };
+      }
+
+    case "SET_FAV_QTY_INC":
+      let existFav2 = state.favorites.find(
+        (x) => x.id === action.payload.fav_item_id
+      );
       return {
         ...state,
-        favorites: [...new Set([...state.favorites, action.payload])],
+        favorites: state.favorites.map((x) =>
+          x.id === existFav2.id
+            ? { ...existFav2, fav_qty: action.payload.quantity }
+            : x
+        ),
       };
 
     case "SET_FAV_QTY_DEC":
@@ -367,23 +394,9 @@ export default function productsReducer(state = DEFAULT_STATE, action) {
         ),
       };
 
-    case "SET_FAV_QTY_INC":
-      let existFav2 = state.favorites.find(
-        (x) => x.id === action.payload.fav_item_id
-      );
-      return {
-        ...state,
-        favorites: state.favorites.map((x) =>
-          x.id === existFav2.id
-            ? { ...existFav2, fav_qty: action.payload.quantity }
-            : x
-        ),
-      };
-
     case "DELETE_PRODUCT_FAVOURITE":
       return {
         ...state,
-
         favorites: state.favorites.filter((fav) => fav.id !== action.payload),
       };
     /**

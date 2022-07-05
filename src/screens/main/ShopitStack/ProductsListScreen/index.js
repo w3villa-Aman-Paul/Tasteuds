@@ -197,7 +197,6 @@ const ProductListScreen = ({
 
   const handleAddToBag = async (item) => {
     let vari = item.variants[0].id;
-    await dispatch(createCart());
     await dispatch(
       addItem(cart.token, {
         variant_id: vari.toString(),

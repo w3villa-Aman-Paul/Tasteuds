@@ -19,7 +19,6 @@ import CartFooter from "../../../../../library/components/ActionButtonFooter/car
 import { useSelector } from "react-redux";
 import { HOST } from "../../../../../res/env";
 import FilterFooter from "../../../../../library/components/ActionButtonFooter/FilterFooter";
-import { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 
 const BagScreen = ({ navigation, dispatch, saving, cart }) => {
   const productsList = useSelector((state) => state.products.productsList);

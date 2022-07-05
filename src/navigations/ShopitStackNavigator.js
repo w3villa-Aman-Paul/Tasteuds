@@ -21,12 +21,20 @@ import AddAddress from "../screens/main/ProfileStack/AddAddress";
 import ProducerDetailScreen from "../screens/main/ProducersStack/ProducerDetailScreen";
 import SearchScreen from "../screens/main/ShopitStack/SearchScreen/index";
 import ProducersListScreen from "../screens/main/ProducersStack/ProducersListScreen";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { createCart } from "../redux";
 
 const ShopitStack = createStackNavigator();
 
 function ShopitStackNavigator({ navigation, route }) {
+  const dispatch = useDispatch();
   const { cart } = useSelector((state) => state.checkout);
+
+  useEffect(() => {
+    if (!cart.token) {
+      dispatch(createCart());
+    }
+  }, []);
 
   useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route);

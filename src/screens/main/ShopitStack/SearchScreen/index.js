@@ -48,16 +48,16 @@ const SearchScreen = ({ navigation, dispatch }) => {
     return [vendorName, vendor];
   };
 
-  const cartHandler = (itemId) => {
-    let item = searchedProducts.find((x) => x.id === itemId);
-    dispatch(
-      addItem(cart.token, {
-        variant_id: item.default_variant?.id,
-        quantity: 1,
-      })
-    );
-    return setSnackbarVisible(true);
-  };
+  // const cartHandler = (itemId) => {
+  //   let item = searchedProducts.find((x) => x.id === itemId);
+  //   dispatch(
+  //     addItem(cart.token, {
+  //       variant_id: item.default_variant?.id,
+  //       quantity: 1,
+  //     })
+  //   );
+  //   return setSnackbarVisible(true);
+  // };
 
   const handleProductLoad = async (id, item) => {
     dispatch(getProduct(id));
@@ -118,7 +118,7 @@ const SearchScreen = ({ navigation, dispatch }) => {
               resizeMode: "contain",
             }}
           />
-          <TouchableOpacity style={styles.addBtn}>
+          {/* <TouchableOpacity style={styles.addBtn}>
             <Icon
               name="pluscircleo"
               type="ant-design"
@@ -127,7 +127,7 @@ const SearchScreen = ({ navigation, dispatch }) => {
               borderRadius={34}
               onPress={() => cartHandler(item?.id)}
             />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
         <View style={styles.detailsContainer}>
           <Text numberOfLines={1} style={styles.title}>
