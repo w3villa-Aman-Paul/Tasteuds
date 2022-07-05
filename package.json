@@ -73,6 +73,6 @@
     "babel-preset-expo": "9.0.2"
   },
   "private": true,
-  "name": "Tastebuds-Spree",
+  "name": "Tastebuds",
   "version": "1.0.0"
 }
