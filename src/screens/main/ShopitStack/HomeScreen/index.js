@@ -52,9 +52,8 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     return [vendorName, vendor];
   };
 
-  const cartHandler = async (itemId) => {
+  const cartHandler = (itemId) => {
     let item = productsList.find((x) => x.id === itemId);
-    await dispatch(createCart());
     dispatch(
       addItem(cart?.token, {
         variant_id: item.default_variant?.id,

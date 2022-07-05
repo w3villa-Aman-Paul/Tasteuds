@@ -8,7 +8,6 @@ import ActivityIndicatorCard from "../../../../library/components/ActivityIndica
 
 import {
   addItem,
-  createCart,
   getCart,
   getSelectedVendor,
   setProductFavourite,
@@ -24,7 +23,6 @@ const ProductDetailScreen = ({ navigation, dispatch, auth, cart, route }) => {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [favsnackbar, setFavSnackbar] = useState(false);
   const [selectedVendor, setSelectedVendor] = useState([]);
-  const [cartItems, setCartItems] = React.useState(null);
 
   const vendor = async () => {
     setSelectedVendor(await getData("selectedVendor"));
@@ -47,8 +45,8 @@ const ProductDetailScreen = ({ navigation, dispatch, auth, cart, route }) => {
   const dismissSnackbar = () => setSnackbarVisible(false);
   const dismissFavSnackbar = () => setFavSnackbar(false);
 
-  const handleAddToBag = () => {
-    let vari = product?.variants[0];
+  const handleAddToBag = (color) => {
+    let vari = product?.variants.find((item, index) => index === color);
     dispatch(
       addItem(cart?.token, {
         variant_id: vari.id,
@@ -108,9 +106,11 @@ const ProductDetailScreen = ({ navigation, dispatch, auth, cart, route }) => {
           <View style={styles.containerFluid}>
             <View style={[globalStyles.container, globalStyles.pb16]}>
               <Text style={styles.productName}>{product?.name}</Text>
-              <Text
-                style={styles.price}
-              >{`${product?.price} ${product?.currency}`}</Text>
+              <Text style={styles.price}>
+                {color
+                  ? product?.variants[color].display_price
+                  : product?.variants[0].display_price}
+              </Text>
             </View>
           </View>
           <View style={[styles.containerFluid, globalStyles.mt8]}>
@@ -125,18 +125,14 @@ const ProductDetailScreen = ({ navigation, dispatch, auth, cart, route }) => {
                 <Button
                   title="LEGG TIL I HANDLEKURV"
                   type="solid"
-                  // disabled={isVariantSelected}
-                  // disabledStyle={{ backgroundColor: colors.gray }}
-                  // disabledTitleStyle={{ color: colors.white }}
                   containerStyle={{ flex: 1 }}
                   titleStyle={{ ...styles.titleStyle, fontSize: 18 }}
                   buttonStyle={{
                     ...globalStyles.btn,
-                    // width: "95%",
                     height: 50,
                     flex: 0.8,
                   }}
-                  onPress={() => handleAddToBag()}
+                  onPress={() => handleAddToBag(color)}
                 />
                 <View
                   style={{
@@ -167,9 +163,7 @@ const ProductDetailScreen = ({ navigation, dispatch, auth, cart, route }) => {
                   <TouchableOpacity
                     style={color == index ? styles.active : styles.unactive}
                     key={index}
-                    onPress={() => {
-                      setColor(index);
-                    }}
+                    onPress={() => setColor(index)}
                   >
                     <Text
                       style={

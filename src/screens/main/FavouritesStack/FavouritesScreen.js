@@ -8,10 +8,11 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
-import { connect, useSelector } from "react-redux";
+import { connect } from "react-redux";
 import { Icon } from "react-native-elements";
 import { colors } from "../../../res/palette";
 import {
+  addItem,
   deleteFavourite,
   setFavQuantityDec,
   setFavQuantityInc,
@@ -19,35 +20,33 @@ import {
 import FilterFooter from "../../../library/components/ActionButtonFooter/FilterFooter";
 import { HOST } from "../../../res/env";
 
-const FavouritesScreen = ({ vendors, dispatch, navigation, favorites }) => {
+const FavouritesScreen = ({
+  vendors,
+  dispatch,
+  navigation,
+  favorites,
+  cart,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [nextOpen, setNextOpen] = useState(false);
-  const [qtyIndicator, setQtyIndicator] = useState(null);
   const [itemId, setItemId] = useState(null);
+  const [temp, setTemp] = useState(null);
+  const [tempVar, setTempVar] = useState(null);
   const [qtyBtn, setQtyBtn] = useState(false);
+  const [color, setColor] = useState(0);
+  const [particularFav, setParticularFav] = useState(null);
   const sheetRef = useRef(null);
   const snapPoints = ["35%"];
 
-  const globalQty = () => {
-    let initial;
-    if (favorites.length === 0) {
-      initial = 0;
-    } else if (favorites.length !== 1) {
-      initial = favorites.reduce((x, y) => x + y?.fav_qty, 0);
-    } else {
-      initial = favorites[0].fav_qty;
-    }
-
-    return initial;
-  };
-
   useEffect(() => {
-    let varQty = globalQty();
     if (favorites?.length === 0) {
       setQtyBtn(false);
     }
-    setQtyIndicator(varQty);
-  }, [favorites]);
+
+    let tempFav = favorites.find((x) => x.id === particularFav?.id);
+    setTemp(tempFav);
+    setTempVar(tempFav?.variants[color]?.id);
+  }, [favorites, temp, particularFav]);
 
   const producer = (Id) => {
     const res = vendors.find((ven) => ven.id === Id);
@@ -74,15 +73,25 @@ const FavouritesScreen = ({ vendors, dispatch, navigation, favorites }) => {
   };
 
   const bottomSheetContent = (Id) => {
-    let fav_res = favorites?.filter((x) => x.id === Id);
+    let fav_res = favorites?.find((x) => x.id === Id);
 
     return nextOpen ? (
       <View style={styles.fav_contain}>
         <View style={styles.fav_first}>
-          {fav_res[0]?.variants.map((q, i) => {
+          {fav_res?.variants.map((q, i) => {
             return (
-              <TouchableOpacity style={styles.fav_qty} key={i}>
-                <Text>
+              <TouchableOpacity
+                style={color === i ? styles.active : styles.fav_qty}
+                key={i}
+                onPress={() => {
+                  setColor(i);
+                  setIsOpen(false);
+                  setNextOpen(false);
+                }}
+              >
+                <Text
+                  style={color === i ? styles.active_var : styles.unactive_var}
+                >
                   {q.options_text
                     ? q.options_text.split(" ")[3] ||
                       q.options_text.split(" ")[1]
@@ -159,33 +168,38 @@ const FavouritesScreen = ({ vendors, dispatch, navigation, favorites }) => {
       <ScrollView>
         <View style={styles.container}>
           {favorites?.map((favourite) => {
-            let fav = favourite?.variants[0]?.product;
-            let result = producer(fav.vendor.id);
+            let result = producer(favourite?.vendor?.id);
 
             return (
               <TouchableOpacity
-                key={fav.id}
+                key={favourite?.id}
                 style={styles.contentContainer}
                 onPress={() => navigation.goBack()}
               >
                 <View style={styles.first_content}>
                   <Image
-                    source={{ uri: `${HOST}/${fav.images[0].styles[3].url}` }}
+                    source={{
+                      uri: `${HOST}/${favourite?.images[0].styles[3].url}`,
+                    }}
                     style={styles.fav_image}
                   />
                   <View style={styles.first_body}>
                     <Text style={{ color: colors.black, fontSize: 14 }}>
-                      {fav.name}
+                      {favourite?.name}
                     </Text>
                     <Text style={{ color: colors.btnLink, fontSize: 14 }}>
                       {result?.name}
                     </Text>
                     <Text style={{ color: colors.black, fontSize: 14 }}>
-                      {fav.display_price} |{" "}
-                      {favourite?.variants[0].options_text
-                        ? favourite?.variants[0].options_text.split(" ")[3] ||
-                          favourite?.variants[0].options_text.split(" ")[1]
-                        : ""}
+                      {itemId?.id === favourite?.id
+                        ? itemId?.variants[color]?.display_price
+                        : favourite?.variants[0]?.display_price}
+                      |{" "}
+                      {itemId?.id === favourite?.id
+                        ? itemId?.variants[color].options_text.split(" ")[3] ||
+                          itemId?.variants[color].options_text.split(" ")[1]
+                        : favourite?.variants[0].options_text.split(" ")[3] ||
+                          favourite?.variants[0].options_text.split(" ")[1]}
                     </Text>
                   </View>
                   <Icon
@@ -195,12 +209,12 @@ const FavouritesScreen = ({ vendors, dispatch, navigation, favorites }) => {
                     color={colors.black}
                     onPress={() => {
                       setIsOpen(true);
-                      setItemId(fav.id);
+                      setItemId(favourite);
                     }}
                   />
                 </View>
                 <View style={styles.second_content}>
-                  {qtyBtn ? (
+                  {qtyBtn && particularFav?.id === favourite?.id ? (
                     <View style={styles.fav_qty_style}>
                       <TouchableOpacity
                         style={styles.qty_icon_first}
@@ -242,7 +256,10 @@ const FavouritesScreen = ({ vendors, dispatch, navigation, favorites }) => {
                     <>
                       <TouchableOpacity
                         style={styles.sec_btn}
-                        onPress={() => setQtyBtn(true)}
+                        onPress={() => {
+                          setParticularFav(favourite);
+                          setQtyBtn(true);
+                        }}
                       >
                         <Icon
                           type="ant-design"
@@ -261,14 +278,24 @@ const FavouritesScreen = ({ vendors, dispatch, navigation, favorites }) => {
           })}
         </View>
       </ScrollView>
-      {qtyBtn ? (
+      {qtyBtn && particularFav?.id ? (
         <View style={styles.qty_footer}>
           <Text
             style={{ color: colors.white, fontSize: 15, fontWeight: "bold" }}
           >
-            {qtyIndicator ? qtyIndicator : ""} VARE
+            {temp?.fav_qty ? temp?.fav_qty : 1} VARE
           </Text>
-          <TouchableOpacity onPress={() => navigation.navigate("Bag")}>
+          <TouchableOpacity
+            onPress={() => {
+              dispatch(
+                addItem(cart?.token, {
+                  variant_id: tempVar,
+                  quantity: temp?.fav_qty,
+                })
+              );
+              navigation.navigate("Bag");
+            }}
+          >
             <Text
               style={{ color: colors.white, fontSize: 15, fontWeight: "bold" }}
             >
@@ -282,7 +309,7 @@ const FavouritesScreen = ({ vendors, dispatch, navigation, favorites }) => {
           value={sheetRef}
           snapPoints={snapPoints}
           onClose={() => setIsOpen(false)}
-          bottomSheetContent={() => bottomSheetContent(itemId)}
+          bottomSheetContent={() => bottomSheetContent(itemId?.id)}
         />
       )}
     </>
@@ -432,6 +459,23 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 8,
     alignItems: "center",
+  },
+  active: {
+    backgroundColor: colors.btnLink,
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    justifyContent: "center",
+    alignItems: "flex-start",
+    marginBottom: 5,
+  },
+  active_var: {
+    color: colors.white,
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+  unactive_var: {
+    color: colors.black,
   },
 });
 
