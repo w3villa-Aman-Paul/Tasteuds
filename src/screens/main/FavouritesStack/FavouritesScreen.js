@@ -174,7 +174,6 @@ const FavouritesScreen = ({
               <TouchableOpacity
                 key={favourite?.id}
                 style={styles.contentContainer}
-                onPress={() => navigation.goBack()}
               >
                 <View style={styles.first_content}>
                   <Image

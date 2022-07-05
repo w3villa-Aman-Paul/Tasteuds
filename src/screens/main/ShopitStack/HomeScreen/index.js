@@ -87,6 +87,8 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
               position: "absolute",
               bottom: 0,
               right: 0,
+              backgroundColor: colors.white,
+              borderRadius: 50,
             }}
           >
             <Icon
