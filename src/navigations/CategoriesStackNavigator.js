@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useLayoutEffect } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import CategoriesScreen from "../screens/main/CategoriesStack/CategoriesScreen";
 import { colors } from "../res/palette";
@@ -6,11 +6,23 @@ import { globalStyles } from "../styles/global";
 import { Image, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
 import { Icon } from "react-native-elements";
+import NewlyAddedProducts from "../screens/main/CategoriesStack/NewlyAddedProducts";
+import MostBoughtProducts from "../screens/main/CategoriesStack/MostBoughtProducts";
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 
 const CategoriesStack = createStackNavigator();
 
-function CategoriesStackNavigator({ navigation }) {
+function CategoriesStackNavigator({ navigation, route }) {
   const authState = useSelector((state) => state.auth);
+
+  useLayoutEffect(() => {
+    const routeName = getFocusedRouteNameFromRoute(route);
+    if (routeName === "NewProducts" || routeName === "MostBoughtProducts") {
+      navigation.setOptions({ tabBarVisible: false });
+    } else {
+      navigation.setOptions({ tabBarVisible: true });
+    }
+  }, [navigation, route]);
 
   return (
     <CategoriesStack.Navigator
@@ -40,7 +52,7 @@ function CategoriesStackNavigator({ navigation }) {
           <Icon
             name="search"
             type="font-awesome"
-            size={25}
+            size={22}
             color={colors.primary}
             onPress={() => navigation.navigate("SearchScreen")}
           />
@@ -53,8 +65,8 @@ function CategoriesStackNavigator({ navigation }) {
           backgroundColor: "#ffffff",
           borderRadius: 50,
           elevation: 10,
-          height: 40,
-          width: 40,
+          height: 33,
+          width: 33,
           ...globalStyles.iosShadow,
         },
         headerLeftContainerStyle: {
@@ -63,6 +75,38 @@ function CategoriesStackNavigator({ navigation }) {
       }}
     >
       <CategoriesStack.Screen name="Categories" component={CategoriesScreen} />
+      <CategoriesStack.Screen
+        name="NewProducts"
+        component={NewlyAddedProducts}
+        options={{
+          headerTitle: "Nyheter",
+          headerLeft: () => (
+            <Icon
+              name="arrowleft"
+              type="ant-design"
+              onPress={() => navigation.navigate("Categories")}
+              title="Back"
+            />
+          ),
+          // headerRight: "",
+        }}
+      />
+      <CategoriesStack.Screen
+        name="MostBoughtProducts"
+        component={MostBoughtProducts}
+        options={{
+          headerTitle: "Dine mest kjøpte varer",
+          headerLeft: () => (
+            <Icon
+              name="arrowleft"
+              type="ant-design"
+              onPress={() => navigation.navigate("Categories")}
+              title="Back"
+            />
+          ),
+          // headerRight: "",
+        }}
+      />
     </CategoriesStack.Navigator>
   );
 }

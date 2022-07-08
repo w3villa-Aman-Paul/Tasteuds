@@ -31,10 +31,10 @@ const ProducersListScreen = ({ dispatch, navigation }) => {
       >
         <ImageBackground
           source={{
-            uri: `${HOST}/${item?.image?.styles[5]?.url}`,
+            uri: `${item.cover_image_url}`,
           }}
           style={styles.producerCoverImage}
-          resizeMode={"contain"}
+          resizeMode={"cover"}
         >
           <Text style={[styles.producerName]}>{item.name}</Text>
         </ImageBackground>

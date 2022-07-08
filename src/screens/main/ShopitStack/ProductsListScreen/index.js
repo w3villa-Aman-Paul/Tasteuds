@@ -649,7 +649,7 @@ const ProductListScreen = ({
               >
                 <TouchableOpacity onPress={item.onPress}>
                   <Text style={{ color: colors.white, fontSize: 18 }}>
-                    {x.title}
+                    {item.title}
                   </Text>
                 </TouchableOpacity>
               </View>

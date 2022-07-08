@@ -16,8 +16,10 @@ import {
   createCart,
   getProduct,
   getProductsList,
+  getSelectedVendor,
   getTaxon,
   getVendorsList,
+  getWeeklyProducer,
 } from "../../../../redux";
 import { connect, useSelector } from "react-redux";
 import { HOST } from "../../../../res/env";
@@ -30,10 +32,12 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   const { isAuth } = useSelector((state) => state.auth);
   const { saving } = useSelector((state) => state.products);
   const vendorList = useSelector((state) => state.taxons.vendors);
+  const weeklyProducer = useSelector((state) => state.taxons.weeklyProducer);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
 
   React.useEffect(() => {
     dispatch(getVendorsList());
+    dispatch(getWeeklyProducer());
   }, []);
 
   React.useEffect(() => {
@@ -46,8 +50,6 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     const vendor = vendorList?.filter((vendor) => {
       if (vendor?.id == id) return vendor;
     });
-
-    console.log("Vendor", vendor);
 
     let vendorName = vendor ? vendor[0]?.name : "";
 
@@ -63,6 +65,11 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
       })
     );
     return setSnackbarVisible(true);
+  };
+
+  const handleWeeklyProducerClick = async (vendor) => {
+    await dispatch(getSelectedVendor(vendor.slug));
+    navigation.navigate("ProducersDetailScreen");
   };
 
   const FlatListImageItem = ({
@@ -113,7 +120,6 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
           </Text>
           <View style={styles.pricingContainer}>
             <Text style={[styles.prices, { color: colors.black }]}>
-              {" "}
               {item.display_price}
             </Text>
           </View>
@@ -168,7 +174,10 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
         </TouchableOpacity>
 
         <View style={styles.body_second}>
-          <View style={styles.first}>
+          <TouchableOpacity
+            style={styles.first}
+            onPress={() => handleWeeklyProducerClick(weeklyProducer.vendor)}
+          >
             <ImageBackground
               source={require("../../../../../assets/images/Header-Icon/home_second.png")}
               style={{
@@ -179,10 +188,10 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
             >
               <Text style={styles.text1}>UKAS PRODUSENT </Text>
               <Text style={{ ...styles.text_second, fontWeight: "700" }}>
-                BAKEHUSET PÅ ASK
+                {weeklyProducer.vendor ? weeklyProducer.vendor.name : ""}
               </Text>
             </ImageBackground>
-          </View>
+          </TouchableOpacity>
           <TouchableOpacity
             style={styles.second}
             onPress={() => navigation.navigate("ProducersListScreen")}

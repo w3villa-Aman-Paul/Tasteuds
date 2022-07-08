@@ -110,6 +110,7 @@ export const styles = StyleSheet.create({
   },
   text_second: {
     color: "#ffffff",
+    textAlign: "center",
   },
   third: {
     borderWidth: 1,

@@ -109,3 +109,43 @@ export function getSubMenuProducts(menuName) {
     payload: handleAPIWithoutToken(url, params, method),
   };
 }
+
+/*
+ *  Weekly Producer
+ */
+
+export function getWeeklyProducer() {
+  const url = `${API_VERSION_STOREFRONT}/new_api/weekly_producer`;
+  const method = "GET";
+
+  const params = null;
+
+  return {
+    type: "GET_WEEKLY_PRODUCER",
+    payload: handleAPIWithoutToken(url, params, method),
+  };
+}
+
+export function getMostBoughtGoods() {
+  const url = `${API_VERSION_STOREFRONT}/new_api/most_bought_products`;
+  const method = "GET";
+
+  const params = null;
+
+  return {
+    type: "GET_MOST_BOUGHT_GOODS",
+    payload: handleAPIWithoutToken(url, params, method),
+  };
+}
+
+export function getNewlyAddProducts() {
+  const url = `${API_VERSION_STOREFRONT}/new_api/newly_added_products`;
+  const method = "GET";
+
+  const params = null;
+
+  return {
+    type: "GET_NEWLY_ADDED_PRODUCTS_GOODS",
+    payload: handleAPIWithoutToken(url, params, method),
+  };
+}

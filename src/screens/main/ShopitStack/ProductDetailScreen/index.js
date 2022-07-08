@@ -26,12 +26,13 @@ const ProductDetailScreen = ({ navigation, dispatch, auth, cart, route }) => {
 
   const vendor = async () => {
     setSelectedVendor(await getData("selectedVendor"));
+    console.log(selectedVendor);
   };
 
   const [color, setColor] = useState(0);
 
   const taxon = useSelector((state) => state.taxons.taxon);
-  let { saving } = useSelector((state) => state.products && state.taxons);
+  let { saving } = useSelector((state) => state.products || state.taxons);
   const { product } = useSelector((state) => state.products);
 
   const checkout = useSelector((state) => state.checkout);
@@ -39,8 +40,11 @@ const ProductDetailScreen = ({ navigation, dispatch, auth, cart, route }) => {
 
   React.useEffect(() => {
     dispatch(getCart(cart.token));
-    vendor();
   }, []);
+
+  React.useEffect(() => {
+    vendor();
+  }, [saving]);
 
   const dismissSnackbar = () => setSnackbarVisible(false);
   const dismissFavSnackbar = () => setFavSnackbar(false);
@@ -206,7 +210,7 @@ const ProductDetailScreen = ({ navigation, dispatch, auth, cart, route }) => {
                 >
                   <Image
                     source={{
-                      uri: `${HOST}${selectedVendor[0]?.image?.styles[2].url}`,
+                      uri: `${selectedVendor[0]?.logo_image_url}`,
                     }}
                     style={{
                       width: "100%",

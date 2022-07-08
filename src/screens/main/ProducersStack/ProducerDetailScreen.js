@@ -10,7 +10,7 @@ import {
   Platform,
 } from "react-native";
 import HTML from "react-native-render-html";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { styles } from "./style";
 import { connect, useSelector } from "react-redux";
 import { HOST } from "../../../res/env";
@@ -23,6 +23,19 @@ const ProducerDetailScreen = ({ dispatch, navigation }) => {
   const selectedVendor = useSelector((state) => state?.taxons?.selectedVendor);
   const width = Dimensions.get("window").width - 20;
   const vendorList = useSelector((state) => state.taxons.vendors);
+  const [vendorCover, setVendorCover] = useState({});
+
+  useEffect(() => {
+    setVendorCover(findVendorCoverImage(selectedVendor.id));
+  }, [selectedVendor]);
+
+  const findVendorCoverImage = (vendorId) => {
+    const { cover_image_url, logo_image_url } = vendorList.find(
+      (ele) => Number(ele.id) === Number(vendorId)
+    );
+
+    return { cover: cover_image_url, logo: logo_image_url };
+  };
 
   const resultVendor = (id) => {
     const vendor = vendorList?.filter((vendor) => {
@@ -128,7 +141,7 @@ const ProducerDetailScreen = ({ dispatch, navigation }) => {
           ]}
         >
           <Image
-            source={{ uri: `${HOST}/${selectedVendor?.image?.styles[2]?.url}` }}
+            source={{ uri: `${vendorCover.logo}` }}
             style={{ flex: 0.3 }}
             resizeMode={"contain"}
           />
@@ -148,10 +161,7 @@ const ProducerDetailScreen = ({ dispatch, navigation }) => {
           }}
         >
           <Image
-            source={
-              require("../../../../assets/images/detailHero.png")
-              // { uri: `${HOST}/${selectedVendor?.image?.styles[6]?.url}` }
-            }
+            source={{ uri: `${vendorCover.cover}` }}
             style={{ flex: 1, width: "100%" }}
             resizeMode={"cover"}
           />
@@ -238,7 +248,9 @@ const ProducerDetailScreen = ({ dispatch, navigation }) => {
           />
         </TouchableOpacity>
 
-        <Text style={styles.detailHeaderText}>{selectedVendor.name}</Text>
+        <Text style={styles.detailHeaderText} numberOfLines={2}>
+          {selectedVendor.name}
+        </Text>
       </View>
 
       <SafeAreaView

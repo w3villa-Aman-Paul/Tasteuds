@@ -1,7 +1,11 @@
 import * as React from "react";
 import { ScrollView, View, Text, Image, TouchableOpacity } from "react-native";
 import { styles } from "./styles";
-import { getMenus } from "../../../redux";
+import {
+  getMenus,
+  getMostBoughtGoods,
+  getNewlyAddProducts,
+} from "../../../redux";
 import { connect, useSelector } from "react-redux";
 import ActivityIndicatorCard from "../../../library/components/ActivityIndicatorCard";
 import { colors } from "../../../res/palette";
@@ -22,14 +26,27 @@ const CategoriesScreen = ({ navigation, dispatch, taxonomy, saving }) => {
       <ScrollView style={[styles.bgWhite, styles.containerFluid]}>
         {/* //TODO: upper Options */}
         <View style={[styles.container, styles.section]}>
-          <TouchableOpacity style={styles.upperOptions}>
+          <TouchableOpacity
+            style={styles.upperOptions}
+            onPress={() => {
+              dispatch(getMostBoughtGoods());
+              navigation.navigate("MostBoughtProducts");
+            }}
+          >
             <Image
               source={require("../../../../assets/images/category-images/food.png")}
               style={styles.icon}
             />
             <Text style={styles.optionText}>Dine mest kjøpte varer</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.upperOptions}>
+
+          <TouchableOpacity
+            style={styles.upperOptions}
+            onPress={() => {
+              dispatch(getNewlyAddProducts());
+              navigation.navigate("NewProducts");
+            }}
+          >
             <Image
               source={require("../../../../assets/images/category-images/alert.png")}
               style={styles.icon}

@@ -41,6 +41,7 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.white,
     elevation: 5,
     borderRadius: 10,
+    overflow: "hidden",
     ...globalStyles.iosShadow,
   },
   producerCoverImage: {
@@ -84,6 +85,8 @@ export const styles = StyleSheet.create({
   detailHeaderText: {
     fontSize: 18,
     fontFamily: "lato-bold",
+    flex: 0.8,
+    textAlign: "center",
   },
 
   descriptionTitle: {

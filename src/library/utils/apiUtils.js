@@ -13,15 +13,14 @@ async function getAuthToken() {
 }
 
 async function handleAPIWithoutToken(path, params, method, data = null) {
-  // const authToken = await getAuthToken();
-
   const headers = {
     "Content-Type": "application/vnd.api+json",
     Accept: "application/json",
-    // Authorization: `Bearer ${authToken}`,
   };
   let url = API_ROOT + path;
-  url = url + "?" + qs.stringify(params, { arrayFormat: "brackets" });
+  url = params
+    ? url + "?" + qs.stringify(params, { arrayFormat: "brackets" })
+    : url;
 
   return await axios({ url, headers, method, data });
 }

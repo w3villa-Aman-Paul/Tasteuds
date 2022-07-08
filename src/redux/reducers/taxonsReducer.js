@@ -40,6 +40,9 @@ const DEFAULT_STATE = {
   vendors: [{}],
   vendorImages: [{}],
   subMenuProducts: [{}],
+  weeklyProducer: [],
+  mostBoughtGoods: [],
+  newAddedProducts: [],
 };
 
 let changes = null;
@@ -193,6 +196,63 @@ export default function taxonsReducer(state = DEFAULT_STATE, action) {
     case "GET_SUB_MENU_PRODUCTS_FULFILLED":
       changes = {
         subMenuProducts: dataFormatter.deserialize(response),
+        saving: false,
+      };
+      return { ...state, ...changes };
+
+    /**
+     * Weekly Producer
+     */
+    case "GET_WEEKLY_PRODUCER_PENDING":
+      return { ...state, saving: true };
+
+    case "GET_WEEKLY_PRODUCER_REJECTED":
+      changes = {
+        saving: false,
+      };
+      return { ...state, ...changes };
+
+    case "GET_WEEKLY_PRODUCER_FULFILLED":
+      changes = {
+        weeklyProducer: response,
+        saving: false,
+      };
+      return { ...state, ...changes };
+
+    /**
+     * Most Bought Goods
+     */
+    case "GET_MOST_BOUGHT_GOODS_PENDING":
+      return { ...state, saving: true };
+
+    case "GET_MOST_BOUGHT_GOODS_REJECTED":
+      changes = {
+        saving: false,
+      };
+      return { ...state, ...changes };
+
+    case "GET_MOST_BOUGHT_GOODS_FULFILLED":
+      changes = {
+        mostBoughtGoods: response,
+        saving: false,
+      };
+      return { ...state, ...changes };
+
+    /**
+     * Newly Added Products
+     */
+    case "GET_NEWLY_ADDED_PRODUCTS_PENDING":
+      return { ...state, saving: true };
+
+    case "GET_NEWLY_ADDED_PRODUCTS_REJECTED":
+      changes = {
+        saving: false,
+      };
+      return { ...state, ...changes };
+
+    case "GET_NEWLY_ADDED_PRODUCTS_FULFILLED":
+      changes = {
+        newAddedProducts: response,
         saving: false,
       };
       return { ...state, ...changes };
