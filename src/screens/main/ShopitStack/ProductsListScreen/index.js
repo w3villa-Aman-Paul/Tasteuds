@@ -30,7 +30,6 @@ import {
   addItem,
   getCart,
   getSearchProduct,
-  createCart,
 } from "../../../../redux";
 import FilterFooter from "../../../../library/components/ActionButtonFooter/FilterFooter";
 import { HOST } from "../../../../res/env";
@@ -39,7 +38,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Snackbar } from "react-native-paper";
 import { getData, removeData, storeData } from "../../../../redux/rootReducer";
 import { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
-import { ref } from "yup";
 
 const ProductListScreen = ({
   navigation,
@@ -434,6 +432,7 @@ const ProductListScreen = ({
                 handleAllClick(activeMenus);
                 setIsSubLink(false);
                 dispatch(getProductsList(null, {}));
+                setoffsetMenu({ x: 0, y: 0 });
               }}
               style={[isAll ? styles.active : {}]}
             >
@@ -504,6 +503,7 @@ const ProductListScreen = ({
                   setIsSubAll(true);
                   setAll(true);
                   handleSubAllClick(activeSubMenu);
+                  setoffsetMenu({ x: 0, y: 0 });
                 }}
               >
                 <Text style={isSubAll ? styles.subActive : styles.subUnactive}>

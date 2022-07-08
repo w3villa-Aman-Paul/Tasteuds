@@ -47,7 +47,9 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
       if (vendor?.id == id) return vendor;
     });
 
-    let vendorName = vendor[0]?.name;
+    console.log("Vendor", vendor);
+
+    let vendorName = vendor ? vendor[0]?.name : "";
 
     return [vendorName, vendor];
   };
