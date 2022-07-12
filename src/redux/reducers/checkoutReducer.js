@@ -189,16 +189,16 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
       };
       return { ...state, ...changes };
 
-    case "RATES_CHECKOUT_PENDING":
+    case "ADVANCE_NEXT_PENDING":
       return { ...state, saving: true, error: null, isAuth: false, status: "" };
 
-    case "RATES_CHECKOUT_REJECTED":
+    case "ADVANCE_NEXT_REJECTED":
       changes = {
         saving: false,
       };
       return { ...state, ...changes };
 
-    case "RATES_CHECKOUT_FULFILLED":
+    case "ADVANCE_NEXT_FULFILLED":
       changes = {
         cart: dataFormatter.deserialize(response),
         saving: false,

@@ -67,7 +67,7 @@ const SavedAddress = ({ dispatch, navigation, address, saving }) => {
           <View style={styles.body}>
             {address?.map((add, i) => {
               return (
-                <View key={add.id} style={styles.addContent}>
+                <View key={add?.id} style={styles.addContent}>
                   <View style={styles.addList}>
                     <View style={styles.content}>
                       <CheckBox

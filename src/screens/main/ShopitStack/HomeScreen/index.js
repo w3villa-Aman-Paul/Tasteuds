@@ -13,7 +13,6 @@ import { styles } from "./styles";
 import { Snackbar } from "react-native-paper";
 import {
   addItem,
-  createCart,
   getProduct,
   getProductsList,
   getSelectedVendor,

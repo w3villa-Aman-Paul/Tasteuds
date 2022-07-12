@@ -8,9 +8,10 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import { Icon } from "react-native-elements";
 import { colors } from "../../../res/palette";
+import { Snackbar } from "react-native-paper";
 import {
   addItem,
   deleteFavourite,
@@ -282,7 +283,7 @@ const FavouritesScreen = ({
           <Text
             style={{ color: colors.white, fontSize: 15, fontWeight: "bold" }}
           >
-            {temp?.fav_qty ? temp?.fav_qty : 1} VARE
+            {temp?.fav_qty} VARE
           </Text>
           <TouchableOpacity
             onPress={() => {

@@ -26,15 +26,11 @@ import { styles } from "./styles";
 import { checkoutStyles } from "../styles";
 import CheckoutDetailsCard from "../../../../../library/components/CheckoutDetailsCard";
 import ActionButtonFooter from "../../../../../library/components/ActionButtonFooter";
-import {
-  updateCheckout,
-  completeCheckout,
-} from "../../../../../redux";
+import { updateCheckout, completeCheckout } from "../../../../../redux";
 import ActivityIndicatorCard from "../../../../../library/components/ActivityIndicatorCard";
 import { connect } from "react-redux";
 
 const PaymentScreen = ({ navigation, dispatch, saving, cart }) => {
-
   const [cardNumber, setCardNumber] = useState("4111111111111111");
   const [nameOnCard, setNameOnCard] = useState("John Snow");
   const [validThru, setValidThru] = useState("01/2022");
@@ -74,7 +70,7 @@ const PaymentScreen = ({ navigation, dispatch, saving, cart }) => {
         },
       })
     );
-    await dispatch(completeCheckout());
+    await dispatch(completeCheckout(cart?.token));
     toggleOverlay();
   };
 

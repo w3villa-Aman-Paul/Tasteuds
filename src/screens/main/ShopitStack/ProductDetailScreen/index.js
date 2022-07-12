@@ -19,7 +19,7 @@ import { HOST } from "../../../../res/env";
 import { useSelector } from "react-redux";
 import { getData } from "../../../../redux/rootReducer";
 
-const ProductDetailScreen = ({ navigation, dispatch, auth, cart, route }) => {
+const ProductDetailScreen = ({ navigation, dispatch, cart }) => {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [favsnackbar, setFavSnackbar] = useState(false);
   const [selectedVendor, setSelectedVendor] = useState([]);

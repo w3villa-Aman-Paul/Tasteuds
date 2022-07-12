@@ -6,7 +6,7 @@ import {
 } from "../../library/utils/apiUtils";
 import { removeData, storeData } from "../rootReducer";
 
-export function getDefaultCountry(data, params = {}) {
+export function getDefaultCountry(data, params = null) {
   const url = `${API_VERSION_STOREFRONT}/countries/default`;
   const method = "GET";
   params = {
@@ -18,7 +18,7 @@ export function getDefaultCountry(data, params = {}) {
   };
 }
 
-export function getCountriesList(data, filters = {}) {
+export function getCountriesList(data, filters = null) {
   const url = `${API_VERSION_STOREFRONT}/countries`;
   const method = "GET";
   return {
@@ -27,7 +27,7 @@ export function getCountriesList(data, filters = {}) {
   };
 }
 
-export function getCountry(id, params = {}) {
+export function getCountry(id, params = null) {
   const url = `${API_VERSION_STOREFRONT}/countries/${id}`;
   const method = "GET";
   params = {
@@ -39,16 +39,16 @@ export function getCountry(id, params = {}) {
   };
 }
 
-export function getPaymentMethods(filters = {}) {
+export function getPaymentMethods(auth_token) {
   const url = `${API_VERSION_STOREFRONT}/checkout/payment_methods`;
   const method = "GET";
   return {
     type: "GET_PAYMENT_METHODS",
-    payload: handleAPI(url, filters, method),
+    payload: handleAddCartItem(url, null, method, null, auth_token),
   };
 }
 
-export function checkoutNext(auth_token, data = {}) {
+export function checkoutNext(auth_token, data = null) {
   const url = `${API_VERSION_STOREFRONT}/checkout/next`;
   const method = "PATCH";
   const params = {
@@ -56,6 +56,18 @@ export function checkoutNext(auth_token, data = {}) {
   };
   return {
     type: "CHECKOUT_NEXT",
+    payload: handleAddCartItem(url, params, method, data, auth_token),
+  };
+}
+
+export function advanceCheckout(auth_token, data = null) {
+  const url = `${API_VERSION_STOREFRONT}/checkout/advance`;
+  const method = "PATCH";
+  const params = {
+    include: "line_items.variant.option_values,line_items.variant.images",
+  };
+  return {
+    type: "ADVANCE_NEXT",
     payload: handleAddCartItem(url, params, method, data, auth_token),
   };
 }
@@ -72,7 +84,7 @@ export function updateCheckout(auth_token, data) {
   };
 }
 
-export function createAddress(data, filters = {}) {
+export function createAddress(data, filters = null) {
   const url = `${API_VERSION_STOREFRONT}/account/addresses`;
   const method = "POST";
   return {
@@ -81,7 +93,7 @@ export function createAddress(data, filters = {}) {
   };
 }
 
-export function retrieveAddress(data = null, filters = {}) {
+export function retrieveAddress(data = null, filters = null) {
   const url = `${API_VERSION_STOREFRONT}/account/addresses`;
   const method = "GET";
   return {
@@ -90,7 +102,7 @@ export function retrieveAddress(data = null, filters = {}) {
   };
 }
 
-export function updateAddressFunc(data, filters = {}, id) {
+export function updateAddressFunc(data, filters = null, id) {
   const url = `${API_VERSION_STOREFRONT}/account/addresses/${id}`;
   const method = "PATCH";
   return {
@@ -99,7 +111,7 @@ export function updateAddressFunc(data, filters = {}, id) {
   };
 }
 
-export function deleteAdd(data = null, id, filters = {}) {
+export function deleteAdd(data = null, id, filters = null) {
   const url = `${API_VERSION_STOREFRONT}/account/addresses/${id}`;
   const method = "DELETE";
   return {
@@ -108,7 +120,7 @@ export function deleteAdd(data = null, id, filters = {}) {
   };
 }
 
-export function completeCheckout() {
+export function completeCheckout(auth_token) {
   const url = `${API_VERSION_STOREFRONT}/checkout/complete`;
   const method = "PATCH";
   const params = {
@@ -116,14 +128,14 @@ export function completeCheckout() {
   };
   return {
     type: "COMPLETE_CHECKOUT",
-    payload: handleAPI(url, params, method),
+    payload: handleAddCartItem(url, params, method, null, auth_token),
   };
 }
 
 /**
  * Bag Screen Actions
  */
-export const addItem = (auth_token, data) => async (dispatch, getState) => {
+export const addItem = (auth_token, data) => async (dispatch) => {
   const url = `${API_VERSION_STOREFRONT}/cart/add_item`;
   const method = "POST";
   const params = {
@@ -134,7 +146,6 @@ export const addItem = (auth_token, data) => async (dispatch, getState) => {
     type: "ADD_ITEM",
     payload: handleAddCartItem(url, params, method, data, auth_token),
   });
-
 };
 
 export function getCart(cartToken) {
@@ -157,11 +168,11 @@ export function createCart() {
   };
   return {
     type: "CREATE_CART",
-    payload: handleAPIWithoutToken(url, params, method),
+    payload: handleAPI(url, params, method),
   };
 }
 
-export function removeLineItem(lineItemId, filters = {}, auth_token) {
+export function removeLineItem(lineItemId, filters = null, auth_token) {
   const url = `${API_VERSION_STOREFRONT}/cart/remove_line_item/${lineItemId}`;
   const params = {
     include: "line_items.variant.option_values,line_items.variant.images",
@@ -173,9 +184,7 @@ export function removeLineItem(lineItemId, filters = {}, auth_token) {
   };
 }
 
-export const setQuantity =
-  (data, {}, auth_token) =>
-  async (dispatch, getState) => {
+export const setQuantity = (data, null, auth_token) = async (dispatch) => {
     const url = `${API_VERSION_STOREFRONT}/cart/set_quantity`;
     const params = {
       include: "line_items.variant.option_values,line_items.variant.images",
@@ -186,6 +195,4 @@ export const setQuantity =
       payload: handleAddCartItem(url, params, method, data, auth_token),
     });
 
-    // storeData("cartItems", getState().checkout.cart);
-    // removeData("cartItems");
   };
