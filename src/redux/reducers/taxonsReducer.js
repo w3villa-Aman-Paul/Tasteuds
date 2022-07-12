@@ -99,7 +99,7 @@ export default function taxonsReducer(state = DEFAULT_STATE, action) {
 
     case "GET_VENDOR_LIST_FULFILLED":
       changes = {
-        vendors: dataFormatter.deserialize(response),
+        vendors: response,
         vendorImages: response.included,
         saving: false,
       };

@@ -7,20 +7,18 @@ import {
   Image,
   TextInput,
   KeyboardAvoidingView,
-  Dimensions,
 } from "react-native";
 import { globalStyles } from "../../../../../styles/global";
 import { colors } from "../../../../../res/palette";
-import { CheckR, CheckO } from "../../../../../library/icons";
-import { Icon } from "react-native-elements";
+import { CheckR, CheckO, Close } from "../../../../../library/icons";
+import { Icon, Overlay } from "react-native-elements";
 import { Picker } from "@react-native-community/picker";
 import {
-  getCountry,
+  createCart,
   updateCheckout,
   checkoutNext,
-  createAddress,
   getPaymentMethods,
-  getOrderToken,
+  completeCheckout,
 } from "../../../../../redux/actions/checkoutActions";
 import { connect, useSelector } from "react-redux";
 import { retrieveAddress } from "../../../../../redux/actions/checkoutActions";
@@ -29,6 +27,7 @@ import { checkoutStyles } from "../styles";
 import CartFooter from "../../../../../library/components/ActionButtonFooter/cartFooter";
 import ActivityIndicatorCard from "../../../../../library/components/ActivityIndicatorCard";
 import FilterFooter from "../../../../../library/components/ActionButtonFooter/FilterFooter";
+import { accountRetrieve } from "../../../../../redux";
 
 const ShippingAddressScreen = ({
   navigation,
@@ -37,51 +36,123 @@ const ShippingAddressScreen = ({
   cart,
   Address,
   route,
+  auth,
 }) => {
   let newAddress = Address.filter((x) => x.id === route.params?.Id);
 
+  const { email } = useSelector((state) => state.account.account);
+
   useEffect(() => {
+    dispatch(accountRetrieve());
     dispatch(retrieveAddress());
   }, []);
 
   const sheetRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [cardName, setCardName] = useState(null);
+  const [profileId, setProfileId] = useState("tok_visa");
+  const [cvv, setCvv] = useState(null);
+  const [month, setMonth] = useState(null);
+  const [year, setYear] = useState(null);
+  const [cartToken, setCartToken] = useState(cart.token);
+  const [overlayVisible, setOverlayVisible] = useState(false);
 
-  const snapPoints = [370, 500];
+  const snapPoints = ["60%"];
 
-  // const handleUpdateCheckout = async () => {
-  //   await dispatch(
-  //     updateCheckout(cart.token, {
-  //       order: {
-  //         email: email,
-  //         special_instructions: "Please leave at door",
-  //         bill_address_attributes: {
-  //           firstname: name,
-  //           lastname: name,
-  //           address1: address,
-  //           city: city,
-  //           phone: phone,
-  //           zipcode: pinCode,
-  //           state_name: statePickerSelectedValue.abbr,
-  //           country_iso: countryPickerSelectedValue,
-  //         },
-  //         ship_address_attributes: {
-  //           firstname: name,
-  //           lastname: name,
-  //           address1: address,
-  //           city: city,
-  //           phone: phone,
-  //           zipcode: pinCode,
-  //           state_name: statePickerSelectedValue.abbr,
-  //           country_iso: countryPickerSelectedValue,
-  //         },
-  //       },
-  //     })
-  //   );
-  //   // await dispatch(getPaymentMethods());
-  //   // await dispatch(checkoutNext(cart.token));
-  //   // navigation.navigate("CheckoutPayment");
-  // };
+  const paymentHandler = () => {
+    setIsOpen(true);
+  };
+
+  const handleUpdateCheckout = async () => {
+    await dispatch(
+      updateCheckout(cart?.token, {
+        order: {
+          email: email,
+          special_instructions: "Please leave at door",
+          bill_address_attributes: {
+            firstname: !newAddress[0].firstname
+              ? Address[0].firstname
+              : newAddress[0].firstname,
+            lastname: !newAddress[0].lastname
+              ? Address[0].lastname
+              : newAddress[0].lastname,
+            address1: !newAddress[0].address1
+              ? Address[0].address1
+              : newAddress[0].address1,
+            city: !newAddress[0].city ? Address[0].city : newAddress[0].city,
+            phone: !newAddress[0].phone
+              ? Address[0].phone
+              : newAddress[0].phone,
+            zipcode: !newAddress[0].zipcode
+              ? Address[0].zipcode
+              : newAddress[0].zipcode,
+            state_name: !newAddress[0].state_name
+              ? Address[0].state_name
+              : newAddress[0].state_name,
+            country_iso: !newAddress[0].country_iso
+              ? Address[0].country_iso
+              : newAddress[0].country_iso,
+          },
+          ship_address_attributes: {
+            firstname: !newAddress[0].firstname
+              ? Address[0].firstname
+              : newAddress[0].firstname,
+            lastname: !newAddress[0].lastname
+              ? Address[0].lastname
+              : newAddress[0].lastname,
+            address1: !newAddress[0].address1
+              ? Address[0].address1
+              : newAddress[0].address1,
+            city: !newAddress[0].city ? Address[0].city : newAddress[0].city,
+            phone: !newAddress[0].phone
+              ? Address[0].phone
+              : newAddress[0].phone,
+            zipcode: !newAddress[0].zipcode
+              ? Address[0].zipcode
+              : newAddress[0].zipcode,
+            state_name: !newAddress[0].state_name
+              ? Address[0].state_name
+              : newAddress[0].state_name,
+            country_iso: !newAddress[0].country_iso
+              ? Address[0].country_iso
+              : newAddress[0].country_iso,
+          },
+        },
+      })
+    );
+    // await dispatch(advanceCheckout(cart.token));
+    await dispatch(getPaymentMethods(cart?.token));
+    await dispatch(checkoutNext(cart.token));
+    paymentHandler();
+  };
+
+  const toggleOverlay = () => {
+    setOverlayVisible(!overlayVisible);
+  };
+
+  const handlePaymentConfirmation = async () => {
+    await dispatch(
+      updateCheckout(cart?.token, {
+        order: {
+          payments_attributes: [
+            {
+              payment_method_id: 3,
+              source_attributes: {
+                gateway_payment_profile_id: profileId,
+                month: month,
+                year: year,
+                verification_value: cvv,
+                name: cardName,
+              },
+            },
+          ],
+        },
+      })
+    );
+    await dispatch(completeCheckout(cart?.token));
+    await dispatch(createCart());
+    toggleOverlay();
+  };
 
   const bottomSheetContent = () => {
     return (
@@ -106,25 +177,55 @@ const ShippingAddressScreen = ({
         <KeyboardAvoidingView style={{ ...styles.cardContainer, flex: 1 }}>
           <View style={styles.cardContent}>
             <Text style={styles.cardText}>KORTHOLDERS NAVN</Text>
-            <TextInput style={styles.cardInput} />
+            <TextInput
+              style={styles.cardInput}
+              value={cardName}
+              onChangeText={(val) => setCardName(val)}
+            />
           </View>
           <View style={styles.cardContent}>
             <Text style={styles.cardText}>KORTNUMMER</Text>
-            <TextInput style={styles.cardInput} />
+            <TextInput
+              style={styles.cardInput}
+              // keyboardType={null}
+              value={profileId}
+              onChangeText={setProfileId}
+            />
           </View>
           <View style={styles.lastInputs}>
             <View style={styles.cardContent}>
               <Text style={styles.cardText}>UTLØPSDATO</Text>
-              <TextInput style={styles.cardInputDate} />
+              <View style={{ flexDirection: "row" }}>
+                <TextInput
+                  style={styles.cardInputDate}
+                  // keyboardType={null}
+                  value={month}
+                  onChangeText={(value) => setMonth(value)}
+                />
+                <TextInput
+                  style={styles.cardInputDate}
+                  // keyboardType={null}
+                  value={year}
+                  onChangeText={(value) => setYear(value)}
+                />
+              </View>
             </View>
             <View style={styles.cardContent}>
               <Text style={styles.cardText}>CVC</Text>
-              <TextInput style={styles.cardInputDate} />
+              <TextInput
+                style={{ ...styles.cardInputDate, width: "100%" }}
+                // keyboardType={null}
+                value={cvv}
+                onChangeText={(value) => setCvv(value)}
+              />
             </View>
           </View>
 
           <View style={{ ...styles.cardContent, marginTop: 20 }}>
-            <TouchableOpacity style={styles.cardBtn}>
+            <TouchableOpacity
+              style={styles.cardBtn}
+              onPress={handlePaymentConfirmation}
+            >
               <Text style={{ ...styles.cardText, fontFamily: "lato-bold" }}>
                 LEGG TIL
               </Text>
@@ -133,10 +234,6 @@ const ShippingAddressScreen = ({
         </KeyboardAvoidingView>
       </View>
     );
-  };
-
-  const paymentHandler = () => {
-    setIsOpen(true);
   };
 
   if (saving) {
@@ -149,6 +246,41 @@ const ShippingAddressScreen = ({
           { backgroundColor: colors.white, flex: 1 },
         ]}
       >
+        <Overlay
+          isVisible={overlayVisible}
+          onBackdropPress={toggleOverlay}
+          fullScreen={true}
+        >
+          <View style={[globalStyles.container, styles.modalContainer]}>
+            <View style={styles.modalCloseIcon}>
+              <Close
+                size={24}
+                style={{ color: colors.black }}
+                onPress={toggleOverlay}
+              />
+            </View>
+            <View style={{ alignItems: "center" }}>
+              <Image
+                source={require("../../../../../../assets/images/order-icon-confirm/order-icon-confirm.png")}
+              />
+              <Text style={globalStyles.title}>Order Success!</Text>
+              <Text
+                style={[
+                  globalStyles.label,
+                  { fontSize: 15, textAlign: "center" },
+                ]}
+              >
+                Your order has been placed successfully! for more details check
+                your account.{" "}
+              </Text>
+            </View>
+            <View>
+              <TouchableOpacity onPress={() => navigation.navigate("Shop")}>
+                <Text>Continue Shopping ....</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Overlay>
         <ScrollView>
           {/* Status Bar Starts */}
           <View style={checkoutStyles.statusBarWrapper}>
@@ -241,7 +373,7 @@ const ShippingAddressScreen = ({
                 </Text>
               </View>
               <Text style={styles.profileContact}>
-                +{newAddress[0] ? newAddress[0]?.phone : Address[0]?.phone}
+                {newAddress[0] ? newAddress[0]?.phone : Address[0]?.phone}
               </Text>
             </View>
           </View>
@@ -291,7 +423,16 @@ const ShippingAddressScreen = ({
         {isOpen ? (
           <></>
         ) : (
-          <CartFooter title="FULLFØR BETALING" onPress={paymentHandler} />
+          <CartFooter
+            title="FULLFØR BETALING"
+            onPress={
+              Address.length === 0 ? (
+                <Text>"Please fill Address"</Text>
+              ) : (
+                handleUpdateCheckout
+              )
+            }
+          />
         )}
 
         {isOpen && (

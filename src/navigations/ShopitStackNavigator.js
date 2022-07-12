@@ -23,6 +23,7 @@ import SearchScreen from "../screens/main/ShopitStack/SearchScreen/index";
 import ProducersListScreen from "../screens/main/ProducersStack/ProducersListScreen";
 import { useSelector, useDispatch } from "react-redux";
 import { createCart } from "../redux";
+import updateAddress from "../screens/main/ProfileStack/updateAddress";
 
 const ShopitStack = createStackNavigator();
 
@@ -503,6 +504,7 @@ function ShopitStackNavigator({ navigation, route }) {
       <ShopitStack.Screen name="Favorites" component={FavouritesScreen} />
       <ShopitStack.Screen name="SavedAddress" component={SavedAddress} />
       <ShopitStack.Screen name="AddAdress" component={AddAddress} />
+      <ShopitStack.Screen name="updateAddress" component={updateAddress} />
 
       <ShopitStack.Screen
         name="SearchScreen"

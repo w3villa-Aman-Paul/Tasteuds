@@ -39,12 +39,12 @@ export function getCountry(id, params = {}) {
   };
 }
 
-export function getPaymentMethods(filters = {}) {
+export function getPaymentMethods(auth_token) {
   const url = `${API_VERSION_STOREFRONT}/checkout/payment_methods`;
   const method = "GET";
   return {
     type: "GET_PAYMENT_METHODS",
-    payload: handleAPI(url, filters, method),
+    payload: handleAddCartItem(url, {}, method, {}, auth_token),
   };
 }
 
@@ -56,6 +56,18 @@ export function checkoutNext(auth_token, data = {}) {
   };
   return {
     type: "CHECKOUT_NEXT",
+    payload: handleAddCartItem(url, params, method, data, auth_token),
+  };
+}
+
+export function advanceCheckout(auth_token, data = {}) {
+  const url = `${API_VERSION_STOREFRONT}/checkout/advance`;
+  const method = "PATCH";
+  const params = {
+    include: "line_items.variant.option_values,line_items.variant.images",
+  };
+  return {
+    type: "ADVANCE_NEXT",
     payload: handleAddCartItem(url, params, method, data, auth_token),
   };
 }
@@ -108,7 +120,7 @@ export function deleteAdd(data = null, id, filters = {}) {
   };
 }
 
-export function completeCheckout() {
+export function completeCheckout(auth_token) {
   const url = `${API_VERSION_STOREFRONT}/checkout/complete`;
   const method = "PATCH";
   const params = {
@@ -116,14 +128,14 @@ export function completeCheckout() {
   };
   return {
     type: "COMPLETE_CHECKOUT",
-    payload: handleAPI(url, params, method),
+    payload: handleAddCartItem(url, params, method, null, auth_token),
   };
 }
 
 /**
  * Bag Screen Actions
  */
-export const addItem = (auth_token, data) => async (dispatch, getState) => {
+export const addItem = (auth_token, data) => async (dispatch) => {
   const url = `${API_VERSION_STOREFRONT}/cart/add_item`;
   const method = "POST";
   const params = {
@@ -134,7 +146,6 @@ export const addItem = (auth_token, data) => async (dispatch, getState) => {
     type: "ADD_ITEM",
     payload: handleAddCartItem(url, params, method, data, auth_token),
   });
-
 };
 
 export function getCart(cartToken) {
@@ -157,7 +168,7 @@ export function createCart() {
   };
   return {
     type: "CREATE_CART",
-    payload: handleAPIWithoutToken(url, params, method),
+    payload: handleAPI(url, params, method),
   };
 }
 

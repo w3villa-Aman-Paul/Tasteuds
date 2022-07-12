@@ -216,7 +216,7 @@ export const styles = StyleSheet.create({
     borderColor: colors.white,
     backgroundColor: colors.white,
     borderRadius: 10,
-    width: "100%",
+    width: "30%",
     paddingHorizontal: 10,
   },
   lastInputs: {

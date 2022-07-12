@@ -12,6 +12,7 @@ import { NavigationContainer } from "@react-navigation/native";
 const AddAddress = ({ navigation, dispatch, country, countriesList, cart }) => {
   useEffect(() => {
     setCountryPickerSelectedValue(country.iso);
+    // setStatePickerSelectedValue(country.states[0]);
   }, []);
 
   // const [statePickerSelectedValue, setStatePickerSelectedValue] = useState(
