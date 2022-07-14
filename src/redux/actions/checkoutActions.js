@@ -52,7 +52,8 @@ export function checkoutNext(auth_token, data = null) {
   const url = `${API_VERSION_STOREFRONT}/checkout/next`;
   const method = "PATCH";
   const params = {
-    include: "line_items.variant.option_values,line_items.variant.images",
+    include:
+      "line_items,variants,variants.images,billing_address,shipping_address,user,payments,shipments,promotions",
   };
   return {
     type: "CHECKOUT_NEXT",
@@ -76,7 +77,8 @@ export function updateCheckout(auth_token, data) {
   const url = `${API_VERSION_STOREFRONT}/checkout`;
   const method = "PATCH";
   const params = {
-    include: "line_items.variant.option_values,line_items.variant.images",
+    include:
+      "line_items,variants,variants.images,billing_address,shipping_address,user,payments,shipments,promotions",
   };
   return {
     type: "UPDATE_CHECKOUT",
@@ -124,7 +126,8 @@ export function completeCheckout(auth_token) {
   const url = `${API_VERSION_STOREFRONT}/checkout/complete`;
   const method = "PATCH";
   const params = {
-    include: "line_items.variant.option_values,line_items.variant.images",
+    include:
+      "line_items,variants,variants.images,billing_address,shipping_address,user,payments,shipments,promotions",
   };
   return {
     type: "COMPLETE_CHECKOUT",
@@ -139,7 +142,8 @@ export const addItem = (auth_token, data) => async (dispatch) => {
   const url = `${API_VERSION_STOREFRONT}/cart/add_item`;
   const method = "POST";
   const params = {
-    include: "line_items.variant.option_values,line_items.variant.images",
+    include:
+      "line_items,variants,variants.images,billing_address,shipping_address,user,payments,shipments,promotions",
   };
 
   dispatch({
@@ -184,15 +188,14 @@ export function removeLineItem(lineItemId, filters = null, auth_token) {
   };
 }
 
-export const setQuantity = (data, null, auth_token) = async (dispatch) => {
-    const url = `${API_VERSION_STOREFRONT}/cart/set_quantity`;
-    const params = {
-      include: "line_items.variant.option_values,line_items.variant.images",
-    };
-    const method = "PATCH";
-    dispatch({
-      type: "SET_QUANTITY",
-      payload: handleAddCartItem(url, params, method, data, auth_token),
-    });
-
+export const setQuantity = (data, auth_token) => {
+  const url = `${API_VERSION_STOREFRONT}/cart/set_quantity`;
+  const params = {
+    include: "line_items.variant.option_values,line_items.variant.images",
   };
+  const method = "PATCH";
+  return {
+    type: "SET_QUANTITY",
+    payload: handleAddCartItem(url, params, method, data, auth_token),
+  };
+};

@@ -32,7 +32,10 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   const { saving } = useSelector((state) => state.products);
   const vendorList = useSelector((state) => state.taxons.vendors);
   const weeklyProducer = useSelector((state) => state.taxons.weeklyProducer);
+  const { mostBoughtGoods } = useSelector((state) => state.taxons);
+
   const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const [mostBought, setMostBought] = useState([]);
 
   React.useEffect(() => {
     dispatch(getVendorsList());
@@ -40,10 +43,34 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   }, []);
 
   React.useEffect(() => {
+    loadMostBoughtGoods();
+  }, [mostBoughtGoods]);
+
+  React.useEffect(() => {
     handleProductsLoad();
   }, [isAuth, route.params]);
 
   const dismissSnackbar = () => setSnackbarVisible(false);
+
+  const loadMostBoughtGoods = () => {
+    if (mostBoughtGoods?.products.length !== 0) {
+      mostBoughtGoods?.products?.forEach((item) => {
+        const product = productsList.find((ele) => ele.id == item.id);
+
+        if (product && mostBought.length !== mostBoughtGoods.products.length) {
+          let temp = mostBought;
+          temp.push(product);
+
+          setMostBought(temp);
+        } else if (
+          product &&
+          mostBought.length === mostBoughtGoods.products.length
+        ) {
+          setMostBought(mostBought);
+        }
+      });
+    }
+  };
 
   const resultVendor = (id) => {
     const vendor = vendorList?.filter((vendor) => {
@@ -135,6 +162,8 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
       })
     );
   };
+
+  console.log("mostBought", mostBought);
 
   const handleProductLoad = (id, item) => {
     dispatch(getProduct(id));
@@ -353,7 +382,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
       style={{ ...styles.containerFluid, ...styles.bg_white, flex: 1 }}
     >
       <FlatList
-        data={productsList.slice(0, 10)}
+        data={mostBought}
         keyExtractor={(item, index) => index.toString()}
         renderItem={newJustInRenderItem}
         numColumns={2}

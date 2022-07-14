@@ -142,7 +142,7 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
           line_item_id: lineItemId,
           quantity: lineItemQuantity + 1,
         },
-        {},
+
         cart?.token
       )
     );
@@ -161,7 +161,6 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
             line_item_id: lineItemId,
             quantity: lineItemQuantity - 1,
           },
-          {},
           cart?.token
         )
       );

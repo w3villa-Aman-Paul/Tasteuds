@@ -5,7 +5,6 @@ import { createStackNavigator } from "@react-navigation/stack";
 import ProductsListScreen from "../screens/main/ShopitStack/ProductsListScreen";
 import ProductDetailScreen from "../screens/main/ShopitStack/ProductDetailScreen";
 import ShippingAddressScreen from "../screens/main/ShopitStack/CheckoutScreens/ShippingAddressScreen";
-import PaymentScreen from "../screens/main/ShopitStack/CheckoutScreens/PaymentScreen";
 import BagScreen from "../screens/main/ShopitStack/CheckoutScreens/BagScreen";
 import { Heart } from "../library/icons";
 import { colors } from "../res/palette";
@@ -22,8 +21,9 @@ import ProducerDetailScreen from "../screens/main/ProducersStack/ProducerDetailS
 import SearchScreen from "../screens/main/ShopitStack/SearchScreen/index";
 import ProducersListScreen from "../screens/main/ProducersStack/ProducersListScreen";
 import { useSelector, useDispatch } from "react-redux";
-import { createCart } from "../redux";
+import { createCart, getMostBoughtGoods } from "../redux";
 import updateAddress from "../screens/main/ProfileStack/updateAddress";
+import OrderCompleteScreen from "../screens/main/ShopitStack/CheckoutScreens/OrderCompleteScreen";
 
 const ShopitStack = createStackNavigator();
 
@@ -32,9 +32,10 @@ function ShopitStackNavigator({ navigation, route }) {
   const { cart } = useSelector((state) => state.checkout);
 
   useEffect(() => {
-    if (!cart.token) {
+    if (!cart.token || cart.token === "yNgtO10tKJk_hmw4ETtv5Q1657624186384") {
       dispatch(createCart());
     }
+    dispatch(getMostBoughtGoods());
   }, []);
 
   useLayoutEffect(() => {
@@ -43,7 +44,8 @@ function ShopitStackNavigator({ navigation, route }) {
       routeName === "Bag" ||
       routeName === "ShippingAddress" ||
       routeName === "SavedAddress" ||
-      routeName === "ProducersDetailScreen"
+      routeName === "ProducersDetailScreen" ||
+      routeName === "OrderComplete"
     ) {
       navigation.setOptions({ tabBarVisible: false });
     } else {
@@ -74,6 +76,23 @@ function ShopitStackNavigator({ navigation, route }) {
                 alignItems: "center",
               }}
             >
+              <TouchableOpacity
+                style={{
+                  flex: 1,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  paddingHorizontal: 10,
+                }}
+                onPress={() => navigation.navigate("SearchScreen")}
+              >
+                <Icon
+                  name="search"
+                  type="font-awesome"
+                  size={25}
+                  color={colors.primary}
+                  onPress={() => navigation.navigate("OrderComplete")}
+                />
+              </TouchableOpacity>
               <TouchableOpacity
                 style={{
                   flex: 1,
@@ -477,10 +496,16 @@ function ShopitStackNavigator({ navigation, route }) {
         }}
       />
       <ShopitStack.Screen
-        name="CheckoutPayment"
-        component={PaymentScreen}
+        name="OrderComplete"
+        component={OrderCompleteScreen}
         options={{
-          headerTitle: "Payment",
+          headerTitle: "",
+          headerShown: false,
+          headerTitleStyle: {
+            color: colors.primary,
+            fontFamily: "lato-bold",
+          },
+          headerTitleAlign: "center",
           headerRight: () => (
             <Heart
               size={24}
