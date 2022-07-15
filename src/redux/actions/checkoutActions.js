@@ -164,7 +164,7 @@ export function getCart(cartToken) {
   };
 }
 
-export function createCart() {
+export function createCart(isAuth = false) {
   const url = `${API_VERSION_STOREFRONT}/cart`;
   const method = "POST";
   const params = {
@@ -172,7 +172,9 @@ export function createCart() {
   };
   return {
     type: "CREATE_CART",
-    payload: handleAPI(url, params, method),
+    payload: isAuth
+      ? handleAPI(url, params, method)
+      : handleAPIWithoutToken(url, params, method),
   };
 }
 

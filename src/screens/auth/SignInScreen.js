@@ -30,7 +30,9 @@ const SignInScreen = ({ navigation, dispatch }) => {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snacbarMessage, setSnacbarMessage] = useState("");
 
-  const { isAuth, error, status, saving } = useSelector((state) => state.auth);
+  const { isAuth, error, status, saving, access_token } = useSelector(
+    (state) => state.auth
+  );
   const dismissSnackbar = () => setSnackbarVisible(false);
 
   useEffect(() => {
@@ -74,16 +76,20 @@ const SignInScreen = ({ navigation, dispatch }) => {
       <Formik
         validationSchema={loginValidationSchema}
         initialValues={{ email: "", password: "" }}
-        onSubmit={(values) => {
+        onSubmit={async (values) => {
           console.log(values);
           try {
-            dispatch(
+            await dispatch(
               userLogin({
                 username: values.email,
                 password: values.password,
                 grant_type: "password",
               })
             );
+
+            // if (isAuth) {
+            //   dispatch();
+            // }
           } catch (err) {
             console.log("error", err);
           }
@@ -160,7 +166,6 @@ const SignInScreen = ({ navigation, dispatch }) => {
                 style={styles.footerAction}
                 onPress={() => navigation.navigate("SignUp")}
               >
-                {" "}
                 Opprett bruker
               </Text>
             </View>

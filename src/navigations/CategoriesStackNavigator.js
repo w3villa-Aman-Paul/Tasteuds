@@ -3,7 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import CategoriesScreen from "../screens/main/CategoriesStack/CategoriesScreen";
 import { colors } from "../res/palette";
 import { globalStyles } from "../styles/global";
-import { Image, StyleSheet } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
 import { useSelector } from "react-redux";
 import { Icon } from "react-native-elements";
 import NewlyAddedProducts from "../screens/main/CategoriesStack/NewlyAddedProducts";
@@ -29,24 +29,14 @@ function CategoriesStackNavigator({ navigation, route }) {
       screenOptions={{
         headerTitle: "",
         headerLeft: () => (
-          <Image
-            source={require("../../assets/images/Header-Icon/header_logo.png")}
-            style={styles.header}
-          />
+          <View style={styles.header}>
+            <Image
+              source={require("../../assets/images/Header-Icon/banner-logo.png")}
+              style={styles.headerImg}
+            />
+          </View>
         ),
         title: "",
-        headerLeftContainerStyle: {
-          paddingHorizontal: 10,
-          top: 4,
-          left: 20,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#ffffff",
-          borderRadius: 50,
-          elevation: 10,
-          height: 40,
-          width: 40,
-        },
 
         headerRight: () => (
           <Icon
@@ -68,9 +58,6 @@ function CategoriesStackNavigator({ navigation, route }) {
           height: 33,
           width: 33,
           ...globalStyles.iosShadow,
-        },
-        headerLeftContainerStyle: {
-          paddingHorizontal: 10,
         },
       }}
     >
@@ -114,7 +101,11 @@ function CategoriesStackNavigator({ navigation, route }) {
 const styles = StyleSheet.create({
   header: {
     width: 150,
-    height: 30,
+    height: "100%",
+  },
+  headerImg: {
+    height: "100%",
+    width: "100%",
     resizeMode: "contain",
   },
 });

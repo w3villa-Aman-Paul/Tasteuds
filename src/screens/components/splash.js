@@ -4,17 +4,16 @@ import React, { useEffect } from "react";
 const splash = ({ navigation }) => {
   useEffect(() => {
     setTimeout(() => {
-      navigation.replace('Shopit')
-    }, 2000)
-  },[])
-
+      navigation.replace("Shopit");
+    }, 2000);
+  }, []);
 
   return (
     <View style={styles.container}>
       <View style={styles.body}>
         <Image
           style={styles.image}
-          source={require("../../../assets/images/Header-Icon/header_logo.png")}
+          source={require("../../../assets/images/Header-Icon/banner-logo.png")}
         />
       </View>
     </View>
@@ -28,6 +27,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#fff",
   },
   image: {
     height: 200,

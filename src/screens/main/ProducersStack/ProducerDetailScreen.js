@@ -248,7 +248,7 @@ const ProducerDetailScreen = ({ dispatch, navigation }) => {
           />
         </TouchableOpacity>
 
-        <Text style={styles.detailHeaderText} numberOfLines={2}>
+        <Text style={styles.detailHeaderText} numberOfLines={1}>
           {selectedVendor.name}
         </Text>
       </View>

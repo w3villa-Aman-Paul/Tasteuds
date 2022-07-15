@@ -2,7 +2,6 @@ import {
   FlatList,
   Image,
   ImageBackground,
-  SafeAreaView,
   Text,
   TouchableOpacity,
   View,
@@ -57,7 +56,10 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
       mostBoughtGoods?.products?.forEach((item) => {
         const product = productsList.find((ele) => ele.id == item.id);
 
-        if (product && mostBought.length !== mostBoughtGoods.products.length) {
+        if (
+          product &&
+          mostBought.length !== mostBoughtGoods?.products?.length
+        ) {
           let temp = mostBought;
           temp.push(product);
 
@@ -378,18 +380,15 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   };
 
   return (
-    <SafeAreaView
-      style={{ ...styles.containerFluid, ...styles.bg_white, flex: 1 }}
-    >
+    <View style={{ ...globalStyles.containerFluid, ...styles.bg_white }}>
       <FlatList
-        data={mostBought}
-        keyExtractor={(item, index) => index.toString()}
+        data={mostBought.slice(0, 6)}
+        keyExtractor={(index) => index.toString()}
         renderItem={newJustInRenderItem}
         numColumns={2}
         columnWrapperStyle={{ justifyContent: "space-between" }}
         style={{
           ...globalStyles.container,
-          ...globalStyles.mt8,
           ...styles.bg_white,
         }}
         showsVerticalScrollIndicator={false}
@@ -400,7 +399,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
       <Snackbar visible={snackbarVisible} onDismiss={dismissSnackbar}>
         Added to Cart !
       </Snackbar>
-    </SafeAreaView>
+    </View>
   );
 };
 

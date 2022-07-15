@@ -380,42 +380,37 @@ const ProductListScreen = ({
       <>
         <View
           style={{
-            marginLeft: 15,
-            marginRight: 15,
+            marginHorizontal: 15,
             marginTop: 10,
           }}
         >
           <View
             style={[
-              {
-                padding: 10,
-                borderWidth: 1,
-                borderRadius: 10,
-                flex: 1,
-                flexDirection: "row",
-                elevation: 3,
-                backgroundColor: "#fff",
-                borderColor: "transparent",
-              },
+              styles.topBanner,
               globalStyles.iosShadow,
               Platform.OS === "android" ? { marginTop: 10 } : { marginTop: 0 },
             ]}
           >
             <Image
-              source={require("../../../../../assets/images/components/truck.png")}
+              source={require("../../../../../assets/images/components/delivery-truck.png")}
               resizeMode={"contain"}
-              style={{ flex: 0.15, marginRight: 15 }}
+              style={{ flex: 0.2, marginRight: 10, height: "100%" }}
             />
-            <Text
-              style={{
-                flex: 0.8,
-                fontSize: 16,
-                lineHeight: 18.75,
-                fontWeight: "bold",
-              }}
-            >
-              {cate?.description}
-            </Text>
+
+            <View style={{ flex: 0.9, justifyContent: "center" }}>
+              <Text
+                style={{
+                  fontSize: 16,
+                  lineHeight: 18.75,
+                  fontWeight: "bold",
+                }}
+              >
+                Bestill innen{" "}
+                <Text style={{ color: colors.btnLink }}>tirdag 19.07</Text> og
+                få varene levert hjem{" "}
+                <Text style={{ color: colors.btnLink }}>torsdag 21.07</Text>
+              </Text>
+            </View>
           </View>
 
           <ScrollView
@@ -925,15 +920,13 @@ const ProductListScreen = ({
     return <ActivityIndicatorCard />;
   } else
     return (
-      <SafeAreaView
-        style={[globalStyles.containerFluid, styles.bgwhite, { flex: 1 }]}
-      >
+      <View style={[globalStyles.containerFluid, styles.bgwhite, { flex: 1 }]}>
         {products.saving || savingTaxon ? (
           <ActivityIndicatorCard />
         ) : (
           <FlatList
             data={isAll || all ? productsList : data}
-            keyExtractor={(item, index) => index.toString()}
+            keyExtractor={(index, item) => "" + item?.id + index}
             renderItem={newJustInRenderItem}
             numColumns={2}
             ListHeaderComponent={flatListUpperElement}
@@ -949,7 +942,6 @@ const ProductListScreen = ({
               meta.total_count !== productsList.length && handleEndReached();
             }}
             columnWrapperStyle={{
-              // flex: 0.8,
               width: "100%",
               justifyContent: "space-evenly",
             }}
@@ -983,7 +975,7 @@ const ProductListScreen = ({
             bottomSheetContent={sortContent}
           />
         )}
-      </SafeAreaView>
+      </View>
     );
 };
 

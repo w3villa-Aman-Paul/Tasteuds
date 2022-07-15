@@ -31,9 +31,11 @@ function ShopitStackNavigator({ navigation, route }) {
   const dispatch = useDispatch();
   const { cart } = useSelector((state) => state.checkout);
 
+  const { isAuth } = useSelector((state) => state.auth);
+
   useEffect(() => {
     if (!cart.token || cart.token === "yNgtO10tKJk_hmw4ETtv5Q1657624186384") {
-      dispatch(createCart());
+      dispatch(createCart(isAuth));
     }
     dispatch(getMostBoughtGoods());
   }, []);
@@ -54,17 +56,19 @@ function ShopitStackNavigator({ navigation, route }) {
   }, [navigation, route]);
 
   return (
-    <ShopitStack.Navigator screenOptions={{}}>
+    <ShopitStack.Navigator>
       <ShopitStack.Screen
         name="Shop"
         component={HomeComponent}
         options={{
           headerTitle: "",
           headerLeft: () => (
-            <Image
-              source={require("../../assets/images/Header-Icon/header_logo.png")}
-              style={styles.header}
-            />
+            <View style={styles.header}>
+              <Image
+                source={require("../../assets/images/Header-Icon/banner-logo.png")}
+                style={styles.headerImg}
+              />
+            </View>
           ),
           headerRight: () => (
             <View
@@ -76,23 +80,6 @@ function ShopitStackNavigator({ navigation, route }) {
                 alignItems: "center",
               }}
             >
-              <TouchableOpacity
-                style={{
-                  flex: 1,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  paddingHorizontal: 10,
-                }}
-                onPress={() => navigation.navigate("SearchScreen")}
-              >
-                <Icon
-                  name="search"
-                  type="font-awesome"
-                  size={25}
-                  color={colors.primary}
-                  onPress={() => navigation.navigate("OrderComplete")}
-                />
-              </TouchableOpacity>
               <TouchableOpacity
                 style={{
                   flex: 1,
@@ -154,6 +141,7 @@ function ShopitStackNavigator({ navigation, route }) {
               </TouchableOpacity>
             </View>
           ),
+
           headerRightContainerStyle: {
             flex: 0.2,
             justifyContent: "space-between",
@@ -161,7 +149,8 @@ function ShopitStackNavigator({ navigation, route }) {
           },
           title: "",
           headerLeftContainerStyle: {
-            paddingHorizontal: 10,
+            backgroundColor: colors.btnLink,
+            margin: 0,
           },
         }}
       />
@@ -581,7 +570,11 @@ const styles = StyleSheet.create({
   },
   header: {
     width: 150,
-    height: 30,
+    height: "100%",
+  },
+  headerImg: {
+    height: "100%",
+    width: "100%",
     resizeMode: "contain",
   },
   chevron: {

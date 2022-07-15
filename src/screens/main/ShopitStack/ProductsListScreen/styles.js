@@ -27,6 +27,7 @@ export const styles = StyleSheet.create({
   },
   newJustInItemContainer: {
     flex: 1,
+    margin: 0,
     marginHorizontal: "2%",
     marginBottom: 16,
     backgroundColor: colors.white,
@@ -119,5 +120,17 @@ export const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
     elevation: 5,
+  },
+
+  topBanner: {
+    padding: 10,
+    borderWidth: 1,
+    borderRadius: 10,
+    height: 80,
+    flex: 1,
+    flexDirection: "row",
+    elevation: 3,
+    backgroundColor: "#fff",
+    borderColor: "transparent",
   },
 });
