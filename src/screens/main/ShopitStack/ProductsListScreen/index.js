@@ -104,12 +104,8 @@ const ProductListScreen = ({
   };
 
   const resultVendor = (id) => {
-    const vendor = vendorList?.filter((vendor) => {
-      if (vendor?.id == id) return vendor;
-    });
-
-    let vendorName = vendor[0]?.name;
-
+    const vendor = vendorList?.filter((vendor) => vendor?.id == id);
+    let vendorName = vendor ? vendor[0]?.name : "";
     return [vendorName, vendor];
   };
 
@@ -124,7 +120,7 @@ const ProductListScreen = ({
           menu.name !== "Kategorier" &&
           menu.name !== "Lokalprodukter"
       )
-      ?.sort((a, b) => a.name.localeCompare(b.name))
+      // ?.sort((a, b) => a.name.localeCompare(b.name))
       ?.map((item) => {
         return { ...item, isActive: false };
       });
@@ -254,7 +250,7 @@ const ProductListScreen = ({
             {item.name}
           </Text>
           <Text numberOfLines={1} style={styles.description}>
-            {`${resultVendor(item?.vendor?.id)[0]}`}
+            {`${item.vendor.id ? resultVendor(item?.vendor?.id)[0] : ""}`}
           </Text>
           <View style={styles.pricingContainer}>
             <Text style={[styles.prices, { color: colors.black }]}>
@@ -377,188 +373,182 @@ const ProductListScreen = ({
 
   const flatListUpperElement = () => {
     return (
-      <>
+      <View
+        style={{
+          marginHorizontal: 15,
+          marginTop: 10,
+        }}
+      >
+        <View
+          style={[
+            styles.topBanner,
+            globalStyles.iosShadow,
+            Platform.OS === "android" ? { marginTop: 10 } : { marginTop: 0 },
+          ]}
+        >
+          <Image
+            source={require("../../../../../assets/images/components/delivery-truck.png")}
+            resizeMode={"contain"}
+            style={{ flex: 0.2, marginRight: 10, height: "100%" }}
+          />
+
+          <View style={{ flex: 0.9, justifyContent: "center" }}>
+            <Text
+              style={{
+                fontSize: 16,
+                lineHeight: 18.75,
+                fontWeight: "bold",
+              }}
+            >
+              Bestill innen{" "}
+              <Text style={{ color: colors.btnLink }}>tirdag 19.07</Text> og få
+              varene levert hjem{" "}
+              <Text style={{ color: colors.btnLink }}>torsdag 21.07</Text>
+            </Text>
+          </View>
+        </View>
+
         <View
           style={{
-            marginHorizontal: 15,
-            marginTop: 10,
+            ...globalStyles.mt16,
+            ...styles.bgwhite,
+            flexDirection: "row",
           }}
         >
-          <View
-            style={[
-              styles.topBanner,
-              globalStyles.iosShadow,
-              Platform.OS === "android" ? { marginTop: 10 } : { marginTop: 0 },
-            ]}
+          <TouchableOpacity
+            key={"alle"}
+            onPress={() => {
+              setAll(true);
+              handleAllClick(activeMenus);
+              setIsSubLink(false);
+              dispatch(getProductsList(null, {}));
+              setoffsetMenu({ x: 0, y: 0 });
+            }}
+            style={[isAll ? styles.active : {}]}
           >
-            <Image
-              source={require("../../../../../assets/images/components/delivery-truck.png")}
-              resizeMode={"contain"}
-              style={{ flex: 0.2, marginRight: 10, height: "100%" }}
-            />
+            <Text
+              style={[
+                {
+                  padding: 8,
+                  fontSize: 20,
+                  fontWeight: "700",
+                  color: colors.primary,
+                },
+              ]}
+            >
+              Alle
+            </Text>
+          </TouchableOpacity>
 
-            <View style={{ flex: 0.9, justifyContent: "center" }}>
-              <Text
-                style={{
-                  fontSize: 16,
-                  lineHeight: 18.75,
-                  fontWeight: "bold",
+          <ScrollView
+            horizontal={true}
+            ref={scrollMenuRef}
+            contentOffset={offsetMenu}
+            style={{ flexDirection: "row" }}
+            showsHorizontalScrollIndicator={false}
+          >
+            {activeMenus?.map((menu, index, arr) => (
+              <TouchableOpacity
+                keyExtractor={(menu, index) => index.toString()}
+                onLayout={(event) => {
+                  const layout = event.nativeEvent.layout;
+                  menuCords[index] = layout.x;
+                  setMenuCords(menuCords);
                 }}
-              >
-                Bestill innen{" "}
-                <Text style={{ color: colors.btnLink }}>tirdag 19.07</Text> og
-                få varene levert hjem{" "}
-                <Text style={{ color: colors.btnLink }}>torsdag 21.07</Text>
-              </Text>
-            </View>
-          </View>
+                onPress={async () => {
+                  await handleActiveMenuClick(menu);
+                  setAll(true);
+                  setIsAll(false);
+                  setSubLink(menu.link.slice(2).toLowerCase());
+                  handleClick(handleUncheckAllMenus(arr), menu);
+                  await dispatch(getSubMenu(menu.link.slice(2).toLowerCase()));
+                  await dispatch(getSubMenuProducts(subLink));
+                  setIsSubLink(true);
 
+                  setoffsetMenu({ x: menuCords[index], y: 0 });
+                }}
+                style={[menu.isActive ? styles.active : styles.unactive]}
+              >
+                <Text
+                  style={[
+                    {
+                      padding: 8,
+                      fontSize: 20,
+                      fontWeight: "700",
+                      color: colors.primary,
+                    },
+                  ]}
+                >
+                  {menu.name}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+        {isSubLink === false ? (
+          <></>
+        ) : (
           <View
             style={{
               ...globalStyles.mt16,
-              ...styles.bgwhite,
+              marginBottom: 10,
               flexDirection: "row",
             }}
           >
             <TouchableOpacity
               key={"alle"}
               onPress={() => {
+                setIsSubAll(true);
                 setAll(true);
-                handleAllClick(activeMenus);
-                setIsSubLink(false);
-                dispatch(getProductsList(null, {}));
+                handleSubAllClick(activeSubMenu);
                 setoffsetMenu({ x: 0, y: 0 });
               }}
-              style={[isAll ? styles.active : {}]}
             >
-              <Text
-                style={[
-                  {
-                    padding: 8,
-                    fontSize: 20,
-                    fontWeight: "700",
-                    color: colors.primary,
-                  },
-                ]}
-              >
+              <Text style={isSubAll ? styles.subActive : styles.subUnactive}>
                 Alle
               </Text>
             </TouchableOpacity>
 
             <ScrollView
               horizontal={true}
-              ref={scrollMenuRef}
-              contentOffset={offsetMenu}
-              style={{ flexDirection: "row" }}
               showsHorizontalScrollIndicator={false}
+              ref={scrollSubMenuRef}
+              contentOffset={offsetSubMenu}
             >
-              {activeMenus?.map((menu, index, arr) => (
-                <TouchableOpacity
-                  keyExtractor={(menu) => menu?.id.toString()}
-                  onLayout={(event) => {
-                    const layout = event.nativeEvent.layout;
-                    menuCords[index] = layout.x;
-                    setMenuCords(menuCords);
-                  }}
-                  onPress={async () => {
-                    await handleActiveMenuClick(menu);
-                    setAll(true);
-                    setIsAll(false);
-                    setSubLink(menu.link.slice(2).toLowerCase());
-                    handleClick(handleUncheckAllMenus(arr), menu);
-                    await dispatch(
-                      getSubMenu(menu.link.slice(2).toLowerCase())
-                    );
-                    await dispatch(getSubMenuProducts(subLink));
-                    setIsSubLink(true);
-
-                    setoffsetMenu({ x: menuCords[index], y: 0 });
-                  }}
-                  style={[menu.isActive ? styles.active : styles.unactive]}
-                >
-                  <Text
-                    style={[
-                      {
-                        padding: 8,
-                        fontSize: 20,
-                        fontWeight: "700",
-                        color: colors.primary,
-                      },
-                    ]}
+              {activeSubMenu
+                // ?.sort((a, b) => a.name.localeCompare(b.name))
+                ?.map((submenu, index, arr) => (
+                  <TouchableOpacity
+                    keyExtractor={(submenu) => submenu?.id.toString()}
+                    onLayout={(event) => {
+                      const layout = event.nativeEvent.layout;
+                      subMenuCords[index] = layout.x;
+                      setSubMenuCords(subMenuCords);
+                    }}
+                    onPress={() => {
+                      setIsSubAll(false);
+                      setIsAll(false);
+                      setAll(false);
+                      setoffsetSubMenu({ x: subMenuCords[index], y: 0 });
+                      dispatch(
+                        getSubMenuProducts(submenu.permalink.toLowerCase())
+                      );
+                      handleSubClick(handleUncheckAllMenus(arr), submenu);
+                    }}
                   >
-                    {menu.name}
-                  </Text>
-                </TouchableOpacity>
-              ))}
+                    <Text
+                      style={
+                        submenu.isActive ? styles.subActive : styles.subUnactive
+                      }
+                    >
+                      {submenu?.name}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
             </ScrollView>
           </View>
-          {isSubLink === false ? (
-            <></>
-          ) : (
-            <View
-              style={{
-                ...globalStyles.mt16,
-                marginBottom: 10,
-                flexDirection: "row",
-              }}
-            >
-              <TouchableOpacity
-                key={"alle"}
-                onPress={() => {
-                  setIsSubAll(true);
-                  setAll(true);
-                  handleSubAllClick(activeSubMenu);
-                  setoffsetMenu({ x: 0, y: 0 });
-                }}
-              >
-                <Text style={isSubAll ? styles.subActive : styles.subUnactive}>
-                  Alle
-                </Text>
-              </TouchableOpacity>
-
-              <ScrollView
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-                ref={scrollSubMenuRef}
-                contentOffset={offsetSubMenu}
-              >
-                {activeSubMenu
-                  ?.sort((a, b) => a.name.localeCompare(b.name))
-                  ?.map((submenu, index, arr) => (
-                    <TouchableOpacity
-                      keyExtractor={(submenu) => submenu?.id.toString()}
-                      onLayout={(event) => {
-                        const layout = event.nativeEvent.layout;
-                        subMenuCords[index] = layout.x;
-                        setSubMenuCords(subMenuCords);
-                      }}
-                      onPress={() => {
-                        setIsSubAll(false);
-                        setIsAll(false);
-                        setAll(false);
-                        setoffsetSubMenu({ x: subMenuCords[index], y: 0 });
-                        dispatch(
-                          getSubMenuProducts(submenu.permalink.toLowerCase())
-                        );
-                        handleSubClick(handleUncheckAllMenus(arr), submenu);
-                      }}
-                    >
-                      <Text
-                        style={
-                          submenu.isActive
-                            ? styles.subActive
-                            : styles.subUnactive
-                        }
-                      >
-                        {submenu?.name}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-              </ScrollView>
-            </View>
-          )}
-        </View>
-      </>
+        )}
+      </View>
     );
   };
 

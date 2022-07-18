@@ -12,7 +12,6 @@ import { styles } from "./styles";
 import { Snackbar } from "react-native-paper";
 import {
   addItem,
-  getMostBoughtGoods,
   getProduct,
   getProductsList,
   getSelectedVendor,
@@ -37,15 +36,15 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [mostBought, setMostBought] = useState([]);
 
-  React.useEffect(async () => {
-    setMostBought([]);
-    await dispatch(getVendorsList());
+  React.useEffect(() => {
+    dispatch(getVendorsList());
     dispatch(getWeeklyProducer());
+    setMostBought([]);
   }, []);
 
   React.useEffect(() => {
     loadMostBoughtGoods();
-  }, [mostBoughtGoods]);
+  }, [mostBought, mostBoughtGoods]);
 
   React.useEffect(() => {
     handleProductsLoad();
@@ -58,23 +57,17 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
       mostBoughtGoods?.products?.forEach((item) => {
         const product = productsList.find((ele) => ele.id == item.id);
 
-        console.log("length mostbought", mostBought.length);
-        console.log("length products", mostBoughtGoods.products.length);
-
-        if (product && mostBought.length === 0) {
-          let temp = mostBought;
-          temp.push(product);
-          setMostBought(temp);
-        } else if (
-          product &&
-          mostBought.length < mostBoughtGoods.products.length
-        ) {
-          let temp = mostBought;
-          temp.push(product);
-
-          console.log("tempp", temp);
-
-          setMostBought(temp);
+        if (!mostBought.includes(product)) {
+          if (product && mostBought.length === 0) {
+            mostBought.push(product);
+          } else if (
+            product &&
+            mostBought.length < mostBoughtGoods.products.length
+          ) {
+            let temp = mostBought;
+            temp.push(product);
+            setMostBought(temp);
+          }
         }
       });
     }
@@ -170,8 +163,6 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
       })
     );
   };
-
-  console.log("mostBought", mostBought);
 
   const handleProductLoad = (id, item) => {
     dispatch(getProduct(id));
