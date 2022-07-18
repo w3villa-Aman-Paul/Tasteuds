@@ -32,23 +32,14 @@ function ShopitStackNavigator({ navigation, route }) {
   const { cart } = useSelector((state) => state.checkout);
 
   const { isAuth } = useSelector((state) => state.auth);
-  
+
   useEffect(() => {
-<<<<<<< HEAD
-    if (!cart.token || cart.token === "5ZyVHLTfWoMT_bmaJ_MsDQ1657622185795") {
-      dispatch(createCart());
-=======
     if (!cart.token || cart.token === "yNgtO10tKJk_hmw4ETtv5Q1657624186384") {
       dispatch(createCart(isAuth));
->>>>>>> dev/aman
     }
     dispatch(getMostBoughtGoods());
   }, []);
-  
-  useEffect(() => {
-    console.log("route", route);
-  }, [route]);
-  
+
   useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route);
     if (

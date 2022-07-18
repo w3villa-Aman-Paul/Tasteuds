@@ -250,7 +250,7 @@ const ProductListScreen = ({
             {item.name}
           </Text>
           <Text numberOfLines={1} style={styles.description}>
-            {`${item.vendor.id ? resultVendor(item?.vendor?.id)[0] : ""}`}
+            {`${item?.vendor?.id ? resultVendor(item?.vendor?.id)[0] : ""}`}
           </Text>
           <View style={styles.pricingContainer}>
             <Text style={[styles.prices, { color: colors.black }]}>

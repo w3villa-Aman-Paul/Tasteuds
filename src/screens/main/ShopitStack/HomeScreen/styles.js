@@ -241,4 +241,26 @@ export const styles = StyleSheet.create({
   btn_link: {
     backgroundColor: colors.btnLink,
   },
+  qty_footer: {
+    flex: 1,
+    width: "100%",
+    backgroundColor: colors.btnLink,
+    maxHeight: 40,
+    borderWidth: 1,
+    borderColor: "transparent",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingVertical: 8,
+    paddingHorizontal: 8,
+    alignItems: "center",
+  },
+  addLogo: {
+    position: "absolute",
+    bottom: 10,
+    right: 10,
+    borderRadius: 10,
+    ...globalStyles.iosShadow,
+    elevation: 5,
+    backgroundColor: "#fff",
+  },
 });

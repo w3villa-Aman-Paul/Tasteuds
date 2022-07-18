@@ -46,9 +46,9 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     loadMostBoughtGoods();
   }, [mostBought, mostBoughtGoods]);
 
-  React.useEffect(() => {
-    handleProductsLoad();
-  }, [isAuth, route.params]);
+  // React.useEffect(() => {
+  //   handleProductsLoad();
+  // }, [isAuth, route.params]);
 
   const dismissSnackbar = () => setSnackbarVisible(false);
 
@@ -60,6 +60,11 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
         if (!mostBought.includes(product)) {
           if (product && mostBought.length === 0) {
             mostBought.push(product);
+          } else if (
+            product &&
+            mostBought.length === mostBoughtGoods.products.length
+          ) {
+            setMostBought(mostBought);
           } else if (
             product &&
             mostBought.length < mostBoughtGoods.products.length
@@ -118,21 +123,13 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
               resizeMode: "contain",
             }}
           />
-          <TouchableOpacity
-            style={{
-              position: "absolute",
-              bottom: 0,
-              right: 0,
-              backgroundColor: colors.white,
-              borderRadius: 50,
-            }}
-          >
+          <TouchableOpacity style={styles.addLogo}>
             <Icon
-              name="pluscircleo"
+              name="plus"
               type="ant-design"
-              size={34}
+              size={30}
               color={colors.btnLink}
-              borderRadius={34}
+              borderRadius={10}
               backgroundColor={colors.background}
               onPress={() => cartHandler(item?.id)}
             />
@@ -394,6 +391,26 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
       <Snackbar visible={snackbarVisible} onDismiss={dismissSnackbar}>
         Added to Cart !
       </Snackbar>
+      {cart?.item_count > 0 ? (
+        <View style={styles.qty_footer}>
+          <Text
+            style={{ color: colors.white, fontSize: 15, fontWeight: "bold" }}
+          >
+            {cart?.item_count} VARER
+          </Text>
+          <TouchableOpacity onPress={() => navigation.navigate("Bag")}>
+            <Text
+              style={{
+                color: colors.white,
+                fontSize: 15,
+                fontWeight: "bold",
+              }}
+            >
+              SE HANDLEVOGN
+            </Text>
+          </TouchableOpacity>
+        </View>
+      ) : null}
     </View>
   );
 };
