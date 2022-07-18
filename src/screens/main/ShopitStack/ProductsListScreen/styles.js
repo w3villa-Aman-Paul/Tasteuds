@@ -120,4 +120,17 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     elevation: 5,
   },
+  qty_footer: {
+    flex: 1,
+    width: "100%",
+    backgroundColor: colors.btnLink,
+    maxHeight: 50,
+    borderWidth: 1,
+    borderColor: "transparent",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingVertical: 10,
+    paddingHorizontal: 8,
+    alignItems: "center",
+  },
 });

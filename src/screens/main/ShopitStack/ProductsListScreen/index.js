@@ -586,28 +586,52 @@ const ProductListScreen = ({
     return (
       <View
         style={{
+          width: "100%",
           position: "absolute",
           bottom: 0,
           alignSelf: "center",
-          flexDirection: "row",
+          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
           backgroundColor: "transparent",
-          paddingVertical: 10,
+          // paddingVertical: 10,
         }}
       >
-        <TouchableOpacity
-          style={[styles.stickyBottomBtn, globalStyles.iosShadow]}
-          onPress={() => handleFilter()}
-        >
-          <Text>FILTER</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.stickyBottomBtn, globalStyles.iosShadow]}
-          onPress={() => handleSort()}
-        >
-          <Text>SORTER</Text>
-        </TouchableOpacity>
+        <View style={{ flexDirection: "row", marginBottom: 10 }}>
+          <TouchableOpacity
+            style={[styles.stickyBottomBtn, globalStyles.iosShadow]}
+            onPress={() => handleFilter()}
+          >
+            <Text>FILTER</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.stickyBottomBtn, globalStyles.iosShadow]}
+            onPress={() => handleSort()}
+          >
+            <Text>SORTER</Text>
+          </TouchableOpacity>
+        </View>
+
+        {cart?.item_count > 0 ? (
+          <View style={styles.qty_footer}>
+            <Text
+              style={{ color: colors.white, fontSize: 15, fontWeight: "bold" }}
+            >
+              {cart?.item_count} VARER
+            </Text>
+            <TouchableOpacity onPress={() => navigation.navigate("Bag")}>
+              <Text
+                style={{
+                  color: colors.white,
+                  fontSize: 15,
+                  fontWeight: "bold",
+                }}
+              >
+                SE HANDLEVOGN
+              </Text>
+            </TouchableOpacity>
+          </View>
+        ) : null}
       </View>
     );
   };
@@ -955,6 +979,7 @@ const ProductListScreen = ({
             }}
           />
         )}
+
         {stikyOptions()}
 
         {checkout.error !== null && saving === false ? (

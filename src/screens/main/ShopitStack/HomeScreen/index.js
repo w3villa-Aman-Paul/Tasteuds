@@ -143,8 +143,6 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   };
 
   const newJustInRenderItem = ({ item, index }) => {
-    if (saving) return <ActivityIndicatorCard />;
-
     return (
       <TouchableOpacity>
         <FlatListImageItem

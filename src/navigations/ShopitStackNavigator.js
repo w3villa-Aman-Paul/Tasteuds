@@ -32,7 +32,7 @@ function ShopitStackNavigator({ navigation, route }) {
   const { cart } = useSelector((state) => state.checkout);
 
   useEffect(() => {
-    if (!cart.token) {
+    if (!cart.token || cart.token === "5ZyVHLTfWoMT_bmaJ_MsDQ1657622185795") {
       dispatch(createCart());
     }
   }, []);

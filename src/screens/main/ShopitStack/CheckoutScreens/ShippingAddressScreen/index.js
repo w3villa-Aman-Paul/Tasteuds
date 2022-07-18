@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { globalStyles } from "../../../../../styles/global";
 import { colors } from "../../../../../res/palette";
-import { CheckR, CheckO, Close } from "../../../../../library/icons";
+import { CheckO, Close } from "../../../../../library/icons";
 import { Icon, Overlay } from "react-native-elements";
 import { Picker } from "@react-native-community/picker";
 import {
@@ -173,7 +173,6 @@ const ShippingAddressScreen = ({
             <Text style={styles.headerTitle}>REGISTRER KORT</Text>
           </View>
         </View>
-
         <KeyboardAvoidingView style={{ ...styles.cardContainer, flex: 1 }}>
           <View style={styles.cardContent}>
             <Text style={styles.cardText}>KORTHOLDERS NAVN</Text>

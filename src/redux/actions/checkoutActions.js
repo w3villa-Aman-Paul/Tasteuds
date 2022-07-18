@@ -184,15 +184,14 @@ export function removeLineItem(lineItemId, filters = null, auth_token) {
   };
 }
 
-export const setQuantity = (data, null, auth_token) = async (dispatch) => {
-    const url = `${API_VERSION_STOREFRONT}/cart/set_quantity`;
-    const params = {
-      include: "line_items.variant.option_values,line_items.variant.images",
-    };
-    const method = "PATCH";
-    dispatch({
-      type: "SET_QUANTITY",
-      payload: handleAddCartItem(url, params, method, data, auth_token),
-    });
-
+export const setQuantity = (data, auth_token) => {
+  const url = `${API_VERSION_STOREFRONT}/cart/set_quantity`;
+  const params = {
+    include: "line_items.variant.option_values,line_items.variant.images",
   };
+  const method = "PATCH";
+  return {
+    type: "SET_QUANTITY",
+    payload: handleAddCartItem(url, params, method, data, auth_token),
+  };
+};
