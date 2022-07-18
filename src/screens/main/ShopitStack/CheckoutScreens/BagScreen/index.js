@@ -142,6 +142,10 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
           line_item_id: lineItemId,
           quantity: lineItemQuantity + 1,
         },
+<<<<<<< HEAD
+=======
+
+>>>>>>> dev/aman
         cart?.token
       )
     );

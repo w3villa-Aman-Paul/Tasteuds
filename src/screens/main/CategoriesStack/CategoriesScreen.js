@@ -1,11 +1,7 @@
 import * as React from "react";
 import { ScrollView, View, Text, Image, TouchableOpacity } from "react-native";
 import { styles } from "./styles";
-import {
-  getMenus,
-  getMostBoughtGoods,
-  getNewlyAddProducts,
-} from "../../../redux";
+import { getMenus, getNewlyAddProducts } from "../../../redux";
 import { connect, useSelector } from "react-redux";
 import ActivityIndicatorCard from "../../../library/components/ActivityIndicatorCard";
 import { colors } from "../../../res/palette";
@@ -29,7 +25,6 @@ const CategoriesScreen = ({ navigation, dispatch, taxonomy, saving }) => {
           <TouchableOpacity
             style={styles.upperOptions}
             onPress={() => {
-              dispatch(getMostBoughtGoods());
               navigation.navigate("MostBoughtProducts");
             }}
           >

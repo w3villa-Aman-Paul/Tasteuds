@@ -104,12 +104,8 @@ const ProductListScreen = ({
   };
 
   const resultVendor = (id) => {
-    const vendor = vendorList?.filter((vendor) => {
-      if (vendor?.id == id) return vendor;
-    });
-
-    let vendorName = vendor[0]?.name;
-
+    const vendor = vendorList?.filter((vendor) => vendor?.id == id);
+    let vendorName = vendor ? vendor[0]?.name : "";
     return [vendorName, vendor];
   };
 
@@ -124,7 +120,7 @@ const ProductListScreen = ({
           menu.name !== "Kategorier" &&
           menu.name !== "Lokalprodukter"
       )
-      ?.sort((a, b) => a.name.localeCompare(b.name))
+      // ?.sort((a, b) => a.name.localeCompare(b.name))
       ?.map((item) => {
         return { ...item, isActive: false };
       });
@@ -236,14 +232,14 @@ const ProductListScreen = ({
             }}
           />
           <TouchableOpacity
-            style={{ position: "absolute", bottom: 0, right: 10 }}
+            style={styles.addLogo}
             onPress={() => handleAddToBag(item)}
           >
             <Icon
-              name="pluscircleo"
+              name="plus"
               type="ant-design"
-              size={34}
-              borderRadius={34}
+              size={30}
+              borderRadius={10}
               color={colors.btnLink}
               backgroundColor={colors.white}
             />
@@ -254,11 +250,11 @@ const ProductListScreen = ({
             {item.name}
           </Text>
           <Text numberOfLines={1} style={styles.description}>
-            {`${resultVendor(item?.vendor?.id)[0]}`}
+            {`${item.vendor.id ? resultVendor(item?.vendor?.id)[0] : ""}`}
           </Text>
           <View style={styles.pricingContainer}>
             <Text style={[styles.prices, { color: colors.black }]}>
-              {item.display_price}
+              {`${item.display_price} `}
             </Text>
           </View>
         </View>
@@ -353,8 +349,8 @@ const ProductListScreen = ({
   const newJustInRenderItem = ({ item, index }) => {
     return (
       <FlatListImageItem
-        key={index.toString()}
         item={item}
+        keyExtractor={(index) => index.toString()}
         onPress={() => {
           storeData("selectedVendor", resultVendor(item?.vendor?.id)[1]);
 
@@ -377,82 +373,83 @@ const ProductListScreen = ({
 
   const flatListUpperElement = () => {
     return (
-      <>
+      <View
+        style={{
+          marginHorizontal: 15,
+          marginTop: 10,
+        }}
+      >
         <View
-          style={{
-            marginLeft: 15,
-            marginRight: 15,
-            marginTop: 10,
-          }}
+          style={[
+            styles.topBanner,
+            globalStyles.iosShadow,
+            Platform.OS === "android" ? { marginTop: 10 } : { marginTop: 0 },
+          ]}
         >
-          <View
-            style={[
-              {
-                padding: 10,
-                borderWidth: 1,
-                borderRadius: 10,
-                flex: 1,
-                flexDirection: "row",
-                elevation: 3,
-                backgroundColor: "#fff",
-                borderColor: "transparent",
-              },
-              globalStyles.iosShadow,
-              Platform.OS === "android" ? { marginTop: 10 } : { marginTop: 0 },
-            ]}
-          >
-            <Image
-              source={require("../../../../../assets/images/components/truck.png")}
-              resizeMode={"contain"}
-              style={{ flex: 0.15, marginRight: 15 }}
-            />
+          <Image
+            source={require("../../../../../assets/images/components/delivery-truck.png")}
+            resizeMode={"contain"}
+            style={{ flex: 0.2, marginRight: 10, height: "100%" }}
+          />
+
+          <View style={{ flex: 0.9, justifyContent: "center" }}>
             <Text
               style={{
-                flex: 0.8,
                 fontSize: 16,
                 lineHeight: 18.75,
                 fontWeight: "bold",
               }}
             >
-              {cate?.description}
+              Bestill innen{" "}
+              <Text style={{ color: colors.btnLink }}>tirdag 19.07</Text> og få
+              varene levert hjem{" "}
+              <Text style={{ color: colors.btnLink }}>torsdag 21.07</Text>
             </Text>
           </View>
+        </View>
+
+        <View
+          style={{
+            ...globalStyles.mt16,
+            ...styles.bgwhite,
+            flexDirection: "row",
+          }}
+        >
+          <TouchableOpacity
+            key={"alle"}
+            onPress={() => {
+              setAll(true);
+              handleAllClick(activeMenus);
+              setIsSubLink(false);
+              dispatch(getProductsList(null, {}));
+              setoffsetMenu({ x: 0, y: 0 });
+            }}
+            style={[isAll ? styles.active : {}]}
+          >
+            <Text
+              style={[
+                {
+                  padding: 8,
+                  fontSize: 20,
+                  fontWeight: "700",
+                  color: colors.primary,
+                },
+              ]}
+            >
+              Alle
+            </Text>
+          </TouchableOpacity>
 
           <ScrollView
             horizontal={true}
-            style={{ ...globalStyles.mt16, ...styles.bgwhite }}
-            showsHorizontalScrollIndicator={false}
             ref={scrollMenuRef}
             contentOffset={offsetMenu}
+            style={{ flexDirection: "row" }}
+            showsHorizontalScrollIndicator={false}
           >
-            <TouchableOpacity
-              key={"alle"}
-              onPress={() => {
-                setAll(true);
-                handleAllClick(activeMenus);
-                setIsSubLink(false);
-                dispatch(getProductsList(null, {}));
-                setoffsetMenu({ x: 0, y: 0 });
-              }}
-              style={[isAll ? styles.active : {}]}
-            >
-              <Text
-                style={[
-                  {
-                    padding: 8,
-                    fontSize: 20,
-                    fontWeight: "700",
-                    color: colors.primary,
-                  },
-                ]}
-              >
-                Alle
-              </Text>
-            </TouchableOpacity>
-
             {activeMenus?.map((menu, index, arr) => (
               <TouchableOpacity
-                key={index.toString()}
+                keyExtractor={(menu, index) => index.toString()}
                 onLayout={(event) => {
                   const layout = event.nativeEvent.layout;
                   menuCords[index] = layout.x;
@@ -463,8 +460,8 @@ const ProductListScreen = ({
                   setAll(true);
                   setIsAll(false);
                   setSubLink(menu.link.slice(2).toLowerCase());
-                  await dispatch(getSubMenu(menu.link.slice(2).toLowerCase()));
                   handleClick(handleUncheckAllMenus(arr), menu);
+                  await dispatch(getSubMenu(menu.link.slice(2).toLowerCase()));
                   await dispatch(getSubMenuProducts(subLink));
                   setIsSubLink(true);
 
@@ -487,34 +484,42 @@ const ProductListScreen = ({
               </TouchableOpacity>
             ))}
           </ScrollView>
-          {isSubLink === false ? (
-            <></>
-          ) : (
+        </View>
+        {isSubLink === false ? (
+          <></>
+        ) : (
+          <View
+            style={{
+              ...globalStyles.mt16,
+              marginBottom: 10,
+              flexDirection: "row",
+            }}
+          >
+            <TouchableOpacity
+              key={"alle"}
+              onPress={() => {
+                setIsSubAll(true);
+                setAll(true);
+                handleSubAllClick(activeSubMenu);
+                setoffsetMenu({ x: 0, y: 0 });
+              }}
+            >
+              <Text style={isSubAll ? styles.subActive : styles.subUnactive}>
+                Alle
+              </Text>
+            </TouchableOpacity>
+
             <ScrollView
               horizontal={true}
-              style={{ ...globalStyles.mt16, marginBottom: 10 }}
               showsHorizontalScrollIndicator={false}
               ref={scrollSubMenuRef}
               contentOffset={offsetSubMenu}
             >
-              <TouchableOpacity
-                key={"alle"}
-                onPress={() => {
-                  setIsSubAll(true);
-                  setAll(true);
-                  handleSubAllClick(activeSubMenu);
-                  setoffsetMenu({ x: 0, y: 0 });
-                }}
-              >
-                <Text style={isSubAll ? styles.subActive : styles.subUnactive}>
-                  Alle
-                </Text>
-              </TouchableOpacity>
               {activeSubMenu
-                ?.sort((a, b) => a.name.localeCompare(b.name))
+                // ?.sort((a, b) => a.name.localeCompare(b.name))
                 ?.map((submenu, index, arr) => (
                   <TouchableOpacity
-                    key={index.toString()}
+                    keyExtractor={(submenu) => submenu?.id.toString()}
                     onLayout={(event) => {
                       const layout = event.nativeEvent.layout;
                       subMenuCords[index] = layout.x;
@@ -541,9 +546,9 @@ const ProductListScreen = ({
                   </TouchableOpacity>
                 ))}
             </ScrollView>
-          )}
-        </View>
-      </>
+          </View>
+        )}
+      </View>
     );
   };
 
@@ -949,36 +954,29 @@ const ProductListScreen = ({
     return <ActivityIndicatorCard />;
   } else
     return (
-      <SafeAreaView
-        style={[globalStyles.containerFluid, styles.bgwhite, { flex: 1 }]}
-      >
-        {products.saving || savingTaxon ? (
-          <ActivityIndicatorCard />
-        ) : (
-          <FlatList
-            data={isAll || all ? productsList : data}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={newJustInRenderItem}
-            numColumns={2}
-            ListHeaderComponent={flatListUpperElement}
-            ListFooterComponent={
-              flatListLowerElement
-              // meta.total_count !== productsList.length && (
-              //   <ActivityIndicator size="large" />
-              // )
-            }
-            ref={scrollRef}
-            onEndReachedThreshold={0.3}
-            onEndReached={() => {
-              meta.total_count !== productsList.length && handleEndReached();
-            }}
-            columnWrapperStyle={{
-              // flex: 0.8,
-              width: "100%",
-              justifyContent: "space-evenly",
-            }}
-          />
-        )}
+      <View style={[globalStyles.containerFluid, styles.bgwhite, { flex: 1 }]}>
+        <FlatList
+          keyExtractor={(item, index) => index.toString()}
+          data={isAll || all ? productsList : data}
+          renderItem={newJustInRenderItem}
+          numColumns={2}
+          ListHeaderComponent={flatListUpperElement}
+          ListFooterComponent={
+            flatListLowerElement
+            // meta.total_count !== productsList.length && (
+            //   <ActivityIndicator size="large" />
+            // )
+          }
+          ref={scrollRef}
+          onEndReachedThreshold={0.3}
+          onEndReached={() => {
+            meta.total_count !== productsList.length && handleEndReached();
+          }}
+          columnWrapperStyle={{
+            width: "100%",
+            justifyContent: "space-evenly",
+          }}
+        />
 
         {stikyOptions()}
 
@@ -1008,7 +1006,7 @@ const ProductListScreen = ({
             bottomSheetContent={sortContent}
           />
         )}
-      </SafeAreaView>
+      </View>
     );
 };
 

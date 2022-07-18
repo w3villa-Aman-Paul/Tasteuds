@@ -7,6 +7,7 @@ import {
   Image,
   TextInput,
   KeyboardAvoidingView,
+  SafeAreaView,
 } from "react-native";
 import { globalStyles } from "../../../../../styles/global";
 import { colors } from "../../../../../res/palette";
@@ -20,7 +21,7 @@ import {
   getPaymentMethods,
   completeCheckout,
 } from "../../../../../redux/actions/checkoutActions";
-import { connect, useSelector } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import { retrieveAddress } from "../../../../../redux/actions/checkoutActions";
 import { styles } from "./styles";
 import { checkoutStyles } from "../styles";
@@ -28,6 +29,127 @@ import CartFooter from "../../../../../library/components/ActionButtonFooter/car
 import ActivityIndicatorCard from "../../../../../library/components/ActivityIndicatorCard";
 import FilterFooter from "../../../../../library/components/ActionButtonFooter/FilterFooter";
 import { accountRetrieve } from "../../../../../redux";
+import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
+import { useNavigation } from "@react-navigation/native";
+
+const FormInput = ({ placeholder, ...rest }) => {
+  return (
+    <BottomSheetTextInput
+      {...rest}
+      placeholder={placeholder ? placeholder : ""}
+      // style={{ width: 150, height: 30 }}
+    />
+  );
+};
+
+const bottomSheetContent = ({ setIsOpen }) => {
+  const [cardName, setCardName] = useState(null);
+  const [profileId, setProfileId] = useState("tok_visa");
+  const [cvv, setCvv] = useState(null);
+  const [month, setMonth] = useState(null);
+  const [year, setYear] = useState(null);
+
+  const { cart } = useSelector((state) => state.checkout);
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
+
+  const handlePaymentConfirmation = async () => {
+    await dispatch(
+      updateCheckout(cart?.token, {
+        order: {
+          payments_attributes: [
+            {
+              payment_method_id: 3,
+              source_attributes: {
+                gateway_payment_profile_id: profileId,
+                month: month,
+                year: year,
+                verification_value: cvv,
+                name: cardName,
+              },
+            },
+          ],
+        },
+      })
+    );
+    await dispatch(completeCheckout(cart?.token));
+    await dispatch(createCart());
+    // toggleOverlay();
+    navigation.navigate("OrderComplete");
+  };
+
+  return (
+    <View style={styles.login_container}>
+      <View>
+        <TouchableOpacity
+          style={styles.fav_close_container}
+          onPress={setIsOpen}
+        >
+          <Icon type="entypo" name="cross" size={28} style={styles.fav_close} />
+        </TouchableOpacity>
+        <View style={styles.headerTextContainer}>
+          <Text style={styles.headerTitle}>REGISTRER KORT</Text>
+        </View>
+      </View>
+
+      <SafeAreaView style={{ ...styles.cardContainer, flex: 1 }}>
+        <View style={styles.cardContent}>
+          <Text style={styles.cardText}>KORTHOLDERS NAVN</Text>
+          <FormInput
+            style={styles.cardInput}
+            placeholder="Name"
+            value={cardName}
+            onChangeText={(val) => setCardName(val)}
+          />
+        </View>
+        <View style={styles.cardContent}>
+          <Text style={styles.cardText}>KORTNUMMER</Text>
+          <FormInput
+            style={styles.cardInput}
+            value={profileId}
+            onChangeText={(val) => setProfileId(val)}
+          />
+        </View>
+        <View style={styles.lastInputs}>
+          <View style={styles.cardContent}>
+            <Text style={styles.cardText}>UTLØPSDATO</Text>
+            <View style={{ flexDirection: "row" }}>
+              <FormInput
+                style={styles.cardInputDate}
+                value={month}
+                onChangeText={(value) => setMonth(value)}
+              />
+              <FormInput
+                style={styles.cardInputDate}
+                value={year}
+                onChangeText={(value) => setYear(value)}
+              />
+            </View>
+          </View>
+          <View style={styles.cardContent}>
+            <Text style={styles.cardText}>CVC</Text>
+            <FormInput
+              style={{ ...styles.cardInputDate, width: "100%" }}
+              value={cvv}
+              onChangeText={(value) => setCvv(value)}
+            />
+          </View>
+        </View>
+
+        <View style={{ ...styles.cardContent, marginTop: 20 }}>
+          <TouchableOpacity
+            style={styles.cardBtn}
+            onPress={handlePaymentConfirmation}
+          >
+            <Text style={{ ...styles.cardText, fontFamily: "lato-bold" }}>
+              LEGG TIL
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    </View>
+  );
+};
 
 const ShippingAddressScreen = ({
   navigation,
@@ -49,12 +171,7 @@ const ShippingAddressScreen = ({
 
   const sheetRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [cardName, setCardName] = useState(null);
-  const [profileId, setProfileId] = useState("tok_visa");
-  const [cvv, setCvv] = useState(null);
-  const [month, setMonth] = useState(null);
-  const [year, setYear] = useState(null);
-  const [cartToken, setCartToken] = useState(cart.token);
+
   const [overlayVisible, setOverlayVisible] = useState(false);
 
   const snapPoints = ["60%"];

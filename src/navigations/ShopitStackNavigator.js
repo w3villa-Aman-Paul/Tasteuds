@@ -5,7 +5,6 @@ import { createStackNavigator } from "@react-navigation/stack";
 import ProductsListScreen from "../screens/main/ShopitStack/ProductsListScreen";
 import ProductDetailScreen from "../screens/main/ShopitStack/ProductDetailScreen";
 import ShippingAddressScreen from "../screens/main/ShopitStack/CheckoutScreens/ShippingAddressScreen";
-import PaymentScreen from "../screens/main/ShopitStack/CheckoutScreens/PaymentScreen";
 import BagScreen from "../screens/main/ShopitStack/CheckoutScreens/BagScreen";
 import { Heart } from "../library/icons";
 import { colors } from "../res/palette";
@@ -22,8 +21,9 @@ import ProducerDetailScreen from "../screens/main/ProducersStack/ProducerDetailS
 import SearchScreen from "../screens/main/ShopitStack/SearchScreen/index";
 import ProducersListScreen from "../screens/main/ProducersStack/ProducersListScreen";
 import { useSelector, useDispatch } from "react-redux";
-import { createCart } from "../redux";
+import { createCart, getMostBoughtGoods } from "../redux";
 import updateAddress from "../screens/main/ProfileStack/updateAddress";
+import OrderCompleteScreen from "../screens/main/ShopitStack/CheckoutScreens/OrderCompleteScreen";
 
 const ShopitStack = createStackNavigator();
 
@@ -31,19 +31,32 @@ function ShopitStackNavigator({ navigation, route }) {
   const dispatch = useDispatch();
   const { cart } = useSelector((state) => state.checkout);
 
+  const { isAuth } = useSelector((state) => state.auth);
+  
   useEffect(() => {
+<<<<<<< HEAD
     if (!cart.token || cart.token === "5ZyVHLTfWoMT_bmaJ_MsDQ1657622185795") {
       dispatch(createCart());
+=======
+    if (!cart.token || cart.token === "yNgtO10tKJk_hmw4ETtv5Q1657624186384") {
+      dispatch(createCart(isAuth));
+>>>>>>> dev/aman
     }
+    dispatch(getMostBoughtGoods());
   }, []);
-
+  
+  useEffect(() => {
+    console.log("route", route);
+  }, [route]);
+  
   useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route);
     if (
       routeName === "Bag" ||
       routeName === "ShippingAddress" ||
       routeName === "SavedAddress" ||
-      routeName === "ProducersDetailScreen"
+      routeName === "ProducersDetailScreen" ||
+      routeName === "OrderComplete"
     ) {
       navigation.setOptions({ tabBarVisible: false });
     } else {
@@ -52,17 +65,19 @@ function ShopitStackNavigator({ navigation, route }) {
   }, [navigation, route]);
 
   return (
-    <ShopitStack.Navigator screenOptions={{}}>
+    <ShopitStack.Navigator>
       <ShopitStack.Screen
         name="Shop"
         component={HomeComponent}
         options={{
           headerTitle: "",
           headerLeft: () => (
-            <Image
-              source={require("../../assets/images/Header-Icon/header_logo.png")}
-              style={styles.header}
-            />
+            <View style={styles.header}>
+              <Image
+                source={require("../../assets/images/Header-Icon/banner-logo.png")}
+                style={styles.headerImg}
+              />
+            </View>
           ),
           headerRight: () => (
             <View
@@ -135,6 +150,7 @@ function ShopitStackNavigator({ navigation, route }) {
               </TouchableOpacity>
             </View>
           ),
+
           headerRightContainerStyle: {
             flex: 0.2,
             justifyContent: "space-between",
@@ -142,7 +158,7 @@ function ShopitStackNavigator({ navigation, route }) {
           },
           title: "",
           headerLeftContainerStyle: {
-            paddingHorizontal: 10,
+            margin: 0,
           },
         }}
       />
@@ -158,7 +174,7 @@ function ShopitStackNavigator({ navigation, route }) {
             <Icon
               name="arrowleft"
               type="ant-design"
-              onPress={() => navigation.goBack()}
+              onPress={() => navigation.firstRoute()}
               title="Back"
             />
           ),
@@ -226,7 +242,6 @@ function ShopitStackNavigator({ navigation, route }) {
                   type="font-awesome"
                   size={25}
                   color={colors.primary}
-                  onPress={() => navigation.navigate("SearchScreen")}
                 />
               </TouchableOpacity>
               <TouchableOpacity
@@ -477,10 +492,16 @@ function ShopitStackNavigator({ navigation, route }) {
         }}
       />
       <ShopitStack.Screen
-        name="CheckoutPayment"
-        component={PaymentScreen}
+        name="OrderComplete"
+        component={OrderCompleteScreen}
         options={{
-          headerTitle: "Payment",
+          headerTitle: "",
+          headerShown: false,
+          headerTitleStyle: {
+            color: colors.primary,
+            fontFamily: "lato-bold",
+          },
+          headerTitleAlign: "center",
           headerRight: () => (
             <Heart
               size={24}
@@ -556,7 +577,11 @@ const styles = StyleSheet.create({
   },
   header: {
     width: 150,
-    height: 30,
+    height: "100%",
+  },
+  headerImg: {
+    height: "100%",
+    width: "100%",
     resizeMode: "contain",
   },
   chevron: {

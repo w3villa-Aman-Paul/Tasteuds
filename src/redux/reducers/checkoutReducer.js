@@ -5,6 +5,7 @@ const DEFAULT_STATE = {
   saving: false,
   status: null,
   address: [],
+  orderComplete: [],
   error: null,
   country: {
     states: [],
@@ -331,7 +332,7 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
 
     case "COMPLETE_CHECKOUT_FULFILLED":
       changes = {
-        cart: dataFormatter.deserialize(response),
+        orderComplete: dataFormatter.deserialize(response),
         saving: false,
         error: null,
         isAuth: true,
