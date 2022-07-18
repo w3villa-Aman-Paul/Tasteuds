@@ -22,7 +22,7 @@ export const styles = StyleSheet.create({
   },
   newJustInImage: {
     // width: (windowWidth / 100) * 45,
-    height: 200,
+    height: 180,
     resizeMode: "contain",
   },
   newJustInItemContainer: {
@@ -59,8 +59,9 @@ export const styles = StyleSheet.create({
     color: colors.error,
   },
   detailsContainer: {
-    padding: 10,
-    paddingVertical: 10,
+    padding: 0,
+    paddingHorizontal: 10,
+    paddingBottom: 10,
   },
   price: {
     color: colors.gray,
@@ -132,5 +133,13 @@ export const styles = StyleSheet.create({
     elevation: 3,
     backgroundColor: "#fff",
     borderColor: "transparent",
+  },
+
+  addLogo: {
+    position: "absolute",
+    bottom: 10,
+    right: 10,
+    padding: 10,
+    ...globalStyles.iosShadow,
   },
 });

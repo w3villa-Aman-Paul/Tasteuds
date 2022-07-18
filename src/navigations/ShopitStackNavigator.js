@@ -32,14 +32,18 @@ function ShopitStackNavigator({ navigation, route }) {
   const { cart } = useSelector((state) => state.checkout);
 
   const { isAuth } = useSelector((state) => state.auth);
-
+  
   useEffect(() => {
     if (!cart.token || cart.token === "yNgtO10tKJk_hmw4ETtv5Q1657624186384") {
       dispatch(createCart(isAuth));
     }
     dispatch(getMostBoughtGoods());
   }, []);
-
+  
+  useEffect(() => {
+    console.log("route", route);
+  }, [route]);
+  
   useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route);
     if (
@@ -165,7 +169,7 @@ function ShopitStackNavigator({ navigation, route }) {
             <Icon
               name="arrowleft"
               type="ant-design"
-              onPress={() => navigation.goBack()}
+              onPress={() => navigation.firstRoute()}
               title="Back"
             />
           ),
@@ -233,7 +237,6 @@ function ShopitStackNavigator({ navigation, route }) {
                   type="font-awesome"
                   size={25}
                   color={colors.primary}
-                  onPress={() => navigation.navigate("SearchScreen")}
                 />
               </TouchableOpacity>
               <TouchableOpacity

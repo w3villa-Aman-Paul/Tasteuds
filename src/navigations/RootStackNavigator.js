@@ -47,7 +47,7 @@ function RootStackNavigator({ authState, dispatch }) {
     return <ActivityIndicatorCard />;
   }
   return (
-    <NavigationContainer ref={navigationRef} theme={MyTheme}>
+    <NavigationContainer theme={MyTheme}>
       <RootStack.Navigator screenOptions={{ headerShown: false }}>
         <RootStack.Screen name="Splash" component={splash} />
         <RootStack.Screen name="Shopit" component={MainTabNavigator} />

@@ -232,14 +232,14 @@ const ProductListScreen = ({
             }}
           />
           <TouchableOpacity
-            style={{ position: "absolute", bottom: 0, right: 10 }}
+            style={styles.addLogo}
             onPress={() => handleAddToBag(item)}
           >
             <Icon
-              name="pluscircleo"
+              name="plus"
               type="ant-design"
-              size={34}
-              borderRadius={34}
+              size={30}
+              borderRadius={10}
               color={colors.btnLink}
               backgroundColor={colors.white}
             />
@@ -254,7 +254,7 @@ const ProductListScreen = ({
           </Text>
           <View style={styles.pricingContainer}>
             <Text style={[styles.prices, { color: colors.black }]}>
-              {item.display_price}
+              {`${item.display_price} `}
             </Text>
           </View>
         </View>
@@ -931,32 +931,29 @@ const ProductListScreen = ({
   } else
     return (
       <View style={[globalStyles.containerFluid, styles.bgwhite, { flex: 1 }]}>
-        {products.saving || savingTaxon ? (
-          <ActivityIndicatorCard />
-        ) : (
-          <FlatList
-            keyExtractor={(item, index) => index.toString()}
-            data={isAll || all ? productsList : data}
-            renderItem={newJustInRenderItem}
-            numColumns={2}
-            ListHeaderComponent={flatListUpperElement}
-            ListFooterComponent={
-              flatListLowerElement
-              // meta.total_count !== productsList.length && (
-              //   <ActivityIndicator size="large" />
-              // )
-            }
-            ref={scrollRef}
-            onEndReachedThreshold={0.3}
-            onEndReached={() => {
-              meta.total_count !== productsList.length && handleEndReached();
-            }}
-            columnWrapperStyle={{
-              width: "100%",
-              justifyContent: "space-evenly",
-            }}
-          />
-        )}
+        <FlatList
+          keyExtractor={(item, index) => index.toString()}
+          data={isAll || all ? productsList : data}
+          renderItem={newJustInRenderItem}
+          numColumns={2}
+          ListHeaderComponent={flatListUpperElement}
+          ListFooterComponent={
+            flatListLowerElement
+            // meta.total_count !== productsList.length && (
+            //   <ActivityIndicator size="large" />
+            // )
+          }
+          ref={scrollRef}
+          onEndReachedThreshold={0.3}
+          onEndReached={() => {
+            meta.total_count !== productsList.length && handleEndReached();
+          }}
+          columnWrapperStyle={{
+            width: "100%",
+            justifyContent: "space-evenly",
+          }}
+        />
+
         {stikyOptions()}
 
         {checkout.error !== null && saving === false ? (
