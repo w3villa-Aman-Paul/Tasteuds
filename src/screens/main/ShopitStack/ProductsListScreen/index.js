@@ -353,8 +353,8 @@ const ProductListScreen = ({
   const newJustInRenderItem = ({ item, index }) => {
     return (
       <FlatListImageItem
-        key={index.toString()}
         item={item}
+        keyExtractor={(index) => index.toString()}
         onPress={() => {
           storeData("selectedVendor", resultVendor(item?.vendor?.id)[1]);
 
@@ -413,12 +413,12 @@ const ProductListScreen = ({
             </View>
           </View>
 
-          <ScrollView
-            horizontal={true}
-            style={{ ...globalStyles.mt16, ...styles.bgwhite }}
-            showsHorizontalScrollIndicator={false}
-            ref={scrollMenuRef}
-            contentOffset={offsetMenu}
+          <View
+            style={{
+              ...globalStyles.mt16,
+              ...styles.bgwhite,
+              flexDirection: "row",
+            }}
           >
             <TouchableOpacity
               key={"alle"}
@@ -445,52 +445,62 @@ const ProductListScreen = ({
               </Text>
             </TouchableOpacity>
 
-            {activeMenus?.map((menu, index, arr) => (
-              <TouchableOpacity
-                key={index.toString()}
-                onLayout={(event) => {
-                  const layout = event.nativeEvent.layout;
-                  menuCords[index] = layout.x;
-                  setMenuCords(menuCords);
-                }}
-                onPress={async () => {
-                  await handleActiveMenuClick(menu);
-                  setAll(true);
-                  setIsAll(false);
-                  setSubLink(menu.link.slice(2).toLowerCase());
-                  await dispatch(getSubMenu(menu.link.slice(2).toLowerCase()));
-                  handleClick(handleUncheckAllMenus(arr), menu);
-                  await dispatch(getSubMenuProducts(subLink));
-                  setIsSubLink(true);
+            <ScrollView
+              horizontal={true}
+              ref={scrollMenuRef}
+              contentOffset={offsetMenu}
+              style={{ flexDirection: "row" }}
+              showsHorizontalScrollIndicator={false}
+            >
+              {activeMenus?.map((menu, index, arr) => (
+                <TouchableOpacity
+                  keyExtractor={(menu) => menu?.id.toString()}
+                  onLayout={(event) => {
+                    const layout = event.nativeEvent.layout;
+                    menuCords[index] = layout.x;
+                    setMenuCords(menuCords);
+                  }}
+                  onPress={async () => {
+                    await handleActiveMenuClick(menu);
+                    setAll(true);
+                    setIsAll(false);
+                    setSubLink(menu.link.slice(2).toLowerCase());
+                    handleClick(handleUncheckAllMenus(arr), menu);
+                    await dispatch(
+                      getSubMenu(menu.link.slice(2).toLowerCase())
+                    );
+                    await dispatch(getSubMenuProducts(subLink));
+                    setIsSubLink(true);
 
-                  setoffsetMenu({ x: menuCords[index], y: 0 });
-                }}
-                style={[menu.isActive ? styles.active : styles.unactive]}
-              >
-                <Text
-                  style={[
-                    {
-                      padding: 8,
-                      fontSize: 20,
-                      fontWeight: "700",
-                      color: colors.primary,
-                    },
-                  ]}
+                    setoffsetMenu({ x: menuCords[index], y: 0 });
+                  }}
+                  style={[menu.isActive ? styles.active : styles.unactive]}
                 >
-                  {menu.name}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
+                  <Text
+                    style={[
+                      {
+                        padding: 8,
+                        fontSize: 20,
+                        fontWeight: "700",
+                        color: colors.primary,
+                      },
+                    ]}
+                  >
+                    {menu.name}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
           {isSubLink === false ? (
             <></>
           ) : (
-            <ScrollView
-              horizontal={true}
-              style={{ ...globalStyles.mt16, marginBottom: 10 }}
-              showsHorizontalScrollIndicator={false}
-              ref={scrollSubMenuRef}
-              contentOffset={offsetSubMenu}
+            <View
+              style={{
+                ...globalStyles.mt16,
+                marginBottom: 10,
+                flexDirection: "row",
+              }}
             >
               <TouchableOpacity
                 key={"alle"}
@@ -505,37 +515,47 @@ const ProductListScreen = ({
                   Alle
                 </Text>
               </TouchableOpacity>
-              {activeSubMenu
-                ?.sort((a, b) => a.name.localeCompare(b.name))
-                ?.map((submenu, index, arr) => (
-                  <TouchableOpacity
-                    key={index.toString()}
-                    onLayout={(event) => {
-                      const layout = event.nativeEvent.layout;
-                      subMenuCords[index] = layout.x;
-                      setSubMenuCords(subMenuCords);
-                    }}
-                    onPress={() => {
-                      setIsSubAll(false);
-                      setIsAll(false);
-                      setAll(false);
-                      setoffsetSubMenu({ x: subMenuCords[index], y: 0 });
-                      dispatch(
-                        getSubMenuProducts(submenu.permalink.toLowerCase())
-                      );
-                      handleSubClick(handleUncheckAllMenus(arr), submenu);
-                    }}
-                  >
-                    <Text
-                      style={
-                        submenu.isActive ? styles.subActive : styles.subUnactive
-                      }
+
+              <ScrollView
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                ref={scrollSubMenuRef}
+                contentOffset={offsetSubMenu}
+              >
+                {activeSubMenu
+                  ?.sort((a, b) => a.name.localeCompare(b.name))
+                  ?.map((submenu, index, arr) => (
+                    <TouchableOpacity
+                      keyExtractor={(submenu) => submenu?.id.toString()}
+                      onLayout={(event) => {
+                        const layout = event.nativeEvent.layout;
+                        subMenuCords[index] = layout.x;
+                        setSubMenuCords(subMenuCords);
+                      }}
+                      onPress={() => {
+                        setIsSubAll(false);
+                        setIsAll(false);
+                        setAll(false);
+                        setoffsetSubMenu({ x: subMenuCords[index], y: 0 });
+                        dispatch(
+                          getSubMenuProducts(submenu.permalink.toLowerCase())
+                        );
+                        handleSubClick(handleUncheckAllMenus(arr), submenu);
+                      }}
                     >
-                      {submenu?.name}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-            </ScrollView>
+                      <Text
+                        style={
+                          submenu.isActive
+                            ? styles.subActive
+                            : styles.subUnactive
+                        }
+                      >
+                        {submenu?.name}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+              </ScrollView>
+            </View>
           )}
         </View>
       </>
@@ -925,8 +945,8 @@ const ProductListScreen = ({
           <ActivityIndicatorCard />
         ) : (
           <FlatList
+            keyExtractor={(item, index) => index.toString()}
             data={isAll || all ? productsList : data}
-            keyExtractor={(index, item) => "" + item?.id + index}
             renderItem={newJustInRenderItem}
             numColumns={2}
             ListHeaderComponent={flatListUpperElement}

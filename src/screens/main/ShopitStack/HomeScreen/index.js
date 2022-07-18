@@ -12,6 +12,7 @@ import { styles } from "./styles";
 import { Snackbar } from "react-native-paper";
 import {
   addItem,
+  getMostBoughtGoods,
   getProduct,
   getProductsList,
   getSelectedVendor,
@@ -36,8 +37,9 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [mostBought, setMostBought] = useState([]);
 
-  React.useEffect(() => {
-    dispatch(getVendorsList());
+  React.useEffect(async () => {
+    setMostBought([]);
+    await dispatch(getVendorsList());
     dispatch(getWeeklyProducer());
   }, []);
 
@@ -56,19 +58,23 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
       mostBoughtGoods?.products?.forEach((item) => {
         const product = productsList.find((ele) => ele.id == item.id);
 
-        if (
+        console.log("length mostbought", mostBought.length);
+        console.log("length products", mostBoughtGoods.products.length);
+
+        if (product && mostBought.length === 0) {
+          let temp = mostBought;
+          temp.push(product);
+          setMostBought(temp);
+        } else if (
           product &&
-          mostBought.length !== mostBoughtGoods?.products?.length
+          mostBought.length < mostBoughtGoods.products.length
         ) {
           let temp = mostBought;
           temp.push(product);
 
+          console.log("tempp", temp);
+
           setMostBought(temp);
-        } else if (
-          product &&
-          mostBought.length === mostBoughtGoods.products.length
-        ) {
-          setMostBought(mostBought);
         }
       });
     }
@@ -111,7 +117,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
         <View style={{ position: "relative" }}>
           <Image
             source={{
-              uri: `${HOST}/${item.images[0].styles[3].url}`,
+              uri: `${HOST}/${item?.images[0]?.styles[3]?.url}`,
             }}
             style={{
               width: imageStyle.width,
@@ -179,7 +185,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     return (
       <TouchableOpacity>
         <FlatListImageItem
-          key={index.toString()}
+          keyExtractor={(item, index) => index.toString()}
           item={item}
           onPress={() => {
             storeData("selectedVendor", resultVendor(item?.vendor?.id)[1]);
@@ -218,7 +224,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
             >
               <Text style={styles.text1}>UKAS PRODUSENT </Text>
               <Text style={{ ...styles.text_second, fontWeight: "700" }}>
-                {weeklyProducer.vendor ? weeklyProducer.vendor.name : ""}
+                {weeklyProducer?.vendor ? weeklyProducer.vendor.name : ""}
               </Text>
             </ImageBackground>
           </TouchableOpacity>
@@ -382,8 +388,8 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   return (
     <View style={{ ...globalStyles.containerFluid, ...styles.bg_white }}>
       <FlatList
-        data={mostBought.slice(0, 6)}
-        keyExtractor={(index) => index.toString()}
+        data={mostBought}
+        keyExtractor={(item, index) => index.toString()}
         renderItem={newJustInRenderItem}
         numColumns={2}
         columnWrapperStyle={{ justifyContent: "space-between" }}

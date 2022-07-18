@@ -29,7 +29,7 @@ const MostBoughtProducts = ({ navigation, dispatch }) => {
       if (vendor?.id == id) return vendor;
     });
 
-    let vendorName = vendor[0]?.name;
+    let vendorName = vendor ? vendor[0]?.name : "";
 
     return [vendorName, vendor];
   };

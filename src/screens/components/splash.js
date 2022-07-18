@@ -1,11 +1,15 @@
 import { Image, StyleSheet, Text, View } from "react-native";
 import React, { useEffect } from "react";
+import { getMostBoughtGoods } from "../../redux";
+import { connect } from "react-redux";
 
-const splash = ({ navigation }) => {
+const splash = ({ navigation, dispatch }) => {
   useEffect(() => {
     setTimeout(() => {
       navigation.replace("Shopit");
     }, 2000);
+
+    dispatch(getMostBoughtGoods());
   }, []);
 
   return (
@@ -20,7 +24,7 @@ const splash = ({ navigation }) => {
   );
 };
 
-export default splash;
+export default connect()(splash);
 
 const styles = StyleSheet.create({
   container: {

@@ -149,7 +149,6 @@ function ShopitStackNavigator({ navigation, route }) {
           },
           title: "",
           headerLeftContainerStyle: {
-            backgroundColor: colors.btnLink,
             margin: 0,
           },
         }}

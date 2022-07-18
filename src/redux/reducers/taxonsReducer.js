@@ -236,7 +236,7 @@ export default function taxonsReducer(state = DEFAULT_STATE, action) {
         mostBoughtGoods: response,
         saving: false,
       };
-      return { ...state, ...changes };
+      return { ...changes };
 
     /**
      * Newly Added Products
