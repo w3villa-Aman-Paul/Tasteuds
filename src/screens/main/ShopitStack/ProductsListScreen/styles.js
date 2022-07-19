@@ -155,4 +155,20 @@ export const styles = StyleSheet.create({
     ...globalStyles.iosShadow,
     elevation: 5,
   },
+
+  selectedFilter: {
+    backgroundColor: colors.btnLink,
+    marginRight: 8,
+    borderRadius: 3,
+    padding: 10,
+    paddingVertical: 5,
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+
+  selectedFilterText: {
+    color: colors.white,
+    marginRight: 3,
+    fontSize: 16,
+  },
 });

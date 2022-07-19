@@ -165,7 +165,7 @@ function ShopitStackNavigator({ navigation, route }) {
             <Icon
               name="arrowleft"
               type="ant-design"
-              onPress={() => navigation.firstRoute()}
+              onPress={() => navigation.goBack()}
               title="Back"
             />
           ),
@@ -205,7 +205,7 @@ function ShopitStackNavigator({ navigation, route }) {
             <Icon
               name="arrowleft"
               type="ant-design"
-              onPress={() => navigation.goBack()}
+              onPress={() => navigation.navigate("Shop")}
               title="Back"
             />
           ),
@@ -313,7 +313,7 @@ function ShopitStackNavigator({ navigation, route }) {
             <Icon
               name="arrowleft"
               type="ant-design"
-              onPress={() => navigation.goBack()}
+              onPress={() => navigation.navigate("ProductsList")}
               title="Back"
             />
           ),
