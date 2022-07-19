@@ -114,7 +114,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
 
   const cartHandler = (enableQty) => {
     let item = productsList.find((x) => x.id === enableQty?.id);
-    let newItem = productsList[61].included.filter((x) => x.type === "variant");
+    let newItem = productsList[0].included.filter((x) => x.type === "variant");
     console.log("NEWITEM", newItem);
     setTimeout(() => {
       dispatch(
