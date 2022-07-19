@@ -49,7 +49,6 @@ function MainTabNavigator({ navigation }) {
               type="ionicon"
               color={colors.primary}
               size={30}
-              onPress={() => navigation.navigate("Categories")}
             />
           ),
         }}
@@ -64,7 +63,6 @@ function MainTabNavigator({ navigation }) {
               type="ionicon"
               color={colors.primary}
               size={30}
-              onPress={() => navigation.navigate("Favorites")}
             />
           ),
         }}
@@ -79,7 +77,6 @@ function MainTabNavigator({ navigation }) {
               type="ionicon"
               color={colors.primary}
               size={30}
-              onPress={() => navigation.navigate("Account")}
             />
           ),
         }}
