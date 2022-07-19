@@ -5,8 +5,10 @@ import { Icon, CheckBox } from "react-native-elements";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { colors } from "../../../res/palette";
 import { getData, storeData } from "../../../redux/rootReducer";
+import { connect } from "react-redux";
+import { getSearchProduct } from "../../../redux";
 
-const FoodFooter = ({ navigation }) => {
+const FoodFooter = ({ navigation, dispatch }) => {
   const menus = useSelector((state) => state.taxons.menus);
 
   const [checked, setChecked] = useState([]);
@@ -39,6 +41,12 @@ const FoodFooter = ({ navigation }) => {
     getFood();
   }, []);
 
+  const selectedVendor = async () => {
+    let vendor = await getData("vendors");
+
+    return vendor;
+  };
+
   const handleChange = (name) => {
     let tempMenu = checked.map((menu) => {
       if (menu.name === name && Object.values(menu).includes(true) === false) {
@@ -65,6 +73,7 @@ const FoodFooter = ({ navigation }) => {
             flexDirection: "row",
             justifyContent: "flex-start",
             position: "relative",
+            marginBottom: 10,
           }}
         >
           <TouchableOpacity
@@ -80,7 +89,7 @@ const FoodFooter = ({ navigation }) => {
               name="chevron-left"
               type="material-icons"
               color="#fff"
-              size={30}
+              size={34}
             />
           </TouchableOpacity>
           <View
@@ -112,34 +121,42 @@ const FoodFooter = ({ navigation }) => {
             // ?.sort((a, b) => a.name.localeCompare(b.name))
             ?.map((menu, index) => {
               return (
-                <CheckBox
+                <View
                   key={menu.id}
-                  title={menu.name}
-                  checked={checked[index]?.isChecked || false}
-                  onPress={() => handleChange(menu.name)}
-                  size={24}
-                  iconType="material"
-                  checkedIcon="check-box"
-                  uncheckedIcon="check-box-outline-blank"
-                  checkedColor={colors.btnLink}
-                  containerStyle={{
-                    backgroundColor: "#232332",
+                  style={{
+                    justifyContent: "center",
+                    alignItems: "flex-start",
+                    borderWidth: 1,
                     borderColor: "transparent",
                     borderBottomColor: "rgba(58, 58, 89, 1)",
+                  }}
+                >
+                  <CheckBox
+                    title={menu.name}
+                    checked={checked[index]?.isChecked || false}
+                    onPress={() => handleChange(menu.name)}
+                    size={28}
+                    iconType="material"
+                    checkedIcon="check-box"
+                    uncheckedIcon="check-box-outline-blank"
+                    checkedColor={colors.btnLink}
+                    containerStyle={{
+                      backgroundColor: "#232332",
+                      borderColor: "transparent",
 
-                    padding: 5,
-                    // paddingTop: 0,
-                    margin: 0,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                  textStyle={{
-                    flex: 1,
-                    color: "#fff",
-                    fontFamily: "lato-medium",
-                    fontSize: 14,
-                  }}
-                />
+                      padding: 5,
+                      margin: 0,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                    textStyle={{
+                      flex: 1,
+                      color: "#fff",
+                      fontFamily: "lato-medium",
+                      fontSize: 16,
+                    }}
+                  />
+                </View>
               );
             })}
         </BottomSheetScrollView>
@@ -161,8 +178,20 @@ const FoodFooter = ({ navigation }) => {
               alignItems: "center",
               backgroundColor: colors.btnLink,
             }}
-            onPress={() => {
+            onPress={async () => {
               storeData("food", checked);
+              const filterFood = checked
+                ?.filter((item) => item?.isChecked)
+                ?.map((item) => parseInt(item?.id));
+
+              let vendor = await selectedVendor();
+              const filterVendor = vendor
+                ?.filter((item) => item?.isChecked)
+                ?.map((item) => parseInt(item?.id));
+
+              console.log(filterVendor);
+
+              dispatch(getSearchProduct(null, filterFood, filterVendor));
               navigation.goBack();
             }}
           >
@@ -182,6 +211,6 @@ const FoodFooter = ({ navigation }) => {
   );
 };
 
-export default FoodFooter;
+export default connect()(FoodFooter);
 
 const styles = StyleSheet.create({});

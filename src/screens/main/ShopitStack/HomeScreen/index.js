@@ -52,6 +52,10 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   React.useEffect(() => {
     dispatch(getVendorsList());
     dispatch(getWeeklyProducer());
+
+    if (productsList.length === 0) {
+      handleProductsLoad();
+    }
     setMostBought([]);
   }, []);
 

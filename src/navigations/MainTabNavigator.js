@@ -29,7 +29,13 @@ function MainTabNavigator({ navigation }) {
         component={ShopitStackNavigator}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Icon name="home" type="entypo" color={colors.primary} size={30} />
+            <Icon
+              name="home"
+              type="entypo"
+              color={colors.primary}
+              size={30}
+              onPress={() => navigation.navigate("Shop")}
+            />
           ),
         }}
       />

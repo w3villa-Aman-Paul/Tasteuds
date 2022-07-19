@@ -63,6 +63,7 @@ const ProductListScreen = ({
   const [offsetMenu, setoffsetMenu] = useState({ x: 0, y: 0 });
   const [subMenuCords, setSubMenuCords] = useState([]);
   const [offsetSubMenu, setoffsetSubMenu] = useState({ x: 0, y: 0 });
+  const [show, setShow] = useState(false);
 
   const checkout = useSelector((state) => state.checkout);
   const errMessage = useSelector((state) => state.checkout.error);
@@ -177,6 +178,7 @@ const ProductListScreen = ({
   const snapPoints = ["50%"];
 
   const handleFilter = () => {
+    setShow(false);
     setIsOpen(true);
   };
 
@@ -762,16 +764,24 @@ const ProductListScreen = ({
       storeData("vendors", data);
     };
 
-    const handleFilterSearch = async (categories, vendors) => {
-      let filterTaxons = categories
-        ?.filter((item) => item?.isChecked)
-        ?.map((item) => item?.id);
+    // const handleFilterSearch = async (categories, vendors) => {
+    //   let filterTaxons = categories
+    //     ?.filter((item) => item?.isChecked)
+    //     ?.map((item) => item?.id);
 
-      let filterVendor = vendors
-        ?.filter((item) => item?.isChecked)
-        .map((item) => item?.id);
-      dispatch(getSearchProduct(null, filterTaxons, filterVendor));
-    };
+    //   let filterVendor = vendors
+    //     ?.filter((item) => item?.isChecked)
+    //     .map((item) => item?.id);
+    //   dispatch(getSearchProduct(null, filterTaxons, filterVendor));
+    // };
+
+    let selectedFilterTaxon = selectedCategory?.filter(
+      (ele) => ele?.isChecked === true
+    );
+
+    let selectedFilterVendor = selectedVendors?.filter(
+      (ele) => ele?.isChecked === true
+    );
 
     return (
       <View
@@ -802,12 +812,16 @@ const ProductListScreen = ({
                     key={index}
                     style={{
                       padding: 5,
+                      paddingVertical: 10,
                       flexDirection: "row",
                       borderBottomColor: "#3A3A59",
                       borderBottomWidth: 1,
                       alignItems: "center",
                     }}
-                    onPress={() => navigation.navigate(ele.name)}
+                    onPress={() => {
+                      setShow(true);
+                      navigation.navigate(ele.name);
+                    }}
                   >
                     <View
                       style={{
@@ -819,35 +833,35 @@ const ProductListScreen = ({
                     >
                       <Text
                         style={{
+                          flex: 0.4,
                           color: colors.white,
                           fontFamily: "lato-medium",
-                          fontSize: 16,
+                          fontSize: 18,
                         }}
                       >
                         {ele.title}
                       </Text>
 
-                      <View style={{ flexDirection: "row" }}>
+                      <View
+                        style={{
+                          flex: 0.5,
+                          flexDirection: "row",
+                          justifyContent: "flex-end",
+                        }}
+                      >
                         {ele.name === "food" &&
-                          selectedCategory !== [] &&
-                          selectedCategory
-                            ?.filter((ele) => ele?.isChecked === true)
-                            ?.map((item, index) => (
+                        selectedCategory !== [] &&
+                        selectedFilterTaxon?.length <= 1
+                          ? selectedFilterTaxon?.map((item, index) => (
                               <View
                                 key={index}
                                 flexDirection={"row"}
-                                style={{
-                                  backgroundColor: colors.btnLink,
-                                  marginRight: 8,
-                                  borderRadius: 3,
-                                }}
+                                style={styles.selectedFilter}
                               >
-                                <Text
-                                  style={{
-                                    color: colors.white,
-                                  }}
-                                >
-                                  {item.name}
+                                <Text style={styles.selectedFilterText}>
+                                  {item.name.length > 11
+                                    ? `${item.name.slice(0, 11)}...`
+                                    : item.name}
                                 </Text>
 
                                 <TouchableOpacity
@@ -856,34 +870,40 @@ const ProductListScreen = ({
                                   <Icon
                                     name="close"
                                     type="material-icons"
-                                    size={20}
+                                    size={18}
                                     color={colors.white}
                                   />
                                 </TouchableOpacity>
                               </View>
-                            ))}
+                            ))
+                          : selectedFilterTaxon &&
+                            ele.name === "food" && (
+                              <View
+                                style={[
+                                  styles.selectedFilter,
+                                  { alignItems: "flex-end" },
+                                ]}
+                              >
+                                <Text
+                                  style={styles.selectedFilterText}
+                                >{`${selectedFilterTaxon?.length} valgt`}</Text>
+                              </View>
+                            )}
 
                         {/* // *producers */}
                         {ele.name === "producers" &&
-                          selectedVendors !== [] &&
-                          selectedVendors
-                            ?.filter((ele) => ele?.isChecked === true)
-                            ?.map((item, index) => (
+                        selectedVendors !== [] &&
+                        selectedFilterVendor?.length <= 1
+                          ? selectedFilterVendor?.map((item, index) => (
                               <View
                                 key={index}
                                 flexDirection={"row"}
-                                style={{
-                                  backgroundColor: colors.btnLink,
-                                  marginRight: 8,
-                                  borderRadius: 3,
-                                }}
+                                style={styles.selectedFilter}
                               >
-                                <Text
-                                  style={{
-                                    color: colors.white,
-                                  }}
-                                >
-                                  {item.name}
+                                <Text style={styles.selectedFilterText}>
+                                  {item.name.length > 11
+                                    ? `${item.name.slice(0, 11)}...`
+                                    : item.name}
                                 </Text>
 
                                 <TouchableOpacity
@@ -892,15 +912,32 @@ const ProductListScreen = ({
                                   <Icon
                                     name="close"
                                     type="material-icons"
-                                    size={20}
+                                    size={18}
                                     color={colors.white}
                                   />
                                 </TouchableOpacity>
                               </View>
-                            ))}
+                            ))
+                          : selectedFilterVendor &&
+                            ele.name === "producers" && (
+                              <View
+                                style={[
+                                  styles.selectedFilter,
+                                  { alignItems: "flex-end" },
+                                ]}
+                              >
+                                <Text
+                                  style={styles.selectedFilterText}
+                                >{`${selectedFilterVendor?.length} valgt`}</Text>
+                              </View>
+                            )}
+                      </View>
+
+                      <View style={{ flex: 0.05 }}>
                         <Icon
                           name="navigate-next"
                           type="material-icons"
+                          size={28}
                           color="#fff"
                         />
                       </View>
@@ -931,7 +968,7 @@ const ProductListScreen = ({
               alignItems: "center",
             }}
             onPress={() => {
-              handleFilterSearch(selectedCategory, selectedVendors);
+              // handleFilterSearch(selectedCategory, selectedVendors);
               setIsOpen(false);
             }}
           >
@@ -942,7 +979,7 @@ const ProductListScreen = ({
                 fontFamily: "lato-medium",
               }}
             >
-              {`VIS ${productsList.length} VARER`}
+              {`VIS ${show ? productsList.length : ""} VARER`}
             </Text>
           </TouchableOpacity>
         </View>

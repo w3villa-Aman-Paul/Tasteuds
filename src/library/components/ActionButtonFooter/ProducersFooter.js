@@ -5,11 +5,21 @@ import { Icon, CheckBox } from "react-native-elements";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { colors } from "../../../res/palette";
 import { getData, storeData } from "../../../redux/rootReducer";
+import { connect } from "react-redux";
+import { getSearchProduct } from "../../../redux";
 
-const ProducersFooter = ({ navigation }) => {
+const ProducersFooter = ({ navigation, dispatch }) => {
   const vendors = useSelector((state) => state.taxons.vendors);
+  const [food, setFood] = useState([]);
 
   const [checked, setChecked] = useState([]);
+
+  const selectedFood = async () => {
+    let data = await getData("food");
+
+    return data;
+  };
+
   useEffect(() => {
     setChecked(
       vendors
@@ -30,6 +40,10 @@ const ProducersFooter = ({ navigation }) => {
 
     getVendors();
   }, []);
+
+  const handleSetFood = (data) => {
+    setFood(data);
+  };
 
   const handleChange = (name) => {
     let tempMenu = checked.map((vendor) => {
@@ -60,6 +74,7 @@ const ProducersFooter = ({ navigation }) => {
             flexDirection: "row",
             justifyContent: "flex-start",
             position: "relative",
+            marginBottom: 10,
           }}
         >
           <TouchableOpacity
@@ -70,7 +85,7 @@ const ProducersFooter = ({ navigation }) => {
               name="chevron-left"
               type="material-icons"
               color="#fff"
-              size={30}
+              size={34}
             />
           </TouchableOpacity>
           <View
@@ -79,7 +94,6 @@ const ProducersFooter = ({ navigation }) => {
             <Text
               style={{
                 color: "#fff",
-                // textAlign: "center",
                 fontSize: 20,
                 fontFamily: "lato-medium",
               }}
@@ -95,29 +109,38 @@ const ProducersFooter = ({ navigation }) => {
             // ?.sort((a, b) => a.name.localeCompare(b.name))
             ?.map((vendor, index) => {
               return (
-                <CheckBox
+                <View
                   key={vendor.id}
-                  title={vendor.name}
-                  checked={checked[index]?.isChecked || false}
-                  onPress={() => handleChange(vendor.name)}
-                  size={24}
-                  iconType="material"
-                  checkedIcon="check-box"
-                  uncheckedIcon="check-box-outline-blank"
-                  checkedColor={colors.btnLink}
-                  containerStyle={{
-                    backgroundColor: "#232332",
+                  style={{
+                    justifyContent: "center",
+                    alignItems: "flex-start",
+                    borderWidth: 1,
                     borderColor: "transparent",
                     borderBottomColor: "rgba(58, 58, 89, 1)",
-                    padding: 5,
                   }}
-                  // checkedColor={colors.btnLink}
-                  textStyle={{
-                    color: "#fff",
-                    fontFamily: "lato-medium",
-                    fontSize: 14,
-                  }}
-                />
+                >
+                  <CheckBox
+                    title={vendor.name}
+                    checked={checked[index]?.isChecked || false}
+                    onPress={() => handleChange(vendor.name)}
+                    size={28}
+                    iconType="material"
+                    checkedIcon="check-box"
+                    uncheckedIcon="check-box-outline-blank"
+                    checkedColor={colors.btnLink}
+                    containerStyle={{
+                      backgroundColor: "#232332",
+                      borderColor: "transparent",
+                      padding: 5,
+                    }}
+                    // checkedColor={colors.btnLink}
+                    textStyle={{
+                      color: "#fff",
+                      fontFamily: "lato-medium",
+                      fontSize: 16,
+                    }}
+                  />
+                </View>
               );
             })}
         </BottomSheetScrollView>
@@ -139,8 +162,18 @@ const ProducersFooter = ({ navigation }) => {
               alignItems: "center",
               backgroundColor: colors.btnLink,
             }}
-            onPress={() => {
+            onPress={async () => {
               storeData("vendors", checked);
+              const filterVendor = checked
+                ?.filter((item) => item?.isChecked)
+                ?.map((item) => parseInt(item?.id));
+
+              let food = await selectedFood();
+              const filterFood = food
+                ?.filter((item) => item?.isChecked)
+                ?.map((item) => parseInt(item?.id));
+
+              dispatch(getSearchProduct(null, filterFood, filterVendor));
               navigation.goBack();
             }}
           >
@@ -160,6 +193,6 @@ const ProducersFooter = ({ navigation }) => {
   );
 };
 
-export default ProducersFooter;
+export default connect()(ProducersFooter);
 
 const styles = StyleSheet.create({});
