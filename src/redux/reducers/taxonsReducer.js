@@ -39,7 +39,7 @@ const DEFAULT_STATE = {
   selectedVendor: [{}],
   vendors: [],
   vendorImages: [{}],
-  subMenuProducts: [{}],
+  subMenuProducts: [],
   weeklyProducer: [],
   mostBoughtGoods: [],
   newAddedProducts: [],

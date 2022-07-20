@@ -247,7 +247,6 @@ export default function productsReducer(state = DEFAULT_STATE, action) {
 
     case "GET_SEARCH_PRODUCTS_LIST_FULFILLED":
       let unique = [
-        ...state.productsList,
         ...dataFormatter.deserialize(response),
       ];
       changes = {
