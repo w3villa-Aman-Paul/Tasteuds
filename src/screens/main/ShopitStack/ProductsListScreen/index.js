@@ -223,9 +223,9 @@ const ProductListScreen = ({
         <View style={{ position: "relative" }}>
           <Image
             source={{
-              uri: `${HOST}/${item?.images[0]?.styles[3].url}`
+              uri: item.images
                 ? `${HOST}/${item?.images[0]?.styles[3].url}`
-                : "",
+                : null,
             }}
             style={{
               width: imageStyle.width,
@@ -559,6 +559,9 @@ const ProductListScreen = ({
     return (
       <>
         {/* //*Bottom Buttons */}
+
+        {saving && <ActivityIndicatorCard />}
+
         <View
           style={{
             justifyContent: "center",
