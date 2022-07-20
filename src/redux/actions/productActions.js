@@ -8,7 +8,8 @@ import {
 export function getProductsList(data, { pageIndex, filter }) {
   const url = `${API_VERSION_STOREFRONT}/products`;
   const params = {
-    include: "images",
+    include:
+      "default_variant,variants,option_types,product_properties,taxons,images,primary_variant",
     filter: filter,
     "Content-Type": "application/json",
     page: pageIndex,

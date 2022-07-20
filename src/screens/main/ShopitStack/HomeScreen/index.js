@@ -2,6 +2,7 @@ import {
   FlatList,
   Image,
   ImageBackground,
+  Pressable,
   Text,
   TouchableOpacity,
   View,
@@ -34,7 +35,19 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   const { mostBoughtGoods } = useSelector((state) => state.taxons);
 
   const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const [itemCard, setItemCard] = useState(false);
+  const [enableQty, setEnableQty] = useState(null);
+  const [afterAdd, setAfterAdd] = useState(false);
   const [mostBought, setMostBought] = useState([]);
+  const [findPrice, setFindPrice] = useState("");
+
+  React.useEffect(() => {
+    itemCard ? cartHandler(enableQty) : null;
+    setTimeout(() => {
+      setItemCard(false);
+    }, 5000);
+    setAfterAdd(true);
+  }, [enableQty]);
 
   React.useEffect(() => {
     dispatch(getVendorsList());
@@ -57,7 +70,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   const dismissSnackbar = () => setSnackbarVisible(false);
 
   const loadMostBoughtGoods = () => {
-    if (mostBoughtGoods?.products.length !== 0) {
+    if (mostBoughtGoods?.products?.length !== 0) {
       mostBoughtGoods?.products?.forEach((item) => {
         const product = productsList.find((ele) => ele.id == item.id);
 
@@ -92,15 +105,26 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     return [vendorName, vendor];
   };
 
-  const cartHandler = (itemId) => {
-    let item = productsList.find((x) => x.id === itemId);
-    dispatch(
-      addItem(cart?.token, {
-        variant_id: item.default_variant?.id,
-        quantity: 1,
-      })
-    );
-    return setSnackbarVisible(true);
+  const findCartProduct = (y) => {
+    let findItem = productsList.find((x) => x.id === y);
+    setEnableQty(findItem);
+  };
+
+  // console.log(">>>>>", enableQty);
+
+  const cartHandler = (enableQty) => {
+    let item = productsList.find((x) => x.id === enableQty?.id);
+    let newItem = productsList[0].included.filter((x) => x.type === "variant");
+    console.log("NEWITEM", newItem);
+    setTimeout(() => {
+      dispatch(
+        addItem(cart?.token, {
+          variant_id: item.default_variant?.id,
+          quantity: 1,
+        })
+      );
+      return setSnackbarVisible(true);
+    }, 5000);
   };
 
   const handleWeeklyProducerClick = async (vendor) => {
@@ -116,7 +140,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   }) => {
     return (
       <TouchableOpacity onPress={onPress} style={{ ...itemContainerStyle }}>
-        <View style={{ position: "relative" }}>
+        <View>
           <Image
             source={{
               uri: `${HOST}/${item?.images[0]?.styles[3]?.url}`,
@@ -127,16 +151,46 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
               resizeMode: "contain",
             }}
           />
-          <TouchableOpacity style={styles.addLogo}>
-            <Icon
-              name="plus"
-              type="ant-design"
-              size={30}
-              color={colors.btnLink}
-              borderRadius={10}
-              backgroundColor={colors.background}
-              onPress={() => cartHandler(item?.id)}
-            />
+          <TouchableOpacity
+            style={styles.addLogo}
+            onPress={() => {
+              setItemCard(true);
+              findCartProduct(item?.id);
+            }}
+          >
+            {itemCard && item?.id === enableQty?.id ? (
+              <>
+                <View style={styles.dynamicAddItem}>
+                  <TouchableOpacity>
+                    <Text style={styles.dynamicText}>--</Text>
+                  </TouchableOpacity>
+                  <Text style={styles.dynamicText}>1</Text>
+                  <TouchableOpacity>
+                    <Text style={styles.dynamicText}>+</Text>
+                  </TouchableOpacity>
+                </View>
+              </>
+            ) : (
+              <>
+                {afterAdd && item?.id === enableQty?.id ? (
+                  <Pressable
+                    style={styles.afterText}
+                    onPress={() => setItemCard(true)}
+                  >
+                    <Text style={{ color: colors.white, fontSize: 25 }}>1</Text>
+                  </Pressable>
+                ) : (
+                  <Icon
+                    name="plus"
+                    type="ant-design"
+                    size={25}
+                    borderRadius={10}
+                    color={colors.btnLink}
+                    backgroundColor={colors.white}
+                  />
+                )}
+              </>
+            )}
           </TouchableOpacity>
         </View>
         <View style={styles.detailsContainer}>
