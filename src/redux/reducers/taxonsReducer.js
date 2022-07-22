@@ -233,7 +233,7 @@ export default function taxonsReducer(state = DEFAULT_STATE, action) {
 
     case "GET_MOST_BOUGHT_GOODS_FULFILLED":
       changes = {
-        mostBoughtGoods: response,
+        mostBoughtGoods: action.payload.data.products,
         saving: false,
       };
       return { ...state, ...changes };
