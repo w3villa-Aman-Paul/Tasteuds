@@ -19,12 +19,13 @@ import {
   getTaxon,
   getVendorsList,
   getWeeklyProducer,
+  setFavQuantityDec,
+  setMostQuantity,
 } from "../../../../redux";
 import { connect, useSelector } from "react-redux";
 import { HOST } from "../../../../res/env";
 import { colors } from "../../../../res/palette";
 import { Icon } from "react-native-elements";
-import ActivityIndicatorCard from "../../../../library/components/ActivityIndicatorCard";
 import { storeData } from "../../../../redux/rootReducer";
 
 const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
@@ -35,19 +36,27 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   const { mostBoughtGoods } = useSelector((state) => state.taxons);
 
   const [snackbarVisible, setSnackbarVisible] = useState(false);
-  const [itemCard, setItemCard] = useState(false);
+  const [showItemCard, setShowItemCard] = useState(false);
   const [enableQty, setEnableQty] = useState(null);
   const [afterAdd, setAfterAdd] = useState(false);
   const [mostBought, setMostBought] = useState([]);
-  const [findPrice, setFindPrice] = useState("");
+  const [itemQuantity, setItemQuantity] = useState(0);
+  const [mostQty, setMostQty] = useState(false);
+
+  // React.useEffect(() => {
+  //   setTimeout(() => {
+  //     setItemCard(false);
+  //   }, 5000);
+  //   setAfterAdd(true);
+  // }, [enableQty, itemQuantity]);
 
   React.useEffect(() => {
-    itemCard ? cartHandler(enableQty) : null;
-    setTimeout(() => {
-      setItemCard(false);
-    }, 5000);
-    setAfterAdd(true);
-  }, [enableQty]);
+    if (showItemCard === true) {
+      setTimeout(() => {
+        setShowItemCard(false);
+      }, 5000);
+    }
+  }, [showItemCard]);
 
   React.useEffect(() => {
     dispatch(getVendorsList());
@@ -67,27 +76,51 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   //   handleProductsLoad();
   // }, [isAuth, route.params]);
 
+  // const incrementQuantity = (id) => {
+  //   let exist = mostBought.find((x) => x.id == id);
+  //   mostBought.map((x) =>
+  //     x.id == exist.id ? { ...exist, qty: exist.qty + 1 } : x
+  //   );
+
+  //   console.log("MOSTBought", mostBought);
+  // };
+
+  // const decrementQuantity = (id, quantity) => {
+  //   if (quantity === 1) {
+  //     setItemCard(false);
+  //   } else {
+  //     dispatch(
+  //       setMostQuantity({
+  //         _id: id,
+  //         quantity: quantity - 1,
+  //       })
+  //     );
+  //   }
+  // };
+
+  const decQuantity = () => {
+    if (itemQuantity === 1) {
+      setItemCard(false);
+    } else {
+      setItemQuantity(itemQuantity - 1);
+    }
+  };
+
   const dismissSnackbar = () => setSnackbarVisible(false);
 
   const loadMostBoughtGoods = () => {
-    if (mostBoughtGoods?.products?.length !== 0) {
-      mostBoughtGoods?.products?.forEach((item) => {
+    if (mostBoughtGoods?.length !== 0) {
+      mostBoughtGoods?.forEach((item) => {
         const product = productsList.find((ele) => ele.id == item.id);
 
         if (!mostBought.includes(product)) {
           if (product && mostBought.length === 0) {
-            mostBought.push(product);
-          } else if (
-            product &&
-            mostBought.length === mostBoughtGoods.products.length
-          ) {
+            mostBought.push({ ...product, qty: 1 });
+          } else if (product && mostBought.length === mostBoughtGoods.length) {
             setMostBought(mostBought);
-          } else if (
-            product &&
-            mostBought.length < mostBoughtGoods.products.length
-          ) {
+          } else if (product && mostBought.length < mostBoughtGoods.length) {
             let temp = mostBought;
-            temp.push(product);
+            temp.push({ ...product, qty: 1 });
             setMostBought(temp);
           }
         }
@@ -95,6 +128,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     }
   };
 
+  // console.log("mostBought", mostBought);
   const resultVendor = (id) => {
     const vendor = vendorList?.filter((vendor) => {
       if (vendor?.id == id) return vendor;
@@ -105,24 +139,23 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     return [vendorName, vendor];
   };
 
-  const findCartProduct = (y) => {
-    let findItem = productsList.find((x) => x.id === y);
-    setEnableQty(findItem);
+  const findCartProduct = (itemID) => {
+    const newItem = productsList.find((ele) => ele.id == itemID);
+    console.log("NEW", newItem);
+    setEnableQty(newItem);
   };
-
-  // console.log(">>>>>", enableQty);
 
   const cartHandler = (enableQty) => {
     let item = productsList.find((x) => x.id === enableQty?.id);
-    let newItem = productsList[0].included.filter((x) => x.type === "variant");
-    console.log("NEWITEM", newItem);
-    setTimeout(() => {
-      dispatch(
+
+    setTimeout(async () => {
+      await dispatch(
         addItem(cart?.token, {
           variant_id: item.default_variant?.id,
-          quantity: 1,
+          quantity: itemQuantity >= 0 && itemQuantity <= 1 ? 1 : itemQuantity,
         })
       );
+      setItemQuantity(0);
       return setSnackbarVisible(true);
     }, 5000);
   };
@@ -138,6 +171,13 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     imageStyle,
     itemContainerStyle,
   }) => {
+    const tempArr = cart.line_items.filter(
+      (ele) => item.id == ele?.variant?.product?.id
+    );
+
+    console.log("tempArr", tempArr);
+    console.log("itemQty", itemQuantity);
+
     return (
       <TouchableOpacity onPress={onPress} style={{ ...itemContainerStyle }}>
         <View>
@@ -151,34 +191,59 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
               resizeMode: "contain",
             }}
           />
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.addLogo}
             onPress={() => {
               setItemCard(true);
+              setItemQuantity(0);
               findCartProduct(item?.id);
             }}
           >
             {itemCard && item?.id === enableQty?.id ? (
               <>
                 <View style={styles.dynamicAddItem}>
-                  <TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setItemQuantity(itemQuantity - 1);
+                      findCartProduct(item?.id);
+                    }}
+                  >
                     <Text style={styles.dynamicText}>--</Text>
                   </TouchableOpacity>
-                  <Text style={styles.dynamicText}>1</Text>
-                  <TouchableOpacity>
+
+                  <Text style={styles.dynamicText}>
+                    {tempArr.length !== 0
+                      ? tempArr[0].quantity + itemQuantity <= 1
+                        ? 1
+                        : itemQuantity
+                      : itemQuantity + 1}
+                  </Text>
+
+                  <TouchableOpacity
+                    onPress={() => {
+                      setItemQuantity(itemQuantity + 1);
+                      findCartProduct(item?.id);
+                    }}
+                  >
                     <Text style={styles.dynamicText}>+</Text>
                   </TouchableOpacity>
                 </View>
               </>
             ) : (
               <>
-                {afterAdd && item?.id === enableQty?.id ? (
-                  <Pressable
+                {afterAdd &&
+                tempArr.length !== 0 &&
+                item.id == tempArr[0]?.variant.product?.id ? (
+                  <TouchableOpacity
                     style={styles.afterText}
-                    onPress={() => setItemCard(true)}
+                    onPress={() => {
+                      setItemCard(true);
+                    }}
                   >
-                    <Text style={{ color: colors.white, fontSize: 25 }}>1</Text>
-                  </Pressable>
+                    <Text style={{ color: colors.white, fontSize: 25 }}>
+                      {tempArr.length !== 0 ? tempArr[0].quantity : 1}
+                    </Text>
+                  </TouchableOpacity>
                 ) : (
                   <Icon
                     name="plus"
@@ -191,6 +256,54 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
                 )}
               </>
             )}
+          </TouchableOpacity> */}
+
+          <TouchableOpacity
+            style={styles.addLogo}
+            onPress={() => setShowItemCard(true)}
+          >
+            {showItemCard ? (
+              <>
+                <View style={styles.dynamicAddItem}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setItemQuantity(itemQuantity - 1);
+                      findCartProduct(item?.id);
+                    }}
+                  >
+                    <Text style={styles.dynamicText}>--</Text>
+                  </TouchableOpacity>
+
+                  <Text style={styles.dynamicText}>
+                    {tempArr.length !== 0
+                      ? tempArr[0].quantity + itemQuantity <= 1
+                        ? 1
+                        : itemQuantity
+                      : itemQuantity + 1}
+                  </Text>
+
+                  <TouchableOpacity
+                    onPress={() => {
+                      setItemQuantity(itemQuantity + 1);
+                      findCartProduct(item?.id);
+                    }}
+                  >
+                    <Text style={styles.dynamicText}>+</Text>
+                  </TouchableOpacity>
+                </View>
+              </>
+            ) : (
+              <View>
+                <Icon
+                  name="plus"
+                  type="ant-design"
+                  size={25}
+                  borderRadius={10}
+                  color={colors.btnLink}
+                  backgroundColor={colors.white}
+                />
+              </View>
+            )}
           </TouchableOpacity>
         </View>
         <View style={styles.detailsContainer}>
@@ -202,7 +315,11 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
           </Text>
           <View style={styles.pricingContainer}>
             <Text style={[styles.prices, { color: colors.black }]}>
-              {item.display_price}
+              {item.display_price} ||{" "}
+              {item?.default_variant?.options_text
+                ? item?.default_variant?.options_text.split(" ")[3] ||
+                  item?.default_variant?.options_text.split(" ")[1]
+                : null}
             </Text>
           </View>
         </View>
