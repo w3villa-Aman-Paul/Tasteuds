@@ -116,7 +116,7 @@ export const styles = StyleSheet.create({
     paddingVertical: 25,
   },
   continue_shop: {
-    color: "#EB1741",
+    // color: "#EB1741",
     fontSize: 16,
     textAlign: "left",
     fontFamily: "lato-regular",

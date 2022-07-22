@@ -165,7 +165,7 @@ function ShopitStackNavigator({ navigation, route }) {
             <Icon
               name="arrowleft"
               type="ant-design"
-              onPress={() => navigation.goBack()}
+              onPress={() => navigation.getParent()}
               title="Back"
             />
           ),
@@ -202,12 +202,23 @@ function ShopitStackNavigator({ navigation, route }) {
         options={({ route }) => ({
           headerTitle: "PRODUKTER",
           headerLeft: () => (
-            <Icon
-              name="arrowleft"
-              type="ant-design"
-              onPress={() => navigation.navigate("Shop")}
-              title="Back"
-            />
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={{
+                borderWidth: 1,
+                borderColor: "transparent",
+                borderRadius: 50,
+                paddingVertical: 8,
+                paddingHorizontal: 20,
+              }}
+            >
+              <Icon
+                name="arrowleft"
+                type="ant-design"
+                size={25}
+                color={colors.black}
+              />
+            </TouchableOpacity>
           ),
           headerRight: () => (
             <View

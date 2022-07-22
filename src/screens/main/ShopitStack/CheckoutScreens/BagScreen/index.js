@@ -19,6 +19,8 @@ import CartFooter from "../../../../../library/components/ActionButtonFooter/car
 import { useSelector } from "react-redux";
 import { HOST } from "../../../../../res/env";
 import FilterFooter from "../../../../../library/components/ActionButtonFooter/FilterFooter";
+import { color } from "react-native-reanimated";
+import { colors } from "../../../../../res/palette";
 
 const BagScreen = ({ navigation, dispatch, saving, cart }) => {
   const productsList = useSelector((state) => state.products.productsList);
@@ -364,8 +366,17 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
             </View>
 
             <View style={styles.offer}>
-              <Text style={styles.continue_shop}>
-                BESTILL FOR 750 KR TIL OG FÅ GRATIS FRAKT
+              <Text
+                style={[
+                  styles.continue_shop,
+                  parseInt(cart.total) < 750
+                    ? { color: colors.btnLink }
+                    : { color: "green" },
+                ]}
+              >
+                {parseInt(cart.total) < 750
+                  ? `Du er ${750 - parseInt(cart.total)} kr unna gratis frakt`
+                  : `Du har gratis frakt 🎉`}
               </Text>
             </View>
 

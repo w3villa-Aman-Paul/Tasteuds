@@ -190,16 +190,6 @@ const ProducerDetailScreen = ({ dispatch, navigation }) => {
           />
         </View>
 
-        {/* // TODO: Facts of manufacturer */}
-        <View style={{ marginVertical: 10 }}>
-          <Text style={styles.descriptionTitle}>Fakta on produsenten</Text>
-          {/* <ScrollView horizontal={true}>
-            <View>
-              <Image />
-            </View>
-          </ScrollView> */}
-        </View>
-
         <Text style={styles.descriptionTitle}>Populære varer</Text>
       </>
     );
