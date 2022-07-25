@@ -326,6 +326,12 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
                       </View>
                       <View style={styles.body_third}>
                         <Text style={styles.price}>{ele.display_total}</Text>
+                        <Text
+                          style={{ fontSize: 18 }}
+                          onPress={() => handleRemoveLineItem(ele?.id)}
+                        >
+                          x
+                        </Text>
                       </View>
                     </View>
                     <Divider orientation="horizontal" />

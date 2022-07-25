@@ -232,8 +232,11 @@ export default function taxonsReducer(state = DEFAULT_STATE, action) {
       return { ...state, ...changes };
 
     case "GET_MOST_BOUGHT_GOODS_FULFILLED":
+      let uniqueProducts = [...action.payload.data.products];
       changes = {
-        mostBoughtGoods: action.payload.data.products,
+        mostBoughtGoods: [
+          ...new Map(uniqueProducts.map((item) => [item["id"], item])).values(),
+        ],
         saving: false,
       };
       return { ...state, ...changes };

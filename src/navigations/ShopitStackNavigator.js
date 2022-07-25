@@ -207,9 +207,6 @@ function ShopitStackNavigator({ navigation, route }) {
               style={{
                 borderWidth: 1,
                 borderColor: "transparent",
-                borderRadius: 50,
-                paddingVertical: 8,
-                paddingHorizontal: 20,
               }}
             >
               <Icon

@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { globalStyles } from "../../../../styles/global";
 import { styles } from "./styles";
 import { Snackbar } from "react-native-paper";
@@ -19,8 +19,7 @@ import {
   getTaxon,
   getVendorsList,
   getWeeklyProducer,
-  setFavQuantityDec,
-  setMostQuantity,
+  setQuantity,
 } from "../../../../redux";
 import { connect, useSelector } from "react-redux";
 import { HOST } from "../../../../res/env";
@@ -38,25 +37,22 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [showItemCard, setShowItemCard] = useState(false);
   const [enableQty, setEnableQty] = useState(null);
-  const [afterAdd, setAfterAdd] = useState(false);
   const [mostBought, setMostBought] = useState([]);
   const [itemQuantity, setItemQuantity] = useState(0);
-  const [mostQty, setMostQty] = useState(false);
+  const [inCart, setInCart] = useState(false);
+  const [tempItem, setTempItem] = useState(0);
+  const [tempQty, setTempQty] = useState(0);
+  const [inc, setInc] = useState(false);
 
-  // React.useEffect(() => {
-  //   setTimeout(() => {
-  //     setItemCard(false);
-  //   }, 5000);
-  //   setAfterAdd(true);
-  // }, [enableQty, itemQuantity]);
+  const timeoutIdRef = useRef();
 
   React.useEffect(() => {
-    if (showItemCard === true) {
-      setTimeout(() => {
-        setShowItemCard(false);
-      }, 5000);
-    }
-  }, [showItemCard]);
+    const timeOutId = timeoutIdRef.current;
+
+    return () => {
+      clearTimeout(timeOutId);
+    };
+  }, []);
 
   React.useEffect(() => {
     dispatch(getVendorsList());
@@ -71,40 +67,6 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   React.useEffect(() => {
     loadMostBoughtGoods();
   }, [mostBought, mostBoughtGoods]);
-
-  // React.useEffect(() => {
-  //   handleProductsLoad();
-  // }, [isAuth, route.params]);
-
-  // const incrementQuantity = (id) => {
-  //   let exist = mostBought.find((x) => x.id == id);
-  //   mostBought.map((x) =>
-  //     x.id == exist.id ? { ...exist, qty: exist.qty + 1 } : x
-  //   );
-
-  //   console.log("MOSTBought", mostBought);
-  // };
-
-  // const decrementQuantity = (id, quantity) => {
-  //   if (quantity === 1) {
-  //     setItemCard(false);
-  //   } else {
-  //     dispatch(
-  //       setMostQuantity({
-  //         _id: id,
-  //         quantity: quantity - 1,
-  //       })
-  //     );
-  //   }
-  // };
-
-  const decQuantity = () => {
-    if (itemQuantity === 1) {
-      setItemCard(false);
-    } else {
-      setItemQuantity(itemQuantity - 1);
-    }
-  };
 
   const dismissSnackbar = () => setSnackbarVisible(false);
 
@@ -128,7 +90,6 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     }
   };
 
-  // console.log("mostBought", mostBought);
   const resultVendor = (id) => {
     const vendor = vendorList?.filter((vendor) => {
       if (vendor?.id == id) return vendor;
@@ -145,19 +106,103 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     setEnableQty(newItem);
   };
 
-  const cartHandler = (enableQty) => {
+  const handleCart = () => {
     let item = productsList.find((x) => x.id === enableQty?.id);
 
-    setTimeout(async () => {
-      await dispatch(
-        addItem(cart?.token, {
-          variant_id: item.default_variant?.id,
-          quantity: itemQuantity >= 0 && itemQuantity <= 1 ? 1 : itemQuantity,
-        })
-      );
-      setItemQuantity(0);
-      return setSnackbarVisible(true);
-    }, 5000);
+    return item?.default_variant?.id;
+  };
+
+  // const handleSetTimeoutDefault = () => {
+  //   let firstItem = productsList.find((x) => x.id === enableQty?.id);
+  //   console.log(">>>>>", firstItem);
+  //   setTimeout(() => {
+  //     dispatch(
+  //       addItem(cart?.token, {
+  //         variant_id: firstItem?.default_variant?.id,
+  //         quantity: 1,
+  //       })
+  //     );
+  //     setShowItemCard(false);
+  //   }, 3000);
+  // };
+
+  const handleSetTimeoutInc = (tempId) => {
+    const id = setTimeout(() => {
+      if (!inCart) {
+        dispatch(
+          addItem(cart?.token, {
+            variant_id: handleCart(),
+            quantity: itemQuantity + 1,
+          })
+        );
+      } else {
+        dispatch(
+          setQuantity(
+            {
+              line_item_id: tempId,
+              quantity: tempItem + itemQuantity,
+            },
+            cart?.token
+          )
+        );
+
+        setItemQuantity(0);
+      }
+      setShowItemCard(false);
+      setTempQty(0);
+      // console.log(itemQuantity);
+    }, 2000);
+
+    timeoutIdRef.current = id;
+  };
+
+  const handleSetTimeoutDec = (tempId) => {
+    const id = setTimeout(() => {
+      if (!inCart) {
+        dispatch(
+          addItem(cart?.token, {
+            variant_id: handleCart(),
+            quantity: itemQuantity + 1,
+          })
+        );
+      } else {
+        dispatch(
+          setQuantity(
+            {
+              line_item_id: tempId,
+              quantity: tempItem - itemQuantity,
+            },
+            cart?.token
+          )
+        );
+
+        setItemQuantity(0);
+      }
+
+      setShowItemCard(false);
+      setTempQty(0);
+    }, 2000);
+
+    timeoutIdRef.current = id;
+  };
+
+  const handleItemIncrement = () => {
+    setItemQuantity(itemQuantity + 1);
+    setTempQty(tempQty + 1);
+  };
+
+  const handleChangeQuantityClick = () => {
+    clearTimeout(timeoutIdRef.current);
+  };
+
+  console.log("INC", inc);
+  console.log("itemQuantity", itemQuantity);
+  console.log("TempItem", tempItem);
+
+  const handleItemDecrement = () => {
+    itemQuantity < 1 ? setShowItemCard(false) : setTempQty(tempQty - 1);
+    setItemQuantity(itemQuantity - 1);
+    console.log("itemQurnttttt", itemQuantity);
   };
 
   const handleWeeklyProducerClick = async (vendor) => {
@@ -175,8 +220,13 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
       (ele) => item.id == ele?.variant?.product?.id
     );
 
-    console.log("tempArr", tempArr);
-    console.log("itemQty", itemQuantity);
+    // console.log("NotInCart", inCart);
+    // console.log("TempArr", tempArr[0].quantity);
+    // console.log("itemQuantity", itemQuantity);
+
+    {
+      tempArr.length !== 0 ? setTempItem(tempArr[0].quantity) : <></>;
+    }
 
     return (
       <TouchableOpacity onPress={onPress} style={{ ...itemContainerStyle }}>
@@ -191,109 +241,70 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
               resizeMode: "contain",
             }}
           />
-          {/* <TouchableOpacity
-            style={styles.addLogo}
-            onPress={() => {
-              setItemCard(true);
-              setItemQuantity(0);
-              findCartProduct(item?.id);
-            }}
-          >
-            {itemCard && item?.id === enableQty?.id ? (
-              <>
-                <View style={styles.dynamicAddItem}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setItemQuantity(itemQuantity - 1);
-                      findCartProduct(item?.id);
-                    }}
-                  >
-                    <Text style={styles.dynamicText}>--</Text>
-                  </TouchableOpacity>
 
-                  <Text style={styles.dynamicText}>
-                    {tempArr.length !== 0
-                      ? tempArr[0].quantity + itemQuantity <= 1
-                        ? 1
-                        : itemQuantity
-                      : itemQuantity + 1}
+          {showItemCard && item?.id === enableQty?.id ? (
+            <View
+              style={[
+                styles.addLogo,
+                { width: "95%", justifyContent: "space-between" },
+              ]}
+            >
+              <TouchableOpacity
+                onPress={() => {
+                  setInc(false);
+                  findCartProduct(item?.id);
+                  handleItemDecrement();
+                  handleChangeQuantityClick();
+                  handleSetTimeoutDec(tempArr[0]?.id);
+                }}
+              >
+                <Text style={styles.dynamicText}>-</Text>
+              </TouchableOpacity>
+
+              <Text style={styles.dynamicText}>
+                {tempArr.length !== 0
+                  ? tempArr[0].quantity + tempQty
+                  : itemQuantity}
+              </Text>
+
+              <TouchableOpacity
+                onPress={() => {
+                  setInc(true);
+                  findCartProduct(item?.id);
+                  handleItemIncrement();
+                  handleChangeQuantityClick();
+                  handleSetTimeoutInc(tempArr[0]?.id);
+                }}
+              >
+                <Text style={styles.dynamicText}>+</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <TouchableOpacity
+              style={styles.addLogo}
+              onPress={() => {
+                setShowItemCard(true);
+                findCartProduct(item?.id);
+
+                if (!inCart) {
+                  setItemQuantity(1);
+                } else {
+                  setItemQuantity(1);
+                }
+                {
+                  item?.id == tempArr[0]?.variant?.product?.id
+                    ? setInCart(true)
+                    : setInCart(false);
+                }
+              }}
+            >
+              {item?.id == tempArr[0]?.variant?.product?.id ? (
+                <View style={styles.afterText}>
+                  <Text style={{ color: colors.white, fontSize: 25 }}>
+                    {tempArr.length !== 0 ? tempArr[0].quantity : 1}
                   </Text>
-
-                  <TouchableOpacity
-                    onPress={() => {
-                      setItemQuantity(itemQuantity + 1);
-                      findCartProduct(item?.id);
-                    }}
-                  >
-                    <Text style={styles.dynamicText}>+</Text>
-                  </TouchableOpacity>
                 </View>
-              </>
-            ) : (
-              <>
-                {afterAdd &&
-                tempArr.length !== 0 &&
-                item.id == tempArr[0]?.variant.product?.id ? (
-                  <TouchableOpacity
-                    style={styles.afterText}
-                    onPress={() => {
-                      setItemCard(true);
-                    }}
-                  >
-                    <Text style={{ color: colors.white, fontSize: 25 }}>
-                      {tempArr.length !== 0 ? tempArr[0].quantity : 1}
-                    </Text>
-                  </TouchableOpacity>
-                ) : (
-                  <Icon
-                    name="plus"
-                    type="ant-design"
-                    size={25}
-                    borderRadius={10}
-                    color={colors.btnLink}
-                    backgroundColor={colors.white}
-                  />
-                )}
-              </>
-            )}
-          </TouchableOpacity> */}
-
-          <TouchableOpacity
-            style={styles.addLogo}
-            onPress={() => setShowItemCard(true)}
-          >
-            {showItemCard ? (
-              <>
-                <View style={styles.dynamicAddItem}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setItemQuantity(itemQuantity - 1);
-                      findCartProduct(item?.id);
-                    }}
-                  >
-                    <Text style={styles.dynamicText}>--</Text>
-                  </TouchableOpacity>
-
-                  <Text style={styles.dynamicText}>
-                    {tempArr.length !== 0
-                      ? tempArr[0].quantity + itemQuantity <= 1
-                        ? 1
-                        : itemQuantity
-                      : itemQuantity + 1}
-                  </Text>
-
-                  <TouchableOpacity
-                    onPress={() => {
-                      setItemQuantity(itemQuantity + 1);
-                      findCartProduct(item?.id);
-                    }}
-                  >
-                    <Text style={styles.dynamicText}>+</Text>
-                  </TouchableOpacity>
-                </View>
-              </>
-            ) : (
-              <View>
+              ) : (
                 <Icon
                   name="plus"
                   type="ant-design"
@@ -302,9 +313,9 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
                   color={colors.btnLink}
                   backgroundColor={colors.white}
                 />
-              </View>
-            )}
-          </TouchableOpacity>
+              )}
+            </TouchableOpacity>
+          )}
         </View>
         <View style={styles.detailsContainer}>
           <Text numberOfLines={1} style={styles.title}>
@@ -546,10 +557,14 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     );
   };
 
+  const productsUnique = [
+    ...new Map(mostBought.map((item) => [item["id"], item])).values(),
+  ];
+
   return (
     <View style={{ ...globalStyles.containerFluid, ...styles.bg_white }}>
       <FlatList
-        data={mostBought}
+        data={productsUnique}
         keyExtractor={(item, index) => index.toString()}
         renderItem={newJustInRenderItem}
         numColumns={2}
