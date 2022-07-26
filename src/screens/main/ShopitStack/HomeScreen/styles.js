@@ -267,7 +267,6 @@ export const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   dynamicAddItem: {
-    width: "95%",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -281,8 +280,8 @@ export const styles = StyleSheet.create({
     color: colors.btnLink,
     fontSize: 20,
     paddingHorizontal: 10,
-    alignItems: "center",
-    justifyContent: "center",
+    // alignItems: "center",
+    // justifyContent: "center",
   },
   afterText: {
     position: "absolute",
