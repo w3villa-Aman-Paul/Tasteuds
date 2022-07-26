@@ -19,7 +19,7 @@ import { HOST } from "../../../../res/env";
 import { useSelector } from "react-redux";
 import { getData } from "../../../../redux/rootReducer";
 
-const ProductDetailScreen = ({ navigation, dispatch, cart }) => {
+const ProductDetailScreen = ({ navigation, dispatch, cart, route }) => {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [favsnackbar, setFavSnackbar] = useState(false);
   const [selectedVendor, setSelectedVendor] = useState([]);
@@ -76,6 +76,18 @@ const ProductDetailScreen = ({ navigation, dispatch, cart }) => {
     navigation.navigate("ProducersDetailScreen");
   };
 
+  const breadCrumArray = taxon?.permalink?.toUpperCase().slice(11).split("/");
+
+  const handleBreadcrumPress = (taxon, type) => {
+    console.log("taxonss", taxon);
+    navigation.navigate("ProductsList", {
+      id: taxon?.id,
+      route: route.name,
+      menu: taxon,
+      type: type,
+    });
+  };
+
   if (saving) {
     return <ActivityIndicatorCard />;
   } else
@@ -84,17 +96,50 @@ const ProductDetailScreen = ({ navigation, dispatch, cart }) => {
         <ScrollView
           style={{ ...globalStyles.containerFluid, ...styles.bgWhite }}
         >
-          <Text
+          <View
             style={{
-              ...styles.title,
               ...globalStyles.container,
-              color: colors.primary,
+              flexDirection: "row",
+              flexWrap: "wrap",
             }}
-          >{`${taxon?.permalink
-            ?.toUpperCase()
-            .slice(11)
-            .split("/")
-            .join("  >  ")}`}</Text>
+          >
+            <TouchableOpacity onPress={() => handleBreadcrumPress(taxon, 1)}>
+              <Text
+                style={{
+                  ...styles.title,
+
+                  color: colors.primary,
+                }}
+              >
+                {`${breadCrumArray[0]}  > `}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => handleBreadcrumPress(taxon, 2)}>
+              <Text
+                style={{
+                  ...styles.title,
+
+                  color: colors.primary,
+                }}
+              >
+                {` ${breadCrumArray[1]} >  `}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => handleBreadcrumPress(taxon, 3)}>
+              <Text
+                style={{
+                  ...styles.title,
+
+                  color: colors.primary,
+                }}
+              >
+                {breadCrumArray[2]}
+              </Text>
+            </TouchableOpacity>
+          </View>
+
           {/* <MyCarousel key={imageURI} imageURI={imageURI} /> */}
           <Image
             source={{

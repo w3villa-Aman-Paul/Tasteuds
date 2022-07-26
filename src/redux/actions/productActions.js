@@ -5,7 +5,7 @@ import {
   handleAPIWithoutToken,
 } from "../../library/utils/apiUtils";
 
-export function getProductsList(data, { pageIndex, filter }) {
+export function getProductsList(data = null, { pageIndex, filter = null }) {
   const url = `${API_VERSION_STOREFRONT}/products`;
   const params = {
     include:

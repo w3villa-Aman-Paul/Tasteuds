@@ -6,7 +6,13 @@ import { connect, useSelector } from "react-redux";
 import ActivityIndicatorCard from "../../../library/components/ActivityIndicatorCard";
 import { colors } from "../../../res/palette";
 
-const CategoriesScreen = ({ navigation, dispatch, taxonomy, saving }) => {
+const CategoriesScreen = ({
+  navigation,
+  dispatch,
+  taxonomy,
+  saving,
+  route,
+}) => {
   const menus = useSelector((state) => state.taxons.menus);
 
   const [activeCategory, setActiveCategory] = React.useState({});
@@ -105,6 +111,7 @@ const CategoriesScreen = ({ navigation, dispatch, taxonomy, saving }) => {
                       navigation.navigate("ProductsList", {
                         menu: item,
                         id: item.linked_resource.id,
+                        route: route.name,
                       });
                     }}
                   >
