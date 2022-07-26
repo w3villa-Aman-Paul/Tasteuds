@@ -91,7 +91,7 @@ const ProductDetailScreen = ({ navigation, dispatch, cart }) => {
               color: colors.primary,
             }}
           >{`${taxon?.permalink
-            ?.toUpperCase()
+            ?.toLowerCase()
             .slice(11)
             .split("/")
             .join("  >  ")}`}</Text>

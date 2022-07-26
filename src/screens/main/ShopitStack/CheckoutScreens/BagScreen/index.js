@@ -1,5 +1,12 @@
 import * as React from "react";
-import { View, Text, ScrollView, Image, TextInput } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  TextInput,
+  Pressable,
+} from "react-native";
 import { globalStyles } from "../../../../../styles/global";
 import { styles } from "./styles";
 import { connect } from "react-redux";
@@ -19,7 +26,6 @@ import CartFooter from "../../../../../library/components/ActionButtonFooter/car
 import { useSelector } from "react-redux";
 import { HOST } from "../../../../../res/env";
 import FilterFooter from "../../../../../library/components/ActionButtonFooter/FilterFooter";
-import { color } from "react-native-reanimated";
 import { colors } from "../../../../../res/palette";
 
 const BagScreen = ({ navigation, dispatch, saving, cart }) => {
@@ -28,6 +34,7 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
   const [snackbarVisible, setSnackbarVisible] = React.useState(false);
   const sheetRef = React.useRef(null);
   const [isOpen, setIsOpen] = React.useState(false);
+  const [qtyBtn, setQtyBtn] = React.useState(false);
   const snapPoints = ["50%"];
 
   React.useEffect(() => {
@@ -171,241 +178,295 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
     }
   };
 
-  if (saving) {
-    return <ActivityIndicatorCard />;
-  } else
-    return (
-      <>
-        <View style={globalStyles.containerFluid}>
-          <ScrollView style={{ ...styles.bgWhite }}>
+  return (
+    <>
+      <View style={globalStyles.containerFluid}>
+        <ScrollView style={{ ...styles.bgWhite }}>
+          <View
+            style={{
+              width: "90%",
+              height: 100,
+              alignSelf: "center",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <View
               style={{
                 width: "90%",
-                height: 100,
-                alignSelf: "center",
+                flex: 1,
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "flex-end",
+              }}
+            >
+              <Text style={{ ...styles.fontProgress }}>Bestilling</Text>
+              <Text
+                style={{ ...styles.fontProgress, ...styles.fontProgressBold }}
+              >
+                Handlekurv
+              </Text>
+              <Text style={{ ...styles.fontProgress }}>Betaling</Text>
+            </View>
+            <View
+              style={{
+                width: "90%",
+                flex: 1,
+                flexDirection: "row",
                 justifyContent: "center",
-                alignItems: "center",
+                alignItems: "flex-start",
               }}
             >
               <View
                 style={{
-                  width: "90%",
-                  flex: 1,
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "flex-end",
-                }}
-              >
-                <Text style={{ ...styles.fontProgress }}>Bestilling</Text>
-                <Text
-                  style={{ ...styles.fontProgress, ...styles.fontProgressBold }}
-                >
-                  Handlekurv
-                </Text>
-                <Text style={{ ...styles.fontProgress }}>Betaling</Text>
-              </View>
-              <View
-                style={{
-                  width: "90%",
                   flex: 1,
                   flexDirection: "row",
                   justifyContent: "center",
-                  alignItems: "flex-start",
+                  alignItems: "center",
                 }}
               >
+                <View style={styles.circle}></View>
+                <View style={styles.bar}></View>
+                <View style={{ ...styles.circle }}></View>
+                <View
+                  style={{ ...styles.bar, ...styles.bgWhite, elevation: 3 }}
+                ></View>
                 <View
                   style={{
-                    flex: 1,
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    alignItems: "center",
+                    ...styles.circle,
+                    ...styles.bgWhite,
+                    elevation: 3,
                   }}
-                >
-                  <View style={styles.circle}></View>
-                  <View style={styles.bar}></View>
-                  <View style={{ ...styles.circle }}></View>
-                  <View
-                    style={{ ...styles.bar, ...styles.bgWhite, elevation: 3 }}
-                  ></View>
-                  <View
-                    style={{
-                      ...styles.circle,
-                      ...styles.bgWhite,
-                      elevation: 3,
-                    }}
-                  ></View>
-                </View>
+                ></View>
               </View>
             </View>
+          </View>
 
-            <View
+          <View
+            style={{
+              padding: 20,
+              borderWidth: 1,
+              borderRadius: 14,
+              flex: 1,
+              flexDirection: "row",
+              elevation: 3,
+              backgroundColor: "#fff",
+              borderColor: "transparent",
+              ...globalStyles.container,
+              justifyContent: "center",
+              alignItems: "center",
+              height: 96,
+              ...globalStyles.iosShadow,
+            }}
+          >
+            <Image
+              source={require("../../../../../../assets/images/components/color-truck.png")}
+              resizeMode={"cover"}
+              style={{ flex: 0.3, height: 87, width: 87, marginRight: 15 }}
+            />
+            <Text
               style={{
-                padding: 20,
-                borderWidth: 1,
-                borderRadius: 14,
-                flex: 1,
-                flexDirection: "row",
-                elevation: 3,
-                backgroundColor: "#fff",
-                borderColor: "transparent",
-                ...globalStyles.container,
-                justifyContent: "center",
-                alignItems: "center",
-                height: 96,
-                ...globalStyles.iosShadow,
+                flex: 0.7,
+                fontFamily: "lato-medium",
+                fontSize: 14,
+                lineHeight: 17,
               }}
             >
-              <Image
-                source={require("../../../../../../assets/images/components/color-truck.png")}
-                resizeMode={"cover"}
-                style={{ flex: 0.3, height: 87, width: 87, marginRight: 15 }}
-              />
-              <Text
-                style={{
-                  flex: 0.7,
-                  fontFamily: "lato-medium",
-                  fontSize: 14,
-                  lineHeight: 17,
-                }}
-              >
-                Bestiller du nå får du varene torsdag 12. april mellom 16:00 -
-                22:00
-              </Text>
-            </View>
-            <View style={globalStyles.containerFluid}>
-              {cart?.line_items?.map((ele) => {
-                let cartProductImage = handleCartProductImage(ele);
+              Bestiller du nå får du varene torsdag 12. april mellom 16:00 -
+              22:00
+            </Text>
+          </View>
+          <View style={globalStyles.containerFluid}>
+            {cart?.line_items?.map((ele) => {
+              let cartProductImage = handleCartProductImage(ele);
 
-                return (
-                  <View key={ele?.variant?.id.toString()}>
-                    <View style={styles.body}>
-                      <View style={styles.cart_btn}>
-                        <Text style={{ fontSize: 25 }}>{ele.quantity}</Text>
-                        <View style={styles.inc_btn}>
-                          <TouchableOpacity
-                            onPress={() =>
-                              handleIncrementQuantity(ele.id, ele.quantity)
-                            }
-                          >
-                            <Text
-                              style={{
-                                fontSize: 20,
-                                color: "#EB1741",
-                                fontWeight: "bold",
-                              }}
-                            >
-                              +
-                            </Text>
-                          </TouchableOpacity>
-                          <TouchableOpacity
-                            onPress={() =>
-                              handleDecrementQuantity(ele.id, ele.quantity)
-                            }
-                          >
-                            <Text
-                              style={{
-                                fontSize: 20,
-                                color: "#EB1741",
-                                fontWeight: "bold",
-                              }}
-                            >
-                              -
-                            </Text>
-                          </TouchableOpacity>
-                        </View>
-                      </View>
-                      <View style={styles.body_first}>
-                        <Image
-                          source={{ uri: `${HOST}/${cartProductImage?.url}` }}
-                          style={styles.image}
-                        />
-                      </View>
+              return (
+                <View key={ele?.variant?.id.toString()}>
+                  <View style={styles.body}>
+                    <Pressable
+                      style={styles.cart_btn}
+                      onPress={() => setQtyBtn(true)}
+                    >
+                      {qtyBtn ? (
+                        <>
+                          <View style={styles.inc_btn}>
+                            <View style={styles.after_Press}>
+                              <TouchableOpacity
+                                onPress={() =>
+                                  handleDecrementQuantity(ele.id, ele.quantity)
+                                }
+                              >
+                                <Text
+                                  style={{
+                                    fontSize: 20,
+                                    color: "#EB1741",
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  --
+                                </Text>
+                              </TouchableOpacity>
 
-                      <View style={styles.body_second}>
-                        <Text style={styles.name}>{ele.name}</Text>
-                      </View>
-                      <View style={styles.body_third}>
-                        <Text style={styles.price}>{ele.display_total}</Text>
-                      </View>
+                              <Text style={{ fontSize: 25 }}>
+                                {ele.quantity}
+                              </Text>
+                              <TouchableOpacity
+                                onPress={() =>
+                                  handleIncrementQuantity(ele.id, ele.quantity)
+                                }
+                              >
+                                <Text
+                                  style={{
+                                    fontSize: 20,
+                                    color: "#EB1741",
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  +
+                                </Text>
+                              </TouchableOpacity>
+                            </View>
+                            <View style={styles.after_img}>
+                              <Image
+                                source={{
+                                  uri: `${HOST}/${cartProductImage?.url}`,
+                                }}
+                                style={styles.image}
+                              />
+                            </View>
+                          </View>
+                        </>
+                      ) : (
+                        <>
+                          <View style={styles.inc_btn}>
+                            <View style={styles.before_Press}>
+                              <Text style={{ fontSize: 25 }}>
+                                {ele.quantity}
+                              </Text>
+                              <View>
+                                <View>
+                                  <Text
+                                    style={{
+                                      fontSize: 20,
+                                      color: "#EB1741",
+                                      fontWeight: "bold",
+                                    }}
+                                  >
+                                    +
+                                  </Text>
+                                </View>
+
+                                <View>
+                                  <Text
+                                    style={{
+                                      fontSize: 20,
+                                      color: "#EB1741",
+                                      fontWeight: "bold",
+                                    }}
+                                  >
+                                    --
+                                  </Text>
+                                </View>
+                              </View>
+                            </View>
+                            <View style={styles.body_first}>
+                              <Image
+                                source={{
+                                  uri: `${HOST}/${cartProductImage?.url}`,
+                                }}
+                                style={styles.image}
+                              />
+                            </View>
+                          </View>
+                        </>
+                      )}
+                    </Pressable>
+
+                    <View style={styles.body_second}>
+                      <Text style={styles.name}>{ele.name}</Text>
                     </View>
-                    <Divider orientation="horizontal" />
+                    <View style={styles.body_third}>
+                      <Text style={styles.price}>{ele.display_total}</Text>
+                    </View>
                   </View>
-                );
-              })}
-              <View style={styles.continue}>
-                <Text
-                  style={{ ...styles.continue_shop, ...globalStyles.container }}
-                  onPress={() => navigation.navigate("ProductsList")}
-                >
-                  FORTSETT Å HANDLE
-                </Text>
-              </View>
-            </View>
-
-            <Divider
-              orientation="horizontal"
-              height={11}
-              width={"100%"}
-              color="#E5E5E5"
-            />
-            <View style={styles.promo}>
-              <TouchableOpacity style={styles.promo_btn}>
-                <TextInput placeholder="LEGG TIL PROMOKODE"></TextInput>
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.promo}>
-              <View style={styles.price}>
-                <Text style={styles.total_text}>DELSUM</Text>
-                <Text style={styles.total_price}>{cart.display_total}</Text>
-              </View>
-              <View style={styles.price}>
-                <Text style={styles.total_text}>FRAKT</Text>
-                <Text style={styles.total_price}>{cart.ship_total}</Text>
-              </View>
-            </View>
-
-            <View style={styles.offer}>
+                  <Divider orientation="horizontal" />
+                </View>
+              );
+            })}
+            <View style={styles.continue}>
               <Text
-                style={[
-                  styles.continue_shop,
-                  parseInt(cart.total) < 750
-                    ? { color: colors.btnLink }
-                    : { color: "green" },
-                ]}
+                style={{ ...styles.continue_shop, ...globalStyles.container }}
+                onPress={() => navigation.navigate("ProductsList")}
               >
-                {parseInt(cart.total) < 750
-                  ? `Du er ${750 - parseInt(cart.total)} kr unna gratis frakt`
-                  : `Du har gratis frakt 🎉`}
+                FORTSETT Å HANDLE
               </Text>
             </View>
+          </View>
 
-            <View></View>
-          </ScrollView>
+          <Divider
+            orientation="horizontal"
+            height={11}
+            width={"100%"}
+            color="#E5E5E5"
+          />
+          <View style={styles.promo}>
+            <TouchableOpacity style={styles.promo_btn}>
+              <TextInput placeholder="LEGG TIL PROMOKODE"></TextInput>
+            </TouchableOpacity>
+          </View>
 
-          {isOpen ? (
-            <></>
-          ) : (
-            <CartFooter
-              title={"TIL BETALING"}
-              onPress={isAuth ? handleToCheckout : loginFooterCheckout}
-            />
-          )}
+          <View style={styles.promo}>
+            <View style={styles.price}>
+              <Text style={styles.total_text}>DELSUM</Text>
+              <Text style={styles.total_price}>{cart.display_total}</Text>
+            </View>
+            <View style={styles.price}>
+              <Text style={styles.total_text}>FRAKT</Text>
+              <Text style={styles.total_price}>{cart.ship_total}</Text>
+            </View>
+          </View>
 
-          {isOpen && (
-            <FilterFooter
-              value={sheetRef}
-              snapPoints={snapPoints}
-              onClose={() => setIsOpen(false)}
-              bottomSheetContent={bottomSheetContent}
-            />
-          )}
-        </View>
-        <Snackbar visible={snackbarVisible} onDismiss={onDismiss}>
-          SetQuantity Success !
-        </Snackbar>
-      </>
-    );
+          <View style={styles.offer}>
+            <Text
+              style={[
+                styles.continue_shop,
+                parseInt(cart.total) < 750
+                  ? { color: colors.btnLink }
+                  : { color: "green" },
+              ]}
+            >
+              {parseInt(cart.total) < 750
+                ? `Du er ${750 - parseInt(cart.total)} kr unna gratis frakt`
+                : `Du har gratis frakt 🎉`}
+            </Text>
+          </View>
+
+          <View></View>
+        </ScrollView>
+
+        {isOpen ? (
+          <></>
+        ) : (
+          <CartFooter
+            title={"TIL BETALING"}
+            onPress={isAuth ? handleToCheckout : loginFooterCheckout}
+          />
+        )}
+
+        {isOpen && (
+          <FilterFooter
+            value={sheetRef}
+            snapPoints={snapPoints}
+            onClose={() => setIsOpen(false)}
+            bottomSheetContent={bottomSheetContent}
+          />
+        )}
+      </View>
+      <Snackbar visible={snackbarVisible} onDismiss={onDismiss}>
+        SetQuantity Success !
+      </Snackbar>
+    </>
+  );
 };
 
 const mapStateToProps = (state) => ({

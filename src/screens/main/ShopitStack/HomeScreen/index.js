@@ -43,13 +43,6 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   const [itemQuantity, setItemQuantity] = useState(0);
   const [mostQty, setMostQty] = useState(false);
 
-  // React.useEffect(() => {
-  //   setTimeout(() => {
-  //     setItemCard(false);
-  //   }, 5000);
-  //   setAfterAdd(true);
-  // }, [enableQty, itemQuantity]);
-
   React.useEffect(() => {
     if (showItemCard === true) {
       setTimeout(() => {
@@ -71,32 +64,6 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   React.useEffect(() => {
     loadMostBoughtGoods();
   }, [mostBought, mostBoughtGoods]);
-
-  // React.useEffect(() => {
-  //   handleProductsLoad();
-  // }, [isAuth, route.params]);
-
-  // const incrementQuantity = (id) => {
-  //   let exist = mostBought.find((x) => x.id == id);
-  //   mostBought.map((x) =>
-  //     x.id == exist.id ? { ...exist, qty: exist.qty + 1 } : x
-  //   );
-
-  //   console.log("MOSTBought", mostBought);
-  // };
-
-  // const decrementQuantity = (id, quantity) => {
-  //   if (quantity === 1) {
-  //     setItemCard(false);
-  //   } else {
-  //     dispatch(
-  //       setMostQuantity({
-  //         _id: id,
-  //         quantity: quantity - 1,
-  //       })
-  //     );
-  //   }
-  // };
 
   const decQuantity = () => {
     if (itemQuantity === 1) {
