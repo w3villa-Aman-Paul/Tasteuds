@@ -80,9 +80,6 @@ const ProductListScreen = ({
 
   useEffect(() => {
     handleActiveSubMenu();
-
-    if (params)
-      handleSubClick(handleUncheckAllMenus(activeSubMenu), params.menu);
   }, [menus, submenus]);
 
   useEffect(() => {
