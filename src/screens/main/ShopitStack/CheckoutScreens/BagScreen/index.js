@@ -466,7 +466,7 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
                                       fontWeight: "bold",
                                     }}
                                   >
-                                    --
+                                    -
                                   </Text>
                                 </View>
                               </View>

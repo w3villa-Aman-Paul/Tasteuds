@@ -108,6 +108,7 @@ export const styles = StyleSheet.create({
     elevation: 5,
     borderColor: "transparent",
     borderRadius: 10,
+    ...globalStyles.iosShadow,
   },
   after_Press: {
     flex: 1,
