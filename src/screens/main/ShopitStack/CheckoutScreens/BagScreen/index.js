@@ -1,5 +1,12 @@
 import * as React from "react";
-import { View, Text, ScrollView, Image, TextInput } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  TextInput,
+  Pressable,
+} from "react-native";
 import { globalStyles } from "../../../../../styles/global";
 import { styles } from "./styles";
 import { connect } from "react-redux";
@@ -17,10 +24,20 @@ import {
 import { TouchableOpacity } from "react-native-gesture-handler";
 import CartFooter from "../../../../../library/components/ActionButtonFooter/cartFooter";
 import { useSelector } from "react-redux";
-import { HOST } from "../../../../../res/env";
+import {
+  GOOGLE_ANDROID_CLIENT_ID,
+  GOOGLE_EXPO_ID,
+  GOOGLE_IOS_CLIENT_ID,
+  HOST,
+} from "../../../../../res/env";
 import FilterFooter from "../../../../../library/components/ActionButtonFooter/FilterFooter";
-import { color } from "react-native-reanimated";
 import { colors } from "../../../../../res/palette";
+
+import * as Google from "expo-auth-session/providers/google";
+import * as WebBrowser from "expo-web-browser";
+import * as AuthSession from "expo-auth-session";
+
+WebBrowser.maybeCompleteAuthSession();
 
 const BagScreen = ({ navigation, dispatch, saving, cart }) => {
   const productsList = useSelector((state) => state.products.productsList);
@@ -28,13 +45,50 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
   const [snackbarVisible, setSnackbarVisible] = React.useState(false);
   const sheetRef = React.useRef(null);
   const [isOpen, setIsOpen] = React.useState(false);
+
+  const [accessToken, setAccessToken] = React.useState();
+  const [userInfo, setUserInfo] = React.useState();
+  const [googleSubmitting, setGoogleSubmitting] = React.useState(false);
+
   const snapPoints = ["50%"];
+  const onDismiss = () => setSnackbarVisible(false);
 
   React.useEffect(() => {
     dispatch(getCart(cart?.token));
   }, []);
 
-  const onDismiss = () => setSnackbarVisible(false);
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    iosClientId: GOOGLE_IOS_CLIENT_ID,
+    androidClientId: GOOGLE_ANDROID_CLIENT_ID,
+    expoClientId: GOOGLE_EXPO_ID,
+
+    redirectUri: AuthSession.makeRedirectUri({
+      native: "myapp:/oauthredirect",
+      useProxy: true,
+    }),
+  });
+
+  React.useEffect(() => {
+    if (response?.type === "success") {
+      setAccessToken(response.authentication.accessToken);
+
+      alert(userInfo);
+    }
+  }, [response]);
+
+  async function getUserData() {
+    let userInfoResponse = await fetch(
+      "https://www.googleapis.com/userinfo/v2/me",
+      { headers: { Authorization: `Bearer ${accessToken}` } }
+    );
+
+    userInfoResponse.json().then((data) => {
+      setUserInfo(data);
+      alert(JSON.stringify(data));
+      console.log("userData", data);
+      console.log("accessToken", accessToken);
+    });
+  }
 
   const handleCartProductImage = (cartPro) => {
     const product = productsList?.find(
@@ -80,23 +134,38 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
             </TouchableOpacity>
           </View>
 
-          <View style={styles.login_content}>
-            <TouchableOpacity style={styles.login_btn}>
-              <Image
-                style={styles.login_image}
-                source={require("../../../../../../assets/images/Header-Icon/google.png")}
-              />
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
+          {!googleSubmitting ? (
+            <View style={styles.login_content}>
+              <TouchableOpacity
+                style={styles.login_btn}
+                onPress={
+                  accessToken
+                    ? getUserData
+                    : () => {
+                        promptAsync({ showInRecents: true });
+                      }
+                }
               >
-                <Text style={styles.link_text}>LOGG INN MED GOOGLE</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
+                <Image
+                  style={styles.login_image}
+                  source={require("../../../../../../assets/images/Header-Icon/google.png")}
+                />
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text style={styles.link_text}>LOGG INN MED GOOGLE</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View style={styles.login_content}>
+              <ActivityIndicatorCard />
+            </View>
+          )}
 
           <View style={styles.login_content}>
             <TouchableOpacity

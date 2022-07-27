@@ -6,6 +6,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
+    "scheme": "mycoolredirect",
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -16,6 +17,12 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.w3villa.tastebuds",
+      "config": {
+        "googleSignIn": {
+          "reservedClientId": "com.googleusercontent.apps.575803309006-hqi5d55e9ge3vhund8kifreii46atgnc"
+        }
+      },
+
       "usesAppleSignIn": true
     },
     "android": {
@@ -24,7 +31,6 @@
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
-    },
-    "plugins": ["@react-native-google-signin/google-signin"]
+    }
   }
 }
