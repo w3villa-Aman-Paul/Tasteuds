@@ -12,7 +12,6 @@ import { styles } from "./styles";
 import { connect } from "react-redux";
 import { Divider } from "react-native-elements";
 import { Snackbar } from "react-native-paper";
-import ActivityIndicatorCard from "../../../../../library/components/ActivityIndicatorCard";
 import {
   getCart,
   removeLineItem,
@@ -34,11 +33,22 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
   const [snackbarVisible, setSnackbarVisible] = React.useState(false);
   const sheetRef = React.useRef(null);
   const [isOpen, setIsOpen] = React.useState(false);
-  const [qtyBtn, setQtyBtn] = React.useState(false);
+  const [showItemCard, setShowItemCard] = React.useState(false);
+  const [enableQty, setEnableQty] = React.useState(null);
+  const [itemQuantity, setItemQuantity] = React.useState(0);
   const snapPoints = ["50%"];
+  const timeoutIdRef = React.useRef();
 
   React.useEffect(() => {
     dispatch(getCart(cart?.token));
+  }, []);
+
+  React.useEffect(() => {
+    const timeOutId = timeoutIdRef.current;
+
+    return () => {
+      clearTimeout(timeOutId);
+    };
   }, []);
 
   const onDismiss = () => setSnackbarVisible(false);
@@ -144,37 +154,57 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
     dispatch(removeLineItem(lineItemId, {}, cart?.token));
   };
 
+  const findCartProduct = (itemID) => {
+    const newItem = productsList.find((ele) => ele.id == itemID);
+    setEnableQty(newItem);
+  };
+
+  const handleChangeQuantityClick = () => {
+    clearTimeout(timeoutIdRef.current);
+  };
+
+  const handleItemIncrement = () => {
+    setItemQuantity(itemQuantity + 1);
+  };
+  const handleItemDecrement = () => {
+    setItemQuantity(itemQuantity - 1);
+  };
+
   const handleIncrementQuantity = (lineItemId, lineItemQuantity) => {
-    dispatch(
-      setQuantity(
-        {
-          line_item_id: lineItemId,
-          quantity: lineItemQuantity + 1,
-        },
-        cart?.token
-      )
-    );
-    setTimeout(() => {
-      setSnackbarVisible(true);
-    }, 1000);
+    const id = setTimeout(() => {
+      dispatch(
+        setQuantity(
+          {
+            line_item_id: lineItemId,
+            quantity: lineItemQuantity + itemQuantity + 1,
+          },
+          cart?.token
+        )
+      );
+      setItemQuantity(0);
+      setShowItemCard(false);
+    }, 2000);
+    timeoutIdRef.current = id;
   };
 
   const handleDecrementQuantity = (lineItemId, lineItemQuantity) => {
     if (lineItemQuantity === 1) {
       handleRemoveLineItem(lineItemId);
     } else {
-      dispatch(
-        setQuantity(
-          {
-            line_item_id: lineItemId,
-            quantity: lineItemQuantity - 1,
-          },
-          cart?.token
-        )
-      );
-      setTimeout(() => {
-        setSnackbarVisible(true);
-      }, 1000);
+      const id = setTimeout(() => {
+        dispatch(
+          setQuantity(
+            {
+              line_item_id: lineItemId,
+              quantity: lineItemQuantity + (itemQuantity - 1),
+            },
+            cart?.token
+          )
+        );
+        setItemQuantity(0);
+        setShowItemCard(false);
+      }, 2000);
+      timeoutIdRef.current = id;
     }
   };
 
@@ -279,22 +309,29 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
           <View style={globalStyles.containerFluid}>
             {cart?.line_items?.map((ele) => {
               let cartProductImage = handleCartProductImage(ele);
+              let cartItemId = ele?.variant?.product?.id;
 
               return (
                 <View key={ele?.variant?.id.toString()}>
                   <View style={styles.body}>
                     <Pressable
                       style={styles.cart_btn}
-                      onPress={() => setQtyBtn(true)}
+                      onPress={() => {
+                        setShowItemCard(true);
+                        findCartProduct(cartItemId);
+                        // setItemQuantity(1);
+                      }}
                     >
-                      {qtyBtn ? (
+                      {showItemCard && cartItemId === enableQty?.id ? (
                         <>
                           <View style={styles.inc_btn}>
                             <View style={styles.after_Press}>
                               <TouchableOpacity
-                                onPress={() =>
-                                  handleDecrementQuantity(ele.id, ele.quantity)
-                                }
+                                onPress={() => {
+                                  handleItemDecrement();
+                                  handleChangeQuantityClick();
+                                  handleDecrementQuantity(ele.id, ele.quantity);
+                                }}
                               >
                                 <Text
                                   style={{
@@ -311,9 +348,11 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
                                 {ele.quantity}
                               </Text>
                               <TouchableOpacity
-                                onPress={() =>
-                                  handleIncrementQuantity(ele.id, ele.quantity)
-                                }
+                                onPress={() => {
+                                  handleItemIncrement();
+                                  handleChangeQuantityClick();
+                                  handleIncrementQuantity(ele.id, ele.quantity);
+                                }}
                               >
                                 <Text
                                   style={{
@@ -388,6 +427,9 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
                     <View style={styles.body_third}>
                       <Text style={styles.price}>{ele.display_total}</Text>
                     </View>
+                    <Text onPress={() => handleRemoveLineItem(ele?.id)}>
+                      XX
+                    </Text>
                   </View>
                   <Divider orientation="horizontal" />
                 </View>

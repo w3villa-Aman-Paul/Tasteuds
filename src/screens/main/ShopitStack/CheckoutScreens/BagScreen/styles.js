@@ -71,7 +71,7 @@ export const styles = StyleSheet.create({
   body_second: {
     flexDirection: "row",
     alignItems: "center",
-    flex: 0.4,
+    flex: 0.3,
   },
   body_third: {
     flex: 0.2,
@@ -130,8 +130,8 @@ export const styles = StyleSheet.create({
     right: -30,
   },
   image: {
-    width: 90,
-    height: 90,
+    width: 74,
+    height: 74,
     resizeMode: "contain",
   },
   continue: {
