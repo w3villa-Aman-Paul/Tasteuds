@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -30,6 +30,8 @@ import {
   addItem,
   getCart,
   getSearchProduct,
+  removeLineItem,
+  setQuantity,
 } from "../../../../redux";
 import FilterFooter from "../../../../library/components/ActionButtonFooter/FilterFooter";
 import { HOST } from "../../../../res/env";
@@ -63,6 +65,10 @@ const ProductListScreen = ({
   const [subMenuCords, setSubMenuCords] = useState([]);
   const [offsetSubMenu, setoffsetSubMenu] = useState({ x: 0, y: 0 });
   const [show, setShow] = useState(false);
+  const [showItemCard, setShowItemCard] = useState(false);
+  const [enableQty, setEnableQty] = useState(null);
+  const [itemQuantity, setItemQuantity] = useState(1);
+  const [inCart, setInCart] = useState(false);
 
   const checkout = useSelector((state) => state.checkout);
   const errMessage = useSelector((state) => state.checkout.error);
@@ -73,6 +79,16 @@ const ProductListScreen = ({
   const menus = useSelector((state) => state.taxons.menus);
   const submenus = useSelector((state) => state.taxons.submenus);
   const params = route?.params;
+
+  const timeoutIdRef = useRef();
+
+  useEffect(() => {
+    const timeOutId = timeoutIdRef.current;
+
+    return () => {
+      clearTimeout(timeOutId);
+    };
+  }, []);
 
   useEffect(() => {
     handleActiveMenu();
@@ -255,15 +271,110 @@ const ProductListScreen = ({
     []
   );
 
-  const handleAddToBag = async (item) => {
-    let vari = item.variants[0].id;
-    await dispatch(
-      addItem(cart.token, {
-        variant_id: vari.toString(),
-        quantity: 1,
-      })
-    );
-    return setSnackbarVisible(true);
+  useEffect(() => {
+    dispatch(getCart(cart.token));
+  }, []);
+
+  // const handleAddToBag = async (item) => {
+  //   let vari = item.variants[0].id;
+  //   await dispatch(
+  //     addItem(cart.token, {
+  //       variant_id: vari.toString(),
+  //       quantity: 1,
+  //     })
+  //   );
+  //   return setSnackbarVisible(true);
+  // };
+
+  const findCartProduct = (itemID) => {
+    const newItem = productsList.find((ele) => ele.id == itemID);
+    setEnableQty(newItem);
+  };
+
+  const handleCart = () => {
+    let item = productsList.find((x) => x.id === enableQty?.id);
+
+    return item?.default_variant?.id;
+  };
+
+  const handleSetTimeoutDefault = (ID) => {
+    let firstItem = productsList.find((x) => x.id === ID);
+    console.log("TTTTT", firstItem);
+    setTimeout(() => {
+      dispatch(
+        addItem(cart?.token, {
+          variant_id: firstItem?.default_variant?.id,
+          quantity: 1,
+        })
+      );
+      setShowItemCard(false);
+      setItemQuantity(0);
+    }, 3000);
+  };
+
+  const handleSetTimeoutInc = (tempId, qty) => {
+    const id = setTimeout(() => {
+      if (!inCart) {
+        dispatch(
+          addItem(cart?.token, {
+            variant_id: handleCart(),
+            quantity: itemQuantity,
+          })
+        );
+      } else {
+        dispatch(
+          setQuantity(
+            {
+              line_item_id: tempId,
+              quantity: qty + itemQuantity,
+            },
+            cart?.token
+          )
+        );
+      }
+      setShowItemCard(false);
+      setItemQuantity(1);
+    }, 4000);
+
+    timeoutIdRef.current = id;
+  };
+
+  console.log("INCART", inCart);
+
+  const handleSetTimeoutDec = (tempId, qty) => {
+    if (qty === 1) {
+      dispatch(removeLineItem(tempId, {}, cart?.token));
+      // setTempItem(0);
+      setShowItemCard(false);
+      setInCart(false);
+    } else {
+      const id = setTimeout(() => {
+        dispatch(
+          setQuantity(
+            {
+              line_item_id: tempId,
+              quantity: qty + (itemQuantity - 2),
+            },
+            cart?.token
+          )
+        );
+        setShowItemCard(false);
+        setItemQuantity(0);
+      }, 4000);
+      timeoutIdRef.current = id;
+    }
+  };
+
+  const handleItemIncrement = () => {
+    setItemQuantity(itemQuantity + 1);
+  };
+
+  const handleChangeQuantityClick = () => {
+    clearTimeout(timeoutIdRef.current);
+  };
+
+  const handleItemDecrement = () => {
+    setItemQuantity(itemQuantity - 1);
   };
 
   // Item Rendering..............................................................
@@ -273,6 +384,10 @@ const ProductListScreen = ({
     imageStyle,
     itemContainerStyle,
   }) => {
+    const tempArr = cart.line_items.filter(
+      (ele) => item.id == ele?.variant?.product?.id
+    );
+
     return (
       <TouchableOpacity
         onPress={onPress}
@@ -288,22 +403,80 @@ const ProductListScreen = ({
             style={{
               width: imageStyle.width,
               height: imageStyle.height,
-              resizeMode: "cover",
+              resizeMode: "contain",
             }}
           />
-          <TouchableOpacity
-            style={styles.addLogo}
-            onPress={() => handleAddToBag(item)}
-          >
-            <Icon
-              name="plus"
-              type="ant-design"
-              size={30}
-              borderRadius={10}
-              color={colors.btnLink}
-              backgroundColor={colors.white}
-            />
-          </TouchableOpacity>
+          {showItemCard && item?.id === enableQty?.id ? (
+            <View
+              style={[
+                styles.addLogo,
+                { width: "95%", justifyContent: "space-between" },
+              ]}
+            >
+              <TouchableOpacity
+                onPress={() => {
+                  handleChangeQuantityClick();
+                  handleItemDecrement();
+                  handleSetTimeoutDec(tempArr[0]?.id, tempArr[0]?.quantity);
+                }}
+              >
+                <Text style={styles.dynamicText}>-</Text>
+              </TouchableOpacity>
+
+              <Text style={styles.dynamicText}>
+                {tempArr.length !== 0
+                  ? tempArr[0].quantity + (itemQuantity - 1)
+                  : itemQuantity}
+              </Text>
+
+              <TouchableOpacity
+                onPress={() => {
+                  handleChangeQuantityClick();
+                  handleItemIncrement();
+                  handleSetTimeoutInc(tempArr[0]?.id, tempArr[0]?.quantity);
+                }}
+              >
+                <Text style={styles.dynamicText}>+</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <TouchableOpacity
+              style={styles.addLogo}
+              onPress={() => {
+                setItemQuantity(1);
+                setShowItemCard(true);
+                findCartProduct(item?.id);
+
+                {
+                  !inCart && itemQuantity == 1
+                    ? handleSetTimeoutDefault(item?.id)
+                    : null;
+                }
+                {
+                  item?.id == tempArr[0]?.variant?.product?.id
+                    ? setInCart(true)
+                    : setInCart(false);
+                }
+              }}
+            >
+              {item?.id == tempArr[0]?.variant?.product?.id ? (
+                <View style={styles.afterText}>
+                  <Text style={{ color: colors.white, fontSize: 25 }}>
+                    {tempArr.length !== 0 ? tempArr[0].quantity : 1}
+                  </Text>
+                </View>
+              ) : (
+                <Icon
+                  name="plus"
+                  type="ant-design"
+                  size={25}
+                  borderRadius={10}
+                  color={colors.btnLink}
+                  backgroundColor={colors.white}
+                />
+              )}
+            </TouchableOpacity>
+          )}
         </View>
         <View style={styles.detailsContainer}>
           <Text numberOfLines={1} style={styles.title}>
@@ -314,7 +487,11 @@ const ProductListScreen = ({
           </Text>
           <View style={styles.pricingContainer}>
             <Text style={[styles.prices, { color: colors.black }]}>
-              {`${item.display_price} `}
+              {item.display_price}||{" "}
+              {item?.default_variant?.options_text
+                ? item?.default_variant?.options_text.split(" ")[3] ||
+                  item?.default_variant?.options_text.split(" ")[1]
+                : null}
             </Text>
           </View>
         </View>
@@ -649,6 +826,7 @@ const ProductListScreen = ({
           alignItems: "center",
           justifyContent: "center",
           backgroundColor: "transparent",
+          marginBottom: 6,
           // paddingVertical: 10,
         }}
       >
@@ -1064,6 +1242,27 @@ const ProductListScreen = ({
         />
 
         {stikyOptions()}
+
+        {cart?.item_count > 0 ? (
+          <View style={styles.qty_footer}>
+            <Text
+              style={{ color: colors.white, fontSize: 15, fontWeight: "bold" }}
+            >
+              {cart?.item_count} VARER
+            </Text>
+            <TouchableOpacity onPress={() => navigation.navigate("Bag")}>
+              <Text
+                style={{
+                  color: colors.white,
+                  fontSize: 15,
+                  fontWeight: "bold",
+                }}
+              >
+                SE HANDLEVOGN
+              </Text>
+            </TouchableOpacity>
+          </View>
+        ) : null}
 
         {checkout.error !== null && saving === false ? (
           <Snackbar visible={snackbarVisible} onDismiss={dismissSnackbar}>

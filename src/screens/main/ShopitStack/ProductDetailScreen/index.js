@@ -157,8 +157,8 @@ const ProductDetailScreen = ({ navigation, dispatch, cart, route }) => {
               <Text style={styles.productName}>{product?.name}</Text>
               <Text style={styles.price}>
                 {color
-                  ? product?.variants[color].display_price
-                  : product?.variants[0].display_price}
+                  ? product?.variants[color]?.display_price
+                  : product?.variants[0]?.display_price}
               </Text>
             </View>
           </View>
