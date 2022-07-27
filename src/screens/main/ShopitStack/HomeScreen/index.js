@@ -109,7 +109,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
 
   const handleSetTimeoutDefault = (ID) => {
     let firstItem = productsList.find((x) => x.id === ID);
-    console.log("TTTTT", firstItem);
+    // console.log("TTTTT", firstItem);
     setTimeout(() => {
       dispatch(
         addItem(cart?.token, {
@@ -122,7 +122,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     }, 3000);
   };
 
-  console.log("ITEMQTY", itemQuantity);
+  // console.log("ITEMQTY", itemQuantity);
   // console.log("TEMPITEM", tempItem);
 
   const handleSetTimeoutInc = (tempId, qty) => {
@@ -152,7 +152,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     timeoutIdRef.current = id;
   };
 
-  console.log("INCART", inCart);
+  // console.log("INCART", inCart);
 
   const handleSetTimeoutDec = (tempId, qty) => {
     if (qty === 1) {
