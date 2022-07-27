@@ -170,7 +170,10 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
     setItemQuantity(itemQuantity - 1);
   };
 
+  console.log("ITEMQTY", itemQuantity);
+
   const handleIncrementQuantity = (lineItemId, lineItemQuantity) => {
+    console.log("ORIGINAL", lineItemQuantity);
     const id = setTimeout(() => {
       dispatch(
         setQuantity(
@@ -345,7 +348,9 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
                               </TouchableOpacity>
 
                               <Text style={{ fontSize: 25 }}>
-                                {ele.quantity}
+                                {itemQuantity > 0
+                                  ? ele.quantity + itemQuantity
+                                  : ele.quantity + itemQuantity}
                               </Text>
                               <TouchableOpacity
                                 onPress={() => {
