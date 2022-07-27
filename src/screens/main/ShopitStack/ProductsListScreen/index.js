@@ -31,11 +31,11 @@ import {
   getCart,
   getSearchProduct,
   removeLineItem,
+  setQuantity,
 } from "../../../../redux";
 import FilterFooter from "../../../../library/components/ActionButtonFooter/FilterFooter";
 import { HOST } from "../../../../res/env";
 import { useSelector } from "react-redux";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Snackbar } from "react-native-paper";
 import { getData, removeData, storeData } from "../../../../redux/rootReducer";
 import { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
@@ -76,7 +76,6 @@ const ProductListScreen = ({
   const vendorList = useSelector((state) => state.taxons.vendors);
   const { products } = useSelector((state) => state);
   const taxons = useSelector((state) => state.taxons);
-  const cate = useSelector((state) => state.taxons.categories);
   const menus = useSelector((state) => state.taxons.menus);
   const submenus = useSelector((state) => state.taxons.submenus);
   const params = route?.params;
@@ -97,26 +96,76 @@ const ProductListScreen = ({
 
   useEffect(() => {
     handleActiveSubMenu();
-  }, [submenus, menus]);
+  }, [menus, submenus]);
 
   useEffect(() => {
     if (params) handleAfterMenuSelect(params);
   }, [params]);
 
+  useEffect(() => {
+    dispatch(getCart(cart.token));
+    dispatch(getMenus());
+    removeData("food");
+    removeData("vendors");
+    dispatch(getTaxonsList());
+    dispatch(getCategories());
+  }, []);
+
+  useEffect(() => {
+    handleProductsLoad();
+    return () => {
+      dispatch(setPageIndex(1));
+    };
+  }, [route.params]);
+
   LogBox.ignoreLogs([
     "Non-serializable values were found in the navigation state",
   ]);
 
-  const handleAfterMenuSelect = async (params) => {
+  const paramsDispatchHandler = async (params) => {
     await handleActiveMenuClick(params.menu);
     setAll(true);
     setIsAll(false);
-    await dispatch(getSubMenu(params.menu.link.slice(2).toLowerCase()));
-    setSubLink(params.menu.link.slice(2).toLowerCase());
+    await dispatch(
+      getSubMenu(
+        params.menu.permalink
+          ? params?.menu?.permalink?.split("/").slice(0, -1).join("/")
+          : params.menu.link.slice(2).toLowerCase()
+      )
+    );
+    setSubLink(
+      params.menu.permalink
+        ? params?.menu?.permalink?.split("/").slice(0, -1).join("/")
+        : params.menu.link.slice(2).toLowerCase()
+    );
     handleClick(handleUncheckAllMenus(activeMenus), params.menu);
     await dispatch(getSubMenuProducts(subLink));
     setIsSubLink(true);
     setIsSubAll(true);
+  };
+
+  const handleAfterMenuSelect = (params) => {
+    {
+      params.route === "Categories" && paramsDispatchHandler();
+    }
+
+    if (params.route === "ProductDetail") {
+      switch (params.type) {
+        case 2:
+          paramsDispatchHandler(params);
+          break;
+        case 3:
+          paramsDispatchHandler(params);
+          dispatch(getSubMenuProducts(params.menu.permalink.toLowerCase()));
+          setIsSubAll(false);
+          setAll(false);
+          setIsAll(false);
+          handleSubClick(handleUncheckAllMenus(activeSubMenu), params.menu);
+          break;
+        default:
+          break;
+      }
+    }
   };
 
   const resultVendor = (id) => {
@@ -154,15 +203,29 @@ const ProductListScreen = ({
 
   const handleClick = (activeMenus, menu) => {
     const newArr = [...activeMenus];
-    const index = newArr.findIndex((item) => item.id === menu.id);
+
+    const index = newArr.findIndex((item) => {
+      if (menu.permalink) {
+        return item.linked_resource.id === menu.parent.id;
+      } else {
+        return item.id === menu.id;
+      }
+    });
     newArr[index].isActive = true;
     setActiveMenus(newArr);
   };
 
   const handleSubClick = (activeMenus, menu) => {
     const newArr = [...activeMenus];
-    const index = newArr.findIndex((item) => item.id === menu.id);
-    newArr[index].isActive = true;
+    const index = newArr.findIndex((item) => {
+      return item.id === menu.id;
+    });
+
+    {
+      newArr[index]
+        ? (newArr[index].isActive = true)
+        : console.log("subMenuSelect", index, newArr, newArr[index]);
+    }
 
     setActiveSubMenu(newArr);
   };
@@ -438,12 +501,6 @@ const ProductListScreen = ({
 
   //..........................................................................................
 
-  useEffect(() => {
-    dispatch(getMenus());
-    removeData("food");
-    removeData("vendors");
-  }, []);
-
   const setProductListHighToLow = () => {
     productsList.sort((a, b) => (a.price < b.price ? 1 : -1));
     setSort(false);
@@ -476,15 +533,16 @@ const ProductListScreen = ({
     handleProductsLoad(response.payload);
   };
 
+  const handleAll = () => {
+    const response = dispatch(setPageIndex(1));
+    handleProductsLoad(response.payload);
+  };
+
   const handleProductsLoad = (pageIndexAfterDispatch = null) => {
     dispatch(
       getProductsList(null, {
         pageIndex: pageIndexAfterDispatch || pageIndex,
-        filter: {
-          name: route.params?.searchQuery || "",
-          price: `${minimumPriceRange},${maximumPriceRange}`,
-          taxons: route?.params?.id,
-        },
+        filter: {},
       })
     );
   };
@@ -498,18 +556,6 @@ const ProductListScreen = ({
         })
       : setTimeout(onPress, 50);
   };
-
-  useEffect(() => {
-    handleProductsLoad();
-    return () => {
-      dispatch(setPageIndex(1));
-    };
-  }, [route.params]);
-
-  useEffect(() => {
-    dispatch(getTaxonsList());
-    dispatch(getCategories());
-  }, []);
 
   const handleProductLoad = async (id, item) => {
     dispatch(getProduct(id));
@@ -537,7 +583,11 @@ const ProductListScreen = ({
   };
 
   const handleActiveMenuClick = async (categories) => {
-    let activeTaxons = Number(categories.linked_resource.id);
+    let activeTaxons = Number(
+      categories?.linked_resource
+        ? categories.linked_resource.id
+        : categories.id
+    );
 
     dispatch(getSearchProduct(null, activeTaxons, []));
   };
@@ -595,7 +645,7 @@ const ProductListScreen = ({
               setAll(true);
               handleAllClick(activeMenus);
               setIsSubLink(false);
-              dispatch(getProductsList(null, {}));
+              handleAll();
               setoffsetMenu({ x: 0, y: 0 });
             }}
             style={[isAll ? styles.active : {}]}
@@ -882,18 +932,6 @@ const ProductListScreen = ({
     const [selectedCategory, setSelectedCategory] = useState([]);
     const [selectedVendors, setSelectedvendors] = useState([]);
 
-    const selectedFood = async () => {
-      let data = await getData("food");
-
-      return data;
-    };
-
-    const selectedVendor = async () => {
-      let vendor = await getData("vendors");
-
-      return vendor;
-    };
-
     useEffect(() => {
       let isMounted = true;
       selectedFood().then((data) => {
@@ -915,6 +953,18 @@ const ProductListScreen = ({
         isMounted = false;
       };
     }, [selectedVendors]);
+
+    const selectedFood = async () => {
+      let data = await getData("food");
+
+      return data;
+    };
+
+    const selectedVendor = async () => {
+      let vendor = await getData("vendors");
+
+      return vendor;
+    };
 
     const handleDeselectFood = async (item) => {
       let data = [...selectedCategory];
@@ -1183,7 +1233,7 @@ const ProductListScreen = ({
           ref={scrollRef}
           onEndReachedThreshold={0.3}
           onEndReached={() => {
-            meta.total_count !== productsList.length && handleEndReached();
+            handleEndReached();
           }}
           columnWrapperStyle={{
             width: "100%",

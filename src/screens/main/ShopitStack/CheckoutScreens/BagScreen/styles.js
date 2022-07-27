@@ -122,6 +122,7 @@ export const styles = StyleSheet.create({
     borderColor: "transparent",
     borderRadius: 10,
     zIndex: 10,
+    ...globalStyles.iosShadow,
   },
   after_img: {
     position: "relative",
