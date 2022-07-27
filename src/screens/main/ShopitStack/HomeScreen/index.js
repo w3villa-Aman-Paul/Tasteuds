@@ -39,8 +39,6 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   const [mostBought, setMostBought] = useState([]);
   const [itemQuantity, setItemQuantity] = useState(1);
   const [inCart, setInCart] = useState(false);
-  const [tempItem, setTempItem] = useState(0);
-  const [tempQty, setTempQty] = useState(0);
 
   const timeoutIdRef = useRef();
 
@@ -125,7 +123,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   };
 
   console.log("ITEMQTY", itemQuantity);
-  console.log("TEMPITEM", tempItem);
+  // console.log("TEMPITEM", tempItem);
 
   const handleSetTimeoutInc = (tempId, qty) => {
     const id = setTimeout(() => {
@@ -154,11 +152,16 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     timeoutIdRef.current = id;
   };
 
+  console.log("INCART", inCart);
+
   const handleSetTimeoutDec = (tempId, qty) => {
-    const id = setTimeout(() => {
-      if (qty === 1) {
-        dispatch(removeLineItem(tempId, {}, cart?.token));
-      } else {
+    if (qty === 1) {
+      dispatch(removeLineItem(tempId, {}, cart?.token));
+      // setTempItem(0);
+      setShowItemCard(false);
+      setInCart(false);
+    } else {
+      const id = setTimeout(() => {
         dispatch(
           setQuantity(
             {
@@ -168,16 +171,15 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
             cart?.token
           )
         );
-      }
-      setShowItemCard(false);
-      setItemQuantity(0);
-    }, 4000);
-    timeoutIdRef.current = id;
+        setShowItemCard(false);
+        setItemQuantity(0);
+      }, 4000);
+      timeoutIdRef.current = id;
+    }
   };
 
   const handleItemIncrement = () => {
     setItemQuantity(itemQuantity + 1);
-    setTempQty(tempQty + 1);
   };
 
   const handleChangeQuantityClick = () => {
@@ -203,16 +205,14 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
       (ele) => item.id == ele?.variant?.product?.id
     );
 
-    {
-      tempArr.length !== 0 ? setTempItem(tempArr[0].quantity) : <></>;
-    }
-
     return (
       <TouchableOpacity onPress={onPress} style={{ ...itemContainerStyle }}>
         <View>
           <Image
             source={{
-              uri: `${HOST}/${item?.images[0]?.styles[3]?.url}`,
+              uri: item.images
+                ? `${HOST}/${item?.images[0]?.styles[3].url}`
+                : null,
             }}
             style={{
               width: imageStyle.width,
@@ -230,8 +230,8 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
             >
               <TouchableOpacity
                 onPress={() => {
-                  handleItemDecrement();
                   handleChangeQuantityClick();
+                  handleItemDecrement();
                   handleSetTimeoutDec(tempArr[0]?.id, tempArr[0]?.quantity);
                 }}
               >
@@ -239,13 +239,15 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
               </TouchableOpacity>
 
               <Text style={styles.dynamicText}>
-                {tempItem ? tempItem + (itemQuantity - 1) : itemQuantity}
+                {tempArr.length !== 0
+                  ? tempArr[0].quantity + (itemQuantity - 1)
+                  : itemQuantity}
               </Text>
 
               <TouchableOpacity
                 onPress={() => {
-                  handleItemIncrement();
                   handleChangeQuantityClick();
+                  handleItemIncrement();
                   handleSetTimeoutInc(tempArr[0]?.id, tempArr[0]?.quantity);
                 }}
               >
