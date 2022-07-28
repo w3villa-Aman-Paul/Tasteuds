@@ -468,6 +468,33 @@ export default function productsReducer(state = DEFAULT_STATE, action) {
       };
 
     /**
+     * SET_SELECTED_VENDOR
+     */
+
+    case "SORT_MOST_BOUGHT":
+      let uniqueMost = [...action.payload, ...state.productsList];
+      changes = {
+        productsList: [
+          ...new Map(uniqueMost.map((item) => [item["id"], item])).values(),
+        ],
+        saving: false,
+      };
+      return { ...state, ...changes };
+
+    /**
+     * SORT_NEWLY_ADDED
+     */
+    case "SORT_NEWLY_ADDED":
+      let uniqueNew = [...action.payload, ...state.productsList];
+      changes = {
+        productsList: [
+          ...new Map(uniqueNew.map((item) => [item["id"], item])).values(),
+        ],
+        saving: false,
+      };
+      return { ...state, ...changes };
+
+    /**
      * Default State
      */
     default:

@@ -10,3 +10,5 @@ export const GOOGLE_ANDROID_CLIENT_ID =
 
 export const GOOGLE_EXPO_ID =
   "575803309006-ngm68pb3aifs2d0277l59k0q8u6ehc0t.apps.googleusercontent.com";
+
+export const CLIENT_SECRET_WEB = "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";

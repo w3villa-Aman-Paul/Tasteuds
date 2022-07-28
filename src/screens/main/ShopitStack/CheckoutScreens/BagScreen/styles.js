@@ -101,6 +101,7 @@ export const styles = StyleSheet.create({
   before_Press: {
     flex: 0.5,
     flexDirection: "row",
+    zIndex: 3,
     width: "100%",
     backgroundColor: "#fff",
     justifyContent: "space-evenly",

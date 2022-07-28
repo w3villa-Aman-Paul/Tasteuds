@@ -51,6 +51,12 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   }, []);
 
   React.useEffect(() => {
+    {
+      productsList.length <= 10 && dispatch(getProductsList());
+    }
+  }, [productsList]);
+
+  React.useEffect(() => {
     dispatch(getVendorsList());
     dispatch(getWeeklyProducer());
 
