@@ -79,7 +79,6 @@ const ProductDetailScreen = ({ navigation, dispatch, cart, route }) => {
   const breadCrumArray = taxon?.permalink?.toUpperCase().slice(11).split("/");
 
   const handleBreadcrumPress = (taxon, type) => {
-    console.log("taxonss", taxon);
     navigation.navigate("ProductsList", {
       id: taxon?.id,
       route: route.name,

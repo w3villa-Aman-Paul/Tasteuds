@@ -160,31 +160,6 @@ function ShopitStackNavigator({ navigation, route }) {
           headerTitle: "PRODUSENTER",
           headerShown: true,
           headerTitleAlign: "center",
-
-          headerLeft: () => (
-            <Icon
-              name="arrowleft"
-              type="ant-design"
-              onPress={() => navigation.getParent()}
-              title="Back"
-            />
-          ),
-
-          headerLeftContainerStyle: [
-            {
-              paddingHorizontal: 10,
-              top: 4,
-              left: 20,
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundColor: "#ffffff",
-              borderRadius: 50,
-              elevation: 10,
-              height: 40,
-              width: 40,
-            },
-            globalStyles.iosShadow,
-          ],
         }}
       />
       <ShopitStack.Screen
@@ -201,22 +176,6 @@ function ShopitStackNavigator({ navigation, route }) {
         component={ProductsListScreen}
         options={({ route }) => ({
           headerTitle: "PRODUKTER",
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              style={{
-                borderWidth: 1,
-                borderColor: "transparent",
-              }}
-            >
-              <Icon
-                name="arrowleft"
-                type="ant-design"
-                size={25}
-                color={colors.black}
-              />
-            </TouchableOpacity>
-          ),
           headerRight: () => (
             <View
               style={{
@@ -317,14 +276,14 @@ function ShopitStackNavigator({ navigation, route }) {
         options={{
           headerTitle: "",
 
-          headerLeft: () => (
-            <Icon
-              name="arrowleft"
-              type="ant-design"
-              onPress={() => navigation.navigate("ProductsList")}
-              title="Back"
-            />
-          ),
+          // headerLeft: () => (
+          //   <Icon
+          //     name="arrowleft"
+          //     type="ant-design"
+          //     onPress={() => navigation.navigate("ProductsList")}
+          //     title="Back"
+          //   />
+          // ),
           headerRight: () => (
             <View
               style={{
@@ -410,31 +369,6 @@ function ShopitStackNavigator({ navigation, route }) {
           headerTitle: "HANDLEKURV",
 
           headerRight: () => <></>,
-
-          headerLeft: () => (
-            <TouchableOpacity
-              style={{
-                width: 30,
-                height: 30,
-                borderWidth: 1,
-                borderRadius: 50,
-                borderColor: "transparent",
-                elevation: 2,
-                backgroundColor: "white",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Icon
-                name="cross"
-                type="entypo"
-                size={24}
-                style={{ color: colors.black }}
-                onPress={() => navigation.goBack()}
-              />
-            </TouchableOpacity>
-          ),
-
           headerTitleStyle: {
             color: colors.primary,
             fontFamily: "lato-bold",
@@ -532,29 +466,6 @@ function ShopitStackNavigator({ navigation, route }) {
         options={{
           headerTitle: "Søk",
           headerTitleAlign: "center",
-          headerLeft: () => (
-            <Icon
-              name="arrowleft"
-              type="ant-design"
-              onPress={() => navigation.goBack()}
-              title="Back"
-            />
-          ),
-          headerLeftContainerStyle: [
-            {
-              paddingHorizontal: 10,
-              top: 4,
-              left: 20,
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundColor: "#ffffff",
-              borderRadius: 50,
-              elevation: 10,
-              height: 40,
-              width: 40,
-            },
-            globalStyles.iosShadow,
-          ],
         }}
       />
     </ShopitStack.Navigator>

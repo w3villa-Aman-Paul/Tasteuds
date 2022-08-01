@@ -13,10 +13,13 @@ import { styles } from "./styles";
 import { Snackbar } from "react-native-paper";
 import {
   addItem,
+  getCategories,
+  getMenus,
   getProduct,
   getProductsList,
   getSelectedVendor,
   getTaxon,
+  getTaxonsList,
   getVendorsList,
   getWeeklyProducer,
   removeLineItem,
@@ -43,6 +46,12 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   const timeoutIdRef = useRef();
 
   React.useEffect(() => {
+    dispatch(getMenus());
+    dispatch(getTaxonsList());
+    dispatch(getCategories());
+  }, []);
+
+  React.useEffect(() => {
     const timeOutId = timeoutIdRef.current;
 
     return () => {
@@ -52,7 +61,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
 
   React.useEffect(() => {
     {
-      productsList.length <= 10 && dispatch(getProductsList());
+      productsList.length === 0 && dispatch(getProductsList(1, {}));
     }
   }, [productsList]);
 
@@ -115,7 +124,6 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
 
   const handleSetTimeoutDefault = (ID) => {
     let firstItem = productsList.find((x) => x.id === ID);
-    // console.log("TTTTT", firstItem);
     setTimeout(() => {
       dispatch(
         addItem(cart?.token, {

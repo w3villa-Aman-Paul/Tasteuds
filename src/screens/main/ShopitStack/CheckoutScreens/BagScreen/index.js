@@ -112,13 +112,6 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
     await dispatch(getDefaultCountry());
     await dispatch(getCountriesList());
     navigation.navigate("ShippingAddress");
-    // if(cart.state === "cart") {
-    //   await dispatch(getDefaultCountry())
-    //   await dispatch(getCountriesList())
-    //   navigation.navigate('ShippingAddress')
-    // } else  {
-    //   navigation.navigate('CheckoutPayment')
-    // }
   };
 
   const bottomSheetContent = () => {

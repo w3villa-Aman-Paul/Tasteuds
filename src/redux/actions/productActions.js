@@ -11,8 +11,8 @@ export function getProductsList(data = null, { pageIndex, filter = null }) {
       "default_variant,variants,option_types,product_properties,taxons,images,primary_variant",
     filter: filter,
     "Content-Type": "application/json",
-    page: pageIndex,
-    per_page: 10,
+    page: pageIndex || 1,
+    per_page: 20,
   };
   const method = "GET";
   return {

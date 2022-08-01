@@ -59,7 +59,7 @@ const ProductListScreen = ({
   const [subLink, setSubLink] = useState("");
   const [isSubLink, setIsSubLink] = useState(false);
   const [activeMenus, setActiveMenus] = useState([]);
-  const [activeSubMenu, setActiveSubMenu] = useState(false);
+  const [activeSubMenu, setActiveSubMenu] = useState([]);
   const [isAll, setIsAll] = useState(true);
   const [sort, setSort] = useState(false);
   const [menuCords, setMenuCords] = useState([]);
@@ -113,7 +113,7 @@ const ProductListScreen = ({
 
   useEffect(() => {
     handleActiveSubMenu();
-  }, [menus, submenus]);
+  }, [menus, submenus, params]);
 
   useEffect(() => {
     if (params) handleAfterMenuSelect(params);
@@ -145,17 +145,17 @@ const ProductListScreen = ({
     setIsAll(false);
     await dispatch(
       getSubMenu(
-        params.menu.permalink
+        params?.menu?.permalink
           ? params?.menu?.permalink?.split("/").slice(0, -1).join("/")
           : params.menu.link.slice(2).toLowerCase()
       )
     );
     setSubLink(
-      params.menu.permalink
+      params?.menu?.permalink
         ? params?.menu?.permalink?.split("/").slice(0, -1).join("/")
         : params.menu.link.slice(2).toLowerCase()
     );
-    handleClick(handleUncheckAllMenus(activeMenus), params.menu);
+    handleClick(handleUncheckAllMenus(activeMenus), params?.menu);
     await dispatch(getSubMenuProducts(subLink));
     setIsSubLink(true);
     setIsSubAll(true);
@@ -163,8 +163,9 @@ const ProductListScreen = ({
 
   const handleAfterMenuSelect = (params) => {
     {
-      params.route === "Categories" ||
-        (params.route === "ProductDetail" && paramsDispatchHandler());
+      (params.route === "Categories" || params.route === "ProductDetail") &&
+        handleActiveMenu() &&
+        paramsDispatchHandler();
     }
 
     if (params.route === "ProductDetail") {
@@ -173,12 +174,16 @@ const ProductListScreen = ({
           paramsDispatchHandler(params);
           break;
         case 3:
+          handleActiveMenu();
+          handleActiveSubMenu();
+          console.log(">>>", activeSubMenu, "menu", activeMenus);
           paramsDispatchHandler(params);
           dispatch(getSubMenuProducts(params.menu.permalink.toLowerCase()));
           setIsSubAll(false);
           setAll(false);
           setIsAll(false);
           handleSubClick(handleUncheckAllMenus(activeSubMenu), params.menu);
+
           break;
         default:
           break;
@@ -254,6 +259,7 @@ const ProductListScreen = ({
   };
 
   const handleUncheckAllMenus = (arr) => {
+    console.log("arr", arr);
     const newArray = arr.map((item) => {
       return { ...item, isActive: false };
     });

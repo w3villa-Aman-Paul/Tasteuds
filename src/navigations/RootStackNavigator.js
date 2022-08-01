@@ -9,8 +9,6 @@ import ForgotPasswordScreen from "../screens/auth/ForgotPasswordScreen";
 import ResetPasswordScreen from "../screens/auth/ResetPasswordScreen";
 import EnterCodeScreen from "../screens/auth/EnterCodeScreen";
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { userLogin } from "../redux/actions/authActions";
 import { connect } from "react-redux";
 import ActivityIndicatorCard from "../library/components/ActivityIndicatorCard";
 import { navigationRef } from "../library/utils/RootNavigation";
@@ -47,7 +45,7 @@ function RootStackNavigator({ authState, dispatch }) {
     return <ActivityIndicatorCard />;
   }
   return (
-    <NavigationContainer theme={MyTheme}>
+    <NavigationContainer ref={navigationRef} theme={MyTheme}>
       <RootStack.Navigator screenOptions={{ headerShown: false }}>
         <RootStack.Screen name="Splash" component={splash} />
         <RootStack.Screen name="Shopit" component={MainTabNavigator} />
