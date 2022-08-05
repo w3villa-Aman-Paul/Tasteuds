@@ -25,14 +25,13 @@ function ProfileStackNavigator({ navigation }) {
       screenOptions={{
         headerTitle: "",
         headerLeft: () => (
-          <TouchableOpacity onPress={() => navigation.navigate("Shop")}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={[globalStyles.iosShadow, {padding: 5, backgroundColor: '#fff', borderRadius: 50}]}>
             <Icon name="arrowleft" type="ant-design" title="Back" />
           </TouchableOpacity>
         ),
         headerLeftContainerStyle: {
-          paddingHorizontal: 10,
           top: 4,
-          left: 20,
+          left: 10,
           justifyContent: "center",
           alignItems: "center",
           backgroundColor: "#ffffff",

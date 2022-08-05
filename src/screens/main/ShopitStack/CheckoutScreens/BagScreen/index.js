@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, {useState, useEffect} from "react";
 import {
   View,
   Text,
@@ -18,6 +18,7 @@ import {
   setQuantity,
   getDefaultCountry,
   getCountriesList,
+  googleLogin,
 } from "../../../../../redux";
 
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -34,29 +35,27 @@ import { colors } from "../../../../../res/palette";
 
 import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
-import * as AuthSession from "expo-auth-session";
 
 WebBrowser.maybeCompleteAuthSession();
 
 const BagScreen = ({ navigation, dispatch, saving, cart }) => {
   const productsList = useSelector((state) => state.products.productsList);
   const { isAuth } = useSelector((state) => state.auth);
-  const [snackbarVisible, setSnackbarVisible] = React.useState(false);
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
   const sheetRef = React.useRef(null);
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-  const [accessToken, setAccessToken] = React.useState();
-  const [userInfo, setUserInfo] = React.useState();
-  const [googleSubmitting, setGoogleSubmitting] = React.useState(false);
+  const [accessToken, setAccessToken] = useState(null);
+  const [googleSubmitting, setGoogleSubmitting] = useState(false);
 
   const onDismiss = () => setSnackbarVisible(false);
-  const [showItemCard, setShowItemCard] = React.useState(false);
-  const [enableQty, setEnableQty] = React.useState(null);
-  const [itemQuantity, setItemQuantity] = React.useState(0);
+  const [showItemCard, setShowItemCard] = useState(false);
+  const [enableQty, setEnableQty] = useState(null);
+  const [itemQuantity, setItemQuantity] = useState(0);
   const snapPoints = ["50%"];
   const timeoutIdRef = React.useRef();
 
-  React.useEffect(() => {
+  useEffect(() => {
     dispatch(getCart(cart?.token));
   }, []);
 
@@ -64,36 +63,18 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
     iosClientId: GOOGLE_IOS_CLIENT_ID,
     androidClientId: GOOGLE_ANDROID_CLIENT_ID,
     expoClientId: GOOGLE_EXPO_ID,
-
-    redirectUri: AuthSession.makeRedirectUri({
-      native: "myapp:/oauthredirect",
-      useProxy: true,
-    }),
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (response?.type === "success") {
       setAccessToken(response.authentication.accessToken);
-
-      alert(userInfo);
+      // dispatch(googleLogin(response.authentication.accessToken));
     }
+    setGoogleSubmitting(false);
   }, [response]);
+  
 
-  async function getUserData() {
-    let userInfoResponse = await fetch(
-      "https://www.googleapis.com/userinfo/v2/me",
-      { headers: { Authorization: `Bearer ${accessToken}` } }
-    );
-
-    userInfoResponse.json().then((data) => {
-      setUserInfo(data);
-      alert(JSON.stringify(data));
-      console.log("userData", data);
-      console.log("accessToken", accessToken);
-    });
-  }
-
-  React.useEffect(() => {
+  useEffect(() => {
     const timeOutId = timeoutIdRef.current;
 
     return () => {
@@ -144,9 +125,10 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
                 style={styles.login_btn}
                 onPress={
                   accessToken
-                    ? getUserData
+                    ? <></>
                     : () => {
-                        promptAsync({ showInRecents: true });
+                        // setGoogleSubmitting(true);
+                        // promptAsync({ showInRecents: true });
                       }
                 }
               >

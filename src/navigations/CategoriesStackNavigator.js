@@ -28,6 +28,7 @@ function CategoriesStackNavigator({ navigation, route }) {
     <CategoriesStack.Navigator
       screenOptions={{
         headerTitle: "",
+        headerBackTitle: 'Go Back',
         headerLeft: () => (
           <View style={styles.header}>
             <Image

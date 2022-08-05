@@ -56,7 +56,7 @@ function ShopitStackNavigator({ navigation, route }) {
   }, [navigation, route]);
 
   return (
-    <ShopitStack.Navigator>
+    <ShopitStack.Navigator screenOptions={{ headerBackTitle: 'Go Back'}} >
       <ShopitStack.Screen
         name="Shop"
         component={HomeComponent}
@@ -176,6 +176,7 @@ function ShopitStackNavigator({ navigation, route }) {
         component={ProductsListScreen}
         options={({ route }) => ({
           headerTitle: "PRODUKTER",
+          
           headerRight: () => (
             <View
               style={{
@@ -251,18 +252,6 @@ function ShopitStackNavigator({ navigation, route }) {
             color: colors.primary,
             fontFamily: "lato-bold",
           },
-          headerLeftContainerStyle: {
-            paddingHorizontal: 10,
-            top: 4,
-            left: 20,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "#ffffff",
-            borderRadius: 50,
-            elevation: 10,
-            height: 40,
-            width: 40,
-          },
           headerRightContainerStyle: {
             flex: 0.2,
             justifyContent: "space-between",
@@ -275,15 +264,6 @@ function ShopitStackNavigator({ navigation, route }) {
         component={ProductDetailScreen}
         options={{
           headerTitle: "",
-
-          // headerLeft: () => (
-          //   <Icon
-          //     name="arrowleft"
-          //     type="ant-design"
-          //     onPress={() => navigation.navigate("ProductsList")}
-          //     title="Back"
-          //   />
-          // ),
           headerRight: () => (
             <View
               style={{
@@ -339,22 +319,10 @@ function ShopitStackNavigator({ navigation, route }) {
             </View>
           ),
           title: "",
-          headerStyle: {},
           headerTitleStyle: {
             flex: 0.6,
           },
-          headerLeftContainerStyle: {
-            paddingHorizontal: 10,
-            top: 4,
-            left: 20,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "#ffffff",
-            borderRadius: 50,
-            elevation: 10,
-            height: 40,
-            width: 40,
-          },
+         
           headerRightContainerStyle: {
             flex: 0.2,
             justifyContent: "space-between",
@@ -367,16 +335,13 @@ function ShopitStackNavigator({ navigation, route }) {
         component={BagScreen}
         options={{
           headerTitle: "HANDLEKURV",
-
           headerRight: () => <></>,
           headerTitleStyle: {
             color: colors.primary,
             fontFamily: "lato-bold",
           },
           headerTitleAlign: "center",
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
+         
           headerRightContainerStyle: {
             elevation: 0,
           },
@@ -393,35 +358,33 @@ function ShopitStackNavigator({ navigation, route }) {
             fontFamily: "lato-bold",
           },
           headerTitleAlign: "center",
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
           headerRightContainerStyle: {
             elevation: 0,
           },
-          headerLeft: () => (
-            <TouchableOpacity
-              style={{
-                width: 30,
-                height: 30,
-                borderWidth: 1,
-                borderRadius: 50,
-                borderColor: "transparent",
-                elevation: 2,
-                backgroundColor: "white",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Icon
-                name="cross"
-                type="entypo"
-                size={24}
-                style={{ color: colors.black }}
-                onPress={() => navigation.goBack()}
-              />
-            </TouchableOpacity>
-          ),
+          // headerLeft: () => (
+          //   <TouchableOpacity
+          //     style={{
+          //       width: 30,
+          //       height: 30,
+          //       borderWidth: 1,
+          //       borderRadius: 50,
+          //       borderColor: "transparent",
+          //       elevation: 2,
+          //       backgroundColor: "white",
+          //       justifyContent: "center",
+          //       alignItems: "center",
+          //       ...globalStyles.iosShadow
+          //     }}
+          //   >
+          //     <Icon
+          //       name="cross"
+          //       type="entypo"
+          //       size={24}
+          //       style={{ color: colors.black }}
+          //       onPress={() => navigation.goBack()}
+          //     />
+          //   </TouchableOpacity>
+          // ),
         }}
       />
       <ShopitStack.Screen
@@ -488,6 +451,7 @@ const styles = StyleSheet.create({
   header: {
     width: 150,
     height: "100%",
+    
   },
   headerImg: {
     height: "100%",
