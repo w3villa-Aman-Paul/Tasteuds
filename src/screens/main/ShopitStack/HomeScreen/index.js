@@ -14,6 +14,7 @@ import { Snackbar } from "react-native-paper";
 import {
   addItem,
   getCategories,
+  getInitialProductList,
   getMenus,
   getProduct,
   getProductsList,
@@ -61,7 +62,8 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
 
   React.useEffect(() => {
     {
-      productsList.length === 0 && dispatch(getProductsList(1, {}));
+      productsList.length <= 10 &&
+        dispatch(getInitialProductList(1, { pageIndex: 1, filter: null }));
     }
   }, [productsList]);
 
@@ -85,6 +87,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     if (mostBoughtGoods?.length !== 0) {
       mostBoughtGoods?.forEach((item) => {
         const product = productsList.find((ele) => ele.id == item.id);
+        console.log("product", product);
 
         if (!mostBought.includes(product)) {
           if (product && mostBought.length === 0) {
@@ -136,9 +139,6 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     }, 3000);
   };
 
-  // console.log("ITEMQTY", itemQuantity);
-  // console.log("TEMPITEM", tempItem);
-
   const handleSetTimeoutInc = (tempId, qty) => {
     const id = setTimeout(() => {
       if (!inCart) {
@@ -166,12 +166,9 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     timeoutIdRef.current = id;
   };
 
-  // console.log("INCART", inCart);
-
   const handleSetTimeoutDec = (tempId, qty) => {
     if (qty === 1) {
       dispatch(removeLineItem(tempId, {}, cart?.token));
-      // setTempItem(0);
       setShowItemCard(false);
       setInCart(false);
     } else {
@@ -316,7 +313,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
           </Text>
           <View style={styles.pricingContainer}>
             <Text style={[styles.prices, { color: colors.black }]}>
-              {item.display_price} ||{" "}
+              {item.display_price} ||
               {item?.default_variant?.options_text
                 ? item?.default_variant?.options_text.split(" ")[3] ||
                   item?.default_variant?.options_text.split(" ")[1]

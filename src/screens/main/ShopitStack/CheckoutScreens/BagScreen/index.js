@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   Image,
   TextInput,
   Pressable,
+  ActivityIndicator,
 } from "react-native";
 import { globalStyles } from "../../../../../styles/global";
 import { styles } from "./styles";
@@ -67,12 +68,15 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
 
   useEffect(() => {
     if (response?.type === "success") {
+      setGoogleSubmitting(true);
       setAccessToken(response.authentication.accessToken);
-      // dispatch(googleLogin(response.authentication.accessToken));
+      dispatch(googleLogin(response.authentication.accessToken));
+      setTimeout(() => {
+        setIsOpen(false);
+        setIsOpen(false);
+      }, 1000);
     }
-    setGoogleSubmitting(false);
   }, [response]);
-  
 
   useEffect(() => {
     const timeOutId = timeoutIdRef.current;
@@ -124,12 +128,14 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
               <TouchableOpacity
                 style={styles.login_btn}
                 onPress={
-                  accessToken
-                    ? <></>
-                    : () => {
-                        // setGoogleSubmitting(true);
-                        // promptAsync({ showInRecents: true });
-                      }
+                  accessToken ? (
+                    <></>
+                  ) : (
+                    () => {
+                      setGoogleSubmitting(true);
+                      promptAsync({ showInRecents: true });
+                    }
+                  )
                 }
               >
                 <Image
@@ -149,7 +155,7 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
             </View>
           ) : (
             <View style={styles.login_content}>
-              <ActivityIndicatorCard />
+              <ActivityIndicator />
             </View>
           )}
 

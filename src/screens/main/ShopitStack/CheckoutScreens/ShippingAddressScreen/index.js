@@ -541,13 +541,13 @@ const ShippingAddressScreen = ({
         ) : (
           <CartFooter
             title="FULLFØR BETALING"
-            onPress={
+            onPress={() => {
               Address.length === 0 ? (
                 <Text>"Please fill Address"</Text>
               ) : (
-                handleUpdateCheckout
-              )
-            }
+                handleUpdateCheckout()
+              );
+            }}
           />
         )}
 
