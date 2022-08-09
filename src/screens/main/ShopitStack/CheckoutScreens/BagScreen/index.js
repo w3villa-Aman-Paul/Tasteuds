@@ -540,7 +540,9 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
           <View></View>
         </ScrollView>
 
-        {isOpen ? (
+        {cart?.line_items.length === 0 ? (
+          <></>
+        ) : isOpen ? (
           <></>
         ) : (
           <CartFooter
