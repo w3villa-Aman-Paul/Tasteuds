@@ -32,6 +32,8 @@ import {
   getSearchProduct,
   removeLineItem,
   setQuantity,
+  sortByMostBought,
+  sortByNewlyAdd,
 } from "../../../../redux";
 import FilterFooter from "../../../../library/components/ActionButtonFooter/FilterFooter";
 import { HOST } from "../../../../res/env";
@@ -57,7 +59,7 @@ const ProductListScreen = ({
   const [subLink, setSubLink] = useState("");
   const [isSubLink, setIsSubLink] = useState(false);
   const [activeMenus, setActiveMenus] = useState([]);
-  const [activeSubMenu, setActiveSubMenu] = useState(false);
+  const [activeSubMenu, setActiveSubMenu] = useState([]);
   const [isAll, setIsAll] = useState(true);
   const [sort, setSort] = useState(false);
   const [menuCords, setMenuCords] = useState([]);
@@ -70,6 +72,9 @@ const ProductListScreen = ({
   const [itemQuantity, setItemQuantity] = useState(1);
   const [inCart, setInCart] = useState(false);
 
+  const [mostBought, setMostBought] = useState([]);
+  const [newlyAdded, setNewlyAdded] = useState([]);
+
   const checkout = useSelector((state) => state.checkout);
   const errMessage = useSelector((state) => state.checkout.error);
   const cart = useSelector((state) => state.checkout.cart);
@@ -78,9 +83,21 @@ const ProductListScreen = ({
   const taxons = useSelector((state) => state.taxons);
   const menus = useSelector((state) => state.taxons.menus);
   const submenus = useSelector((state) => state.taxons.submenus);
+
+  const { mostBoughtGoods } = useSelector((state) => state.taxons);
+  const { newAddedProducts } = useSelector((state) => state.taxons);
+
   const params = route?.params;
 
   const timeoutIdRef = useRef();
+
+  useEffect(() => {
+    loadMostBoughtGoods();
+  }, [mostBought, mostBoughtGoods]);
+
+  useEffect(() => {
+    loadNewlyAddedGoods();
+  }, [newlyAdded, newAddedProducts]);
 
   useEffect(() => {
     const timeOutId = timeoutIdRef.current;
@@ -96,7 +113,7 @@ const ProductListScreen = ({
 
   useEffect(() => {
     handleActiveSubMenu();
-  }, [menus, submenus]);
+  }, [menus, submenus, params]);
 
   useEffect(() => {
     if (params) handleAfterMenuSelect(params);
@@ -128,17 +145,17 @@ const ProductListScreen = ({
     setIsAll(false);
     await dispatch(
       getSubMenu(
-        params.menu.permalink
+        params?.menu?.permalink
           ? params?.menu?.permalink?.split("/").slice(0, -1).join("/")
           : params.menu.link.slice(2).toLowerCase()
       )
     );
     setSubLink(
-      params.menu.permalink
+      params?.menu?.permalink
         ? params?.menu?.permalink?.split("/").slice(0, -1).join("/")
         : params.menu.link.slice(2).toLowerCase()
     );
-    handleClick(handleUncheckAllMenus(activeMenus), params.menu);
+    handleClick(handleUncheckAllMenus(activeMenus), params?.menu);
     await dispatch(getSubMenuProducts(subLink));
     setIsSubLink(true);
     setIsSubAll(true);
@@ -146,7 +163,9 @@ const ProductListScreen = ({
 
   const handleAfterMenuSelect = (params) => {
     {
-      params.route === "Categories" && paramsDispatchHandler();
+      (params.route === "Categories" || params.route === "ProductDetail") &&
+        handleActiveMenu() &&
+        paramsDispatchHandler();
     }
 
     if (params.route === "ProductDetail") {
@@ -155,12 +174,16 @@ const ProductListScreen = ({
           paramsDispatchHandler(params);
           break;
         case 3:
+          handleActiveMenu();
+          handleActiveSubMenu();
+          console.log(">>>", activeSubMenu, "menu", activeMenus);
           paramsDispatchHandler(params);
           dispatch(getSubMenuProducts(params.menu.permalink.toLowerCase()));
           setIsSubAll(false);
           setAll(false);
           setIsAll(false);
           handleSubClick(handleUncheckAllMenus(activeSubMenu), params.menu);
+
           break;
         default:
           break;
@@ -236,6 +259,7 @@ const ProductListScreen = ({
   };
 
   const handleUncheckAllMenus = (arr) => {
+    console.log("arr", arr);
     const newArray = arr.map((item) => {
       return { ...item, isActive: false };
     });
@@ -275,17 +299,6 @@ const ProductListScreen = ({
     dispatch(getCart(cart.token));
   }, []);
 
-  // const handleAddToBag = async (item) => {
-  //   let vari = item.variants[0].id;
-  //   await dispatch(
-  //     addItem(cart.token, {
-  //       variant_id: vari.toString(),
-  //       quantity: 1,
-  //     })
-  //   );
-  //   return setSnackbarVisible(true);
-  // };
-
   const findCartProduct = (itemID) => {
     const newItem = productsList.find((ele) => ele.id == itemID);
     setEnableQty(newItem);
@@ -313,6 +326,7 @@ const ProductListScreen = ({
   };
 
   const handleSetTimeoutInc = (tempId, qty) => {
+    console.log("QTY", qty);
     const id = setTimeout(() => {
       if (!inCart) {
         dispatch(
@@ -375,6 +389,46 @@ const ProductListScreen = ({
 
   const handleItemDecrement = () => {
     setItemQuantity(itemQuantity - 1);
+  };
+
+  const loadMostBoughtGoods = () => {
+    if (mostBoughtGoods?.length !== 0) {
+      mostBoughtGoods?.forEach((item) => {
+        const product = productsList.find((ele) => ele.id == item.id);
+
+        if (!mostBought.includes(product)) {
+          if (product && mostBought.length === 0) {
+            mostBought.push({ ...product, qty: 1 });
+          } else if (product && mostBought.length === mostBoughtGoods.length) {
+            setMostBought(mostBought);
+          } else if (product && mostBought.length < mostBoughtGoods.length) {
+            let temp = mostBought;
+            temp.push({ ...product, qty: 1 });
+            setMostBought(temp);
+          }
+        }
+      });
+    }
+  };
+
+  const loadNewlyAddedGoods = () => {
+    if (newAddedProducts?.length !== 0) {
+      newAddedProducts?.forEach((item) => {
+        const product = productsList.find((ele) => ele.id == item.id);
+
+        if (!newlyAdded.includes(product)) {
+          if (product && newlyAdded.length === 0) {
+            newlyAdded.push({ ...product, qty: 1 });
+          } else if (product && newlyAdded.length === newAddedProducts.length) {
+            setNewlyAdded(newlyAdded);
+          } else if (product && newlyAdded.length < newAddedProducts.length) {
+            let temp = newlyAdded;
+            temp.push({ ...product, qty: 1 });
+            setNewlyAdded(temp);
+          }
+        }
+      });
+    }
   };
 
   // Item Rendering..............................................................
@@ -520,6 +574,21 @@ const ProductListScreen = ({
       title: "Price: highest to low",
       onPress: () => setProductListLowToHigh(),
     },
+
+    {
+      title: "Most Bought Goods",
+      onPress: () => {
+        dispatch(sortByMostBought(mostBought));
+        setSort(false);
+      },
+    },
+    {
+      title: "Newly Added Goods",
+      onPress: () => {
+        dispatch(sortByNewlyAdd(newlyAdded));
+        setSort(false);
+      },
+    },
     {
       title: "Cancel",
       containerStyle: { backgroundColor: colors.error },
@@ -557,6 +626,7 @@ const ProductListScreen = ({
       : setTimeout(onPress, 50);
   };
 
+  console.log("ITEMQTY", itemQuantity);
   const handleProductLoad = async (id, item) => {
     dispatch(getProduct(id));
     dispatch(getTaxon(item.taxons[0].id));
@@ -887,7 +957,7 @@ const ProductListScreen = ({
             marginBottom: 5,
           }}
         >
-          Sort
+          Sortere
         </Text>
         <View style={{ flex: 1, justifyContent: "space-around" }}>
           {productsSortList.map((item, id) => {
@@ -899,7 +969,7 @@ const ProductListScreen = ({
                   paddingHorizontal: 10,
                   borderRadius: 10,
                   borderWidth: 1,
-                  borderColor: colors.white,
+                  backgroundColor: colors.btnLink,
                   justifyContent: "center",
                   alignItems: "center",
                 }}

@@ -1,4 +1,3 @@
-import { string } from "yup";
 import {
   handleAPI,
   API_VERSION_STOREFRONT,
@@ -12,8 +11,8 @@ export function getProductsList(data = null, { pageIndex, filter = null }) {
       "default_variant,variants,option_types,product_properties,taxons,images,primary_variant",
     filter: filter,
     "Content-Type": "application/json",
-    page: pageIndex,
-    per_page: 10,
+    page: pageIndex || 1,
+    per_page: 20,
   };
   const method = "GET";
   return {
@@ -127,5 +126,19 @@ export const getSearchByProductName = (data = null, filter = null) => {
   return {
     type: "GET_SEARCH_BY_PRODUCTS_NAME",
     payload: handleAPIWithoutToken(url, params, method, data, filter),
+  };
+};
+
+export const sortByMostBought = (data) => {
+  return {
+    type: "SORT_MOST_BOUGHT",
+    payload: data,
+  };
+};
+
+export const sortByNewlyAdd = (data) => {
+  return {
+    type: "SORT_NEWLY_ADDED",
+    payload: data,
   };
 };

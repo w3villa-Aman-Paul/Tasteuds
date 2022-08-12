@@ -3,7 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import CategoriesScreen from "../screens/main/CategoriesStack/CategoriesScreen";
 import { colors } from "../res/palette";
 import { globalStyles } from "../styles/global";
-import { Image, StyleSheet, View } from "react-native";
+import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 import { Icon } from "react-native-elements";
 import NewlyAddedProducts from "../screens/main/CategoriesStack/NewlyAddedProducts";
@@ -28,6 +28,7 @@ function CategoriesStackNavigator({ navigation, route }) {
     <CategoriesStack.Navigator
       screenOptions={{
         headerTitle: "",
+        headerBackTitle: 'Go Back',
         headerLeft: () => (
           <View style={styles.header}>
             <Image
@@ -67,15 +68,30 @@ function CategoriesStackNavigator({ navigation, route }) {
         component={NewlyAddedProducts}
         options={{
           headerTitle: "Nyheter",
+          headerTitleAlign: 'center',
           headerLeft: () => (
-            <Icon
-              name="arrowleft"
-              type="ant-design"
-              onPress={() => navigation.navigate("Categories")}
-              title="Back"
-            />
+            <TouchableOpacity
+              style={{
+                borderWidth: 1,
+                borderRadius: 50,
+                borderColor: "transparent",
+                elevation: 2,
+                backgroundColor: "white",
+                justifyContent: "center",
+                alignItems: "center",
+                padding: 5,
+                marginHorizontal: 20,
+              }}
+            >
+              <Icon
+                name="arrowleft"
+                type="ant-design"
+                onPress={() => navigation.navigate("Categories")}
+                title="Back"
+              />
+            </TouchableOpacity>
           ),
-          // headerRight: "",
+          headerRight: "",
         }}
       />
       <CategoriesStack.Screen
@@ -83,15 +99,30 @@ function CategoriesStackNavigator({ navigation, route }) {
         component={MostBoughtProducts}
         options={{
           headerTitle: "Dine mest kjøpte varer",
+          headerTitleAlign: 'center',
           headerLeft: () => (
-            <Icon
-              name="arrowleft"
-              type="ant-design"
-              onPress={() => navigation.navigate("Categories")}
-              title="Back"
-            />
+            <TouchableOpacity
+              style={{
+                borderWidth: 1,
+                borderRadius: 50,
+                borderColor: "transparent",
+                elevation: 2,
+                backgroundColor: "white",
+                justifyContent: "center",
+                alignItems: "center",
+                padding: 5,
+                marginHorizontal: 20,
+              }}
+            >
+              <Icon
+                name="arrowleft"
+                type="ant-design"
+                onPress={() => navigation.navigate("Categories")}
+                title="Back"
+              />
+            </TouchableOpacity>
           ),
-          // headerRight: "",
+          headerRight: "",
         }}
       />
     </CategoriesStack.Navigator>

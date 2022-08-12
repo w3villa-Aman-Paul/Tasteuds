@@ -34,7 +34,6 @@ function MainTabNavigator({ navigation }) {
               type="entypo"
               color={colors.primary}
               size={30}
-              onPress={() => navigation.navigate("Shop")}
             />
           ),
         }}

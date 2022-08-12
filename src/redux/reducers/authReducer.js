@@ -44,7 +44,7 @@ export default function authReducer(state = DEFAULT_STATE, action) {
       return {
         isLoading: false,
       };
-
+      
     default:
       return state;
   }

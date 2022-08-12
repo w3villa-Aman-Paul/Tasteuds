@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   FlatList,
   Image,
@@ -7,22 +8,70 @@ import {
   View,
 } from "react-native";
 import { styles } from "./styles";
-import React from "react";
 import { colors } from "../../../../res/palette";
 import ActivityIndicatorCard from "../../../../library/components/ActivityIndicatorCard";
 import { useSelector } from "react-redux";
 import { globalStyles } from "../../../../styles/global";
 import { HOST } from "../../../../res/env";
 import { storeData } from "../../../../redux/rootReducer";
-import { getProduct } from "../../../../redux";
+import { getProduct, getVendorsList, getWeeklyProducer } from "../../../../redux";
 import { connect } from "react-redux";
 
 const MostBoughtProducts = ({ navigation, dispatch }) => {
-  const { meta, pageIndex, saving, searchedProducts } = useSelector(
-    (state) => state.products
-  );
+  const { saving, productsList} = useSelector((state) => state.products);
   const vendorList = useSelector((state) => state.taxons.vendors);
   const { mostBoughtGoods } = useSelector((state) => state.taxons);
+  
+  const [mostBought, setMostBought] = useState([]);
+
+  useEffect(() => {
+    dispatch(getVendorsList());
+    dispatch(getWeeklyProducer());
+
+    if (productsList.length === 0) {
+      handleProductsLoad();
+    }
+    setMostBought([]);
+  }, []);
+
+  const handleProductsLoad = (pageIndexAfterDispatch = null) => {
+    dispatch(
+      getProductsList(null, {
+        pageIndex: null,
+        filter: {},
+      })
+    );
+  };
+
+   const handleProductLoad = (id, item) => {
+    dispatch(getProduct(id));
+    dispatch(getTaxon(item.taxons[0].id));
+    navigation.navigate("ProductDetail");
+  };
+
+  useEffect(() => {
+    loadMostBoughtGoods();
+  }, [mostBought, mostBoughtGoods]);
+
+  const loadMostBoughtGoods = () => {
+    if (mostBoughtGoods?.length !== 0) {
+      mostBoughtGoods?.forEach((item) => {
+        const product = productsList.find((ele) => ele.id == item.id);
+
+        if (!mostBought.includes(product)) {
+          if (product && mostBought.length === 0) {
+            mostBought.push({ ...product, qty: 1 });
+          } else if (product && mostBought.length === mostBoughtGoods.length) {
+            setMostBought(mostBought);
+          } else if (product && mostBought.length < mostBoughtGoods.length) {
+            let temp = mostBought;
+            temp.push({ ...product, qty: 1 });
+            setMostBought(temp);
+          }
+        }
+      });
+    }
+  };
 
   const resultVendor = (id) => {
     const vendor = vendorList?.filter((vendor) => {
@@ -34,10 +83,7 @@ const MostBoughtProducts = ({ navigation, dispatch }) => {
     return [vendorName, vendor];
   };
 
-  const handleProductLoad = async (id, item) => {
-    await dispatch(getProduct(id));
-    navigation.navigate("ProductDetail");
-  };
+  
 
   const newJustInRenderItem = ({ item, index }) => {
     return (
@@ -46,7 +92,7 @@ const MostBoughtProducts = ({ navigation, dispatch }) => {
           key={index.toString()}
           item={item}
           onPress={() => {
-            storeData("selectedVendor", resultVendor(item?.vendor_id)[1]);
+            storeData("selectedVendor", resultVendor(item?.vendor?.id)[1]);
             handleProductLoad(item?.id, item);
           }}
           imageStyle={styles.newJustInImage}
@@ -66,9 +112,11 @@ const MostBoughtProducts = ({ navigation, dispatch }) => {
       <TouchableOpacity onPress={onPress} style={{ ...itemContainerStyle }}>
         <View style={{ position: "relative" }}>
           <Image
-            source={{
-              uri: `${item.image_attachment}`,
-            }}
+               source={{
+                uri: item.images
+                  ? `${HOST}/${item?.images[0]?.styles[3].url}`
+                  : null,
+              }}
             style={{
               width: imageStyle?.width,
               height: imageStyle?.height,
@@ -81,7 +129,7 @@ const MostBoughtProducts = ({ navigation, dispatch }) => {
             {item.name}
           </Text>
           <Text numberOfLines={1} style={styles.description}>
-            {`${resultVendor(item?.vendor_id)[0]}`}
+            {`${resultVendor(item?.vendor?.id)[0]}`}
           </Text>
           <View style={styles.pricingContainer}>
             <Text style={[styles.prices, { color: colors.black }]}>
@@ -94,6 +142,10 @@ const MostBoughtProducts = ({ navigation, dispatch }) => {
     );
   };
 
+  const productsUnique = [
+    ...new Map(mostBought.map((item) => [item["id"], item])).values(),
+  ];
+
   return (
     <SafeAreaView
       style={{ ...styles.containerFluid, ...styles.bg_white, flex: 1 }}
@@ -102,7 +154,7 @@ const MostBoughtProducts = ({ navigation, dispatch }) => {
         <ActivityIndicatorCard />
       ) : (
         <FlatList
-          data={mostBoughtGoods.products}
+          data={productsUnique}
           keyExtractor={(item, index) => index.toString()}
           renderItem={newJustInRenderItem}
           numColumns={2}
