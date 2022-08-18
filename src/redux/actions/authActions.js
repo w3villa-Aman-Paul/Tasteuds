@@ -1,4 +1,4 @@
-import { handleAPI, handleGoogleLogin } from "../../library/utils/apiUtils";
+import { handleAPI, handleSocialLogin } from "../../library/utils/apiUtils";
 
 export function userLogin(data, filters = {}) {
   const url = `/spree_oauth/token`;
@@ -26,6 +26,19 @@ export const googleLogin = (access_token) => {
 
   return {
     type: "LOGIN",
-    payload: handleGoogleLogin(path, method, params),
+    payload: handleSocialLogin(path, method, params),
+  };
+};
+
+export const facebookLogin = (access_token) => {
+  const path = "/api/v1/spree_oauth/social_login/facebook";
+  const method = "POST";
+  const params = {
+    access_token: "" + access_token,
+  };
+
+  return {
+    type: "LOGIN",
+    payload: handleSocialLogin(path, method, params),
   };
 };

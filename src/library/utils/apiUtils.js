@@ -57,8 +57,7 @@ async function handleAddCartItem(
   return await axios({ url, headers, method, data });
 }
 
-const handleGoogleLogin = async (path, method ,params) => {
-
+const handleSocialLogin = async (path, method, params) => {
   const headers = {
     "Content-Type": "application/vnd.api+json",
     Accept: "application/json",
@@ -69,13 +68,13 @@ const handleGoogleLogin = async (path, method ,params) => {
   let url = API_ROOT + path;
   url = url + "?" + qs.stringify(params, { arrayFormat: "brackets" });
 
-  return await axios({url, headers, method, data})
-} 
+  return await axios({ url, headers, method, data });
+};
 
 export {
   handleAPI,
   API_VERSION_STOREFRONT,
   handleAddCartItem,
   handleAPIWithoutToken,
-  handleGoogleLogin,
+  handleSocialLogin,
 };

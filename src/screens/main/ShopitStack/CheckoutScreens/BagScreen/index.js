@@ -20,12 +20,14 @@ import {
   getDefaultCountry,
   getCountriesList,
   googleLogin,
+  facebookLogin,
 } from "../../../../../redux";
 
 import { TouchableOpacity } from "react-native-gesture-handler";
 import CartFooter from "../../../../../library/components/ActionButtonFooter/cartFooter";
 import { useSelector } from "react-redux";
 import {
+  FACEBOOK_APP_ID,
   GOOGLE_ANDROID_CLIENT_ID,
   GOOGLE_EXPO_ID,
   GOOGLE_IOS_CLIENT_ID,
@@ -35,6 +37,7 @@ import FilterFooter from "../../../../../library/components/ActionButtonFooter/F
 import { colors } from "../../../../../res/palette";
 
 import * as Google from "expo-auth-session/providers/google";
+import * as Facebook from "expo-facebook";
 import * as WebBrowser from "expo-web-browser";
 
 WebBrowser.maybeCompleteAuthSession();
@@ -53,11 +56,13 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
   const [showItemCard, setShowItemCard] = useState(false);
   const [enableQty, setEnableQty] = useState(null);
   const [itemQuantity, setItemQuantity] = useState(0);
+  const [isLoggedin, setIsLoggedin] = useState(false);
   const snapPoints = ["50%"];
   const timeoutIdRef = React.useRef();
 
   useEffect(() => {
     dispatch(getCart(cart?.token));
+    setIsLoggedin(false);
   }, []);
 
   const [request, response, promptAsync] = Google.useAuthRequest({
@@ -97,6 +102,37 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
     await dispatch(getDefaultCountry());
     await dispatch(getCountriesList());
     navigation.navigate("ShippingAddress");
+  };
+
+  const facebookLogIn = async () => {
+    try {
+      if (!isLoggedin) {
+        await Facebook.initializeAsync({
+          appId: FACEBOOK_APP_ID,
+          appName: "Tastebuds",
+        });
+
+        const { type, token } = await Facebook.logInWithReadPermissionsAsync({
+          permissions: ["email"],
+        });
+
+        if (type === "success") {
+          setAccessToken(token);
+          setIsLoggedin(true);
+          console.log("facebookToken", token);
+          console.log("accessToken", accessToken);
+          dispatch(facebookLogin(token));
+          setTimeout(() => {
+            setIsOpen(false);
+            setIsOpen(false);
+          }, 1000);
+        }
+      } else {
+        console.log("Access token", accessToken);
+      }
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const bottomSheetContent = () => {
@@ -162,7 +198,7 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
           <View style={styles.login_content}>
             <TouchableOpacity
               style={styles.login_btn}
-              onPress={() => navigation.navigate("SignIn")}
+              onPress={() => facebookLogIn()}
             >
               <Image
                 style={styles.login_image}
