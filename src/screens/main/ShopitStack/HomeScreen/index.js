@@ -87,7 +87,6 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     if (mostBoughtGoods?.length !== 0) {
       mostBoughtGoods?.forEach((item) => {
         const product = productsList.find((ele) => ele.id == item.id);
-        console.log("product", product);
 
         if (!mostBought.includes(product)) {
           if (product && mostBought.length === 0) {

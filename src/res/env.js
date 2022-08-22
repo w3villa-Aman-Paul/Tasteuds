@@ -13,3 +13,5 @@ export const GOOGLE_EXPO_ID =
 export const CLIENT_SECRET_WEB = "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";
 
 export const FACEBOOK_APP_ID = "361244565462594";
+
+export const APPLE_ID = "";

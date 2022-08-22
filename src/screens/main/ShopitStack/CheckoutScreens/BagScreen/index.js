@@ -35,9 +35,11 @@ import {
 } from "../../../../../res/env";
 import FilterFooter from "../../../../../library/components/ActionButtonFooter/FilterFooter";
 import { colors } from "../../../../../res/palette";
+import jwt_decode from "jwt-decode";
 
 import * as Google from "expo-auth-session/providers/google";
 import * as Facebook from "expo-facebook";
+import * as AppleAuthentication from "expo-apple-authentication";
 import * as WebBrowser from "expo-web-browser";
 
 WebBrowser.maybeCompleteAuthSession();
@@ -76,6 +78,7 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
       setGoogleSubmitting(true);
       setAccessToken(response.authentication.accessToken);
       dispatch(googleLogin(response.authentication.accessToken));
+      console.log("acc", response.authentication.accessToken);
       setTimeout(() => {
         setIsOpen(false);
         setIsOpen(false);
@@ -135,13 +138,35 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
     }
   };
 
+  const appleLogin = async () => {
+    try {
+      const { identityToken } = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+        ],
+      });
+
+      {
+        identityToken &&
+          console.log(
+            "identityToken",
+            jwt_decode(identityToken, { header: true }),
+            jwt_decode(identityToken)
+          );
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const bottomSheetContent = () => {
     return (
       <View style={styles.login_container}>
         <Text style={styles.main_text}>LOGG INN ELLER REGISTRER DEG</Text>
         <View style={styles.login_body}>
           <View style={styles.login_content}>
-            <TouchableOpacity style={styles.login_btn}>
+            <TouchableOpacity style={styles.login_btn} onPress={appleLogin}>
               <Image
                 style={styles.login_image}
                 source={require("../../../../../../assets/images/Header-Icon/apple.png")}
