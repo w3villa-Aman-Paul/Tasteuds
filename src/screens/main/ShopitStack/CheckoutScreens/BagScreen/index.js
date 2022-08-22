@@ -192,16 +192,16 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
             <View style={styles.login_content}>
               <TouchableOpacity
                 style={styles.login_btn}
-                // onPress={
-                //   accessToken ? (
-                //     <></>
-                //   ) : (
-                //     () => {
-                //       setGoogleSubmitting(true);
-                //       promptAsync({ showInRecents: true });
-                //     }
-                //   )
-                // }
+                onPress={
+                  accessToken ? (
+                    <></>
+                  ) : (
+                    () => {
+                      setGoogleSubmitting(true);
+                      promptAsync({ showInRecents: true });
+                    }
+                  )
+                }
               >
                 <Image
                   style={styles.login_image}
