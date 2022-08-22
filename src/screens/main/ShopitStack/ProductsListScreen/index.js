@@ -71,6 +71,7 @@ const ProductListScreen = ({
   const [enableQty, setEnableQty] = useState(null);
   const [itemQuantity, setItemQuantity] = useState(1);
   const [inCart, setInCart] = useState(false);
+  const [inc, setInc] = useState("false");
   const [isModelVisible, setModelVisible] = useState(false);
 
   const [mostBought, setMostBought] = useState([]);
@@ -309,8 +310,27 @@ const ProductListScreen = ({
     return item?.default_variant?.id;
   };
 
+  const handleItemIncrement = () => {
+    setInc(true);
+    setItemQuantity(itemQuantity + 1);
+  };
+
+  const handleChangeQuantityClick = () => {
+    clearTimeout(timeoutIdRef.current);
+  };
+
+  const handleItemDecrement = (lineItemQuantity) => {
+    if (1 - itemQuantity == lineItemQuantity) {
+      setShowItemCard(false);
+    } else {
+      setInc(false);
+      setItemQuantity(itemQuantity - 1);
+    }
+  };
+
   const handleSetTimeoutDefault = (ID) => {
-    let firstItem = productsList.find((x) => x.id === ID);
+    let firstItem = productsList.find((x) => x.id == ID);
+    console.log("first", firstItem);
     setTimeout(() => {
       dispatch(
         addItem(cart?.token, {
@@ -319,20 +339,19 @@ const ProductListScreen = ({
         })
       );
       setShowItemCard(false);
-      setItemQuantity(0);
-    }, 3000);
+    }, 2000);
   };
 
   const handleSetTimeoutInc = (tempId, qty) => {
-    console.log("QTY", qty);
     const id = setTimeout(() => {
       if (!inCart) {
         dispatch(
           addItem(cart?.token, {
             variant_id: handleCart(),
-            quantity: itemQuantity,
+            quantity: itemQuantity + 1,
           })
         );
+        setShowItemCard(false);
       } else {
         dispatch(
           setQuantity(
@@ -343,22 +362,22 @@ const ProductListScreen = ({
             cart?.token
           )
         );
+        setShowItemCard(false);
+        setItemQuantity(1);
       }
-      setShowItemCard(false);
-      setItemQuantity(1);
-    }, 4000);
+    }, 2000);
 
     timeoutIdRef.current = id;
   };
 
-  // console.log("INCART", inCart);
+  console.log("ITEMQTY", itemQuantity);
+  console.log("INCART", inCart);
 
   const handleSetTimeoutDec = (tempId, qty) => {
-    if (qty === 1) {
+    console.log("ORIGINAL", qty);
+    if (1 - itemQuantity == qty) {
       dispatch(removeLineItem(tempId, {}, cart?.token));
-      // setTempItem(0);
       setShowItemCard(false);
-      setInCart(false);
     } else {
       const id = setTimeout(() => {
         dispatch(
@@ -372,21 +391,14 @@ const ProductListScreen = ({
         );
         setShowItemCard(false);
         setItemQuantity(0);
-      }, 4000);
+      }, 2000);
       timeoutIdRef.current = id;
     }
   };
 
-  const handleItemIncrement = () => {
-    setItemQuantity(itemQuantity + 1);
-  };
-
-  const handleChangeQuantityClick = () => {
-    clearTimeout(timeoutIdRef.current);
-  };
-
-  const handleItemDecrement = () => {
-    setItemQuantity(itemQuantity - 1);
+  const closeIncBar = () => {
+    const id = setTimeout(() => setShowItemCard(false), 2000);
+    timeoutIdRef.current = id;
   };
 
   const loadMostBoughtGoods = () => {
@@ -437,7 +449,7 @@ const ProductListScreen = ({
     itemContainerStyle,
   }) => {
     const tempArr = cart.line_items.filter(
-      (ele) => item.id == ele?.variant?.product?.id
+      (ele) => item?.id == ele?.variant?.product?.id
     );
 
     return (
@@ -462,13 +474,13 @@ const ProductListScreen = ({
             <View
               style={[
                 styles.addLogo,
-                { width: "80%", justifyContent: "space-between" },
+                { width: "90%", justifyContent: "space-between" },
               ]}
             >
               <TouchableOpacity
                 onPress={() => {
                   handleChangeQuantityClick();
-                  handleItemDecrement();
+                  handleItemDecrement(tempArr[0]?.quantity);
                   handleSetTimeoutDec(tempArr[0]?.id, tempArr[0]?.quantity);
                 }}
               >
@@ -477,7 +489,9 @@ const ProductListScreen = ({
 
               <Text style={styles.dynamicText}>
                 {tempArr.length !== 0
-                  ? tempArr[0].quantity + (itemQuantity - 1)
+                  ? inc
+                    ? tempArr[0].quantity + (itemQuantity - 1)
+                    : tempArr[0].quantity + (itemQuantity - 1)
                   : itemQuantity}
               </Text>
 
@@ -495,19 +509,12 @@ const ProductListScreen = ({
             <TouchableOpacity
               style={styles.addLogo}
               onPress={() => {
+                closeIncBar();
                 setItemQuantity(1);
                 setShowItemCard(true);
                 findCartProduct(item?.id);
-
                 {
-                  !inCart && itemQuantity == 1
-                    ? handleSetTimeoutDefault(item?.id)
-                    : null;
-                }
-                {
-                  item?.id == tempArr[0]?.variant?.product?.id
-                    ? setInCart(true)
-                    : setInCart(false);
+                  tempArr[0] ? setInCart(true) : setInCart(false);
                 }
               }}
             >
@@ -525,6 +532,16 @@ const ProductListScreen = ({
                   borderRadius={10}
                   color={colors.btnLink}
                   backgroundColor={colors.white}
+                  onPress={() => {
+                    setItemQuantity(1);
+                    setShowItemCard(true);
+                    findCartProduct(item?.id);
+                    {
+                      tempArr[0]
+                        ? setInCart(true)
+                        : (setInCart(false), handleSetTimeoutDefault(item?.id));
+                    }
+                  }}
                 />
               )}
             </TouchableOpacity>
@@ -567,33 +584,27 @@ const ProductListScreen = ({
 
   const productsSortList = [
     {
-      title: "Price: lowest to high",
+      title: " Pris lav til høyh",
       onPress: () => setProductListHighToLow(),
     },
     {
-      title: "Price: highest to low",
+      title: "Pris høy til lav",
       onPress: () => setProductListLowToHigh(),
     },
 
     {
-      title: "Most Bought Goods",
+      title: " Mest populære",
       onPress: () => {
         dispatch(sortByMostBought(mostBought));
         setSort(false);
       },
     },
     {
-      title: "Newly Added Goods",
+      title: " Nylig lagt til",
       onPress: () => {
         dispatch(sortByNewlyAdd(newlyAdded));
         setSort(false);
       },
-    },
-    {
-      title: "Cancel",
-      containerStyle: { backgroundColor: colors.error },
-      titleStyle: { color: "white" },
-      onPress: () => setSort(false),
     },
   ];
 
@@ -963,7 +974,7 @@ const ProductListScreen = ({
             marginBottom: 5,
           }}
         >
-          Sortere
+          Sorter
         </Text>
         <View style={{ flex: 1, justifyContent: "space-around" }}>
           {productsSortList.map((item, id) => {

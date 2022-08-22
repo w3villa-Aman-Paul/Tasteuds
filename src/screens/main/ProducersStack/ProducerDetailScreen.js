@@ -9,24 +9,45 @@ import {
   Platform,
 } from "react-native";
 import HTML from "react-native-render-html";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { styles } from "./style";
 import { connect, useSelector } from "react-redux";
 import { HOST } from "../../../res/env";
 import { Icon } from "react-native-elements";
 import { colors } from "../../../res/palette";
-import { getProduct, getTaxon } from "../../../redux";
+import {
+  addItem,
+  getProduct,
+  getTaxon,
+  removeLineItem,
+  setQuantity,
+} from "../../../redux";
 import { globalStyles } from "../../../styles/global";
 
 const ProducerDetailScreen = ({ dispatch, navigation, route }) => {
   const selectedVendor = useSelector((state) => state?.taxons?.selectedVendor);
+  const cart = useSelector((state) => state.checkout.cart);
+  const productsList = useSelector((state) => state.products.productsList);
   const width = Dimensions.get("window").width - 20;
   const vendorList = useSelector((state) => state.taxons.vendors);
   const [vendorCover, setVendorCover] = useState({});
 
+  const [showItemCard, setShowItemCard] = useState(false);
+  const [enableQty, setEnableQty] = useState(null);
+  const [inc, setInc] = useState("false");
+  const [itemQuantity, setItemQuantity] = useState(1);
+  const [inCart, setInCart] = useState(false);
   const bio = route.params.bio;
 
-  console.log("bio", bio);
+  const timeoutIdRef = useRef();
+
+  React.useEffect(() => {
+    const timeOutId = timeoutIdRef.current;
+
+    return () => {
+      clearTimeout(timeOutId);
+    };
+  }, []);
 
   useEffect(() => {
     setVendorCover(findVendorCoverImage(selectedVendor.id));
@@ -56,12 +77,119 @@ const ProducerDetailScreen = ({ dispatch, navigation, route }) => {
     navigation.navigate("ProductDetail");
   };
 
+  // cart functions
+
+  const findCartProduct = (itemID) => {
+    const newItem = productsList.find((ele) => ele.id == itemID);
+    setEnableQty(newItem);
+  };
+
+  const handleCart = () => {
+    let item = productsList.find((x) => x.id === enableQty?.id);
+
+    return item?.default_variant?.id;
+  };
+
+  const handleItemIncrement = () => {
+    setInc(true);
+    setItemQuantity(itemQuantity + 1);
+  };
+
+  const handleChangeQuantityClick = () => {
+    clearTimeout(timeoutIdRef.current);
+  };
+
+  const handleItemDecrement = (lineItemQuantity) => {
+    if (1 - itemQuantity == lineItemQuantity) {
+      setShowItemCard(false);
+    } else {
+      setInc(false);
+      setItemQuantity(itemQuantity - 1);
+    }
+  };
+
+  const handleSetTimeoutDefault = (ID) => {
+    let firstItem = productsList.find((x) => x.id == ID);
+    console.log("first", firstItem);
+    setTimeout(() => {
+      dispatch(
+        addItem(cart?.token, {
+          variant_id: firstItem?.default_variant?.id,
+          quantity: 1,
+        })
+      );
+      setShowItemCard(false);
+    }, 2000);
+  };
+
+  const handleSetTimeoutInc = (tempId, qty) => {
+    const id = setTimeout(() => {
+      if (!inCart) {
+        dispatch(
+          addItem(cart?.token, {
+            variant_id: handleCart(),
+            quantity: itemQuantity + 1,
+          })
+        );
+        setShowItemCard(false);
+      } else {
+        dispatch(
+          setQuantity(
+            {
+              line_item_id: tempId,
+              quantity: qty + itemQuantity,
+            },
+            cart?.token
+          )
+        );
+        setShowItemCard(false);
+        setItemQuantity(1);
+      }
+    }, 2000);
+
+    timeoutIdRef.current = id;
+  };
+
+  console.log("ITEMQTY", itemQuantity);
+  console.log("INCART", inCart);
+
+  const handleSetTimeoutDec = (tempId, qty) => {
+    console.log("ORIGINAL", qty);
+    if (1 - itemQuantity == qty) {
+      dispatch(removeLineItem(tempId, {}, cart?.token));
+      setShowItemCard(false);
+    } else {
+      const id = setTimeout(() => {
+        dispatch(
+          setQuantity(
+            {
+              line_item_id: tempId,
+              quantity: qty + (itemQuantity - 2),
+            },
+            cart?.token
+          )
+        );
+        setShowItemCard(false);
+        setItemQuantity(0);
+      }, 2000);
+      timeoutIdRef.current = id;
+    }
+  };
+
+  const closeIncBar = () => {
+    const id = setTimeout(() => setShowItemCard(false), 2000);
+    timeoutIdRef.current = id;
+  };
+
   const FlatListImageItem = ({
     item,
     onPress,
     imageStyle,
     itemContainerStyle,
   }) => {
+    const tempArr = cart.line_items.filter(
+      (ele) => item.id == ele?.variant?.product?.id
+    );
     return (
       <TouchableOpacity
         onPress={onPress}
@@ -77,22 +205,85 @@ const ProducerDetailScreen = ({ dispatch, navigation, route }) => {
             style={{
               width: imageStyle.width,
               height: imageStyle.height,
-              resizeMode: "cover",
+              resizeMode: "contain",
             }}
           />
-          <TouchableOpacity
-            style={{ position: "absolute", bottom: 0, right: 10 }}
-            onPress={() => handleAddToBag(item)}
-          >
-            <Icon
-              name="pluscircleo"
-              type="ant-design"
-              size={34}
-              borderRadius={34}
-              color={colors.btnLink}
-              backgroundColor={colors.white}
-            />
-          </TouchableOpacity>
+          {showItemCard && item?.id === enableQty?.id ? (
+            <View
+              style={[
+                styles.addLogo,
+                { width: "95%", justifyContent: "space-between" },
+              ]}
+            >
+              <TouchableOpacity
+                onPress={() => {
+                  handleChangeQuantityClick();
+                  handleItemDecrement(tempArr[0]?.quantity);
+                  handleSetTimeoutDec(tempArr[0]?.id, tempArr[0]?.quantity);
+                }}
+              >
+                <Text style={styles.dynamicText}>--</Text>
+              </TouchableOpacity>
+
+              <Text style={styles.dynamicText}>
+                {tempArr.length !== 0
+                  ? inc
+                    ? tempArr[0].quantity + (itemQuantity - 1)
+                    : tempArr[0].quantity + (itemQuantity - 1)
+                  : itemQuantity}
+              </Text>
+
+              <TouchableOpacity
+                onPress={() => {
+                  handleChangeQuantityClick();
+                  handleItemIncrement();
+                  handleSetTimeoutInc(tempArr[0]?.id, tempArr[0]?.quantity);
+                }}
+              >
+                <Text style={styles.dynamicText}>+</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <TouchableOpacity
+              style={styles.addLogo}
+              onPress={() => {
+                closeIncBar();
+                setItemQuantity(1);
+                setShowItemCard(true);
+                findCartProduct(item?.id);
+                {
+                  tempArr[0] ? setInCart(true) : setInCart(false);
+                }
+              }}
+            >
+              {item?.id == tempArr[0]?.variant?.product?.id ? (
+                <View style={styles.afterText}>
+                  <Text style={{ color: colors.white, fontSize: 25 }}>
+                    {tempArr.length !== 0 ? tempArr[0].quantity : 1}
+                  </Text>
+                </View>
+              ) : (
+                <Icon
+                  name="plus"
+                  type="ant-design"
+                  size={25}
+                  borderRadius={10}
+                  color={colors.btnLink}
+                  backgroundColor={colors.white}
+                  onPress={() => {
+                    setItemQuantity(1);
+                    setShowItemCard(true);
+                    findCartProduct(item?.id);
+                    {
+                      tempArr[0]
+                        ? setInCart(true)
+                        : (setInCart(false), handleSetTimeoutDefault(item?.id));
+                    }
+                  }}
+                />
+              )}
+            </TouchableOpacity>
+          )}
         </View>
         <View style={styles.detailsContainer}>
           <Text numberOfLines={1} style={styles.title}>

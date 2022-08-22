@@ -44,7 +44,7 @@ import * as WebBrowser from "expo-web-browser";
 
 WebBrowser.maybeCompleteAuthSession();
 
-const BagScreen = ({ navigation, dispatch, saving, cart }) => {
+const BagScreen = ({ navigation, dispatch, cart }) => {
   const productsList = useSelector((state) => state.products.productsList);
   const { isAuth } = useSelector((state) => state.auth);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
@@ -191,16 +191,16 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
             <View style={styles.login_content}>
               <TouchableOpacity
                 style={styles.login_btn}
-                // onPress={
-                //   accessToken ? (
-                //     <></>
-                //   ) : (
-                //     () => {
-                //       setGoogleSubmitting(true);
-                //       promptAsync({ showInRecents: true });
-                //     }
-                //   )
-                // }
+                onPress={
+                  accessToken ? (
+                    <></>
+                  ) : (
+                    () => {
+                      setGoogleSubmitting(true);
+                      promptAsync({ showInRecents: true });
+                    }
+                  )
+                }
               >
                 <Image
                   style={styles.login_image}
@@ -258,6 +258,11 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
     setIsOpen(true);
   };
 
+  const closeIncBar = () => {
+    const id = setTimeout(() => setShowItemCard(false), 2000);
+    timeoutIdRef.current = id;
+  };
+
   const handleRemoveLineItem = (lineItemId) => {
     dispatch(removeLineItem(lineItemId, {}, cart?.token));
   };
@@ -276,7 +281,6 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
     setItemQuantity(itemQuantity + 1);
   };
   const handleItemDecrement = (lineItemQuantity) => {
-    console.log("ORIGINAL", lineItemQuantity);
     if (itemQuantity === lineItemQuantity) {
       setShowItemCard(false);
     } else {
@@ -288,7 +292,6 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
   console.log("ITEMQTY", itemQuantity);
 
   const handleIncrementQuantity = (lineItemId, lineItemQuantity) => {
-    console.log("ORIGINAL", lineItemQuantity);
     const id = setTimeout(() => {
       dispatch(
         setQuantity(
@@ -299,15 +302,17 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
           cart?.token
         )
       );
-      setItemQuantity(0);
       setShowItemCard(false);
+      setItemQuantity(0);
     }, 2000);
     timeoutIdRef.current = id;
   };
 
   const handleDecrementQuantity = (lineItemId, lineItemQuantity) => {
+    console.log("ORIGINAL", lineItemQuantity);
     if (lineItemQuantity === itemQuantity) {
       handleRemoveLineItem(lineItemId);
+      setItemQuantity(0);
     } else {
       const id = setTimeout(() => {
         dispatch(
@@ -319,8 +324,8 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
             cart?.token
           )
         );
-        setItemQuantity(0);
         setShowItemCard(false);
+        setItemQuantity(0);
       }, 2000);
       timeoutIdRef.current = id;
     }
@@ -432,6 +437,12 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
               let cartProductImage = handleCartProductImage(ele);
               let cartItemId = ele?.variant?.product?.id;
 
+              let getProduct = cart?.line_items?.find(
+                (ele) => ele?.variant?.product?.id === enableQty?.id
+              );
+
+              console.log(">>>>", getProduct);
+
               return (
                 <View key={ele?.variant?.id.toString()}>
                   <View style={styles.body}>
@@ -440,6 +451,9 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
                       onPress={() => {
                         setShowItemCard(true);
                         findCartProduct(cartItemId);
+                        {
+                          !itemQuantity ? closeIncBar() : null;
+                        }
                       }}
                     >
                       {showItemCard && cartItemId === enableQty?.id ? (
@@ -447,9 +461,12 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
                           <View style={styles.after_Press}>
                             <TouchableOpacity
                               onPress={() => {
-                                handleItemDecrement(ele.quantity);
+                                handleItemDecrement(getProduct?.quantity);
                                 handleChangeQuantityClick();
-                                handleDecrementQuantity(ele.id, ele.quantity);
+                                handleDecrementQuantity(
+                                  getProduct?.id,
+                                  getProduct.quantity
+                                );
                               }}
                             >
                               <Text
@@ -464,15 +481,20 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
                             </TouchableOpacity>
 
                             <Text style={{ fontSize: 25 }}>
-                              {inc
-                                ? ele.quantity + itemQuantity
-                                : ele.quantity - itemQuantity}
+                              {getProduct
+                                ? inc
+                                  ? getProduct?.quantity + itemQuantity
+                                  : getProduct?.quantity - itemQuantity
+                                : getProduct.quantity}
                             </Text>
                             <TouchableOpacity
                               onPress={() => {
                                 handleItemIncrement();
                                 handleChangeQuantityClick();
-                                handleIncrementQuantity(ele.id, ele.quantity);
+                                handleIncrementQuantity(
+                                  getProduct.id,
+                                  getProduct.quantity
+                                );
                               }}
                             >
                               <Text

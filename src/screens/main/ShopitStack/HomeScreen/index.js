@@ -53,12 +53,6 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     dispatch(getCategories());
   }, []);
 
-  // React.useEffect(() => {
-  //   setTimeout(() => {
-  //     setShowItemCard(false);
-  //   }, 2000);
-  // }, []);
-
   React.useEffect(() => {
     const timeOutId = timeoutIdRef.current;
 
@@ -150,7 +144,8 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   };
 
   const handleSetTimeoutDefault = (ID) => {
-    let firstItem = productsList.find((x) => x.id === ID);
+    let firstItem = productsList.find((x) => x.id == ID);
+    console.log("first", firstItem);
     setTimeout(() => {
       dispatch(
         addItem(cart?.token, {
@@ -292,7 +287,6 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
               style={styles.addLogo}
               onPress={() => {
                 closeIncBar();
-
                 setItemQuantity(1);
                 setShowItemCard(true);
                 findCartProduct(item?.id);
