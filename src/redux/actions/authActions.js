@@ -42,3 +42,16 @@ export const facebookLogin = (access_token) => {
     payload: handleSocialLogin(path, method, params),
   };
 };
+
+export const appleLogin = (identity_token) => {
+  const path = "/api/v1/spree_oauth/social_login/apple";
+  const method = "POST";
+  const params = {
+    access_token: "" + identity_token,
+  };
+
+  return {
+    type: "LOGIN",
+    payload: handleSocialLogin(path, method, params),
+  };
+};

@@ -21,6 +21,7 @@ import {
   getCountriesList,
   googleLogin,
   facebookLogin,
+  appleLogin,
 } from "../../../../../redux";
 
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -35,7 +36,6 @@ import {
 } from "../../../../../res/env";
 import FilterFooter from "../../../../../library/components/ActionButtonFooter/FilterFooter";
 import { colors } from "../../../../../res/palette";
-import jwt_decode from "jwt-decode";
 
 import * as Google from "expo-auth-session/providers/google";
 import * as Facebook from "expo-facebook";
@@ -120,13 +120,10 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
         });
 
         if (type === "success") {
-          setAccessToken(token);
           setIsLoggedin(true);
           console.log("facebookToken", token);
-          console.log("accessToken", accessToken);
           dispatch(facebookLogin(token));
           setTimeout(() => {
-            setIsOpen(false);
             setIsOpen(false);
           }, 1000);
         }
@@ -138,7 +135,7 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
     }
   };
 
-  const appleLogin = async () => {
+  const handleAppleLogin = async () => {
     try {
       const { identityToken } = await AppleAuthentication.signInAsync({
         requestedScopes: [
@@ -147,13 +144,14 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
         ],
       });
 
-      {
-        identityToken &&
-          console.log(
-            "identityToken",
-            jwt_decode(identityToken, { header: true }),
-            jwt_decode(identityToken)
-          );
+      if (identityToken) {
+        setIsLoggedin(true);
+        console.log("apple Identity token", identityToken);
+        dispatch(appleLogin(identityToken));
+        setTimeout(() => {
+          setIsOpen(false);
+          setIsOpen(false);
+        }, 1000);
       }
     } catch (error) {
       console.log(error);
@@ -166,7 +164,10 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
         <Text style={styles.main_text}>LOGG INN ELLER REGISTRER DEG</Text>
         <View style={styles.login_body}>
           <View style={styles.login_content}>
-            <TouchableOpacity style={styles.login_btn} onPress={appleLogin}>
+            <TouchableOpacity
+              style={styles.login_btn}
+              onPress={handleAppleLogin}
+            >
               <Image
                 style={styles.login_image}
                 source={require("../../../../../../assets/images/Header-Icon/apple.png")}
