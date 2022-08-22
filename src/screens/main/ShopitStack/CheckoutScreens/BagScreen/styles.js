@@ -212,6 +212,7 @@ export const styles = StyleSheet.create({
   },
   login_body: {
     flexDirection: "column",
+    flex: 1,
     marginBottom: 15,
     justifyContent: "center",
     alignItems: "center",

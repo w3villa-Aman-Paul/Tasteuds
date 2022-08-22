@@ -7,6 +7,7 @@ import {
   TextInput,
   Pressable,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import { globalStyles } from "../../../../../styles/global";
 import { styles } from "./styles";
@@ -62,19 +63,13 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
   const [inc, setInc] = useState("false");
   const [isLoggedin, setIsLoggedin] = useState(false);
 
-  const snapPoints = ["50%"];
+  const snapPoints = Platform.OS === "ios" ? ["50%"] : ["30%"];
   const timeoutIdRef = React.useRef();
 
   useEffect(() => {
     dispatch(getCart(cart?.token));
     setIsLoggedin(false);
   }, []);
-
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    iosClientId: GOOGLE_IOS_CLIENT_ID,
-    androidClientId: GOOGLE_ANDROID_CLIENT_ID,
-    expoClientId: GOOGLE_EXPO_ID,
-  });
 
   useEffect(() => {
     if (response?.type === "success") {
@@ -97,6 +92,12 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
     };
   }, []);
 
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    iosClientId: GOOGLE_IOS_CLIENT_ID,
+    androidClientId: GOOGLE_ANDROID_CLIENT_ID,
+    expoClientId: GOOGLE_EXPO_ID,
+  });
+
   const handleCartProductImage = (cartPro) => {
     const product = productsList?.find(
       (element) => cartPro?.variant?.product.id === element.id
@@ -112,11 +113,18 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
 
   const facebookLogIn = async () => {
     try {
-      if (!isLoggedin) {
-        await Facebook.initializeAsync({
+      let options = null;
+      if (Platform.OS === "android") {
+        options = { appId: FACEBOOK_APP_ID };
+      } else {
+        options = {
           appId: FACEBOOK_APP_ID,
           appName: "Tastebuds",
-        });
+        };
+      }
+
+      if (!isLoggedin) {
+        await Facebook.initializeAsync(options);
 
         const { type, token } = await Facebook.logInWithReadPermissionsAsync({
           permissions: ["email"],
@@ -149,7 +157,6 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
 
       if (identityToken) {
         setIsLoggedin(true);
-        console.log("apple Identity token", identityToken);
         dispatch(appleLogin(identityToken));
         setTimeout(() => {
           setIsOpen(false);
@@ -166,30 +173,32 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
       <View style={styles.login_container}>
         <Text style={styles.main_text}>LOGG INN ELLER REGISTRER DEG</Text>
         <View style={styles.login_body}>
-          <View style={styles.login_content}>
-            <TouchableOpacity
-              style={styles.login_btn}
-              onPress={handleAppleLogin}
-            >
-              <Image
-                style={styles.login_image}
-                source={require("../../../../../../assets/images/Header-Icon/apple.png")}
-              />
-
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Text style={styles.link_text}>LOGG INN MED APPLE</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-
-          {!googleSubmitting ? (
+          {Platform.OS === "ios" && (
             <View style={styles.login_content}>
+              <TouchableOpacity
+                style={styles.login_btn}
+                onPress={handleAppleLogin}
+              >
+                <Image
+                  style={styles.login_image}
+                  source={require("../../../../../../assets/images/Header-Icon/apple.png")}
+                />
+
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text style={styles.link_text}>LOGG INN MED APPLE</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          <View style={styles.login_content}>
+            {!googleSubmitting ? (
               <TouchableOpacity
                 style={styles.login_btn}
                 onPress={
@@ -217,12 +226,12 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
                   <Text style={styles.link_text}>LOGG INN MED GOOGLE</Text>
                 </View>
               </TouchableOpacity>
-            </View>
-          ) : (
-            <View style={styles.login_content}>
-              <ActivityIndicator />
-            </View>
-          )}
+            ) : (
+              <View style={styles.login_content}>
+                <ActivityIndicator />
+              </View>
+            )}
+          </View>
 
           <View style={styles.login_content}>
             <TouchableOpacity
