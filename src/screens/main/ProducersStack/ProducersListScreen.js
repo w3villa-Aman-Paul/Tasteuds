@@ -20,7 +20,7 @@ const ProducersListScreen = ({ dispatch, navigation }) => {
 
   const handleProducerClick = async (vendor) => {
     await dispatch(getSelectedVendor(vendor.slug));
-    navigation.navigate("ProducersDetailScreen");
+    navigation.navigate("ProducersDetailScreen", { bio: vendor.bio });
   };
 
   const renderFlatListItem = ({ item }) => {
@@ -36,7 +36,9 @@ const ProducersListScreen = ({ dispatch, navigation }) => {
           style={styles.producerCoverImage}
           resizeMode={"cover"}
         >
-          <Text style={[styles.producerName]}>{item.name}</Text>
+          <View style={[styles.nameContainer]}>
+            <Text style={[styles.producerName]}>{item.name}</Text>
+          </View>
         </ImageBackground>
       </TouchableOpacity>
     );
@@ -94,7 +96,6 @@ const ProducersListScreen = ({ dispatch, navigation }) => {
               flexDirection: "row",
               justifyContent: "center",
             }}
-            // onPress={() => setIsSortOverlayVisible(true)}
           >
             <Icon name="sort" type="material-icons" />
             <Text style={styles.buttonText}>SORTER</Text>
@@ -107,7 +108,7 @@ const ProducersListScreen = ({ dispatch, navigation }) => {
   return (
     <SafeAreaView style={{ ...styles.containerFluid, ...styles.bgWhite }}>
       <FlatList
-        data={vendors}
+        data={vendors.filter((item) => item.state === "active")}
         keyExtractor={(item, index) => item.id}
         renderItem={renderFlatListItem}
         ListHeaderComponent={producerListUpperComponent}

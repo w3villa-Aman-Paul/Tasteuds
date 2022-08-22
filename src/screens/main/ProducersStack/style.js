@@ -50,13 +50,18 @@ export const styles = StyleSheet.create({
     justifyContent: "flex-end",
     alignItems: "center",
   },
-  producerName: {
+
+  nameContainer: {
     backgroundColor: "rgba(255,255,255,0.8)",
     margin: 15,
+    borderWidth: 1,
+    borderColor: "transparent",
+    borderRadius: 5,
+  },
+  producerName: {
     fontSize: 14,
     fontFamily: "lato-bold",
     paddingHorizontal: 10,
-    borderRadius: 5,
   },
   detailHeaderContainer: {
     width: 30,

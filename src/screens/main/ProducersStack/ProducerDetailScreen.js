@@ -2,7 +2,6 @@ import {
   FlatList,
   Image,
   SafeAreaView,
-  ScrollView,
   Text,
   TouchableOpacity,
   View,
@@ -19,11 +18,15 @@ import { colors } from "../../../res/palette";
 import { getProduct, getTaxon } from "../../../redux";
 import { globalStyles } from "../../../styles/global";
 
-const ProducerDetailScreen = ({ dispatch, navigation }) => {
+const ProducerDetailScreen = ({ dispatch, navigation, route }) => {
   const selectedVendor = useSelector((state) => state?.taxons?.selectedVendor);
   const width = Dimensions.get("window").width - 20;
   const vendorList = useSelector((state) => state.taxons.vendors);
   const [vendorCover, setVendorCover] = useState({});
+
+  const bio = route.params.bio;
+
+  console.log("bio", bio);
 
   useEffect(() => {
     setVendorCover(findVendorCoverImage(selectedVendor.id));
@@ -145,9 +148,14 @@ const ProducerDetailScreen = ({ dispatch, navigation }) => {
             style={{ flex: 0.3 }}
             resizeMode={"contain"}
           />
-          <Text style={{ flex: 0.6 }}>
-            Sider frå Bleie Gard i Hardanger. Epla vert dyrka, plukka, pressa og
-            tappa av Olav Bleie.
+          <Text
+            style={{
+              flex: 0.6,
+              textAlignVertical: "center",
+              textAlign: "left",
+            }}
+          >
+            {bio ? `${bio}` : ""}
           </Text>
         </View>
 
@@ -185,7 +193,9 @@ const ProducerDetailScreen = ({ dispatch, navigation }) => {
         >
           <Text style={styles.descriptionTitle}>Om oss</Text>
           <HTML
-            source={{ html: selectedVendor?.about_us }}
+            source={{
+              html: `<p style='text-align: justify;'>${selectedVendor?.about_us}</p>`,
+            }}
             style={styles.buttonText}
           />
         </View>

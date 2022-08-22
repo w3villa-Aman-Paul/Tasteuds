@@ -71,6 +71,7 @@ const ProductListScreen = ({
   const [enableQty, setEnableQty] = useState(null);
   const [itemQuantity, setItemQuantity] = useState(1);
   const [inCart, setInCart] = useState(false);
+  const [isModelVisible, setModelVisible] = useState(false);
 
   const [mostBought, setMostBought] = useState([]);
   const [newlyAdded, setNewlyAdded] = useState([]);
@@ -902,13 +903,19 @@ const ProductListScreen = ({
         <View style={{ flexDirection: "row", marginBottom: 10 }}>
           <TouchableOpacity
             style={[styles.stickyBottomBtn, globalStyles.iosShadow]}
-            onPress={() => handleFilter()}
+            onPress={() => {
+              setModelVisible(true);
+              handleFilter();
+            }}
           >
             <Text>FILTER</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.stickyBottomBtn, globalStyles.iosShadow]}
-            onPress={() => handleSort()}
+            onPress={() => {
+              setModelVisible(true);
+              handleSort();
+            }}
           >
             <Text>SORTER</Text>
           </TouchableOpacity>
@@ -1347,6 +1354,7 @@ const ProductListScreen = ({
             snapPoints={snapPoints}
             onClose={() => setIsOpen(false)}
             bottomSheetContent={bottomSheetContent}
+            isModelVisible={isModelVisible}
           />
         )}
 
@@ -1357,6 +1365,7 @@ const ProductListScreen = ({
             onClose={() => setSort(false)}
             renderBackdrop={renderBackdrop}
             bottomSheetContent={sortContent}
+            isModelVisible={isModelVisible}
           />
         )}
       </View>

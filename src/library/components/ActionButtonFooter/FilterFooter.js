@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet } from "react-native";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -14,6 +14,8 @@ const FilterFooter = ({
   onClose,
   bottomSheetContent,
   renderBackdrop,
+  isModelVisible,
+  setModelVisible,
 }) => {
   return (
     <BottomSheet
@@ -24,6 +26,14 @@ const FilterFooter = ({
       onClose={onClose}
       style={{ flex: 1 }}
       handleStyle={styles.handle}
+      isVisible={isModelVisible}
+      modalProps={{
+        animationType: "fade",
+        hardwareAccelerated: true,
+        onRequestClose: () => {
+          setModelVisible(false);
+        },
+      }}
     >
       <BottomSheetView style={styles.container}>
         <filterNavigator.Navigator>

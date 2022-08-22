@@ -46,7 +46,6 @@ function ShopitStackNavigator({ navigation, route }) {
       routeName === "Bag" ||
       routeName === "ShippingAddress" ||
       routeName === "SavedAddress" ||
-      routeName === "ProducersDetailScreen" ||
       routeName === "OrderComplete"
     ) {
       navigation.setOptions({ tabBarVisible: false });
@@ -56,7 +55,7 @@ function ShopitStackNavigator({ navigation, route }) {
   }, [navigation, route]);
 
   return (
-    <ShopitStack.Navigator screenOptions={{ headerBackTitle: 'Go Back'}} >
+    <ShopitStack.Navigator screenOptions={{ headerBackTitle: "Go Back" }}>
       <ShopitStack.Screen
         name="Shop"
         component={HomeComponent}
@@ -176,7 +175,7 @@ function ShopitStackNavigator({ navigation, route }) {
         component={ProductsListScreen}
         options={({ route }) => ({
           headerTitle: "PRODUKTER",
-          
+
           headerRight: () => (
             <View
               style={{
@@ -322,7 +321,7 @@ function ShopitStackNavigator({ navigation, route }) {
           headerTitleStyle: {
             flex: 0.6,
           },
-         
+
           headerRightContainerStyle: {
             flex: 0.2,
             justifyContent: "space-between",
@@ -341,7 +340,7 @@ function ShopitStackNavigator({ navigation, route }) {
             fontFamily: "lato-bold",
           },
           headerTitleAlign: "center",
-         
+
           headerRightContainerStyle: {
             elevation: 0,
           },
@@ -451,7 +450,6 @@ const styles = StyleSheet.create({
   header: {
     width: 150,
     height: "100%",
-    
   },
   headerImg: {
     height: "100%",

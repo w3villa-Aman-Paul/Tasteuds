@@ -28,7 +28,7 @@ function CategoriesStackNavigator({ navigation, route }) {
     <CategoriesStack.Navigator
       screenOptions={{
         headerTitle: "",
-        headerBackTitle: 'Go Back',
+        headerBackTitle: "Go Back",
         headerLeft: () => (
           <View style={styles.header}>
             <Image
@@ -68,26 +68,23 @@ function CategoriesStackNavigator({ navigation, route }) {
         component={NewlyAddedProducts}
         options={{
           headerTitle: "Nyheter",
-          headerTitleAlign: 'center',
+          headerTitleAlign: "center",
           headerLeft: () => (
             <TouchableOpacity
               style={{
                 borderWidth: 1,
-                borderRadius: 50,
                 borderColor: "transparent",
                 elevation: 2,
                 backgroundColor: "white",
                 justifyContent: "center",
                 alignItems: "center",
-                padding: 5,
-                marginHorizontal: 20,
               }}
+              onPress={() => navigation.navigate("Categories")}
             >
-              <Icon
-                name="arrowleft"
-                type="ant-design"
-                onPress={() => navigation.navigate("Categories")}
+              <Image
+                source={require("../../assets/images/icons/chevron-left.png")}
                 title="Back"
+                style={{ height: "80%", resizeMode: "contain" }}
               />
             </TouchableOpacity>
           ),
@@ -99,7 +96,7 @@ function CategoriesStackNavigator({ navigation, route }) {
         component={MostBoughtProducts}
         options={{
           headerTitle: "Dine mest kjøpte varer",
-          headerTitleAlign: 'center',
+          headerTitleAlign: "center",
           headerLeft: () => (
             <TouchableOpacity
               style={{

@@ -20,12 +20,14 @@ import {
   getDefaultCountry,
   getCountriesList,
   googleLogin,
+  facebookLogin,
 } from "../../../../../redux";
 
 import { TouchableOpacity } from "react-native-gesture-handler";
 import CartFooter from "../../../../../library/components/ActionButtonFooter/cartFooter";
 import { useSelector } from "react-redux";
 import {
+  FACEBOOK_APP_ID,
   GOOGLE_ANDROID_CLIENT_ID,
   GOOGLE_EXPO_ID,
   GOOGLE_IOS_CLIENT_ID,
@@ -33,8 +35,11 @@ import {
 } from "../../../../../res/env";
 import FilterFooter from "../../../../../library/components/ActionButtonFooter/FilterFooter";
 import { colors } from "../../../../../res/palette";
+import jwt_decode from "jwt-decode";
 
 import * as Google from "expo-auth-session/providers/google";
+import * as Facebook from "expo-facebook";
+import * as AppleAuthentication from "expo-apple-authentication";
 import * as WebBrowser from "expo-web-browser";
 
 WebBrowser.maybeCompleteAuthSession();
@@ -53,12 +58,16 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
   const [showItemCard, setShowItemCard] = useState(false);
   const [enableQty, setEnableQty] = useState(null);
   const [itemQuantity, setItemQuantity] = useState(0);
+
   const [inc, setInc] = useState("false");
+  const [isLoggedin, setIsLoggedin] = useState(false);
+
   const snapPoints = ["50%"];
   const timeoutIdRef = React.useRef();
 
   useEffect(() => {
     dispatch(getCart(cart?.token));
+    setIsLoggedin(false);
   }, []);
 
   const [request, response, promptAsync] = Google.useAuthRequest({
@@ -67,17 +76,18 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
     expoClientId: GOOGLE_EXPO_ID,
   });
 
-  // useEffect(() => {
-  //   if (response?.type === "success") {
-  //     setGoogleSubmitting(true);
-  //     setAccessToken(response.authentication.accessToken);
-  //     dispatch(googleLogin(response.authentication.accessToken));
-  //     setTimeout(() => {
-  //       setIsOpen(false);
-  //       setIsOpen(false);
-  //     }, 1000);
-  //   }
-  // }, [response]);
+  useEffect(() => {
+    if (response?.type === "success") {
+      setGoogleSubmitting(true);
+      setAccessToken(response.authentication.accessToken);
+      dispatch(googleLogin(response.authentication.accessToken));
+      console.log("acc", response.authentication.accessToken);
+      setTimeout(() => {
+        setIsOpen(false);
+        setIsOpen(false);
+      }, 1000);
+    }
+  }, [response]);
 
   useEffect(() => {
     const timeOutId = timeoutIdRef.current;
@@ -100,13 +110,66 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
     navigation.navigate("ShippingAddress");
   };
 
+  const facebookLogIn = async () => {
+    try {
+      if (!isLoggedin) {
+        await Facebook.initializeAsync({
+          appId: FACEBOOK_APP_ID,
+          appName: "Tastebuds",
+        });
+
+        const { type, token } = await Facebook.logInWithReadPermissionsAsync({
+          permissions: ["email"],
+        });
+
+        if (type === "success") {
+          setAccessToken(token);
+          setIsLoggedin(true);
+          console.log("facebookToken", token);
+          console.log("accessToken", accessToken);
+          dispatch(facebookLogin(token));
+          setTimeout(() => {
+            setIsOpen(false);
+            setIsOpen(false);
+          }, 1000);
+        }
+      } else {
+        console.log("Access token", accessToken);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const appleLogin = async () => {
+    try {
+      const { identityToken } = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+        ],
+      });
+
+      {
+        identityToken &&
+          console.log(
+            "identityToken",
+            jwt_decode(identityToken, { header: true }),
+            jwt_decode(identityToken)
+          );
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const bottomSheetContent = () => {
     return (
       <View style={styles.login_container}>
         <Text style={styles.main_text}>LOGG INN ELLER REGISTRER DEG</Text>
         <View style={styles.login_body}>
           <View style={styles.login_content}>
-            <TouchableOpacity style={styles.login_btn}>
+            <TouchableOpacity style={styles.login_btn} onPress={appleLogin}>
               <Image
                 style={styles.login_image}
                 source={require("../../../../../../assets/images/Header-Icon/apple.png")}
@@ -163,7 +226,7 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
           <View style={styles.login_content}>
             <TouchableOpacity
               style={styles.login_btn}
-              onPress={() => navigation.navigate("SignIn")}
+              onPress={() => facebookLogIn()}
             >
               <Image
                 style={styles.login_image}
