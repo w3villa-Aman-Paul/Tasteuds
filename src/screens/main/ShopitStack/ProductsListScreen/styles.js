@@ -47,6 +47,7 @@ export const styles = StyleSheet.create({
   pricingContainer: {
     flex: 1,
     flexDirection: "row",
+    alignItems: "center",
   },
   prices: {
     fontFamily: "lato-bold",
@@ -175,7 +176,7 @@ export const styles = StyleSheet.create({
   addLogo: {
     position: "absolute",
     bottom: 8,
-    right: 0,
+    right: 18,
     ...globalStyles.iosShadow,
     flexDirection: "row",
     elevation: 8,
@@ -198,8 +199,6 @@ export const styles = StyleSheet.create({
     color: colors.btnLink,
     fontSize: 20,
     paddingHorizontal: 10,
-    // alignItems: "center",
-    // justifyContent: "center",
   },
   afterText: {
     position: "absolute",

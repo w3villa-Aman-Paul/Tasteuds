@@ -1,5 +1,5 @@
 import * as React from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { globalStyles } from "../../../styles/global";
 import { connect, useSelector } from "react-redux";
 import { Button } from "react-native-elements";
@@ -7,7 +7,7 @@ import { styles } from "./styles";
 
 const CartFooter = ({ title, onPress, cart, navigation }) => {
   return (
-    <View style={styles.cart_total_price}>
+    <TouchableOpacity style={styles.cart_total_price} onPress={onPress}>
       <View style={styles.cart_footer_body}>
         <Text style={styles.total_text}>TOTALSUM</Text>
         <Text style={styles.total_price}>{cart.display_total}</Text>
@@ -19,7 +19,7 @@ const CartFooter = ({ title, onPress, cart, navigation }) => {
         titleStyle={globalStyles.latoBold16}
         onPress={onPress}
       />
-    </View>
+    </TouchableOpacity>
   );
 };
 

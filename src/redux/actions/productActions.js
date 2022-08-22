@@ -21,6 +21,21 @@ export function getProductsList(data = null, { pageIndex, filter = null }) {
   };
 }
 
+export function getInitialProductList(data = null) {
+  const url = `${API_VERSION_STOREFRONT}/products`;
+  const params = {
+    include:
+      "default_variant,variants,option_types,product_properties,taxons,images,primary_variant",
+    "Content-Type": "application/json",
+    per_page: 20,
+  };
+  const method = "GET";
+  return {
+    type: "GET_PRODUCTS_LIST",
+    payload: handleAPIWithoutToken(url, params, method, data),
+  };
+}
+
 export function getProduct(id) {
   const url = `${API_VERSION_STOREFRONT}/products/${id}`;
   const params = {

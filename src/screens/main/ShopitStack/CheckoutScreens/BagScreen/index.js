@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   Image,
   TextInput,
   Pressable,
+  ActivityIndicator,
 } from "react-native";
 import { globalStyles } from "../../../../../styles/global";
 import { styles } from "./styles";
@@ -52,6 +53,7 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
   const [showItemCard, setShowItemCard] = useState(false);
   const [enableQty, setEnableQty] = useState(null);
   const [itemQuantity, setItemQuantity] = useState(0);
+  const [inc, setInc] = useState("false");
   const snapPoints = ["50%"];
   const timeoutIdRef = React.useRef();
 
@@ -65,14 +67,17 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
     expoClientId: GOOGLE_EXPO_ID,
   });
 
-  useEffect(() => {
-    if (response?.type === "success") {
-      setAccessToken(response.authentication.accessToken);
-      // dispatch(googleLogin(response.authentication.accessToken));
-    }
-    setGoogleSubmitting(false);
-  }, [response]);
-  
+  // useEffect(() => {
+  //   if (response?.type === "success") {
+  //     setGoogleSubmitting(true);
+  //     setAccessToken(response.authentication.accessToken);
+  //     dispatch(googleLogin(response.authentication.accessToken));
+  //     setTimeout(() => {
+  //       setIsOpen(false);
+  //       setIsOpen(false);
+  //     }, 1000);
+  //   }
+  // }, [response]);
 
   useEffect(() => {
     const timeOutId = timeoutIdRef.current;
@@ -123,14 +128,16 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
             <View style={styles.login_content}>
               <TouchableOpacity
                 style={styles.login_btn}
-                onPress={
-                  accessToken
-                    ? <></>
-                    : () => {
-                        // setGoogleSubmitting(true);
-                        // promptAsync({ showInRecents: true });
-                      }
-                }
+                // onPress={
+                //   accessToken ? (
+                //     <></>
+                //   ) : (
+                //     () => {
+                //       setGoogleSubmitting(true);
+                //       promptAsync({ showInRecents: true });
+                //     }
+                //   )
+                // }
               >
                 <Image
                   style={styles.login_image}
@@ -149,7 +156,7 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
             </View>
           ) : (
             <View style={styles.login_content}>
-              <ActivityIndicatorCard />
+              <ActivityIndicator />
             </View>
           )}
 
@@ -202,10 +209,17 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
   };
 
   const handleItemIncrement = () => {
+    setInc(true);
     setItemQuantity(itemQuantity + 1);
   };
-  const handleItemDecrement = () => {
-    setItemQuantity(itemQuantity - 1);
+  const handleItemDecrement = (lineItemQuantity) => {
+    console.log("ORIGINAL", lineItemQuantity);
+    if (itemQuantity === lineItemQuantity) {
+      setShowItemCard(false);
+    } else {
+      setInc(false);
+      setItemQuantity(itemQuantity + 1);
+    }
   };
 
   console.log("ITEMQTY", itemQuantity);
@@ -229,7 +243,7 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
   };
 
   const handleDecrementQuantity = (lineItemId, lineItemQuantity) => {
-    if (lineItemQuantity === 1) {
+    if (lineItemQuantity === itemQuantity) {
       handleRemoveLineItem(lineItemId);
     } else {
       const id = setTimeout(() => {
@@ -237,7 +251,7 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
           setQuantity(
             {
               line_item_id: lineItemId,
-              quantity: lineItemQuantity + (itemQuantity - 1),
+              quantity: lineItemQuantity - (itemQuantity + 1),
             },
             cart?.token
           )
@@ -363,105 +377,94 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
                       onPress={() => {
                         setShowItemCard(true);
                         findCartProduct(cartItemId);
-                        // setItemQuantity(1);
                       }}
                     >
                       {showItemCard && cartItemId === enableQty?.id ? (
                         <>
-                          <View style={styles.inc_btn}>
-                            <View style={styles.after_Press}>
-                              <TouchableOpacity
-                                onPress={() => {
-                                  handleItemDecrement();
-                                  handleChangeQuantityClick();
-                                  handleDecrementQuantity(ele.id, ele.quantity);
+                          <View style={styles.after_Press}>
+                            <TouchableOpacity
+                              onPress={() => {
+                                handleItemDecrement(ele.quantity);
+                                handleChangeQuantityClick();
+                                handleDecrementQuantity(ele.id, ele.quantity);
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  fontSize: 25,
+                                  color: "#EB1741",
+                                  fontWeight: "bold",
                                 }}
                               >
-                                <Text
-                                  style={{
-                                    fontSize: 20,
-                                    color: "#EB1741",
-                                    fontWeight: "bold",
-                                  }}
-                                >
-                                  -
-                                </Text>
-                              </TouchableOpacity>
-
-                              <Text style={{ fontSize: 25 }}>
-                                {itemQuantity > 0
-                                  ? ele.quantity + itemQuantity
-                                  : ele.quantity + itemQuantity}
+                                --
                               </Text>
-                              <TouchableOpacity
-                                onPress={() => {
-                                  handleItemIncrement();
-                                  handleChangeQuantityClick();
-                                  handleIncrementQuantity(ele.id, ele.quantity);
+                            </TouchableOpacity>
+
+                            <Text style={{ fontSize: 25 }}>
+                              {inc
+                                ? ele.quantity + itemQuantity
+                                : ele.quantity - itemQuantity}
+                            </Text>
+                            <TouchableOpacity
+                              onPress={() => {
+                                handleItemIncrement();
+                                handleChangeQuantityClick();
+                                handleIncrementQuantity(ele.id, ele.quantity);
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  fontSize: 25,
+                                  color: "#EB1741",
+                                  fontWeight: "bold",
                                 }}
                               >
-                                <Text
-                                  style={{
-                                    fontSize: 20,
-                                    color: "#EB1741",
-                                    fontWeight: "bold",
-                                  }}
-                                >
-                                  +
-                                </Text>
-                              </TouchableOpacity>
-                            </View>
-                            <View style={styles.after_img}>
-                              <Image
-                                source={{
-                                  uri: `${HOST}/${cartProductImage?.url}`,
-                                }}
-                                style={styles.image}
-                              />
-                            </View>
+                                +
+                              </Text>
+                            </TouchableOpacity>
+                          </View>
+                          <View style={styles.after_img}>
+                            <Image
+                              source={{
+                                uri: `${HOST}/${cartProductImage?.url}`,
+                              }}
+                              style={styles.image}
+                            />
                           </View>
                         </>
                       ) : (
                         <>
                           <View style={styles.inc_btn}>
-                            <View style={styles.before_Press}>
-                              <Text style={{ fontSize: 25 }}>
-                                {ele.quantity}
-                              </Text>
-                              <View>
-                                <View>
-                                  <Text
-                                    style={{
-                                      fontSize: 20,
-                                      color: "#EB1741",
-                                      fontWeight: "bold",
-                                    }}
-                                  >
-                                    +
-                                  </Text>
-                                </View>
+                            <Text style={{ fontSize: 25 }}>{ele.quantity}</Text>
 
-                                <View>
-                                  <Text
-                                    style={{
-                                      fontSize: 20,
-                                      color: "#EB1741",
-                                      fontWeight: "bold",
-                                    }}
-                                  >
-                                    -
-                                  </Text>
-                                </View>
-                              </View>
-                            </View>
-                            <View style={styles.body_first}>
-                              <Image
-                                source={{
-                                  uri: `${HOST}/${cartProductImage?.url}`,
+                            <View style={styles.before_btn}>
+                              <Text
+                                style={{
+                                  fontSize: 15,
+                                  color: "#EB1741",
+                                  fontWeight: "bold",
                                 }}
-                                style={styles.image}
-                              />
+                              >
+                                +
+                              </Text>
+                              <Text
+                                style={{
+                                  fontSize: 15,
+                                  color: "#EB1741",
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                -
+                              </Text>
                             </View>
+                          </View>
+                          <View style={styles.body_first}>
+                            <Image
+                              source={{
+                                uri: `${HOST}/${cartProductImage?.url}`,
+                              }}
+                              style={styles.image}
+                            />
                           </View>
                         </>
                       )}
@@ -471,13 +474,19 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
                       <Text style={styles.name} numberOfLines={1}>
                         {ele.name}
                       </Text>
+                      <Text>
+                        {ele.variant.options_text
+                          ? ele.variant.options_text.split(" ")[3] ||
+                            ele.variant.options_text.split(" ")[1]
+                          : ""}
+                      </Text>
                     </View>
                     <View style={styles.body_third}>
                       <Text style={styles.price}>{ele.display_total}</Text>
                     </View>
-                    <Text onPress={() => handleRemoveLineItem(ele?.id)}>
+                    {/* <Text onPress={() => handleRemoveLineItem(ele?.id)}>
                       XX
-                    </Text>
+                    </Text> */}
                   </View>
                   <Divider orientation="horizontal" />
                 </View>
@@ -534,7 +543,9 @@ const BagScreen = ({ navigation, dispatch, saving, cart }) => {
           <View></View>
         </ScrollView>
 
-        {isOpen ? (
+        {cart?.line_items.length === 0 ? (
+          <></>
+        ) : isOpen ? (
           <></>
         ) : (
           <CartFooter

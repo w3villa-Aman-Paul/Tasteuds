@@ -14,6 +14,7 @@ import { Snackbar } from "react-native-paper";
 import {
   addItem,
   getCategories,
+  getInitialProductList,
   getMenus,
   getProduct,
   getProductsList,
@@ -40,6 +41,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   const [showItemCard, setShowItemCard] = useState(false);
   const [enableQty, setEnableQty] = useState(null);
   const [mostBought, setMostBought] = useState([]);
+  const [inc, setInc] = useState("false");
   const [itemQuantity, setItemQuantity] = useState(1);
   const [inCart, setInCart] = useState(false);
 
@@ -51,6 +53,12 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     dispatch(getCategories());
   }, []);
 
+  // React.useEffect(() => {
+  //   setTimeout(() => {
+  //     setShowItemCard(false);
+  //   }, 2000);
+  // }, []);
+
   React.useEffect(() => {
     const timeOutId = timeoutIdRef.current;
 
@@ -61,7 +69,8 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
 
   React.useEffect(() => {
     {
-      productsList.length === 0 && dispatch(getProductsList(1, {}));
+      productsList.length <= 10 &&
+        dispatch(getInitialProductList(1, { pageIndex: 1, filter: null }));
     }
   }, [productsList]);
 
@@ -122,6 +131,24 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     return item?.default_variant?.id;
   };
 
+  const handleItemIncrement = () => {
+    setInc(true);
+    setItemQuantity(itemQuantity + 1);
+  };
+
+  const handleChangeQuantityClick = () => {
+    clearTimeout(timeoutIdRef.current);
+  };
+
+  const handleItemDecrement = (lineItemQuantity) => {
+    if (1 - itemQuantity == lineItemQuantity) {
+      setShowItemCard(false);
+    } else {
+      setInc(false);
+      setItemQuantity(itemQuantity - 1);
+    }
+  };
+
   const handleSetTimeoutDefault = (ID) => {
     let firstItem = productsList.find((x) => x.id === ID);
     setTimeout(() => {
@@ -132,12 +159,8 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
         })
       );
       setShowItemCard(false);
-      setItemQuantity(0);
-    }, 3000);
+    }, 2000);
   };
-
-  // console.log("ITEMQTY", itemQuantity);
-  // console.log("TEMPITEM", tempItem);
 
   const handleSetTimeoutInc = (tempId, qty) => {
     const id = setTimeout(() => {
@@ -145,9 +168,10 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
         dispatch(
           addItem(cart?.token, {
             variant_id: handleCart(),
-            quantity: itemQuantity,
+            quantity: itemQuantity + 1,
           })
         );
+        setShowItemCard(false);
       } else {
         dispatch(
           setQuantity(
@@ -158,22 +182,22 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
             cart?.token
           )
         );
+        setShowItemCard(false);
+        setItemQuantity(1);
       }
-      setShowItemCard(false);
-      setItemQuantity(1);
-    }, 4000);
+    }, 2000);
 
     timeoutIdRef.current = id;
   };
 
-  // console.log("INCART", inCart);
+  console.log("ITEMQTY", itemQuantity);
+  console.log("INCART", inCart);
 
   const handleSetTimeoutDec = (tempId, qty) => {
-    if (qty === 1) {
+    console.log("ORIGINAL", qty);
+    if (1 - itemQuantity == qty) {
       dispatch(removeLineItem(tempId, {}, cart?.token));
-      // setTempItem(0);
       setShowItemCard(false);
-      setInCart(false);
     } else {
       const id = setTimeout(() => {
         dispatch(
@@ -187,21 +211,14 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
         );
         setShowItemCard(false);
         setItemQuantity(0);
-      }, 4000);
+      }, 2000);
       timeoutIdRef.current = id;
     }
   };
 
-  const handleItemIncrement = () => {
-    setItemQuantity(itemQuantity + 1);
-  };
-
-  const handleChangeQuantityClick = () => {
-    clearTimeout(timeoutIdRef.current);
-  };
-
-  const handleItemDecrement = () => {
-    setItemQuantity(itemQuantity - 1);
+  const closeIncBar = () => {
+    const id = setTimeout(() => setShowItemCard(false), 2000);
+    timeoutIdRef.current = id;
   };
 
   const handleWeeklyProducerClick = async (vendor) => {
@@ -245,16 +262,18 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
               <TouchableOpacity
                 onPress={() => {
                   handleChangeQuantityClick();
-                  handleItemDecrement();
+                  handleItemDecrement(tempArr[0]?.quantity);
                   handleSetTimeoutDec(tempArr[0]?.id, tempArr[0]?.quantity);
                 }}
               >
-                <Text style={styles.dynamicText}>-</Text>
+                <Text style={styles.dynamicText}>--</Text>
               </TouchableOpacity>
 
               <Text style={styles.dynamicText}>
                 {tempArr.length !== 0
-                  ? tempArr[0].quantity + (itemQuantity - 1)
+                  ? inc
+                    ? tempArr[0].quantity + (itemQuantity - 1)
+                    : tempArr[0].quantity + (itemQuantity - 1)
                   : itemQuantity}
               </Text>
 
@@ -272,19 +291,13 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
             <TouchableOpacity
               style={styles.addLogo}
               onPress={() => {
+                closeIncBar();
+
                 setItemQuantity(1);
                 setShowItemCard(true);
                 findCartProduct(item?.id);
-
                 {
-                  !inCart && itemQuantity == 1
-                    ? handleSetTimeoutDefault(item?.id)
-                    : null;
-                }
-                {
-                  item?.id == tempArr[0]?.variant?.product?.id
-                    ? setInCart(true)
-                    : setInCart(false);
+                  tempArr[0] ? setInCart(true) : setInCart(false);
                 }
               }}
             >
@@ -302,6 +315,16 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
                   borderRadius={10}
                   color={colors.btnLink}
                   backgroundColor={colors.white}
+                  onPress={() => {
+                    setItemQuantity(1);
+                    setShowItemCard(true);
+                    findCartProduct(item?.id);
+                    {
+                      tempArr[0]
+                        ? setInCart(true)
+                        : (setInCart(false), handleSetTimeoutDefault(item?.id));
+                    }
+                  }}
                 />
               )}
             </TouchableOpacity>
@@ -311,18 +334,20 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
           <Text numberOfLines={1} style={styles.title}>
             {item.name}
           </Text>
-          <Text numberOfLines={1} style={styles.description}>
-            {`${resultVendor(item?.vendor?.id)[0]}`}
-          </Text>
           <View style={styles.pricingContainer}>
             <Text style={[styles.prices, { color: colors.black }]}>
-              {item.display_price} ||{" "}
+              {item.display_price} |
+            </Text>
+            <Text style={{ ...styles.prices, color: "#808080" }}>
               {item?.default_variant?.options_text
                 ? item?.default_variant?.options_text.split(" ")[3] ||
                   item?.default_variant?.options_text.split(" ")[1]
                 : null}
             </Text>
           </View>
+          <Text numberOfLines={1} style={styles.description}>
+            {`${resultVendor(item?.vendor?.id)[0]}`}
+          </Text>
         </View>
       </TouchableOpacity>
     );

@@ -181,6 +181,7 @@ export const styles = StyleSheet.create({
   pricingContainer: {
     flex: 1,
     flexDirection: "row",
+    alignItems: "center",
   },
   prices: {
     fontFamily: "lato-bold",
@@ -194,7 +195,6 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.white,
   },
   home_btn: {
-    // width: 250,
     flex: 1,
     alignItems: "center",
     marginLeft: 80,
@@ -256,12 +256,12 @@ export const styles = StyleSheet.create({
   },
   addLogo: {
     position: "absolute",
-    bottom: 8,
-    right: 0,
+    bottom: 6,
+    right: 5,
     ...globalStyles.iosShadow,
     flexDirection: "row",
     elevation: 8,
-    borderRadius: 10,
+    borderRadius: 12,
     padding: 8,
     zIndex: 8,
     backgroundColor: "#fff",
@@ -280,8 +280,6 @@ export const styles = StyleSheet.create({
     color: colors.btnLink,
     fontSize: 20,
     paddingHorizontal: 10,
-    // alignItems: "center",
-    // justifyContent: "center",
   },
   afterText: {
     position: "absolute",
@@ -289,10 +287,12 @@ export const styles = StyleSheet.create({
     right: 0,
     ...globalStyles.iosShadow,
     borderRadius: 10,
-    paddingVertical: 5,
-    paddingHorizontal: 12,
+    height: 42,
+    width: 42,
     zIndex: 10,
     elevation: 10,
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: colors.btnLink,
   },
 });

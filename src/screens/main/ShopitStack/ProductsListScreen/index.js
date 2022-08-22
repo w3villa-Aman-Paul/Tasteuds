@@ -176,7 +176,6 @@ const ProductListScreen = ({
         case 3:
           handleActiveMenu();
           handleActiveSubMenu();
-          console.log(">>>", activeSubMenu, "menu", activeMenus);
           paramsDispatchHandler(params);
           dispatch(getSubMenuProducts(params.menu.permalink.toLowerCase()));
           setIsSubAll(false);
@@ -259,7 +258,6 @@ const ProductListScreen = ({
   };
 
   const handleUncheckAllMenus = (arr) => {
-    console.log("arr", arr);
     const newArray = arr.map((item) => {
       return { ...item, isActive: false };
     });
@@ -312,7 +310,6 @@ const ProductListScreen = ({
 
   const handleSetTimeoutDefault = (ID) => {
     let firstItem = productsList.find((x) => x.id === ID);
-    // console.log("TTTTT", firstItem);
     setTimeout(() => {
       dispatch(
         addItem(cart?.token, {
@@ -464,7 +461,7 @@ const ProductListScreen = ({
             <View
               style={[
                 styles.addLogo,
-                { width: "95%", justifyContent: "space-between" },
+                { width: "80%", justifyContent: "space-between" },
               ]}
             >
               <TouchableOpacity
@@ -474,7 +471,7 @@ const ProductListScreen = ({
                   handleSetTimeoutDec(tempArr[0]?.id, tempArr[0]?.quantity);
                 }}
               >
-                <Text style={styles.dynamicText}>-</Text>
+                <Text style={styles.dynamicText}>--</Text>
               </TouchableOpacity>
 
               <Text style={styles.dynamicText}>
@@ -536,18 +533,20 @@ const ProductListScreen = ({
           <Text numberOfLines={1} style={styles.title}>
             {item.name}
           </Text>
-          <Text numberOfLines={1} style={styles.description}>
-            {`${item?.vendor?.id ? resultVendor(item?.vendor?.id)[0] : ""}`}
-          </Text>
           <View style={styles.pricingContainer}>
             <Text style={[styles.prices, { color: colors.black }]}>
-              {item.display_price}||{" "}
+              {item.display_price} |
+            </Text>
+            <Text style={{ ...styles.prices, color: "#808080" }}>
               {item?.default_variant?.options_text
                 ? item?.default_variant?.options_text.split(" ")[3] ||
                   item?.default_variant?.options_text.split(" ")[1]
                 : null}
             </Text>
           </View>
+          <Text numberOfLines={1} style={styles.description}>
+            {`${item?.vendor?.id ? resultVendor(item?.vendor?.id)[0] : ""}`}
+          </Text>
         </View>
       </TouchableOpacity>
     );
