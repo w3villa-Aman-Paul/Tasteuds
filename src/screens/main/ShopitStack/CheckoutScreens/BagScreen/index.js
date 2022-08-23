@@ -29,6 +29,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import CartFooter from "../../../../../library/components/ActionButtonFooter/cartFooter";
 import { useSelector } from "react-redux";
 import {
+  APP_NAME,
   FACEBOOK_APP_ID,
   GOOGLE_ANDROID_CLIENT_ID,
   GOOGLE_EXPO_ID,
@@ -39,7 +40,8 @@ import FilterFooter from "../../../../../library/components/ActionButtonFooter/F
 import { colors } from "../../../../../res/palette";
 
 import * as Google from "expo-auth-session/providers/google";
-import * as Facebook from "expo-facebook";
+import * as Facebook from "expo-auth-session/providers/facebook";
+// import * as Facebook from "expo-facebook";
 import * as AppleAuthentication from "expo-apple-authentication";
 import * as WebBrowser from "expo-web-browser";
 
@@ -62,6 +64,7 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
 
   const [inc, setInc] = useState("false");
   const [isLoggedin, setIsLoggedin] = useState(false);
+  const [fbResponse, setFbResponse] = useState({});
 
   const snapPoints = Platform.OS === "ios" ? ["50%"] : ["30%"];
   const timeoutIdRef = React.useRef();
@@ -82,11 +85,17 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
         setIsOpen(false);
       }, 1000);
     }
-  }, [response]);
+
+    if (fbResponse?.type === "success") {
+      dispatch(facebookLogin(fbResponse.authentication.accessToken));
+      setTimeout(() => {
+        setIsOpen(false);
+      }, 1000);
+    }
+  }, [response, fbResponse]);
 
   useEffect(() => {
     const timeOutId = timeoutIdRef.current;
-
     return () => {
       clearTimeout(timeOutId);
     };
@@ -96,6 +105,10 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
     iosClientId: GOOGLE_IOS_CLIENT_ID,
     androidClientId: GOOGLE_ANDROID_CLIENT_ID,
     expoClientId: GOOGLE_EXPO_ID,
+  });
+
+  const [__, ____, fbPromptAsync] = Facebook.useAuthRequest({
+    clientId: FACEBOOK_APP_ID,
   });
 
   const handleCartProductImage = (cartPro) => {
@@ -111,39 +124,9 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
     navigation.navigate("ShippingAddress");
   };
 
-  const facebookLogIn = async () => {
-    try {
-      let options = null;
-      if (Platform.OS === "android") {
-        options = { appId: FACEBOOK_APP_ID };
-      } else {
-        options = {
-          appId: FACEBOOK_APP_ID,
-          appName: "Tastebuds",
-        };
-      }
-
-      if (!isLoggedin) {
-        await Facebook.initializeAsync(options);
-
-        const { type, token } = await Facebook.logInWithReadPermissionsAsync({
-          permissions: ["email"],
-        });
-
-        if (type === "success") {
-          setIsLoggedin(true);
-          console.log("facebookToken", token);
-          dispatch(facebookLogin(token));
-          setTimeout(() => {
-            setIsOpen(false);
-          }, 1000);
-        }
-      } else {
-        console.log("Access token", accessToken);
-      }
-    } catch (e) {
-      console.log(e);
-    }
+  const handleFacebookAuth = async () => {
+    const response = await fbPromptAsync();
+    setFbResponse(response);
   };
 
   const handleAppleLogin = async () => {
@@ -236,7 +219,7 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
           <View style={styles.login_content}>
             <TouchableOpacity
               style={styles.login_btn}
-              onPress={() => facebookLogIn()}
+              onPress={() => handleFacebookAuth()}
             >
               <Image
                 style={styles.login_image}
@@ -450,8 +433,6 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
               let getProduct = cart?.line_items?.find(
                 (ele) => ele?.variant?.product?.id === enableQty?.id
               );
-
-              console.log(">>>>", getProduct);
 
               return (
                 <View key={ele?.variant?.id.toString()}>
