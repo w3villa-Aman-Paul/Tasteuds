@@ -79,27 +79,37 @@ const ShippingAddressScreen = ({
     const navigation = useNavigation();
 
     const handlePaymentConfirmation = async () => {
-      dispatch(
-        updateCheckout(cart?.token, {
-          order: {
-            payments_attributes: [
-              {
-                payment_method_id: 3,
-                source_attributes: {
-                  gateway_payment_profile_id: profileId,
-                  month: month,
-                  year: year,
-                  verification_value: cvv,
-                  name: cardName,
-                },
+      try {
+        try {
+          dispatch(
+            updateCheckout(cart?.token, {
+              order: {
+                payments_attributes: [
+                  {
+                    payment_method_id: 3,
+                    source_attributes: {
+                      gateway_payment_profile_id: profileId,
+                      month: month,
+                      year: year,
+                      verification_value: cvv,
+                      name: cardName,
+                    },
+                  },
+                ],
               },
-            ],
-          },
-        })
-      );
-      dispatch(completeCheckout(cart?.token))
-        .then(() => dispatch(createCart()))
-        .then(() => navigation.navigate("OrderComplete"));
+            })
+          );
+          dispatch(completeCheckout(cart?.token)).then(() => {
+            setIsOpen(false);
+            dispatch(createCart());
+            navigation.navigate("OrderComplete");
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      } catch (error) {
+        console.log(error);
+      }
     };
 
     return (

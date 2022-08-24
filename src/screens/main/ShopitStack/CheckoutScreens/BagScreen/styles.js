@@ -102,6 +102,8 @@ export const styles = StyleSheet.create({
     justifyContent: "space-around",
     alignItems: "center",
     borderRadius: 10,
+    ...globalStyles.iosShadow,
+    borderWidth: 1,
   },
   before_btn: {
     flexDirection: "column",

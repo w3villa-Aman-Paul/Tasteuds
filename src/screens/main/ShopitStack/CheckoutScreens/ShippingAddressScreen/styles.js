@@ -79,6 +79,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    ...globalStyles.iosShadow,
   },
   address_body: {
     elevation: 10,
@@ -127,6 +128,7 @@ export const styles = StyleSheet.create({
     borderRadius: 10,
     elevation: 10,
     padding: 15,
+    ...globalStyles.iosShadow,
   },
   payment_title: {
     fontSize: 14,
@@ -144,12 +146,13 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 10,
+    elevation: 5,
+    ...globalStyles.iosShadow,
   },
   payment_btn: {
     flexDirection: "row",
     width: "70%",
     borderWidth: 1,
-    elevation: 5,
     backgroundColor: colors.white,
     borderColor: "transparent",
     borderRadius: 10,
