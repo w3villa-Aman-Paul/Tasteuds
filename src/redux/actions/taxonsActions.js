@@ -51,6 +51,10 @@ export function getSelectedVendor(vendor) {
   };
 }
 
+export function getFilteredVendors(ids) {
+  const url = `${API_VERSION_STOREFRONT}/new_api/taxon_vendors.json?ids=${ids}`;
+}
+
 export function getCategories() {
   const url = `${API_VERSION_STOREFRONT}/taxons/kategorier/`;
   const method = "GET";
@@ -76,13 +80,6 @@ export function getMenus() {
     payload: handleAPIWithoutToken(url, params, method),
   };
 }
-
-// export function activeFunction(id) {
-//   return {
-//     type: "SET_MENU_ITEM_CHECK",
-//     payload: id,
-//   };
-// }
 
 export function getSubMenu(menuName) {
   const url = `${API_VERSION_STOREFRONT}/taxons/${menuName}`;

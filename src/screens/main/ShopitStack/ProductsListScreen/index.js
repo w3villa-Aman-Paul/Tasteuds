@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -277,7 +277,7 @@ const ProductListScreen = ({
   const sheetRef = React.useRef(null);
   const [isOpen, setIsOpen] = useState(false);
 
-  const snapPoints = ["50%"];
+  const snapPoints = useMemo(() => ["50%"], []);
 
   const handleFilter = () => {
     setShow(false);
@@ -287,13 +287,6 @@ const ProductListScreen = ({
   const handleSort = () => {
     setSort(true);
   };
-
-  const renderBackdrop = React.useCallback(
-    (props) => (
-      <BottomSheetBackdrop {...props} close={() => sheetRef.current.close()} />
-    ),
-    []
-  );
 
   useEffect(() => {
     dispatch(getCart(cart.token));
@@ -637,7 +630,6 @@ const ProductListScreen = ({
       : setTimeout(onPress, 50);
   };
 
-  console.log("ITEMQTY", itemQuantity);
   const handleProductLoad = async (id, item) => {
     dispatch(getProduct(id));
     dispatch(getTaxon(item.taxons[0].id));
@@ -1077,17 +1069,6 @@ const ProductListScreen = ({
       storeData("vendors", data);
     };
 
-    // const handleFilterSearch = async (categories, vendors) => {
-    //   let filterTaxons = categories
-    //     ?.filter((item) => item?.isChecked)
-    //     ?.map((item) => item?.id);
-
-    //   let filterVendor = vendors
-    //     ?.filter((item) => item?.isChecked)
-    //     .map((item) => item?.id);
-    //   dispatch(getSearchProduct(null, filterTaxons, filterVendor));
-    // };
-
     let selectedFilterTaxon = selectedCategory?.filter(
       (ele) => ele?.isChecked === true
     );
@@ -1300,87 +1281,85 @@ const ProductListScreen = ({
     );
   };
 
-  if (products.saving || savingTaxon) {
-    return <ActivityIndicatorCard />;
-  } else
-    return (
-      <View style={[globalStyles.containerFluid, styles.bgwhite, { flex: 1 }]}>
-        <FlatList
-          keyExtractor={(item, index) => index.toString()}
-          data={isAll || all ? productsList : data}
-          renderItem={newJustInRenderItem}
-          numColumns={2}
-          ListHeaderComponent={flatListUpperElement}
-          ListFooterComponent={
-            flatListLowerElement
-            // meta.total_count !== productsList.length && (
-            //   <ActivityIndicator size="large" />
-            // )
-          }
-          ref={scrollRef}
-          onEndReachedThreshold={0.3}
-          onEndReached={() => {
-            handleEndReached();
-          }}
-          columnWrapperStyle={{
-            width: "100%",
-            justifyContent: "space-evenly",
-          }}
-        />
+  // if (products.saving || savingTaxon) {
+  //   return <ActivityIndicatorCard />;
+  // } else
+  return (
+    <View style={[globalStyles.containerFluid, styles.bgwhite, { flex: 1 }]}>
+      <FlatList
+        keyExtractor={(item, index) => index.toString()}
+        data={isAll || all ? productsList : data}
+        renderItem={newJustInRenderItem}
+        numColumns={2}
+        ListHeaderComponent={flatListUpperElement}
+        ListFooterComponent={flatListLowerElement}
+        ref={scrollRef}
+        onEndReachedThreshold={0.3}
+        onEndReached={() => {
+          handleEndReached();
+        }}
+        columnWrapperStyle={{
+          width: "100%",
+          justifyContent: "space-evenly",
+        }}
+      />
 
-        {stikyOptions()}
+      {stikyOptions()}
 
-        {cart?.item_count > 0 ? (
-          <View style={styles.qty_footer}>
+      {cart?.item_count > 0 ? (
+        <View style={styles.qty_footer}>
+          <Text
+            style={{ color: colors.white, fontSize: 15, fontWeight: "bold" }}
+          >
+            {cart?.item_count} VARER
+          </Text>
+          <TouchableOpacity onPress={() => navigation.navigate("Bag")}>
             <Text
-              style={{ color: colors.white, fontSize: 15, fontWeight: "bold" }}
+              style={{
+                color: colors.white,
+                fontSize: 15,
+                fontWeight: "bold",
+              }}
             >
-              {cart?.item_count} VARER
+              SE HANDLEVOGN
             </Text>
-            <TouchableOpacity onPress={() => navigation.navigate("Bag")}>
-              <Text
-                style={{
-                  color: colors.white,
-                  fontSize: 15,
-                  fontWeight: "bold",
-                }}
-              >
-                SE HANDLEVOGN
-              </Text>
-            </TouchableOpacity>
-          </View>
-        ) : null}
+          </TouchableOpacity>
+        </View>
+      ) : null}
 
-        {checkout.error !== null && saving === false ? (
-          <Snackbar visible={snackbarVisible} onDismiss={dismissSnackbar}>
-            {errMessage}
-          </Snackbar>
-        ) : (
-          <></>
-        )}
+      {checkout.error !== null && saving === false ? (
+        <Snackbar visible={snackbarVisible} onDismiss={dismissSnackbar}>
+          {errMessage}
+        </Snackbar>
+      ) : (
+        <></>
+      )}
 
-        {isOpen && (
-          <FilterFooter
-            value={sheetRef}
-            snapPoints={snapPoints}
-            onClose={() => setIsOpen(false)}
-            bottomSheetContent={bottomSheetContent}
-            isModelVisible={isModelVisible}
-          />
-        )}
+      {isOpen && (
+        <FilterFooter
+          value={sheetRef}
+          snapPoints={snapPoints}
+          onClose={() => setIsOpen(false)}
+          bottomSheetContent={bottomSheetContent}
+          isModelVisible={isModelVisible}
+          setModelVisible={setModelVisible}
+          setIsOpen={setIsOpen}
+        />
+      )}
 
-        {sort && (
-          <FilterFooter
-            value={sheetRef}
-            snapPoints={snapPoints}
-            onClose={() => setSort(false)}
-            renderBackdrop={renderBackdrop}
-            bottomSheetContent={sortContent}
-            isModelVisible={isModelVisible}
-          />
-        )}
-      </View>
-    );
+      {sort && (
+        <FilterFooter
+          value={sheetRef}
+          snapPoints={snapPoints}
+          onClose={() => setSort(false)}
+          bottomSheetContent={sortContent}
+          isModelVisible={isModelVisible}
+          setModelVisible={setModelVisible}
+          setIsOpen={setSort}
+        />
+      )}
+    </View>
+  );
 };
 
 const mapStateToProps = (state) => ({

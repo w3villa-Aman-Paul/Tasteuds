@@ -43,6 +43,7 @@ const DEFAULT_STATE = {
   weeklyProducer: [],
   mostBoughtGoods: [],
   newAddedProducts: [],
+  filteredVendors: [],
 };
 
 let changes = null;
@@ -120,6 +121,22 @@ export default function taxonsReducer(state = DEFAULT_STATE, action) {
     case "GET_SELECTED_VENDOR_FULFILLED":
       changes = {
         selectedVendor: dataFormatter.deserialize(response),
+        saving: false,
+      };
+      return { ...state, ...changes };
+
+    case "GET_FILTERED_VENDOR_LIST_PENDING":
+      return { ...state, saving: true };
+
+    case "GET_FILTERED_VENDOR_LIST_REJECTED":
+      changes = {
+        saving: false,
+      };
+      return { ...state, ...changes };
+
+    case "GET_FILTERED_VENDOR_LIST_FULFILLED":
+      changes = {
+        filteredVendors: dataFormatter.deserialize(response),
         saving: false,
       };
       return { ...state, ...changes };

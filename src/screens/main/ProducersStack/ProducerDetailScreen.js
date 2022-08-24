@@ -37,7 +37,7 @@ const ProducerDetailScreen = ({ dispatch, navigation, route }) => {
   const [inc, setInc] = useState("false");
   const [itemQuantity, setItemQuantity] = useState(1);
   const [inCart, setInCart] = useState(false);
-  const bio = route.params.bio;
+  const { bio, cover_image_url, logo_image_url } = route.params;
 
   const timeoutIdRef = useRef();
 
@@ -149,9 +149,6 @@ const ProducerDetailScreen = ({ dispatch, navigation, route }) => {
 
     timeoutIdRef.current = id;
   };
-
-  console.log("ITEMQTY", itemQuantity);
-  console.log("INCART", inCart);
 
   const handleSetTimeoutDec = (tempId, qty) => {
     console.log("ORIGINAL", qty);
@@ -335,7 +332,11 @@ const ProducerDetailScreen = ({ dispatch, navigation, route }) => {
           ]}
         >
           <Image
-            source={{ uri: `${vendorCover.logo}` }}
+            source={{
+              uri: logo_image_url
+                ? logo_image_url
+                : "https://cdn.pixabay.com/photo/2018/06/29/08/15/doodle-3505459_960_720.png",
+            }}
             style={{ flex: 0.3 }}
             resizeMode={"contain"}
           />
@@ -360,7 +361,11 @@ const ProducerDetailScreen = ({ dispatch, navigation, route }) => {
           }}
         >
           <Image
-            source={{ uri: `${vendorCover.cover}` }}
+            source={{
+              uri: cover_image_url
+                ? cover_image_url
+                : "https://cdn.pixabay.com/photo/2018/06/29/08/15/doodle-3505459_960_720.png",
+            }}
             style={{ flex: 1, width: "100%" }}
             resizeMode={"cover"}
           />

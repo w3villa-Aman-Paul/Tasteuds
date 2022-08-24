@@ -9,17 +9,18 @@ import { connect } from "react-redux";
 import { getSearchProduct } from "../../../redux";
 
 const ProducersFooter = ({ navigation, dispatch }) => {
-  const vendors = useSelector((state) => state.taxons.vendors);
+  let vendors = useSelector((state) => state.taxons.vendors);
+
+  vendors = vendors?.filter((item) => item.state === "active");
+
   const [food, setFood] = useState([]);
 
   const [checked, setChecked] = useState([]);
 
   const selectedFood = async () => {
     let data = await getData("food");
-
     return data;
   };
-
   useEffect(() => {
     setChecked(
       vendors
@@ -63,6 +64,7 @@ const ProducersFooter = ({ navigation, dispatch }) => {
     });
 
     setChecked(tempMenu);
+    storeData("vendors", tempMenu);
   };
 
   return (
