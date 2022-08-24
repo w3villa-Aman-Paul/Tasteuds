@@ -122,7 +122,7 @@ export function deleteAdd(data = null, id, filters = null) {
   };
 }
 
-export function completeCheckout(auth_token) {
+export const completeCheckout = (auth_token) => {
   const url = `${API_VERSION_STOREFRONT}/checkout/complete`;
   const method = "PATCH";
   const params = {
@@ -133,7 +133,7 @@ export function completeCheckout(auth_token) {
     type: "COMPLETE_CHECKOUT",
     payload: handleAddCartItem(url, params, method, null, auth_token),
   };
-}
+};
 
 /**
  * Bag Screen Actions
