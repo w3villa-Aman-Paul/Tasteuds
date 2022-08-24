@@ -9,6 +9,7 @@ import {
   Dimensions,
   LogBox,
   Platform,
+  Pressable,
 } from "react-native";
 import { globalStyles } from "../../../../styles/global";
 import { colors } from "../../../../res/palette";
@@ -329,8 +330,8 @@ const ProductListScreen = ({
   };
 
   const handleSetTimeoutDefault = (ID) => {
+    handleChangeQuantityClick();
     let firstItem = productsList.find((x) => x.id == ID);
-    console.log("first", firstItem);
     setTimeout(() => {
       dispatch(
         addItem(cart?.token, {
@@ -348,7 +349,7 @@ const ProductListScreen = ({
         dispatch(
           addItem(cart?.token, {
             variant_id: handleCart(),
-            quantity: itemQuantity + 1,
+            quantity: itemQuantity,
           })
         );
         setShowItemCard(false);
@@ -370,11 +371,7 @@ const ProductListScreen = ({
     timeoutIdRef.current = id;
   };
 
-  console.log("ITEMQTY", itemQuantity);
-  console.log("INCART", inCart);
-
   const handleSetTimeoutDec = (tempId, qty) => {
-    console.log("ORIGINAL", qty);
     if (1 - itemQuantity == qty) {
       dispatch(removeLineItem(tempId, {}, cart?.token));
       setShowItemCard(false);
@@ -474,7 +471,7 @@ const ProductListScreen = ({
             <View
               style={[
                 styles.addLogo,
-                { width: "90%", justifyContent: "space-between" },
+                { width: "95%", justifyContent: "space-between" },
               ]}
             >
               <TouchableOpacity
@@ -505,45 +502,40 @@ const ProductListScreen = ({
                 <Text style={styles.dynamicText}>+</Text>
               </TouchableOpacity>
             </View>
-          ) : (
-            <TouchableOpacity
+          ) : tempArr[0] ? (
+            <Pressable
               style={styles.addLogo}
               onPress={() => {
                 closeIncBar();
                 setItemQuantity(1);
                 setShowItemCard(true);
                 findCartProduct(item?.id);
-                {
-                  tempArr[0] ? setInCart(true) : setInCart(false);
-                }
               }}
             >
-              {item?.id == tempArr[0]?.variant?.product?.id ? (
+              {item?.id == tempArr[0]?.variant?.product?.id && (
                 <View style={styles.afterText}>
                   <Text style={{ color: colors.white, fontSize: 25 }}>
                     {tempArr.length !== 0 ? tempArr[0].quantity : 1}
                   </Text>
                 </View>
-              ) : (
-                <Icon
-                  name="plus"
-                  type="ant-design"
-                  size={25}
-                  borderRadius={10}
-                  color={colors.btnLink}
-                  backgroundColor={colors.white}
-                  onPress={() => {
-                    setItemQuantity(1);
-                    setShowItemCard(true);
-                    findCartProduct(item?.id);
-                    {
-                      tempArr[0]
-                        ? setInCart(true)
-                        : (setInCart(false), handleSetTimeoutDefault(item?.id));
-                    }
-                  }}
-                />
               )}
+            </Pressable>
+          ) : (
+            <TouchableOpacity style={styles.addLogo}>
+              <Icon
+                name="plus"
+                type="ant-design"
+                size={25}
+                borderRadius={10}
+                color={colors.btnLink}
+                backgroundColor={colors.white}
+                onPress={() => {
+                  setItemQuantity(1);
+                  setShowItemCard(true);
+                  findCartProduct(item?.id);
+                  handleSetTimeoutDefault(item?.id);
+                }}
+              />
             </TouchableOpacity>
           )}
         </View>

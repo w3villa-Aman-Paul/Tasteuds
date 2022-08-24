@@ -81,7 +81,6 @@ const ProducersListScreen = ({ dispatch, navigation }) => {
               },
               globalStyles.iosShadow,
             ]}
-            // onPress={() => handleSnapPress(0)}
           >
             <Icon name="filter-list" type="material-icons" />
             <Text style={styles.buttonText}>FILTER</Text>

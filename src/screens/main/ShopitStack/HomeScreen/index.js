@@ -7,12 +7,13 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { globalStyles } from "../../../../styles/global";
 import { styles } from "./styles";
 import { Snackbar } from "react-native-paper";
 import {
   addItem,
+  createCart,
   getCategories,
   getInitialProductList,
   getMenus,
@@ -48,9 +49,17 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   const timeoutIdRef = useRef();
 
   React.useEffect(() => {
-    dispatch(getMenus());
-    dispatch(getTaxonsList());
-    dispatch(getCategories());
+    let load = false;
+
+    if (!load) {
+      dispatch(getMenus());
+      // dispatch(createCart());
+      dispatch(getTaxonsList());
+      dispatch(getCategories());
+    }
+    return () => {
+      load = true;
+    };
   }, []);
 
   React.useEffect(() => {
@@ -62,24 +71,44 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   }, []);
 
   React.useEffect(() => {
-    {
-      productsList.length <= 10 &&
-        dispatch(getInitialProductList(1, { pageIndex: 1, filter: null }));
+    let load = false;
+
+    if (!load) {
+      {
+        productsList.length <= 10 &&
+          dispatch(getInitialProductList(1, { pageIndex: 1, filter: null }));
+      }
     }
+    return () => {
+      load = true;
+    };
   }, [productsList]);
 
   React.useEffect(() => {
-    dispatch(getVendorsList());
-    dispatch(getWeeklyProducer());
+    let load = false;
+    if (!load) {
+      dispatch(getVendorsList());
+      dispatch(getWeeklyProducer());
 
-    if (productsList.length === 0) {
-      handleProductsLoad();
+      if (productsList.length === 0) {
+        handleProductsLoad();
+      }
+      setMostBought([]);
     }
-    setMostBought([]);
+    return () => {
+      load = true;
+    };
   }, []);
 
   React.useEffect(() => {
-    loadMostBoughtGoods();
+    let load = false;
+
+    if (!load) {
+      loadMostBoughtGoods();
+    }
+    return () => {
+      load = true;
+    };
   }, [mostBought, mostBoughtGoods]);
 
   const dismissSnackbar = () => setSnackbarVisible(false);
@@ -144,8 +173,8 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   };
 
   const handleSetTimeoutDefault = (ID) => {
+    handleChangeQuantityClick();
     let firstItem = productsList.find((x) => x.id == ID);
-    console.log("first", firstItem);
     setTimeout(() => {
       dispatch(
         addItem(cart?.token, {
@@ -163,7 +192,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
         dispatch(
           addItem(cart?.token, {
             variant_id: handleCart(),
-            quantity: itemQuantity + 1,
+            quantity: itemQuantity,
           })
         );
         setShowItemCard(false);
@@ -185,11 +214,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     timeoutIdRef.current = id;
   };
 
-  console.log("ITEMQTY", itemQuantity);
-  console.log("INCART", inCart);
-
   const handleSetTimeoutDec = (tempId, qty) => {
-    console.log("ORIGINAL", qty);
     if (1 - itemQuantity == qty) {
       dispatch(removeLineItem(tempId, {}, cart?.token));
       setShowItemCard(false);
@@ -282,45 +307,40 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
                 <Text style={styles.dynamicText}>+</Text>
               </TouchableOpacity>
             </View>
-          ) : (
-            <TouchableOpacity
+          ) : tempArr[0] ? (
+            <Pressable
               style={styles.addLogo}
               onPress={() => {
                 closeIncBar();
                 setItemQuantity(1);
                 setShowItemCard(true);
                 findCartProduct(item?.id);
-                {
-                  tempArr[0] ? setInCart(true) : setInCart(false);
-                }
               }}
             >
-              {item?.id == tempArr[0]?.variant?.product?.id ? (
+              {item?.id == tempArr[0]?.variant?.product?.id && (
                 <View style={styles.afterText}>
                   <Text style={{ color: colors.white, fontSize: 25 }}>
                     {tempArr.length !== 0 ? tempArr[0].quantity : 1}
                   </Text>
                 </View>
-              ) : (
-                <Icon
-                  name="plus"
-                  type="ant-design"
-                  size={25}
-                  borderRadius={10}
-                  color={colors.btnLink}
-                  backgroundColor={colors.white}
-                  onPress={() => {
-                    setItemQuantity(1);
-                    setShowItemCard(true);
-                    findCartProduct(item?.id);
-                    {
-                      tempArr[0]
-                        ? setInCart(true)
-                        : (setInCart(false), handleSetTimeoutDefault(item?.id));
-                    }
-                  }}
-                />
               )}
+            </Pressable>
+          ) : (
+            <TouchableOpacity style={styles.addLogo}>
+              <Icon
+                name="plus"
+                type="ant-design"
+                size={25}
+                borderRadius={10}
+                color={colors.btnLink}
+                backgroundColor={colors.white}
+                onPress={() => {
+                  setItemQuantity(1);
+                  setShowItemCard(true);
+                  findCartProduct(item?.id);
+                  handleSetTimeoutDefault(item?.id);
+                }}
+              />
             </TouchableOpacity>
           )}
         </View>
@@ -364,18 +384,16 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
 
   const newJustInRenderItem = ({ item, index }) => {
     return (
-      <TouchableOpacity>
-        <FlatListImageItem
-          keyExtractor={(item, index) => index.toString()}
-          item={item}
-          onPress={() => {
-            storeData("selectedVendor", resultVendor(item?.vendor?.id)[1]);
-            handleProductLoad(item?.id, item);
-          }}
-          imageStyle={styles.newJustInImage}
-          itemContainerStyle={styles.newJustInItemContainer}
-        />
-      </TouchableOpacity>
+      <FlatListImageItem
+        keyExtractor={(item, index) => index.toString()}
+        item={item}
+        onPress={() => {
+          storeData("selectedVendor", resultVendor(item?.vendor?.id)[1]);
+          handleProductLoad(item?.id, item);
+        }}
+        imageStyle={styles.newJustInImage}
+        itemContainerStyle={styles.newJustInItemContainer}
+      />
     );
   };
 
@@ -577,7 +595,6 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
         keyExtractor={(item, index) => index.toString()}
         renderItem={newJustInRenderItem}
         numColumns={2}
-        columnWrapperStyle={{ justifyContent: "space-between" }}
         style={{
           ...globalStyles.container,
           ...styles.bg_white,

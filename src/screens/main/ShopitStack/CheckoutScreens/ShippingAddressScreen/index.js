@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import {
   ScrollView,
   View,
@@ -7,13 +7,13 @@ import {
   Image,
   TextInput,
   KeyboardAvoidingView,
-  SafeAreaView,
+  Platform,
 } from "react-native";
 import { globalStyles } from "../../../../../styles/global";
 import { colors } from "../../../../../res/palette";
-import { CheckO, Close } from "../../../../../library/icons";
-import { Icon, Overlay } from "react-native-elements";
-import { Picker } from "@react-native-community/picker";
+import { CheckO } from "../../../../../library/icons";
+import { Icon } from "react-native-elements";
+
 import {
   createCart,
   updateCheckout,
@@ -37,117 +37,7 @@ const FormInput = ({ placeholder, ...rest }) => {
     <BottomSheetTextInput
       {...rest}
       placeholder={placeholder ? placeholder : ""}
-      // style={{ width: 150, height: 30 }}
     />
-  );
-};
-
-const bottomSheetContent = ({ setIsOpen }) => {
-  const [cardName, setCardName] = useState(null);
-  const [profileId, setProfileId] = useState("tok_visa");
-  const [cvv, setCvv] = useState(null);
-  const [month, setMonth] = useState(null);
-  const [year, setYear] = useState(null);
-
-  const { cart } = useSelector((state) => state.checkout);
-  const dispatch = useDispatch();
-  const navigation = useNavigation();
-
-  const handlePaymentConfirmation = async () => {
-    await dispatch(
-      updateCheckout(cart?.token, {
-        order: {
-          payments_attributes: [
-            {
-              payment_method_id: 3,
-              source_attributes: {
-                gateway_payment_profile_id: profileId,
-                month: month,
-                year: year,
-                verification_value: cvv,
-                name: cardName,
-              },
-            },
-          ],
-        },
-      })
-    );
-    await dispatch(completeCheckout(cart?.token));
-    await dispatch(createCart());
-    // toggleOverlay();
-    navigation.navigate("OrderComplete");
-  };
-
-  return (
-    <View style={styles.login_container}>
-      <View>
-        <TouchableOpacity
-          style={styles.fav_close_container}
-          onPress={setIsOpen}
-        >
-          <Icon type="entypo" name="cross" size={28} style={styles.fav_close} />
-        </TouchableOpacity>
-        <View style={styles.headerTextContainer}>
-          <Text style={styles.headerTitle}>REGISTRER KORT</Text>
-        </View>
-      </View>
-
-      <SafeAreaView style={{ ...styles.cardContainer, flex: 1 }}>
-        <View style={styles.cardContent}>
-          <Text style={styles.cardText}>KORTHOLDERS NAVN</Text>
-          <FormInput
-            style={styles.cardInput}
-            placeholder="Name"
-            value={cardName}
-            onChangeText={(val) => setCardName(val)}
-          />
-        </View>
-        <View style={styles.cardContent}>
-          <Text style={styles.cardText}>KORTNUMMER</Text>
-          <FormInput
-            style={styles.cardInput}
-            value={profileId}
-            onChangeText={(val) => setProfileId(val)}
-          />
-        </View>
-        <View style={styles.lastInputs}>
-          <View style={styles.cardContent}>
-            <Text style={styles.cardText}>UTLØPSDATO</Text>
-            <View style={{ flexDirection: "row" }}>
-              <FormInput
-                style={styles.cardInputDate}
-                value={month}
-                onChangeText={(value) => setMonth(value)}
-              />
-              <FormInput
-                style={styles.cardInputDate}
-                value={year}
-                onChangeText={(value) => setYear(value)}
-              />
-            </View>
-          </View>
-          <View style={styles.cardContent}>
-            <Text style={styles.cardText}>CVC</Text>
-            <FormInput
-              style={{ ...styles.cardInputDate, width: "100%" }}
-              value={cvv}
-              onChangeText={(value) => setCvv(value)}
-            />
-          </View>
-        </View>
-
-        <View style={{ ...styles.cardContent, marginTop: 20 }}>
-          <TouchableOpacity
-            style={styles.cardBtn}
-            onPress={handlePaymentConfirmation}
-          >
-            <Text style={{ ...styles.cardText, fontFamily: "lato-bold" }}>
-              LEGG TIL
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
-    </View>
   );
 };
 
@@ -158,7 +48,6 @@ const ShippingAddressScreen = ({
   cart,
   Address,
   route,
-  auth,
 }) => {
   let newAddress = Address.filter((x) => x.id === route.params?.Id);
 
@@ -172,112 +61,57 @@ const ShippingAddressScreen = ({
   const sheetRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
 
-  const [overlayVisible, setOverlayVisible] = useState(false);
-
-  const snapPoints = ["60%"];
+  const snapPoints = useMemo(() => ["65%", "75%"], []);
 
   const paymentHandler = () => {
     setIsOpen(true);
   };
 
-  const handleUpdateCheckout = async () => {
-    await dispatch(
-      updateCheckout(cart?.token, {
-        order: {
-          email: email,
-          special_instructions: "Please leave at door",
-          bill_address_attributes: {
-            firstname: !newAddress[0].firstname
-              ? Address[0].firstname
-              : newAddress[0].firstname,
-            lastname: !newAddress[0].lastname
-              ? Address[0].lastname
-              : newAddress[0].lastname,
-            address1: !newAddress[0].address1
-              ? Address[0].address1
-              : newAddress[0].address1,
-            city: !newAddress[0].city ? Address[0].city : newAddress[0].city,
-            phone: !newAddress[0].phone
-              ? Address[0].phone
-              : newAddress[0].phone,
-            zipcode: !newAddress[0].zipcode
-              ? Address[0].zipcode
-              : newAddress[0].zipcode,
-            state_name: !newAddress[0].state_name
-              ? Address[0].state_name
-              : newAddress[0].state_name,
-            country_iso: !newAddress[0].country_iso
-              ? Address[0].country_iso
-              : newAddress[0].country_iso,
-          },
-          ship_address_attributes: {
-            firstname: !newAddress[0].firstname
-              ? Address[0].firstname
-              : newAddress[0].firstname,
-            lastname: !newAddress[0].lastname
-              ? Address[0].lastname
-              : newAddress[0].lastname,
-            address1: !newAddress[0].address1
-              ? Address[0].address1
-              : newAddress[0].address1,
-            city: !newAddress[0].city ? Address[0].city : newAddress[0].city,
-            phone: !newAddress[0].phone
-              ? Address[0].phone
-              : newAddress[0].phone,
-            zipcode: !newAddress[0].zipcode
-              ? Address[0].zipcode
-              : newAddress[0].zipcode,
-            state_name: !newAddress[0].state_name
-              ? Address[0].state_name
-              : newAddress[0].state_name,
-            country_iso: !newAddress[0].country_iso
-              ? Address[0].country_iso
-              : newAddress[0].country_iso,
-          },
-        },
-      })
-    );
-    // await dispatch(advanceCheckout(cart.token));
-    await dispatch(getPaymentMethods(cart?.token));
-    await dispatch(checkoutNext(cart.token));
-    paymentHandler();
-  };
-
-  const toggleOverlay = () => {
-    setOverlayVisible(!overlayVisible);
-  };
-
-  const handlePaymentConfirmation = async () => {
-    await dispatch(
-      updateCheckout(cart?.token, {
-        order: {
-          payments_attributes: [
-            {
-              payment_method_id: 3,
-              source_attributes: {
-                gateway_payment_profile_id: profileId,
-                month: month,
-                year: year,
-                verification_value: cvv,
-                name: cardName,
-              },
-            },
-          ],
-        },
-      })
-    );
-    await dispatch(completeCheckout(cart?.token));
-    await dispatch(createCart());
-    toggleOverlay();
-  };
-
   const bottomSheetContent = () => {
+    const [cardName, setCardName] = useState(null);
+    const [profileId, setProfileId] = useState("tok_visa");
+    const [cvv, setCvv] = useState(null);
+    const [month, setMonth] = useState(null);
+    const [year, setYear] = useState(null);
+
+    const { cart } = useSelector((state) => state.checkout);
+    const dispatch = useDispatch();
+    const navigation = useNavigation();
+
+    const handlePaymentConfirmation = async () => {
+      dispatch(
+        updateCheckout(cart?.token, {
+          order: {
+            payments_attributes: [
+              {
+                payment_method_id: 3,
+                source_attributes: {
+                  gateway_payment_profile_id: profileId,
+                  month: month,
+                  year: year,
+                  verification_value: cvv,
+                  name: cardName,
+                },
+              },
+            ],
+          },
+        })
+      );
+      dispatch(completeCheckout(cart?.token))
+        .then(() => dispatch(createCart()))
+        .then(() => navigation.navigate("OrderComplete"));
+    };
+
     return (
-      <View style={styles.login_container}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        enabled
+        style={styles.login_container}
+      >
         <View>
           <TouchableOpacity
             style={styles.fav_close_container}
-            onPress={() => setIsOpen(false)}
+            onPress={() => setIsOpen(!isOpen)}
           >
             <Icon
               type="entypo"
@@ -290,37 +124,36 @@ const ShippingAddressScreen = ({
             <Text style={styles.headerTitle}>REGISTRER KORT</Text>
           </View>
         </View>
-        <KeyboardAvoidingView style={{ ...styles.cardContainer, flex: 1 }}>
+
+        <View style={{ ...styles.cardContainer, flex: 1 }}>
           <View style={styles.cardContent}>
             <Text style={styles.cardText}>KORTHOLDERS NAVN</Text>
-            <TextInput
+            <FormInput
               style={styles.cardInput}
+              placeholder="Name"
               value={cardName}
               onChangeText={(val) => setCardName(val)}
             />
           </View>
           <View style={styles.cardContent}>
             <Text style={styles.cardText}>KORTNUMMER</Text>
-            <TextInput
+            <FormInput
               style={styles.cardInput}
-              // keyboardType={null}
               value={profileId}
-              onChangeText={setProfileId}
+              onChangeText={(val) => setProfileId(val)}
             />
           </View>
           <View style={styles.lastInputs}>
             <View style={styles.cardContent}>
               <Text style={styles.cardText}>UTLØPSDATO</Text>
               <View style={{ flexDirection: "row" }}>
-                <TextInput
+                <FormInput
                   style={styles.cardInputDate}
-                  // keyboardType={null}
                   value={month}
                   onChangeText={(value) => setMonth(value)}
                 />
-                <TextInput
+                <FormInput
                   style={styles.cardInputDate}
-                  // keyboardType={null}
                   value={year}
                   onChangeText={(value) => setYear(value)}
                 />
@@ -328,9 +161,8 @@ const ShippingAddressScreen = ({
             </View>
             <View style={styles.cardContent}>
               <Text style={styles.cardText}>CVC</Text>
-              <TextInput
+              <FormInput
                 style={{ ...styles.cardInputDate, width: "100%" }}
-                // keyboardType={null}
                 value={cvv}
                 onChangeText={(value) => setCvv(value)}
               />
@@ -347,9 +179,82 @@ const ShippingAddressScreen = ({
               </Text>
             </TouchableOpacity>
           </View>
-        </KeyboardAvoidingView>
-      </View>
+        </View>
+      </KeyboardAvoidingView>
     );
+  };
+  console.log("Address", Address);
+
+  const handleUpdateCheckout = async () => {
+    await dispatch(
+      updateCheckout(cart?.token, {
+        order: {
+          email: email,
+          special_instructions: "Please leave at door",
+          bill_address_attributes: {
+            firstname:
+              newAddress.length > 0
+                ? newAddress[0].firstname
+                : Address[0].firstname,
+            lastname:
+              newAddress.length > 0
+                ? newAddress[0].lastname
+                : Address[0].lastname,
+            address1:
+              newAddress.length > 0
+                ? newAddress[0].address1
+                : Address[0].address1,
+            city: newAddress.length > 0 ? newAddress[0].city : Address[0].city,
+            phone:
+              newAddress.length > 0 ? newAddress[0].phone : Address[0].phone,
+            zipcode:
+              newAddress.length > 0
+                ? newAddress[0].zipcode
+                : Address[0].zipcode,
+            state_name:
+              newAddress.length > 0
+                ? newAddress[0].state_name
+                : Address[0].state_name,
+            country_iso:
+              newAddress.length > 0
+                ? newAddress[0].country_iso
+                : Address[0].country_iso,
+          },
+          ship_address_attributes: {
+            firstname:
+              newAddress.length > 0
+                ? newAddress[0].firstname
+                : Address[0].firstname,
+            lastname:
+              newAddress.length > 0
+                ? newAddress[0].lastname
+                : Address[0].lastname,
+            address1:
+              newAddress.length > 0
+                ? newAddress[0].address1
+                : Address[0].address1,
+            city: newAddress.length > 0 ? newAddress[0].city : Address[0].city,
+            phone:
+              newAddress.length > 0 ? newAddress[0].phone : Address[0].phone,
+            zipcode:
+              newAddress.length > 0
+                ? newAddress[0].zipcode
+                : Address[0].zipcode,
+            state_name:
+              newAddress.length > 0
+                ? newAddress[0].state_name
+                : Address[0].state_name,
+            country_iso:
+              newAddress.length > 0
+                ? newAddress[0].country_iso
+                : Address[0].country_iso,
+          },
+        },
+      })
+    );
+    await dispatch(getPaymentMethods(cart?.token));
+    await dispatch(checkoutNext(cart.token));
+    paymentHandler();
   };
 
   if (saving) {
@@ -362,41 +267,6 @@ const ShippingAddressScreen = ({
           { backgroundColor: colors.white, flex: 1 },
         ]}
       >
-        <Overlay
-          isVisible={overlayVisible}
-          onBackdropPress={toggleOverlay}
-          fullScreen={true}
-        >
-          <View style={[globalStyles.container, styles.modalContainer]}>
-            <View style={styles.modalCloseIcon}>
-              <Close
-                size={24}
-                style={{ color: colors.black }}
-                onPress={toggleOverlay}
-              />
-            </View>
-            <View style={{ alignItems: "center" }}>
-              <Image
-                source={require("../../../../../../assets/images/order-icon-confirm/order-icon-confirm.png")}
-              />
-              <Text style={globalStyles.title}>Order Success!</Text>
-              <Text
-                style={[
-                  globalStyles.label,
-                  { fontSize: 15, textAlign: "center" },
-                ]}
-              >
-                Your order has been placed successfully! for more details check
-                your account.{" "}
-              </Text>
-            </View>
-            <View>
-              <TouchableOpacity onPress={() => navigation.navigate("Shop")}>
-                <Text>Continue Shopping ....</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Overlay>
         <ScrollView>
           {/* Status Bar Starts */}
           <View style={checkoutStyles.statusBarWrapper}>
@@ -542,7 +412,7 @@ const ShippingAddressScreen = ({
           <CartFooter
             title="FULLFØR BETALING"
             onPress={() => {
-              Address.length === 0 ? (
+              Address.length == 0 ? (
                 <Text>"Please fill Address"</Text>
               ) : (
                 handleUpdateCheckout()

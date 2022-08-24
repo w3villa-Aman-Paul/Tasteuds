@@ -256,8 +256,8 @@ export const styles = StyleSheet.create({
   },
   addLogo: {
     position: "absolute",
-    bottom: 6,
-    right: 5,
+    bottom: 2,
+    right: 0,
     ...globalStyles.iosShadow,
     flexDirection: "row",
     elevation: 8,
@@ -294,5 +294,9 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: colors.btnLink,
+  },
+
+  addBtn: {
+    borderWidth: 1,
   },
 });
