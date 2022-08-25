@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   LogBox,
   Platform,
   Pressable,
+  RefreshControl,
 } from "react-native";
 import { globalStyles } from "../../../../styles/global";
 import { colors } from "../../../../res/palette";
@@ -49,9 +50,6 @@ const ProductListScreen = ({
   dispatch,
   productsList,
   saving,
-  minimumPriceRange,
-  maximumPriceRange,
-  meta,
   pageIndex,
 }) => {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
@@ -82,10 +80,10 @@ const ProductListScreen = ({
   const errMessage = useSelector((state) => state.checkout.error);
   const cart = useSelector((state) => state.checkout.cart);
   const vendorList = useSelector((state) => state.taxons.vendors);
-  const { products } = useSelector((state) => state);
   const taxons = useSelector((state) => state.taxons);
   const menus = useSelector((state) => state.taxons.menus);
   const submenus = useSelector((state) => state.taxons.submenus);
+  const { products } = useSelector((state) => state);
 
   const { mostBoughtGoods } = useSelector((state) => state.taxons);
   const { newAddedProducts } = useSelector((state) => state.taxons);
@@ -105,6 +103,10 @@ const ProductListScreen = ({
   useEffect(() => {
     const timeOutId = timeoutIdRef.current;
 
+    {
+      products.sortedProductsList || dispatch(sortByMostBought(mostBought));
+    }
+
     return () => {
       clearTimeout(timeOutId);
     };
@@ -123,18 +125,24 @@ const ProductListScreen = ({
   }, [params]);
 
   useEffect(() => {
-    dispatch(getCart(cart.token));
-    dispatch(getMenus());
+    {
+      cart?.token || dispatch(getCart(cart.token));
+    }
+    {
+      menus?.menu_items || dispatch(getMenus());
+    }
     removeData("food");
     removeData("vendors");
-    dispatch(getTaxonsList());
-    dispatch(getCategories());
   }, []);
 
   useEffect(() => {
-    handleProductsLoad();
+    {
+      productsList.length === 0 && handleProductsLoad();
+    }
     return () => {
-      dispatch(setPageIndex(1));
+      {
+        pageIndex === 1 || dispatch(setPageIndex(1));
+      }
     };
   }, [route.params]);
 
@@ -278,7 +286,7 @@ const ProductListScreen = ({
   const sheetRef = React.useRef(null);
   const [isOpen, setIsOpen] = useState(false);
 
-  const snapPoints = ["50%"];
+  const snapPoints = useMemo(() => ["50%"], []);
 
   const handleFilter = () => {
     setShow(false);
@@ -288,17 +296,6 @@ const ProductListScreen = ({
   const handleSort = () => {
     setSort(true);
   };
-
-  const renderBackdrop = React.useCallback(
-    (props) => (
-      <BottomSheetBackdrop {...props} close={() => sheetRef.current.close()} />
-    ),
-    []
-  );
-
-  useEffect(() => {
-    dispatch(getCart(cart.token));
-  }, []);
 
   const findCartProduct = (itemID) => {
     const newItem = productsList.find((ele) => ele.id == itemID);
@@ -565,12 +562,12 @@ const ProductListScreen = ({
   //..........................................................................................
 
   const setProductListHighToLow = () => {
-    productsList.sort((a, b) => (a.price < b.price ? 1 : -1));
+    productsList.sort((a, b) => (Number(a.price) > Number(b.price) ? 1 : -1));
     setSort(false);
   };
 
   const setProductListLowToHigh = () => {
-    productsList.sort((a, b) => (a.price > b.price ? 1 : -1));
+    productsList.sort((a, b) => (Number(a.price) < Number(b.price) ? 1 : -1));
     setSort(false);
   };
 
@@ -629,7 +626,6 @@ const ProductListScreen = ({
       : setTimeout(onPress, 50);
   };
 
-  console.log("ITEMQTY", itemQuantity);
   const handleProductLoad = async (id, item) => {
     dispatch(getProduct(id));
     dispatch(getTaxon(item.taxons[0].id));
@@ -744,42 +740,46 @@ const ProductListScreen = ({
             style={{ flexDirection: "row" }}
             showsHorizontalScrollIndicator={false}
           >
-            {activeMenus?.map((menu, index, arr) => (
-              <TouchableOpacity
-                keyExtractor={(menu, index) => index.toString()}
-                onLayout={(event) => {
-                  const layout = event.nativeEvent.layout;
-                  menuCords[index] = layout.x;
-                  setMenuCords(menuCords);
-                }}
-                onPress={async () => {
-                  await handleActiveMenuClick(menu);
-                  setAll(true);
-                  setIsAll(false);
-                  setSubLink(menu.link.slice(2).toLowerCase());
-                  handleClick(handleUncheckAllMenus(arr), menu);
-                  await dispatch(getSubMenu(menu.link.slice(2).toLowerCase()));
-                  await dispatch(getSubMenuProducts(subLink));
-                  setIsSubLink(true);
+            {activeMenus
+              ?.sort((a, b) => a.lft - b.lft)
+              ?.map((menu, index, arr) => (
+                <TouchableOpacity
+                  keyExtractor={(menu, index) => menu?.id.toString()}
+                  onLayout={(event) => {
+                    const layout = event.nativeEvent.layout;
+                    menuCords[index] = layout.x;
+                    setMenuCords(menuCords);
+                  }}
+                  onPress={async () => {
+                    await handleActiveMenuClick(menu);
+                    setAll(true);
+                    setIsAll(false);
+                    setSubLink(menu.link.slice(2).toLowerCase());
+                    handleClick(handleUncheckAllMenus(arr), menu);
+                    await dispatch(
+                      getSubMenu(menu.link.slice(2).toLowerCase())
+                    );
+                    await dispatch(getSubMenuProducts(subLink));
+                    setIsSubLink(true);
 
-                  setoffsetMenu({ x: menuCords[index], y: 0 });
-                }}
-                style={[menu.isActive ? styles.active : styles.unactive]}
-              >
-                <Text
-                  style={[
-                    {
-                      padding: 8,
-                      fontSize: 20,
-                      fontWeight: "700",
-                      color: colors.primary,
-                    },
-                  ]}
+                    setoffsetMenu({ x: menuCords[index], y: 0 });
+                  }}
+                  style={[menu.isActive ? styles.active : styles.unactive]}
                 >
-                  {menu.name}
-                </Text>
-              </TouchableOpacity>
-            ))}
+                  <Text
+                    style={[
+                      {
+                        padding: 8,
+                        fontSize: 20,
+                        fontWeight: "700",
+                        color: colors.primary,
+                      },
+                    ]}
+                  >
+                    {menu.name}
+                  </Text>
+                </TouchableOpacity>
+              ))}
           </ScrollView>
         </View>
         {isSubLink === false ? (
@@ -900,7 +900,6 @@ const ProductListScreen = ({
           justifyContent: "center",
           backgroundColor: "transparent",
           marginBottom: 6,
-          // paddingVertical: 10,
         }}
       >
         <View style={{ flexDirection: "row", marginBottom: 10 }}>
@@ -1068,17 +1067,6 @@ const ProductListScreen = ({
       setSelectedvendors(data);
       storeData("vendors", data);
     };
-
-    // const handleFilterSearch = async (categories, vendors) => {
-    //   let filterTaxons = categories
-    //     ?.filter((item) => item?.isChecked)
-    //     ?.map((item) => item?.id);
-
-    //   let filterVendor = vendors
-    //     ?.filter((item) => item?.isChecked)
-    //     .map((item) => item?.id);
-    //   dispatch(getSearchProduct(null, filterTaxons, filterVendor));
-    // };
 
     let selectedFilterTaxon = selectedCategory?.filter(
       (ele) => ele?.isChecked === true
@@ -1303,12 +1291,7 @@ const ProductListScreen = ({
           renderItem={newJustInRenderItem}
           numColumns={2}
           ListHeaderComponent={flatListUpperElement}
-          ListFooterComponent={
-            flatListLowerElement
-            // meta.total_count !== productsList.length && (
-            //   <ActivityIndicator size="large" />
-            // )
-          }
+          ListFooterComponent={flatListLowerElement}
           ref={scrollRef}
           onEndReachedThreshold={0.3}
           onEndReached={() => {
@@ -1358,6 +1341,8 @@ const ProductListScreen = ({
             onClose={() => setIsOpen(false)}
             bottomSheetContent={bottomSheetContent}
             isModelVisible={isModelVisible}
+            setModelVisible={setModelVisible}
+            setIsOpen={setIsOpen}
           />
         )}
 
@@ -1366,9 +1351,10 @@ const ProductListScreen = ({
             value={sheetRef}
             snapPoints={snapPoints}
             onClose={() => setSort(false)}
-            renderBackdrop={renderBackdrop}
             bottomSheetContent={sortContent}
             isModelVisible={isModelVisible}
+            setModelVisible={setModelVisible}
+            setIsOpen={setSort}
           />
         )}
       </View>

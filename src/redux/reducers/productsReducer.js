@@ -6,6 +6,7 @@ const DEFAULT_STATE = {
   favorites: [],
   pageIndex: 1,
   selectedVendor: {},
+  sortedProductsList: false,
   params: {
     priceRange: {
       minimum: 20,
@@ -478,6 +479,7 @@ export default function productsReducer(state = DEFAULT_STATE, action) {
           ...new Map(uniqueMost.map((item) => [item["id"], item])).values(),
         ],
         saving: false,
+        sortedProductsList: true,
       };
       return { ...state, ...changes };
 

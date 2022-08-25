@@ -40,8 +40,9 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: colors.white,
     elevation: 5,
+    borderWidth: 1,
+    borderColor: "transparent",
     borderRadius: 10,
-    overflow: "hidden",
     ...globalStyles.iosShadow,
   },
   producerCoverImage: {
@@ -202,5 +203,55 @@ export const styles = StyleSheet.create({
     color: colors.btnLink,
     fontSize: 20,
     paddingHorizontal: 10,
+  },
+
+  modal: {
+    backgroundColor: "transparent",
+    margin: 0,
+    flex: 1,
+    justifyContent: "flex-end",
+  },
+
+  sorterBtnContainer: {
+    flex: 0.4,
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 20,
+    backgroundColor: colors.primary,
+  },
+
+  sorterHeaderText: {
+    color: "#fff",
+    fontFamily: "lato-medium",
+    fontSize: 20,
+  },
+
+  sorterButton: {
+    width: 200,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: colors.btnLink,
+    margin: 10,
+    // borderWidth: 1,
+    borderRadius: 10,
+    ...globalStyles.iosShadow,
+  },
+
+  sorterButtonText: {
+    padding: 10,
+    fontFamily: "lato-regular",
+    fontSize: 18,
+    color: "#fff",
+  },
+  hideButton: {
+    width: 100,
+    padding: 10,
+    backgroundColor: colors.skyBlue,
+    borderRadius: 10,
+    marginTop: 10,
+  },
+  hideButtonText: {
+    color: colors.white,
+    textAlign: "center",
   },
 });

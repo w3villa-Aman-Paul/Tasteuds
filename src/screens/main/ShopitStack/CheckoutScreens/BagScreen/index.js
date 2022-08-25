@@ -7,6 +7,7 @@ import {
   TextInput,
   Pressable,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import { globalStyles } from "../../../../../styles/global";
 import { styles } from "./styles";
@@ -21,12 +22,14 @@ import {
   getCountriesList,
   googleLogin,
   facebookLogin,
+  appleLogin,
 } from "../../../../../redux";
 
 import { TouchableOpacity } from "react-native-gesture-handler";
 import CartFooter from "../../../../../library/components/ActionButtonFooter/cartFooter";
 import { useSelector } from "react-redux";
 import {
+  APP_NAME,
   FACEBOOK_APP_ID,
   GOOGLE_ANDROID_CLIENT_ID,
   GOOGLE_EXPO_ID,
@@ -35,10 +38,10 @@ import {
 } from "../../../../../res/env";
 import FilterFooter from "../../../../../library/components/ActionButtonFooter/FilterFooter";
 import { colors } from "../../../../../res/palette";
-import jwt_decode from "jwt-decode";
 
 import * as Google from "expo-auth-session/providers/google";
-import * as Facebook from "expo-facebook";
+import * as Facebook from "expo-auth-session/providers/facebook";
+// import * as Facebook from "expo-facebook";
 import * as AppleAuthentication from "expo-apple-authentication";
 import * as WebBrowser from "expo-web-browser";
 
@@ -61,8 +64,9 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
 
   const [inc, setInc] = useState("false");
   const [isLoggedin, setIsLoggedin] = useState(false);
+  const [fbResponse, setFbResponse] = useState({});
 
-  const snapPoints = ["50%"];
+  const snapPoints = Platform.OS === "ios" ? ["50%"] : ["30%"];
   const timeoutIdRef = React.useRef();
 
   useEffect(() => {
@@ -78,12 +82,6 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
     setIsLoggedin(false);
   }, []);
 
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    iosClientId: GOOGLE_IOS_CLIENT_ID,
-    androidClientId: GOOGLE_ANDROID_CLIENT_ID,
-    expoClientId: GOOGLE_EXPO_ID,
-  });
-
   useEffect(() => {
     if (response?.type === "success") {
       setGoogleSubmitting(true);
@@ -95,7 +93,31 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
         setIsOpen(false);
       }, 1000);
     }
-  }, [response]);
+
+    if (fbResponse?.type === "success") {
+      dispatch(facebookLogin(fbResponse.authentication.accessToken));
+      setTimeout(() => {
+        setIsOpen(false);
+      }, 1000);
+    }
+  }, [response, fbResponse]);
+
+  useEffect(() => {
+    const timeOutId = timeoutIdRef.current;
+    return () => {
+      clearTimeout(timeOutId);
+    };
+  }, []);
+
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    iosClientId: GOOGLE_IOS_CLIENT_ID,
+    androidClientId: GOOGLE_ANDROID_CLIENT_ID,
+    expoClientId: GOOGLE_EXPO_ID,
+  });
+
+  const [__, ____, fbPromptAsync] = Facebook.useAuthRequest({
+    clientId: FACEBOOK_APP_ID,
+  });
 
   const handleCartProductImage = (cartPro) => {
     const product = productsList?.find(
@@ -110,38 +132,12 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
     navigation.navigate("ShippingAddress");
   };
 
-  const facebookLogIn = async () => {
-    try {
-      if (!isLoggedin) {
-        await Facebook.initializeAsync({
-          appId: FACEBOOK_APP_ID,
-          appName: "Tastebuds",
-        });
-
-        const { type, token } = await Facebook.logInWithReadPermissionsAsync({
-          permissions: ["email"],
-        });
-
-        if (type === "success") {
-          setAccessToken(token);
-          setIsLoggedin(true);
-          console.log("facebookToken", token);
-          console.log("accessToken", accessToken);
-          dispatch(facebookLogin(token));
-          setTimeout(() => {
-            setIsOpen(false);
-            setIsOpen(false);
-          }, 1000);
-        }
-      } else {
-        console.log("Access token", accessToken);
-      }
-    } catch (e) {
-      console.log(e);
-    }
+  const handleFacebookAuth = async () => {
+    const response = await fbPromptAsync();
+    setFbResponse(response);
   };
 
-  const appleLogin = async () => {
+  const handleAppleLogin = async () => {
     try {
       const { identityToken } = await AppleAuthentication.signInAsync({
         requestedScopes: [
@@ -150,13 +146,13 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
         ],
       });
 
-      {
-        identityToken &&
-          console.log(
-            "identityToken",
-            jwt_decode(identityToken, { header: true }),
-            jwt_decode(identityToken)
-          );
+      if (identityToken) {
+        setIsLoggedin(true);
+        dispatch(appleLogin(identityToken));
+        setTimeout(() => {
+          setIsOpen(false);
+          setIsOpen(false);
+        }, 1000);
       }
     } catch (error) {
       console.log(error);
@@ -168,27 +164,32 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
       <View style={styles.login_container}>
         <Text style={styles.main_text}>LOGG INN ELLER REGISTRER DEG</Text>
         <View style={styles.login_body}>
-          <View style={styles.login_content}>
-            <TouchableOpacity style={styles.login_btn} onPress={appleLogin}>
-              <Image
-                style={styles.login_image}
-                source={require("../../../../../../assets/images/Header-Icon/apple.png")}
-              />
-
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Text style={styles.link_text}>LOGG INN MED APPLE</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-
-          {!googleSubmitting ? (
+          {Platform.OS === "ios" && (
             <View style={styles.login_content}>
+              <TouchableOpacity
+                style={styles.login_btn}
+                onPress={handleAppleLogin}
+              >
+                <Image
+                  style={styles.login_image}
+                  source={require("../../../../../../assets/images/Header-Icon/apple.png")}
+                />
+
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text style={styles.link_text}>LOGG INN MED APPLE</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          <View style={styles.login_content}>
+            {!googleSubmitting ? (
               <TouchableOpacity
                 style={styles.login_btn}
                 onPress={
@@ -216,17 +217,17 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
                   <Text style={styles.link_text}>LOGG INN MED GOOGLE</Text>
                 </View>
               </TouchableOpacity>
-            </View>
-          ) : (
-            <View style={styles.login_content}>
-              <ActivityIndicator />
-            </View>
-          )}
+            ) : (
+              <View style={styles.login_content}>
+                <ActivityIndicator />
+              </View>
+            )}
+          </View>
 
           <View style={styles.login_content}>
             <TouchableOpacity
               style={styles.login_btn}
-              onPress={() => facebookLogIn()}
+              onPress={() => handleFacebookAuth()}
             >
               <Image
                 style={styles.login_image}
@@ -289,9 +290,6 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
       setItemQuantity(itemQuantity + 1);
     }
   };
-
-  console.log("ITEMQTY", itemQuantity);
-  console.log("INC", inc);
 
   const handleIncrementQuantity = (lineItemId, lineItemQuantity) => {
     const id = setTimeout(() => {

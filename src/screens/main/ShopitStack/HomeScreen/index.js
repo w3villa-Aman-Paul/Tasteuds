@@ -13,17 +13,11 @@ import { styles } from "./styles";
 import { Snackbar } from "react-native-paper";
 import {
   addItem,
-  createCart,
-  getCategories,
   getInitialProductList,
-  getMenus,
   getProduct,
   getProductsList,
   getSelectedVendor,
   getTaxon,
-  getTaxonsList,
-  getVendorsList,
-  getWeeklyProducer,
   removeLineItem,
   setQuantity,
 } from "../../../../redux";
@@ -49,21 +43,11 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   const timeoutIdRef = useRef();
 
   React.useEffect(() => {
-    let load = false;
-
-    if (!load) {
-      dispatch(getMenus());
-      // dispatch(createCart());
-      dispatch(getTaxonsList());
-      dispatch(getCategories());
-    }
-    return () => {
-      load = true;
-    };
-  }, []);
-
-  React.useEffect(() => {
     const timeOutId = timeoutIdRef.current;
+    setMostBought([]);
+    if (productsList.length === 0) {
+      handleProductsLoad();
+    }
 
     return () => {
       clearTimeout(timeOutId);
@@ -83,22 +67,6 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
       load = true;
     };
   }, [productsList]);
-
-  React.useEffect(() => {
-    let load = false;
-    if (!load) {
-      dispatch(getVendorsList());
-      dispatch(getWeeklyProducer());
-
-      if (productsList.length === 0) {
-        handleProductsLoad();
-      }
-      setMostBought([]);
-    }
-    return () => {
-      load = true;
-    };
-  }, []);
 
   React.useEffect(() => {
     let load = false;
@@ -154,13 +122,13 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     return item?.default_variant?.id;
   };
 
+  const handleChangeQuantityClick = () => {
+    clearTimeout(timeoutIdRef.current);
+  };
+
   const handleItemIncrement = () => {
     setInc(true);
     setItemQuantity(itemQuantity + 1);
-  };
-
-  const handleChangeQuantityClick = () => {
-    clearTimeout(timeoutIdRef.current);
   };
 
   const handleItemDecrement = (lineItemQuantity) => {
@@ -411,7 +379,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
         <View style={styles.body_second}>
           <TouchableOpacity
             style={styles.first}
-            onPress={() => handleWeeklyProducerClick(weeklyProducer.vendor)}
+            onPress={() => handleWeeklyProducerClick(weeklyProducer[0].vendor)}
           >
             <ImageBackground
               source={require("../../../../../assets/images/Header-Icon/home_second.png")}
@@ -423,7 +391,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
             >
               <Text style={styles.text1}>UKAS PRODUSENT </Text>
               <Text style={{ ...styles.text_second, fontWeight: "700" }}>
-                {weeklyProducer?.vendor ? weeklyProducer.vendor.name : ""}
+                {weeklyProducer[0]?.vendor ? weeklyProducer[0].vendor.name : ""}
               </Text>
             </ImageBackground>
           </TouchableOpacity>

@@ -102,6 +102,8 @@ export const styles = StyleSheet.create({
     justifyContent: "space-around",
     alignItems: "center",
     borderRadius: 10,
+    ...globalStyles.iosShadow,
+    borderWidth: 1,
   },
   before_btn: {
     flexDirection: "column",
@@ -212,6 +214,7 @@ export const styles = StyleSheet.create({
   },
   login_body: {
     flexDirection: "column",
+    flex: 1,
     marginBottom: 15,
     justifyContent: "center",
     alignItems: "center",

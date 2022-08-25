@@ -62,6 +62,8 @@ const FoodFooter = ({ navigation, dispatch }) => {
     });
 
     setChecked(tempMenu);
+    storeData("food", tempMenu);
+    console.log("menu", tempMenu);
   };
 
   return (
@@ -188,8 +190,6 @@ const FoodFooter = ({ navigation, dispatch }) => {
               const filterVendor = vendor
                 ?.filter((item) => item?.isChecked)
                 ?.map((item) => parseInt(item?.id));
-
-              console.log(filterVendor);
 
               dispatch(getSearchProduct(null, filterFood, filterVendor));
               navigation.goBack();

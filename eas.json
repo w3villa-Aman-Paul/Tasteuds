@@ -19,6 +19,12 @@
     "production": {}
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "appleId": "m-hf95@hotmail.com",
+        "ascAppId": "U9S33J8RG9",
+        "appleTeamId": "U9S33J8RG9"
+      }
+    }
   }
 }

@@ -1,10 +1,14 @@
 import React, { useState } from "react";
-import { StyleSheet } from "react-native";
-import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
+import { StyleSheet, View } from "react-native";
+import BottomSheet, {
+  BottomSheetBackdrop,
+  BottomSheetView,
+} from "@gorhom/bottom-sheet";
 import { createStackNavigator } from "@react-navigation/stack";
 import FoodFooter from "./FoodFooter";
 import { connect } from "react-redux";
 import ProducersFooter from "./ProducersFooter";
+import CustomBackdrop from "../BackdropComponent/CustomBackdrop";
 
 const filterNavigator = createStackNavigator();
 
@@ -13,17 +17,39 @@ const FilterFooter = ({
   snapPoints,
   onClose,
   bottomSheetContent,
-  renderBackdrop,
   isModelVisible,
   setModelVisible,
+  setIsOpen,
 }) => {
+  const BackdropComponent = (backdropProps) => (
+    // <BottomSheetBackdrop
+    //   {...backdropProps}
+    //   enableTouchThrough={true}
+    //   style={{ height: "100%", flex: 1, backgroundColor: "#fff" }}
+    // />
+    <View
+      {...backdropProps}
+      style={{
+        height: "100%",
+        width: "100%",
+        backgroundColor: "rgba(0,0,0,0.1)",
+      }}
+      onPress={() => setModelVisible(false)}
+    ></View>
+  );
+
+  const backdropPress = () => {
+    setModelVisible(false);
+  };
+
   return (
     <BottomSheet
       ref={value}
       snapPoints={snapPoints}
       enablePanDownToClose={true}
-      backdropComponent={renderBackdrop}
       onClose={onClose}
+      backdropComponent={CustomBackdrop}
+      onBackdropPress={() => setIsOpen(false)}
       style={{ flex: 1 }}
       handleStyle={styles.handle}
       isVisible={isModelVisible}

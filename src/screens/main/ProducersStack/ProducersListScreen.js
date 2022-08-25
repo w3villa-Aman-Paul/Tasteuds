@@ -6,11 +6,15 @@ import {
   TouchableOpacity,
   FlatList,
   ImageBackground,
+  Button,
+  ActivityIndicator,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { styles } from "./style";
 import { Icon } from "react-native-elements";
 import { connect, useSelector } from "react-redux";
+import Modal from "react-native-modal";
+
 import { HOST } from "../../../res/env";
 import { getSelectedVendor } from "../../../redux/actions/taxonsActions";
 import { globalStyles } from "../../../styles/global";
@@ -18,9 +22,25 @@ import { globalStyles } from "../../../styles/global";
 const ProducersListScreen = ({ dispatch, navigation }) => {
   const vendors = useSelector((state) => state.taxons.vendors);
 
+  const [vendorsList, setVendorsList] = useState();
+
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  useEffect(() => {
+    setVendorsList(vendors?.sort((a, b) => a.name.localeCompare(b.name)));
+  }, []);
+
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
+
   const handleProducerClick = async (vendor) => {
     await dispatch(getSelectedVendor(vendor.slug));
-    navigation.navigate("ProducersDetailScreen", { bio: vendor.bio });
+    navigation.navigate("ProducersDetailScreen", {
+      bio: vendor.bio,
+      cover_image_url: vendor.cover_image_url,
+      logo_image_url: vendor.logo_image_url,
+    });
   };
 
   const renderFlatListItem = ({ item }) => {
@@ -34,7 +54,7 @@ const ProducersListScreen = ({ dispatch, navigation }) => {
             uri: `${item.cover_image_url}`,
           }}
           style={styles.producerCoverImage}
-          resizeMode={"cover"}
+          imageStyle={{ borderRadius: 10 }}
         >
           <View style={[styles.nameContainer]}>
             <Text style={[styles.producerName]}>{item.name}</Text>
@@ -42,6 +62,40 @@ const ProducersListScreen = ({ dispatch, navigation }) => {
         </ImageBackground>
       </TouchableOpacity>
     );
+  };
+
+  const sortTypes = [
+    {
+      id: 1,
+      name: "A-Å",
+      function: () => handleNameWiseSort(),
+    },
+    {
+      id: 2,
+      name: "Nylig lagt til",
+      function: () => handlDateWiseSort(),
+    },
+  ];
+
+  const handleNameWiseSort = () => {
+    let vendors = vendorsList?.sort((a, b) => a.name.localeCompare(b.name));
+
+    setVendorsList(vendors);
+  };
+
+  const handlDateWiseSort = () => {
+    let vendors = vendorsList?.sort((a, b) => {
+      if (b.created_at?.substring(0, 10) > a.created_at?.substring(0, 10)) {
+        return 1;
+      } else if (
+        b.created_at?.substring(0, 10) < a.created_at?.substring(0, 10)
+      ) {
+        return -1;
+      } else {
+        return 0;
+      }
+    });
+    setVendorsList(vendors);
   };
 
   const producerListUpperComponent = () => {
@@ -60,7 +114,6 @@ const ProducersListScreen = ({ dispatch, navigation }) => {
         </View>
 
         {/* //* filter and sorter */}
-
         <View
           style={{
             flexDirection: "row",
@@ -95,6 +148,7 @@ const ProducersListScreen = ({ dispatch, navigation }) => {
               flexDirection: "row",
               justifyContent: "center",
             }}
+            onPress={toggleModal}
           >
             <Icon name="sort" type="material-icons" />
             <Text style={styles.buttonText}>SORTER</Text>
@@ -107,11 +161,49 @@ const ProducersListScreen = ({ dispatch, navigation }) => {
   return (
     <SafeAreaView style={{ ...styles.containerFluid, ...styles.bgWhite }}>
       <FlatList
-        data={vendors.filter((item) => item.state === "active")}
+        data={
+          vendorsList
+            ? vendorsList?.filter((item) => item.state === "active")
+            : []
+        }
         keyExtractor={(item, index) => item.id}
-        renderItem={renderFlatListItem}
+        renderItem={vendorsList ? renderFlatListItem : <ActivityIndicator />}
         ListHeaderComponent={producerListUpperComponent}
       />
+
+      <Modal
+        isVisible={isModalVisible}
+        style={styles.modal}
+        animationIn="slideInUp"
+        animationOut="slideOutDown"
+        backdropColor="transparent"
+        onSwipeComplete={() => setModalVisible(false)}
+        swipeDirection="down"
+        coverScreen={false}
+        onBackdropPress={() => setModalVisible(false)}
+      >
+        <View style={styles.sorterBtnContainer}>
+          <Text style={styles.sorterHeaderText}>SORTER</Text>
+
+          <View>
+            {sortTypes.map((item) => (
+              <TouchableOpacity
+                style={styles.sorterButton}
+                key={item.id}
+                onPress={() => {
+                  item.function();
+                  setModalVisible(false);
+                }}
+              >
+                <Text style={styles.sorterButtonText}>{item.name}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+          <TouchableOpacity style={styles.hideButton} onPress={toggleModal}>
+            <Text style={styles.hideButtonText}> Cancle </Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
