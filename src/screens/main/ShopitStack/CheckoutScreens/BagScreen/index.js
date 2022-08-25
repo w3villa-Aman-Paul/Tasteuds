@@ -282,8 +282,6 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
     }
   };
 
-  console.log("ITEMQTY", itemQuantity);
-
   const handleIncrementQuantity = (lineItemId, lineItemQuantity) => {
     const id = setTimeout(() => {
       dispatch(

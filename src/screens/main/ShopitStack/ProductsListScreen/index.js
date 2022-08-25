@@ -49,9 +49,6 @@ const ProductListScreen = ({
   dispatch,
   productsList,
   saving,
-  minimumPriceRange,
-  maximumPriceRange,
-  meta,
   pageIndex,
 }) => {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
@@ -82,7 +79,6 @@ const ProductListScreen = ({
   const errMessage = useSelector((state) => state.checkout.error);
   const cart = useSelector((state) => state.checkout.cart);
   const vendorList = useSelector((state) => state.taxons.vendors);
-  const { products } = useSelector((state) => state);
   const taxons = useSelector((state) => state.taxons);
   const menus = useSelector((state) => state.taxons.menus);
   const submenus = useSelector((state) => state.taxons.submenus);
@@ -104,6 +100,7 @@ const ProductListScreen = ({
 
   useEffect(() => {
     const timeOutId = timeoutIdRef.current;
+    dispatch(sortByMostBought(mostBought));
 
     return () => {
       clearTimeout(timeOutId);
@@ -736,42 +733,46 @@ const ProductListScreen = ({
             style={{ flexDirection: "row" }}
             showsHorizontalScrollIndicator={false}
           >
-            {activeMenus?.map((menu, index, arr) => (
-              <TouchableOpacity
-                keyExtractor={(menu, index) => index.toString()}
-                onLayout={(event) => {
-                  const layout = event.nativeEvent.layout;
-                  menuCords[index] = layout.x;
-                  setMenuCords(menuCords);
-                }}
-                onPress={async () => {
-                  await handleActiveMenuClick(menu);
-                  setAll(true);
-                  setIsAll(false);
-                  setSubLink(menu.link.slice(2).toLowerCase());
-                  handleClick(handleUncheckAllMenus(arr), menu);
-                  await dispatch(getSubMenu(menu.link.slice(2).toLowerCase()));
-                  await dispatch(getSubMenuProducts(subLink));
-                  setIsSubLink(true);
+            {activeMenus
+              ?.sort((a, b) => a.lft - b.lft)
+              ?.map((menu, index, arr) => (
+                <TouchableOpacity
+                  keyExtractor={(menu, index) => index.toString()}
+                  onLayout={(event) => {
+                    const layout = event.nativeEvent.layout;
+                    menuCords[index] = layout.x;
+                    setMenuCords(menuCords);
+                  }}
+                  onPress={async () => {
+                    await handleActiveMenuClick(menu);
+                    setAll(true);
+                    setIsAll(false);
+                    setSubLink(menu.link.slice(2).toLowerCase());
+                    handleClick(handleUncheckAllMenus(arr), menu);
+                    await dispatch(
+                      getSubMenu(menu.link.slice(2).toLowerCase())
+                    );
+                    await dispatch(getSubMenuProducts(subLink));
+                    setIsSubLink(true);
 
-                  setoffsetMenu({ x: menuCords[index], y: 0 });
-                }}
-                style={[menu.isActive ? styles.active : styles.unactive]}
-              >
-                <Text
-                  style={[
-                    {
-                      padding: 8,
-                      fontSize: 20,
-                      fontWeight: "700",
-                      color: colors.primary,
-                    },
-                  ]}
+                    setoffsetMenu({ x: menuCords[index], y: 0 });
+                  }}
+                  style={[menu.isActive ? styles.active : styles.unactive]}
                 >
-                  {menu.name}
-                </Text>
-              </TouchableOpacity>
-            ))}
+                  <Text
+                    style={[
+                      {
+                        padding: 8,
+                        fontSize: 20,
+                        fontWeight: "700",
+                        color: colors.primary,
+                      },
+                    ]}
+                  >
+                    {menu.name}
+                  </Text>
+                </TouchableOpacity>
+              ))}
           </ScrollView>
         </View>
         {isSubLink === false ? (

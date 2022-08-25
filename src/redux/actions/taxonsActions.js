@@ -53,6 +53,7 @@ export function getSelectedVendor(vendor) {
 
 export function getFilteredVendors(ids) {
   const url = `${API_VERSION_STOREFRONT}/new_api/taxon_vendors.json?ids=${ids}`;
+  const method = "GET";
 }
 
 export function getCategories() {
