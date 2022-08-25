@@ -30,12 +30,15 @@ function CategoriesStackNavigator({ navigation, route }) {
         headerTitle: "",
         headerBackTitle: "Go Back",
         headerLeft: () => (
-          <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.header}
+            onPress={() => navigation.navigate("Shop")}
+          >
             <Image
               source={require("../../assets/images/Header-Icon/banner-logo.png")}
               style={styles.headerImg}
             />
-          </View>
+          </TouchableOpacity>
         ),
         title: "",
 

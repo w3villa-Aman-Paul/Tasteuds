@@ -62,12 +62,15 @@ function ShopitStackNavigator({ navigation, route }) {
         options={{
           headerTitle: "",
           headerLeft: () => (
-            <View style={styles.header}>
+            <TouchableOpacity
+              style={styles.header}
+              onPress={() => navigation.navigate("Shop")}
+            >
               <Image
                 source={require("../../assets/images/Header-Icon/banner-logo.png")}
                 style={styles.headerImg}
               />
-            </View>
+            </TouchableOpacity>
           ),
           headerRight: () => (
             <View
@@ -104,11 +107,9 @@ function ShopitStackNavigator({ navigation, route }) {
                 }}
                 onPress={() => navigation.navigate("Bag")}
               >
-                <Icon
-                  name="shoppingcart"
-                  type="ant-design"
-                  size={30}
-                  color={colors.primary}
+                <Image
+                  source={require("../../assets/images/icons/shopping_bag.png")}
+                  style={{ height: 35, width: 35, resizeMode: "contain" }}
                 />
 
                 {cart?.item_count > 0 ? (

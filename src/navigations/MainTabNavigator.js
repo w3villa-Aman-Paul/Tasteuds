@@ -10,6 +10,8 @@ import SearchComponent from "../screens/components/Search";
 import { connect } from "react-redux";
 import ProfileStackNavigator from "./ProfileStackNavigator";
 import { Icon } from "react-native-elements";
+import { Image } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const Tab = createBottomTabNavigator();
 
@@ -22,19 +24,33 @@ function MainTabNavigator({ navigation }) {
         labelStyle: {
           fontFamily: "lato-bold",
         },
+        style: {
+          height: 55,
+          paddingVertical: 8,
+        },
       }}
     >
       <Tab.Screen
         name="HJEM"
         component={ShopitStackNavigator}
         options={{
-          tabBarIcon: ({ color, size }) => (
-            <Icon
-              name="home"
-              type="entypo"
-              color={colors.primary}
-              size={30}
-            />
+          tabBarIcon: ({ focused }) => (
+            <TouchableOpacity
+              style={{
+                height: 45,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Image
+                source={
+                  focused
+                    ? require("../../assets/images/icons/shop_active.png")
+                    : require("../../assets/images/icons/shop.png")
+                }
+                style={{ resizeMode: "contain", height: "100%" }}
+              />
+            </TouchableOpacity>
           ),
         }}
       />
@@ -42,13 +58,23 @@ function MainTabNavigator({ navigation }) {
         name="VARER"
         component={CategoriesStackNavigator}
         options={{
-          tabBarIcon: ({ color, size }) => (
-            <Icon
-              name="grid-outline"
-              type="ionicon"
-              color={colors.primary}
-              size={30}
-            />
+          tabBarIcon: ({ focused }) => (
+            <TouchableOpacity
+              style={{
+                height: 45,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Image
+                source={
+                  focused
+                    ? require("../../assets/images/icons/ingredients_active.png")
+                    : require("../../assets/images/icons/ingredients.png")
+                }
+                style={{ resizeMode: "contain", height: "100%" }}
+              />
+            </TouchableOpacity>
           ),
         }}
       />
@@ -56,13 +82,23 @@ function MainTabNavigator({ navigation }) {
         name="FAVORITTER"
         component={FavouritesStackNavigator}
         options={{
-          tabBarIcon: ({ color, size }) => (
-            <Icon
-              name="heart-outline"
-              type="ionicon"
-              color={colors.primary}
-              size={30}
-            />
+          tabBarIcon: ({ focused }) => (
+            <TouchableOpacity
+              style={{
+                height: 45,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Image
+                source={
+                  focused
+                    ? require("../../assets/images/icons/favorite_active.png")
+                    : require("../../assets/images/icons/favorite.png")
+                }
+                style={{ resizeMode: "contain", height: "100%" }}
+              />
+            </TouchableOpacity>
           ),
         }}
       />
@@ -70,13 +106,23 @@ function MainTabNavigator({ navigation }) {
         name="PROFIL"
         component={ProfileStackNavigator}
         options={{
-          tabBarIcon: ({ color, size }) => (
-            <Icon
-              name="person-outline"
-              type="ionicon"
-              color={colors.primary}
-              size={30}
-            />
+          tabBarIcon: ({ focused }) => (
+            <TouchableOpacity
+              style={{
+                height: 45,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Image
+                source={
+                  focused
+                    ? require("../../assets/images/icons/user-menu-male_active.png")
+                    : require("../../assets/images/icons/user-menu-male.png")
+                }
+                style={{ resizeMode: "contain", height: "100%" }}
+              />
+            </TouchableOpacity>
           ),
         }}
       />

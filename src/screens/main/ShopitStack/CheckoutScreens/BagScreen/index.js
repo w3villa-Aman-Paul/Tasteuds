@@ -66,6 +66,14 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
   const timeoutIdRef = React.useRef();
 
   useEffect(() => {
+    const timeOutId = timeoutIdRef.current;
+
+    return () => {
+      clearTimeout(timeOutId);
+    };
+  }, []);
+
+  useEffect(() => {
     dispatch(getCart(cart?.token));
     setIsLoggedin(false);
   }, []);
@@ -88,14 +96,6 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
       }, 1000);
     }
   }, [response]);
-
-  useEffect(() => {
-    const timeOutId = timeoutIdRef.current;
-
-    return () => {
-      clearTimeout(timeOutId);
-    };
-  }, []);
 
   const handleCartProductImage = (cartPro) => {
     const product = productsList?.find(
@@ -281,7 +281,8 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
     setItemQuantity(itemQuantity + 1);
   };
   const handleItemDecrement = (lineItemQuantity) => {
-    if (itemQuantity === lineItemQuantity) {
+    console.log("ORIGINAL", lineItemQuantity);
+    if (2 + itemQuantity > lineItemQuantity) {
       setShowItemCard(false);
     } else {
       setInc(false);
@@ -290,6 +291,7 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
   };
 
   console.log("ITEMQTY", itemQuantity);
+  console.log("INC", inc);
 
   const handleIncrementQuantity = (lineItemId, lineItemQuantity) => {
     const id = setTimeout(() => {
@@ -297,7 +299,7 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
         setQuantity(
           {
             line_item_id: lineItemId,
-            quantity: lineItemQuantity + itemQuantity + 1,
+            quantity: lineItemQuantity + (itemQuantity + 1),
           },
           cart?.token
         )
@@ -309,8 +311,7 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
   };
 
   const handleDecrementQuantity = (lineItemId, lineItemQuantity) => {
-    console.log("ORIGINAL", lineItemQuantity);
-    if (lineItemQuantity === itemQuantity) {
+    if (2 + itemQuantity > lineItemQuantity) {
       handleRemoveLineItem(lineItemId);
       setItemQuantity(0);
     } else {
@@ -438,10 +439,8 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
               let cartItemId = ele?.variant?.product?.id;
 
               let getProduct = cart?.line_items?.find(
-                (ele) => ele?.variant?.product?.id === enableQty?.id
+                (ele) => ele?.variant?.product?.id == enableQty?.id
               );
-
-              console.log(">>>>", getProduct);
 
               return (
                 <View key={ele?.variant?.id.toString()}>
@@ -451,9 +450,9 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
                       onPress={() => {
                         setShowItemCard(true);
                         findCartProduct(cartItemId);
-                        {
-                          !itemQuantity ? closeIncBar() : null;
-                        }
+                        // {
+                        //   !itemQuantity ? closeIncBar() : null;
+                        // }
                       }}
                     >
                       {showItemCard && cartItemId === enableQty?.id ? (
@@ -461,8 +460,8 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
                           <View style={styles.after_Press}>
                             <TouchableOpacity
                               onPress={() => {
-                                handleItemDecrement(getProduct?.quantity);
                                 handleChangeQuantityClick();
+                                handleItemDecrement(getProduct?.quantity);
                                 handleDecrementQuantity(
                                   getProduct?.id,
                                   getProduct.quantity
@@ -481,16 +480,14 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
                             </TouchableOpacity>
 
                             <Text style={{ fontSize: 25 }}>
-                              {getProduct
-                                ? inc
-                                  ? getProduct?.quantity + itemQuantity
-                                  : getProduct?.quantity - itemQuantity
-                                : getProduct.quantity}
+                              {inc
+                                ? getProduct?.quantity + itemQuantity
+                                : getProduct?.quantity - itemQuantity}
                             </Text>
                             <TouchableOpacity
                               onPress={() => {
-                                handleItemIncrement();
                                 handleChangeQuantityClick();
+                                handleItemIncrement();
                                 handleIncrementQuantity(
                                   getProduct.id,
                                   getProduct.quantity
@@ -569,9 +566,9 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
                     <View style={styles.body_third}>
                       <Text style={styles.price}>{ele.display_total}</Text>
                     </View>
-                    {/* <Text onPress={() => handleRemoveLineItem(ele?.id)}>
+                    <Text onPress={() => handleRemoveLineItem(ele?.id)}>
                       XX
-                    </Text> */}
+                    </Text>
                   </View>
                   <Divider orientation="horizontal" />
                 </View>

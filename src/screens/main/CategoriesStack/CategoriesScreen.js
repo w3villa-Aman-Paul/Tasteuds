@@ -16,6 +16,7 @@ const CategoriesScreen = ({
   const menus = useSelector((state) => state.taxons.menus);
 
   const [activeCategory, setActiveCategory] = React.useState({});
+  const [imageUrl, setImageUrl] = React.useState("");
 
   React.useEffect(() => {
     dispatch(getMenus());
@@ -35,7 +36,7 @@ const CategoriesScreen = ({
             }}
           >
             <Image
-              source={require("../../../../assets/images/category-images/food.png")}
+              source={require("../../../../assets/images/icons/medal.png")}
               style={styles.icon}
             />
             <Text style={styles.optionText}>Dine mest kjøpte varer</Text>
@@ -49,7 +50,7 @@ const CategoriesScreen = ({
             }}
           >
             <Image
-              source={require("../../../../assets/images/category-images/alert.png")}
+              source={require("../../../../assets/images/icons/new.png")}
               style={styles.icon}
             />
             <Text style={styles.optionText}>Nyheter</Text>
@@ -60,7 +61,7 @@ const CategoriesScreen = ({
             onPress={() => navigation.navigate("ProducersListScreen")}
           >
             <Image
-              source={require("../../../../assets/images/category-images/producers.png")}
+              source={require("../../../../assets/images/icons/farmer.png")}
               style={styles.icon}
             />
             <Text style={styles.optionText}>Velg Produsent</Text>
@@ -70,7 +71,7 @@ const CategoriesScreen = ({
             onPress={() => navigation.navigate("ProductsList")}
           >
             <Image
-              source={require("../../../../assets/images/category-images/food.png")}
+              source={require("../../../../assets/images/icons/ingredients.png")}
               style={styles.icon}
             />
             <Text style={styles.optionText}>Se alle produkter</Text>
@@ -127,7 +128,7 @@ const CategoriesScreen = ({
                       ]}
                     >
                       <Image
-                        source={require("../../../../assets/images/category-images/food.png")}
+                        source={require("../../../../assets/images/icons/Meieri.png")}
                         style={styles.icon}
                       />
                       <Text
