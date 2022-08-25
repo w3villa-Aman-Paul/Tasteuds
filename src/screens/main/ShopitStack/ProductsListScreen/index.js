@@ -10,6 +10,7 @@ import {
   LogBox,
   Platform,
   Pressable,
+  RefreshControl,
 } from "react-native";
 import { globalStyles } from "../../../../styles/global";
 import { colors } from "../../../../res/palette";
@@ -82,6 +83,7 @@ const ProductListScreen = ({
   const taxons = useSelector((state) => state.taxons);
   const menus = useSelector((state) => state.taxons.menus);
   const submenus = useSelector((state) => state.taxons.submenus);
+  const { products } = useSelector((state) => state);
 
   const { mostBoughtGoods } = useSelector((state) => state.taxons);
   const { newAddedProducts } = useSelector((state) => state.taxons);
@@ -100,7 +102,10 @@ const ProductListScreen = ({
 
   useEffect(() => {
     const timeOutId = timeoutIdRef.current;
-    dispatch(sortByMostBought(mostBought));
+
+    {
+      products.sortedProductsList || dispatch(sortByMostBought(mostBought));
+    }
 
     return () => {
       clearTimeout(timeOutId);
@@ -120,18 +125,24 @@ const ProductListScreen = ({
   }, [params]);
 
   useEffect(() => {
-    dispatch(getCart(cart.token));
-    dispatch(getMenus());
+    {
+      cart?.token || dispatch(getCart(cart.token));
+    }
+    {
+      menus?.menu_items || dispatch(getMenus());
+    }
     removeData("food");
     removeData("vendors");
-    dispatch(getTaxonsList());
-    dispatch(getCategories());
   }, []);
 
   useEffect(() => {
-    handleProductsLoad();
+    {
+      productsList.length === 0 && handleProductsLoad();
+    }
     return () => {
-      dispatch(setPageIndex(1));
+      {
+        pageIndex === 1 || dispatch(setPageIndex(1));
+      }
     };
   }, [route.params]);
 
@@ -285,10 +296,6 @@ const ProductListScreen = ({
   const handleSort = () => {
     setSort(true);
   };
-
-  useEffect(() => {
-    dispatch(getCart(cart.token));
-  }, []);
 
   const findCartProduct = (itemID) => {
     const newItem = productsList.find((ele) => ele.id == itemID);
@@ -555,12 +562,12 @@ const ProductListScreen = ({
   //..........................................................................................
 
   const setProductListHighToLow = () => {
-    productsList.sort((a, b) => (a.price < b.price ? 1 : -1));
+    productsList.sort((a, b) => (Number(a.price) > Number(b.price) ? 1 : -1));
     setSort(false);
   };
 
   const setProductListLowToHigh = () => {
-    productsList.sort((a, b) => (a.price > b.price ? 1 : -1));
+    productsList.sort((a, b) => (Number(a.price) < Number(b.price) ? 1 : -1));
     setSort(false);
   };
 
@@ -737,7 +744,7 @@ const ProductListScreen = ({
               ?.sort((a, b) => a.lft - b.lft)
               ?.map((menu, index, arr) => (
                 <TouchableOpacity
-                  keyExtractor={(menu, index) => index.toString()}
+                  keyExtractor={(menu, index) => menu?.id.toString()}
                   onLayout={(event) => {
                     const layout = event.nativeEvent.layout;
                     menuCords[index] = layout.x;
@@ -893,7 +900,6 @@ const ProductListScreen = ({
           justifyContent: "center",
           backgroundColor: "transparent",
           marginBottom: 6,
-          // paddingVertical: 10,
         }}
       >
         <View style={{ flexDirection: "row", marginBottom: 10 }}>
@@ -1274,85 +1280,85 @@ const ProductListScreen = ({
     );
   };
 
-  // if (products.saving || savingTaxon) {
-  //   return <ActivityIndicatorCard />;
-  // } else
-  return (
-    <View style={[globalStyles.containerFluid, styles.bgwhite, { flex: 1 }]}>
-      <FlatList
-        keyExtractor={(item, index) => index.toString()}
-        data={isAll || all ? productsList : data}
-        renderItem={newJustInRenderItem}
-        numColumns={2}
-        ListHeaderComponent={flatListUpperElement}
-        ListFooterComponent={flatListLowerElement}
-        ref={scrollRef}
-        onEndReachedThreshold={0.3}
-        onEndReached={() => {
-          handleEndReached();
-        }}
-        columnWrapperStyle={{
-          width: "100%",
-          justifyContent: "space-evenly",
-        }}
-      />
+  if (products.saving || savingTaxon) {
+    return <ActivityIndicatorCard />;
+  } else
+    return (
+      <View style={[globalStyles.containerFluid, styles.bgwhite, { flex: 1 }]}>
+        <FlatList
+          keyExtractor={(item, index) => index.toString()}
+          data={isAll || all ? productsList : data}
+          renderItem={newJustInRenderItem}
+          numColumns={2}
+          ListHeaderComponent={flatListUpperElement}
+          ListFooterComponent={flatListLowerElement}
+          ref={scrollRef}
+          onEndReachedThreshold={0.3}
+          onEndReached={() => {
+            handleEndReached();
+          }}
+          columnWrapperStyle={{
+            width: "100%",
+            justifyContent: "space-evenly",
+          }}
+        />
 
-      {stikyOptions()}
+        {stikyOptions()}
 
-      {cart?.item_count > 0 ? (
-        <View style={styles.qty_footer}>
-          <Text
-            style={{ color: colors.white, fontSize: 15, fontWeight: "bold" }}
-          >
-            {cart?.item_count} VARER
-          </Text>
-          <TouchableOpacity onPress={() => navigation.navigate("Bag")}>
+        {cart?.item_count > 0 ? (
+          <View style={styles.qty_footer}>
             <Text
-              style={{
-                color: colors.white,
-                fontSize: 15,
-                fontWeight: "bold",
-              }}
+              style={{ color: colors.white, fontSize: 15, fontWeight: "bold" }}
             >
-              SE HANDLEVOGN
+              {cart?.item_count} VARER
             </Text>
-          </TouchableOpacity>
-        </View>
-      ) : null}
+            <TouchableOpacity onPress={() => navigation.navigate("Bag")}>
+              <Text
+                style={{
+                  color: colors.white,
+                  fontSize: 15,
+                  fontWeight: "bold",
+                }}
+              >
+                SE HANDLEVOGN
+              </Text>
+            </TouchableOpacity>
+          </View>
+        ) : null}
 
-      {checkout.error !== null && saving === false ? (
-        <Snackbar visible={snackbarVisible} onDismiss={dismissSnackbar}>
-          {errMessage}
-        </Snackbar>
-      ) : (
-        <></>
-      )}
+        {checkout.error !== null && saving === false ? (
+          <Snackbar visible={snackbarVisible} onDismiss={dismissSnackbar}>
+            {errMessage}
+          </Snackbar>
+        ) : (
+          <></>
+        )}
 
-      {isOpen && (
-        <FilterFooter
-          value={sheetRef}
-          snapPoints={snapPoints}
-          onClose={() => setIsOpen(false)}
-          bottomSheetContent={bottomSheetContent}
-          isModelVisible={isModelVisible}
-          setModelVisible={setModelVisible}
-          setIsOpen={setIsOpen}
-        />
-      )}
+        {isOpen && (
+          <FilterFooter
+            value={sheetRef}
+            snapPoints={snapPoints}
+            onClose={() => setIsOpen(false)}
+            bottomSheetContent={bottomSheetContent}
+            isModelVisible={isModelVisible}
+            setModelVisible={setModelVisible}
+            setIsOpen={setIsOpen}
+          />
+        )}
 
-      {sort && (
-        <FilterFooter
-          value={sheetRef}
-          snapPoints={snapPoints}
-          onClose={() => setSort(false)}
-          bottomSheetContent={sortContent}
-          isModelVisible={isModelVisible}
-          setModelVisible={setModelVisible}
-          setIsOpen={setSort}
-        />
-      )}
-    </View>
-  );
+        {sort && (
+          <FilterFooter
+            value={sheetRef}
+            snapPoints={snapPoints}
+            onClose={() => setSort(false)}
+            bottomSheetContent={sortContent}
+            isModelVisible={isModelVisible}
+            setModelVisible={setModelVisible}
+            setIsOpen={setSort}
+          />
+        )}
+      </View>
+    );
 };
 
 const mapStateToProps = (state) => ({

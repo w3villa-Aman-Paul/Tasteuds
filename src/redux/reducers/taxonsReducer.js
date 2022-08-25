@@ -231,7 +231,7 @@ export default function taxonsReducer(state = DEFAULT_STATE, action) {
 
     case "GET_WEEKLY_PRODUCER_FULFILLED":
       changes = {
-        weeklyProducer: response,
+        weeklyProducer: [response],
         saving: false,
       };
       return { ...state, ...changes };

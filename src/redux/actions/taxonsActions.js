@@ -45,15 +45,24 @@ export function getSelectedVendor(vendor) {
     include: "image,products.images.attachment",
   };
 
+  console.log("SELECTED VENDOR: ", handleAPIWithoutToken(url, params, method));
   return {
     type: "GET_SELECTED_VENDOR",
     payload: handleAPIWithoutToken(url, params, method),
   };
 }
 
-export function getFilteredVendors(ids) {
-  const url = `${API_VERSION_STOREFRONT}/new_api/taxon_vendors.json?ids=${ids}`;
+export function getFilteredVendors(ids = []) {
+  const url = `${API_VERSION_STOREFRONT}/new_api/taxon_vendors.json`;
   const method = "GET";
+  const params = {
+    ids: ids,
+  };
+
+  return {
+    type: "GET_FILTERED_VENDOR_LIST",
+    payload: handleAPIWithoutToken(url, params, method),
+  };
 }
 
 export function getCategories() {

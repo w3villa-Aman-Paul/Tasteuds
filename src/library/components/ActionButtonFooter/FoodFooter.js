@@ -63,6 +63,7 @@ const FoodFooter = ({ navigation, dispatch }) => {
 
     setChecked(tempMenu);
     storeData("food", tempMenu);
+    console.log("menu", tempMenu);
   };
 
   return (

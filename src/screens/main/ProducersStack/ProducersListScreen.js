@@ -7,8 +7,9 @@ import {
   FlatList,
   ImageBackground,
   Button,
+  ActivityIndicator,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { styles } from "./style";
 import { Icon } from "react-native-elements";
 import { connect, useSelector } from "react-redux";
@@ -21,11 +22,13 @@ import { globalStyles } from "../../../styles/global";
 const ProducersListScreen = ({ dispatch, navigation }) => {
   const vendors = useSelector((state) => state.taxons.vendors);
 
-  const [vendorsList, setVendorsList] = useState(
-    vendors?.sort((a, b) => a.name.localeCompare(b.name))
-  );
+  const [vendorsList, setVendorsList] = useState();
 
   const [isModalVisible, setModalVisible] = useState(false);
+
+  useEffect(() => {
+    setVendorsList(vendors?.sort((a, b) => a.name.localeCompare(b.name)));
+  }, []);
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -93,7 +96,6 @@ const ProducersListScreen = ({ dispatch, navigation }) => {
       }
     });
     setVendorsList(vendors);
-    console.log(vendorsList);
   };
 
   const producerListUpperComponent = () => {
@@ -159,9 +161,13 @@ const ProducersListScreen = ({ dispatch, navigation }) => {
   return (
     <SafeAreaView style={{ ...styles.containerFluid, ...styles.bgWhite }}>
       <FlatList
-        data={vendorsList.filter((item) => item.state === "active")}
+        data={
+          vendorsList
+            ? vendorsList?.filter((item) => item.state === "active")
+            : []
+        }
         keyExtractor={(item, index) => item.id}
-        renderItem={renderFlatListItem}
+        renderItem={vendorsList ? renderFlatListItem : <ActivityIndicator />}
         ListHeaderComponent={producerListUpperComponent}
       />
 
