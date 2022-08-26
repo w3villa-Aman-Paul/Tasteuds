@@ -13,6 +13,7 @@ import { globalStyles } from "../../../../../styles/global";
 import { colors } from "../../../../../res/palette";
 import { CheckO } from "../../../../../library/icons";
 import { Icon } from "react-native-elements";
+import { initStripe, useStripe } from "@stripe/stripe-react-native";
 
 import {
   createCart,
@@ -31,6 +32,7 @@ import FilterFooter from "../../../../../library/components/ActionButtonFooter/F
 import { accountRetrieve } from "../../../../../redux";
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import { useNavigation } from "@react-navigation/native";
+import { MethodSelector } from "./MethodSelector";
 
 const FormInput = ({ placeholder, ...rest }) => {
   return (
@@ -50,6 +52,10 @@ const ShippingAddressScreen = ({
   route,
 }) => {
   let newAddress = Address.filter((x) => x.id === route.params?.Id);
+  const [paymentMethod, setPaymentMethod] = useState();
+
+  const { initPaymentSheet, presentPaymentSheet, confirmPaymentSheetPayment } =
+    useStripe();
 
   const { email } = useSelector((state) => state.account.account);
 
@@ -66,7 +72,52 @@ const ShippingAddressScreen = ({
   const paymentHandler = () => {
     setIsOpen(true);
   };
+  useEffect(() => {
+    (async () => {
+      await initStripe({
+        publishableKey,
+        // Only if implementing applePay
+        // Set the merchantIdentifier to the same
+        // value in the StripeProvider and
+        // striple plugin in app.json
+        merchantIdentifier: "merchant.com.tastebuds",
+      });
 
+      // Initialize the PaymentSheet with the paymentIntent data,
+      // we will later present and confirm this
+      await initializePaymentSheet();
+    })();
+  }, []);
+
+  const initializePaymentSheet = async () => {
+    const { error, paymentOption } = await initPaymentSheet({
+      paymentIntentClientSecret: clientSecret,
+      customFlow: true,
+      merchantDisplayName: merchantName,
+      style: "alwaysDark", // If darkMode
+      googlePay: true, // If implementing googlePay
+      applePay: true, // If implementing applePay
+      merchantCountryCode: "NO", // Countrycode of the merchant
+      testEnv: __DEV__, // Set this flag if it's a test environment
+    });
+    if (error) {
+      console.log(error);
+    } else {
+      setPaymentMethod(paymentOption);
+    }
+  };
+
+  const handleSelectMethod = async () => {
+    const { error, paymentOption } = await presentPaymentSheet({
+      confirmPayment: false,
+    });
+    if (error) {
+      alert(`Error code: ${error.code}`, error.message);
+    }
+    setPaymentMethod(paymentOption);
+  };
+
+  // *Bottom Sheet content ================================================================= */
   const bottomSheetContent = () => {
     const [cardName, setCardName] = useState(null);
     const [profileId, setProfileId] = useState("tok_visa");
@@ -193,7 +244,7 @@ const ShippingAddressScreen = ({
       </KeyboardAvoidingView>
     );
   };
-  console.log("Address", Address);
+  //* ===========================================================*/
 
   const handleUpdateCheckout = async () => {
     await dispatch(
@@ -381,12 +432,12 @@ const ShippingAddressScreen = ({
               <Text style={styles.payment_title}>BETALINGSMÅTE</Text>
               <View style={styles.payment_body}>
                 <View style={styles.payment_btn_body}>
-                  <TouchableOpacity style={styles.payment_btn}>
-                    <Image
-                      source={require("../../../../../../assets/images/Header-Icon/ipay.png")}
-                      style={styles.payment_img}
-                    />
-                  </TouchableOpacity>
+                  <MethodSelector
+                    style={styles.payment_btn}
+                    // onPress={handleSelectMethod}
+                    onPress={() => {}}
+                    paymentMethod={paymentMethod}
+                  />
                 </View>
 
                 <View style={styles.payment_btn_body}>

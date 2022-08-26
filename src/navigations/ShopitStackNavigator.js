@@ -6,6 +6,7 @@ import ProductsListScreen from "../screens/main/ShopitStack/ProductsListScreen";
 import ProductDetailScreen from "../screens/main/ShopitStack/ProductDetailScreen";
 import ShippingAddressScreen from "../screens/main/ShopitStack/CheckoutScreens/ShippingAddressScreen";
 import BagScreen from "../screens/main/ShopitStack/CheckoutScreens/BagScreen";
+import { AppleCheckoutScreen } from "../screens/main/ShopitStack/CheckoutScreens/ShippingAddressScreen/MethodSelector";
 import { Heart } from "../library/icons";
 import { colors } from "../res/palette";
 import { globalStyles } from "../styles/global";
@@ -422,6 +423,10 @@ function ShopitStackNavigator({ navigation, route }) {
       <ShopitStack.Screen name="SavedAddress" component={SavedAddress} />
       <ShopitStack.Screen name="AddAdress" component={AddAddress} />
       <ShopitStack.Screen name="updateAddress" component={updateAddress} />
+      <ShopitStack.Screen
+        name="ApplePayCheckoutScreen"
+        component={AppleCheckoutScreen}
+      />
 
       <ShopitStack.Screen
         name="SearchScreen"

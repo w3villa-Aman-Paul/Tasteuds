@@ -237,4 +237,27 @@ export const styles = StyleSheet.create({
   headerSection: {
     flexDirection: "row",
   },
+  buyButton: {
+    backgroundColor: "#007DFF",
+    paddingHorizontal: 32,
+    paddingVertical: 16,
+    borderRadius: 8,
+  },
+  textButton: {
+    paddingHorizontal: 32,
+    paddingVertical: 16,
+    borderRadius: 8,
+    color: "#007DFF",
+  },
+  selectButton: {
+    borderColor: "#007DFF",
+    paddingHorizontal: 32,
+    paddingVertical: 16,
+    borderRadius: 8,
+    borderWidth: 2,
+  },
+  boldText: {
+    fontSize: 17,
+    fontWeight: "700",
+  },
 });

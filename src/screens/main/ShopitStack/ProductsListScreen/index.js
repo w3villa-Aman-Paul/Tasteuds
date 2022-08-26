@@ -91,6 +91,7 @@ const ProductListScreen = ({
   const params = route?.params;
 
   const timeoutIdRef = useRef();
+  console.log("params", params);
 
   useEffect(() => {
     loadMostBoughtGoods();
@@ -114,7 +115,7 @@ const ProductListScreen = ({
 
   useEffect(() => {
     handleActiveMenu();
-  }, [menus]);
+  }, [menus, params]);
 
   useEffect(() => {
     handleActiveSubMenu();
@@ -173,11 +174,11 @@ const ProductListScreen = ({
   };
 
   const handleAfterMenuSelect = (params) => {
-    {
-      (params.route === "Categories" || params.route === "ProductDetail") &&
-        handleActiveMenu() &&
-        paramsDispatchHandler();
-    }
+    // {
+    //   (params.route === "Categories" || params.route === "ProductDetail") &&
+    //     handleActiveMenu() &&
+    //     paramsDispatchHandler(params);
+    // }
 
     if (params.route === "ProductDetail") {
       switch (params.type) {
@@ -198,6 +199,10 @@ const ProductListScreen = ({
         default:
           break;
       }
+    }
+
+    if (params.route === "Categories") {
+      paramsDispatchHandler(params);
     }
   };
 

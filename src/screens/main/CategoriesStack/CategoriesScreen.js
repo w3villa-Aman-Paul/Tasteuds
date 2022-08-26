@@ -16,7 +16,6 @@ const CategoriesScreen = ({
   const menus = useSelector((state) => state.taxons.menus);
 
   const [activeCategory, setActiveCategory] = React.useState({});
-  const [imageUrl, setImageUrl] = React.useState("");
 
   React.useEffect(() => {
     dispatch(getMenus());

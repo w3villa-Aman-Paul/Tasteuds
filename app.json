@@ -13,7 +13,9 @@
     "splash": {
       "shown": false
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.w3villa.tastebuds",
@@ -22,8 +24,18 @@
           "reservedClientId": "com.googleusercontent.apps.575803309006-hqi5d55e9ge3vhund8kifreii46atgnc"
         }
       },
-
-      "usesAppleSignIn": true
+      "usesAppleSignIn": true,
+      "infoPlist": {
+        "NSUserTrackingUsageDescription": true,
+        "SKAdNetworkItems": [
+          {
+            "SKAdNetworkIdentifier": "v9wttpbfk9.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "n38lu8286q.skadnetwork"
+          }
+        ]
+      }
     },
     "android": {
       "package": "com.w3villa.tastebuds",
@@ -32,14 +44,25 @@
     "web": {
       "favicon": "./assets/images/favicon.png"
     },
-
     "plugins": [
       [
         "expo-facebook",
         {
           "userTrackingPermission": true
         }
+      ],
+      [
+        "@stripe/stripe-react-native",
+        {
+          "merchantIdentifier": "merchant.com.tastebuds",
+          "enableGooglePay": true
+        }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "3d3590cf-72f3-468a-bd76-b8d4dbd8934a"
+      }
+    }
   }
 }

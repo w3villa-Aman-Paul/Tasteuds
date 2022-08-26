@@ -13,6 +13,7 @@ import { styles } from "./styles";
 import { Snackbar } from "react-native-paper";
 import {
   addItem,
+  createCart,
   getInitialProductList,
   getProduct,
   getProductsList,
@@ -48,6 +49,8 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     if (productsList.length === 0) {
       handleProductsLoad();
     }
+
+    // dispatch(createCart());
 
     return () => {
       clearTimeout(timeOutId);
@@ -211,7 +214,11 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
 
   const handleWeeklyProducerClick = async (vendor) => {
     await dispatch(getSelectedVendor(vendor.slug));
-    navigation.navigate("ProducersDetailScreen");
+    navigation.navigate("ProducersDetailScreen", {
+      bio: vendor.bio,
+      cover_image_url: vendor.cover_image_url,
+      logo_image_url: vendor.logo_image_url,
+    });
   };
 
   const FlatListImageItem = ({

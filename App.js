@@ -9,6 +9,7 @@ import store, { persistor } from "./src/redux/store";
 import * as Font from "expo-font";
 import ActivityIndicatorCard from "./src/library/components/ActivityIndicatorCard";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { StripeProvider } from "@stripe/stripe-react-native";
 
 const getFonts = () =>
   Font.loadAsync({
@@ -32,17 +33,19 @@ const App = () => {
   }
 
   return (
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <SafeAreaProvider>
-          <ThemeProvider>
-            <PaperProvider>
-              <RootStackNavigator />
-            </PaperProvider>
-          </ThemeProvider>
-        </SafeAreaProvider>
-      </PersistGate>
-    </Provider>
+    <StripeProvider merchantIdentifier="merchant.com.tastebuds">
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <SafeAreaProvider>
+            <ThemeProvider>
+              <PaperProvider>
+                <RootStackNavigator />
+              </PaperProvider>
+            </ThemeProvider>
+          </SafeAreaProvider>
+        </PersistGate>
+      </Provider>
+    </StripeProvider>
   );
 };
 
