@@ -131,29 +131,6 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     setItemQuantity(itemQuantity + 1);
   };
 
-  const handleItemDecrement = (lineItemQuantity) => {
-    if (1 - itemQuantity == lineItemQuantity) {
-      setShowItemCard(false);
-    } else {
-      setInc(false);
-      setItemQuantity(itemQuantity - 1);
-    }
-  };
-
-  const handleSetTimeoutDefault = (ID) => {
-    handleChangeQuantityClick();
-    let firstItem = productsList.find((x) => x.id == ID);
-    setTimeout(() => {
-      dispatch(
-        addItem(cart?.token, {
-          variant_id: firstItem?.default_variant?.id,
-          quantity: 1,
-        })
-      );
-      setShowItemCard(false);
-    }, 2000);
-  };
-
   const handleSetTimeoutInc = (tempId, qty) => {
     const id = setTimeout(() => {
       if (!inCart) {
@@ -182,8 +159,17 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     timeoutIdRef.current = id;
   };
 
+  const handleItemDecrement = (lineItemQuantity) => {
+    if (3 - itemQuantity > lineItemQuantity) {
+      setShowItemCard(false);
+    } else {
+      setInc(false);
+      setItemQuantity(itemQuantity - 1);
+    }
+  };
+
   const handleSetTimeoutDec = (tempId, qty) => {
-    if (1 - itemQuantity == qty) {
+    if (3 - itemQuantity > qty) {
       dispatch(removeLineItem(tempId, {}, cart?.token));
       setShowItemCard(false);
     } else {
@@ -202,6 +188,20 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
       }, 2000);
       timeoutIdRef.current = id;
     }
+  };
+
+  const handleSetTimeoutDefault = (ID) => {
+    handleChangeQuantityClick();
+    let firstItem = productsList.find((x) => x.id == ID);
+    setTimeout(() => {
+      dispatch(
+        addItem(cart?.token, {
+          variant_id: firstItem?.default_variant?.id,
+          quantity: 1,
+        })
+      );
+      setShowItemCard(false);
+    }, 2000);
   };
 
   const closeIncBar = () => {
@@ -254,7 +254,12 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
                   handleSetTimeoutDec(tempArr[0]?.id, tempArr[0]?.quantity);
                 }}
               >
-                <Text style={styles.dynamicText}>--</Text>
+                <Icon
+                  type="ant-design"
+                  name="minus"
+                  size={24}
+                  color={colors.btnLink}
+                />
               </TouchableOpacity>
 
               <Text style={styles.dynamicText}>
@@ -272,7 +277,12 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
                   handleSetTimeoutInc(tempArr[0]?.id, tempArr[0]?.quantity);
                 }}
               >
-                <Text style={styles.dynamicText}>+</Text>
+                <Icon
+                  type="ant-design"
+                  name="plus"
+                  size={24}
+                  color={colors.btnLink}
+                />
               </TouchableOpacity>
             </View>
           ) : tempArr[0] ? (

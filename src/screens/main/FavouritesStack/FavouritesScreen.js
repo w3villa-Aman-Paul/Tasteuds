@@ -8,15 +8,16 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
-import { connect, useSelector } from "react-redux";
+import { connect } from "react-redux";
 import { Icon } from "react-native-elements";
 import { colors } from "../../../res/palette";
-import { Snackbar } from "react-native-paper";
 import {
   addItem,
   deleteFavourite,
+  removeLineItem,
   setFavQuantityDec,
   setFavQuantityInc,
+  setQuantity,
 } from "../../../redux";
 import FilterFooter from "../../../library/components/ActionButtonFooter/FilterFooter";
 import { HOST } from "../../../res/env";
@@ -36,8 +37,19 @@ const FavouritesScreen = ({
   const [qtyBtn, setQtyBtn] = useState(false);
   const [color, setColor] = useState(0);
   const [particularFav, setParticularFav] = useState(null);
+  const [itemQuantity, setItemQuantity] = useState(0);
   const sheetRef = useRef(null);
+  const [inc, setInc] = useState("false");
   const snapPoints = ["35%"];
+
+  const timeoutIdRef = useRef();
+
+  useEffect(() => {
+    const timeOutId = timeoutIdRef.current;
+    return () => {
+      clearTimeout(timeOutId);
+    };
+  }, []);
 
   useEffect(() => {
     if (favorites?.length === 0) {
@@ -49,8 +61,14 @@ const FavouritesScreen = ({
     setTempVar(tempFav?.variants[color]?.id);
   }, [favorites, temp, particularFav]);
 
+  useEffect(() => {
+    {
+      tempArr ? null : addFavToCart();
+    }
+  }, [qtyBtn === true, particularFav]);
+
   const producer = (Id) => {
-    const res = vendors.find((ven) => ven.id === Id);
+    const res = vendors.find((ven) => ven.id == Id);
     return res;
   };
 
@@ -142,28 +160,79 @@ const FavouritesScreen = ({
     );
   };
 
-  const handleIncrementQuantity = (fav_id, fav_quantity) => {
-    dispatch(
-      setFavQuantityInc({
-        fav_item_id: fav_id,
-        quantity: fav_quantity + 1,
-      })
-    );
+  const handleChangeQuantityClick = () => {
+    clearTimeout(timeoutIdRef.current);
+  };
+
+  const handleIncrement = () => {
+    setInc(true);
+    setItemQuantity(itemQuantity + 1);
+  };
+
+  const handleIncrementQuantity = (fav_id) => {
+    const id = setTimeout(() => {
+      dispatch(
+        setQuantity(
+          {
+            line_item_id: fav_id,
+            quantity: tempArr?.quantity + itemQuantity + 1,
+          },
+          cart?.token
+        )
+      );
+      setItemQuantity(0);
+      setQtyBtn(false);
+    }, 2000);
+    timeoutIdRef.current = id;
+  };
+
+  const handleDecrement = () => {
+    if (2 + itemQuantity > tempArr.quantity) {
+      setQtyBtn(false);
+    }
+    setInc(false);
+    setItemQuantity(itemQuantity + 1);
   };
 
   const handleDecrementQuantity = (fav_id, fav_quantity) => {
-    if (fav_quantity === 1) {
+    if (2 + itemQuantity > tempArr?.quantity) {
+      dispatch(removeLineItem(fav_id, {}, cart?.token));
       setQtyBtn(false);
     } else {
-      dispatch(
-        setFavQuantityDec({
-          fav_item_id: fav_id,
-          quantity: fav_quantity - 1,
-        })
-      );
+      const id = setTimeout(() => {
+        dispatch(
+          setQuantity(
+            {
+              line_item_id: fav_id,
+              quantity: tempArr?.quantity - (itemQuantity + 1),
+            },
+            cart?.token
+          )
+        );
+        setItemQuantity(0);
+        setQtyBtn(false);
+      }, 2000);
+      timeoutIdRef.current = id;
     }
   };
 
+  const addFavToCart = () => {
+    dispatch(
+      addItem(cart?.token, {
+        variant_id: particularFav?.variants[color]?.id,
+        quantity: 1,
+      })
+    );
+    setTimeout(() => {
+      setQtyBtn(false);
+    }, 2000);
+  };
+
+  const tempArr = cart.line_items.find(
+    (ele) => particularFav?.id == ele?.variant?.product?.id
+  );
+
+  console.log("TEMP", itemQuantity);
   return (
     <>
       <ScrollView>
@@ -172,10 +241,7 @@ const FavouritesScreen = ({
             let result = producer(favourite?.vendor?.id);
 
             return (
-              <TouchableOpacity
-                key={favourite?.id}
-                style={styles.contentContainer}
-              >
+              <View key={favourite?.id} style={styles.contentContainer}>
                 <View style={styles.first_content}>
                   <Image
                     source={{
@@ -193,7 +259,7 @@ const FavouritesScreen = ({
                     <Text style={{ color: colors.black, fontSize: 14 }}>
                       {itemId?.id === favourite?.id
                         ? itemId?.variants[color]?.display_price
-                        : favourite?.variants[0]?.display_price}
+                        : favourite?.variants[0]?.display_price}{" "}
                       |{" "}
                       {itemId?.id === favourite?.id
                         ? itemId?.variants[color].options_text.split(" ")[3] ||
@@ -218,12 +284,11 @@ const FavouritesScreen = ({
                     <View style={styles.fav_qty_style}>
                       <TouchableOpacity
                         style={styles.qty_icon_first}
-                        onPress={() =>
-                          handleDecrementQuantity(
-                            favourite?.id,
-                            favourite?.fav_qty
-                          )
-                        }
+                        onPress={() => {
+                          handleChangeQuantityClick();
+                          handleDecrement();
+                          handleDecrementQuantity(tempArr?.id);
+                        }}
                       >
                         <Icon
                           type="ant-design"
@@ -233,16 +298,19 @@ const FavouritesScreen = ({
                         />
                       </TouchableOpacity>
                       <Text style={{ fontWeight: "bold" }}>
-                        {favourite?.fav_qty ? favourite?.fav_qty : 1}
+                        {tempArr
+                          ? inc
+                            ? tempArr?.quantity + itemQuantity
+                            : tempArr?.quantity - itemQuantity
+                          : 1}
                       </Text>
                       <TouchableOpacity
                         style={styles.qty_icon_second}
-                        onPress={() =>
-                          handleIncrementQuantity(
-                            favourite?.id,
-                            favourite?.fav_qty
-                          )
-                        }
+                        onPress={() => {
+                          handleChangeQuantityClick();
+                          handleIncrement();
+                          handleIncrementQuantity(tempArr?.id);
+                        }}
                       >
                         <Icon
                           type="ant-design"
@@ -273,26 +341,20 @@ const FavouritesScreen = ({
                     </>
                   )}
                 </View>
-              </TouchableOpacity>
+              </View>
             );
           })}
         </View>
       </ScrollView>
-      {qtyBtn && particularFav?.id ? (
+      {tempArr ? (
         <View style={styles.qty_footer}>
           <Text
             style={{ color: colors.white, fontSize: 15, fontWeight: "bold" }}
           >
-            {temp?.fav_qty} VARE
+            {cart?.item_count} VARE
           </Text>
           <TouchableOpacity
             onPress={() => {
-              dispatch(
-                addItem(cart?.token, {
-                  variant_id: tempVar,
-                  quantity: temp?.fav_qty,
-                })
-              );
               navigation.navigate("Bag");
             }}
           >
@@ -321,8 +383,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignSelf: "center",
-    width: "90%",
-    marginTop: 20,
+    width: "95%",
+    marginTop: 15,
     marginBottom: 20,
   },
 
@@ -336,24 +398,31 @@ const styles = StyleSheet.create({
   },
   first_content: {
     flexDirection: "row",
-    paddingVertical: 10,
-    paddingHorizontal: 15,
+    margin: 5,
+    marginLeft: 8,
+    marginRight: 8,
+    height: 100,
   },
   fav_image: {
-    height: 70,
-    width: 50,
-    resizeMode: "contain",
+    height: "100%",
+    width: 90,
+    // resizeMode: "cover",
     marginRight: 10,
   },
   first_body: {
     flex: 1,
+    alignItems: "flex-start",
     justifyContent: "center",
+    height: 100,
   },
   second_content: {
+    position: "absolute",
     flexDirection: "row",
     alignSelf: "flex-end",
-    paddingHorizontal: 15,
-    paddingVertical: 10,
+    right: 0,
+    bottom: 0,
+    marginRight: 5,
+    marginBottom: 5,
   },
   first_btn: {
     flex: 0.7,

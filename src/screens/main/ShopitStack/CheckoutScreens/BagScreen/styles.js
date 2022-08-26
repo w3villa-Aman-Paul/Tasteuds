@@ -64,14 +64,17 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   body_first: {
-    flex: 0.5,
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
   body_second: {
-    justifyContent: "center",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-around",
     alignItems: "center",
-    flex: 0.3,
+    flex: 0.5,
+    marginRight: 25,
   },
   body_third: {
     flex: 0.2,
@@ -91,7 +94,8 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   inc_btn: {
-    flex: 0.5,
+    // flex: 0.5,
+    width: 60,
     elevation: 5,
     zIndex: 10,
     borderColor: "transparent",

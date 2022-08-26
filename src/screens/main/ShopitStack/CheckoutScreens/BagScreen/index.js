@@ -12,7 +12,7 @@ import {
 import { globalStyles } from "../../../../../styles/global";
 import { styles } from "./styles";
 import { connect } from "react-redux";
-import { Divider } from "react-native-elements";
+import { Divider, Icon } from "react-native-elements";
 import { Snackbar } from "react-native-paper";
 import {
   getCart,
@@ -23,6 +23,7 @@ import {
   googleLogin,
   facebookLogin,
   appleLogin,
+  getProduct,
 } from "../../../../../redux";
 
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -436,7 +437,7 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
               let cartProductImage = handleCartProductImage(ele);
               let cartItemId = ele?.variant?.product?.id;
 
-              let getProduct = cart?.line_items?.find(
+              let cartProduct = cart?.line_items?.find(
                 (ele) => ele?.variant?.product?.id == enableQty?.id
               );
 
@@ -448,9 +449,9 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
                       onPress={() => {
                         setShowItemCard(true);
                         findCartProduct(cartItemId);
-                        // {
-                        //   !itemQuantity ? closeIncBar() : null;
-                        // }
+                        {
+                          !itemQuantity ? closeIncBar() : null;
+                        }
                       }}
                     >
                       {showItemCard && cartItemId === enableQty?.id ? (
@@ -459,48 +460,42 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
                             <TouchableOpacity
                               onPress={() => {
                                 handleChangeQuantityClick();
-                                handleItemDecrement(getProduct?.quantity);
+                                handleItemDecrement(cartProduct?.quantity);
                                 handleDecrementQuantity(
-                                  getProduct?.id,
-                                  getProduct.quantity
+                                  cartProduct?.id,
+                                  cartProduct.quantity
                                 );
                               }}
                             >
-                              <Text
-                                style={{
-                                  fontSize: 25,
-                                  color: "#EB1741",
-                                  fontWeight: "bold",
-                                }}
-                              >
-                                --
-                              </Text>
+                              <Icon
+                                type="ant-design"
+                                name="minus"
+                                size={22}
+                                color={colors.btnLink}
+                              />
                             </TouchableOpacity>
 
                             <Text style={{ fontSize: 25 }}>
                               {inc
-                                ? getProduct?.quantity + itemQuantity
-                                : getProduct?.quantity - itemQuantity}
+                                ? cartProduct?.quantity + itemQuantity
+                                : cartProduct?.quantity - itemQuantity}
                             </Text>
                             <TouchableOpacity
                               onPress={() => {
                                 handleChangeQuantityClick();
                                 handleItemIncrement();
                                 handleIncrementQuantity(
-                                  getProduct.id,
-                                  getProduct.quantity
+                                  cartProduct.id,
+                                  cartProduct.quantity
                                 );
                               }}
                             >
-                              <Text
-                                style={{
-                                  fontSize: 25,
-                                  color: "#EB1741",
-                                  fontWeight: "bold",
-                                }}
-                              >
-                                +
-                              </Text>
+                              <Icon
+                                type="ant-design"
+                                name="plus"
+                                size={22}
+                                color={colors.btnLink}
+                              />
                             </TouchableOpacity>
                           </View>
                           <View style={styles.after_img}>
@@ -538,35 +533,63 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
                               </Text>
                             </View>
                           </View>
-                          <View style={styles.body_first}>
+                        </>
+                      )}
+                    </Pressable>
+
+                    <View style={styles.body_second}>
+                      {showItemCard ? (
+                        <View
+                          style={{ display: "flex", flex: 1, marginLeft: 10 }}
+                        >
+                          <Text style={styles.name} numberOfLines={1}>
+                            {ele.name}
+                          </Text>
+                          <Text>
+                            {ele.variant.options_text
+                              ? ele.variant.options_text.split(" ")[3] ||
+                                ele.variant.options_text.split(" ")[1]
+                              : ""}
+                          </Text>
+                        </View>
+                      ) : (
+                        <>
+                          <TouchableOpacity
+                            style={styles.body_first}
+                            onPress={() => {
+                              dispatch(getProduct(enableQty?.id));
+                              navigation.navigate("ProductDetail");
+                            }}
+                          >
                             <Image
                               source={{
                                 uri: `${HOST}/${cartProductImage?.url}`,
                               }}
                               style={styles.image}
                             />
+                          </TouchableOpacity>
+                          <View
+                            style={{ display: "flex", flex: 1, marginLeft: 10 }}
+                          >
+                            <Text style={styles.name} numberOfLines={1}>
+                              {ele.name}
+                            </Text>
+                            <Text>
+                              {ele.variant.options_text
+                                ? ele.variant.options_text.split(" ")[3] ||
+                                  ele.variant.options_text.split(" ")[1]
+                                : ""}
+                            </Text>
                           </View>
                         </>
                       )}
-                    </Pressable>
-
-                    <View style={styles.body_second}>
-                      <Text style={styles.name} numberOfLines={1}>
-                        {ele.name}
-                      </Text>
-                      <Text>
-                        {ele.variant.options_text
-                          ? ele.variant.options_text.split(" ")[3] ||
-                            ele.variant.options_text.split(" ")[1]
-                          : ""}
-                      </Text>
                     </View>
                     <View style={styles.body_third}>
                       <Text style={styles.price}>{ele.display_total}</Text>
                     </View>
-                    <Text onPress={() => handleRemoveLineItem(ele?.id)}>
+                    {/* <Text onPress={() => handleRemoveLineItem(ele?.id)}>
                       XX
-                    </Text>
+                    </Text> */}
                   </View>
                   <Divider orientation="horizontal" />
                 </View>

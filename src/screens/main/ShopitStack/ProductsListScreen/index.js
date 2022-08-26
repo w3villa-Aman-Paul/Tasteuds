@@ -318,7 +318,7 @@ const ProductListScreen = ({
   };
 
   const handleItemDecrement = (lineItemQuantity) => {
-    if (1 - itemQuantity == lineItemQuantity) {
+    if (3 - itemQuantity > lineItemQuantity) {
       setShowItemCard(false);
     } else {
       setInc(false);
@@ -369,7 +369,7 @@ const ProductListScreen = ({
   };
 
   const handleSetTimeoutDec = (tempId, qty) => {
-    if (1 - itemQuantity == qty) {
+    if (3 - itemQuantity > qty) {
       dispatch(removeLineItem(tempId, {}, cart?.token));
       setShowItemCard(false);
     } else {
@@ -414,6 +414,7 @@ const ProductListScreen = ({
       });
     }
   };
+  ``;
 
   const loadNewlyAddedGoods = () => {
     if (newAddedProducts?.length !== 0) {
@@ -478,7 +479,12 @@ const ProductListScreen = ({
                   handleSetTimeoutDec(tempArr[0]?.id, tempArr[0]?.quantity);
                 }}
               >
-                <Text style={styles.dynamicText}>--</Text>
+                <Icon
+                  type="ant-design"
+                  name="minus"
+                  size={24}
+                  color={colors.btnLink}
+                />
               </TouchableOpacity>
 
               <Text style={styles.dynamicText}>
@@ -496,7 +502,12 @@ const ProductListScreen = ({
                   handleSetTimeoutInc(tempArr[0]?.id, tempArr[0]?.quantity);
                 }}
               >
-                <Text style={styles.dynamicText}>+</Text>
+                <Icon
+                  type="ant-design"
+                  name="plus"
+                  size={24}
+                  color={colors.btnLink}
+                />
               </TouchableOpacity>
             </View>
           ) : tempArr[0] ? (

@@ -101,7 +101,7 @@ const ProducerDetailScreen = ({ dispatch, navigation, route }) => {
   };
 
   const handleItemDecrement = (lineItemQuantity) => {
-    if (1 - itemQuantity == lineItemQuantity) {
+    if (3 - itemQuantity > lineItemQuantity) {
       setShowItemCard(false);
     } else {
       setInc(false);
@@ -152,7 +152,7 @@ const ProducerDetailScreen = ({ dispatch, navigation, route }) => {
   };
 
   const handleSetTimeoutDec = (tempId, qty) => {
-    if (1 - itemQuantity == qty) {
+    if (3 - itemQuantity > qty) {
       dispatch(removeLineItem(tempId, {}, cart?.token));
       setShowItemCard(false);
     } else {
@@ -219,7 +219,12 @@ const ProducerDetailScreen = ({ dispatch, navigation, route }) => {
                   handleSetTimeoutDec(tempArr[0]?.id, tempArr[0]?.quantity);
                 }}
               >
-                <Text style={styles.dynamicText}>--</Text>
+                <Icon
+                  type="ant-design"
+                  name="minus"
+                  size={24}
+                  color={colors.btnLink}
+                />
               </TouchableOpacity>
 
               <Text style={styles.dynamicText}>
@@ -237,7 +242,12 @@ const ProducerDetailScreen = ({ dispatch, navigation, route }) => {
                   handleSetTimeoutInc(tempArr[0]?.id, tempArr[0]?.quantity);
                 }}
               >
-                <Text style={styles.dynamicText}>+</Text>
+                <Icon
+                  type="ant-design"
+                  name="plus"
+                  size={24}
+                  color={colors.btnLink}
+                />
               </TouchableOpacity>
             </View>
           ) : tempArr[0] ? (
