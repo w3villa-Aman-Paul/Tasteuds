@@ -15,7 +15,9 @@ export const styles = StyleSheet.create({
   footerAction: {
     ...globalStyles.btn,
     ...globalStyles.btnSolid,
-    margin: "4%",
+    marginBottom: "2%",
+    marginLeft: "4%",
+    marginRight: "4%",
     height: 48,
   },
   cart_total_price: {
