@@ -32,7 +32,23 @@ function RootStackNavigator({ authState, dispatch }) {
     return <ActivityIndicatorCard />;
   }
   return (
-    <NavigationContainer ref={navigationRef} theme={MyTheme}>
+    <NavigationContainer
+      ref={navigationRef}
+      theme={MyTheme}
+      screenOptions={{
+        headerBackTitle: " ",
+        headerBackImage: () => (
+          <Image
+            source={require("../../assets/images/icons/chevron-left.png")}
+            style={{
+              height: 25,
+              width: 25,
+              zIndex: 1,
+            }}
+          />
+        ),
+      }}
+    >
       <RootStack.Navigator screenOptions={{ headerShown: false }}>
         <RootStack.Screen name="Splash" component={splash} />
         <RootStack.Screen name="Shopit" component={MainTabNavigator} />

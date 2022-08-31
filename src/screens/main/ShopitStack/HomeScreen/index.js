@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useRef, useState, useEffect } from "react";
 import { globalStyles } from "../../../../styles/global";
 import { styles } from "./styles";
 import { Snackbar } from "react-native-paper";
@@ -15,6 +15,7 @@ import {
   addItem,
   createCart,
   getInitialProductList,
+  getMostBoughtGoods,
   getProduct,
   getProductsList,
   getSelectedVendor,
@@ -43,12 +44,14 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
 
   const timeoutIdRef = useRef();
 
-  React.useEffect(() => {
+  useEffect(() => {
     const timeOutId = timeoutIdRef.current;
     setMostBought([]);
     if (productsList.length === 0) {
       handleProductsLoad();
     }
+
+    dispatch(getMostBoughtGoods());
 
     // dispatch(createCart());
 
@@ -57,7 +60,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     };
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     let load = false;
 
     if (!load) {
@@ -71,7 +74,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     };
   }, [productsList]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     let load = false;
 
     if (!load) {
@@ -406,7 +409,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
                 alignItems: "center",
               }}
             >
-              <Text style={styles.text1}>UKAS PRODUSENT </Text>
+              <Text style={styles.text1}>UKENS PRODUSENT</Text>
               <Text style={{ ...styles.text_second, fontWeight: "700" }}>
                 {weeklyProducer[0]?.vendor ? weeklyProducer[0].vendor.name : ""}
               </Text>

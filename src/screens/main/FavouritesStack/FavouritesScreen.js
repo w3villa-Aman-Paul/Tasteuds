@@ -262,10 +262,10 @@ const FavouritesScreen = ({
                         : favourite?.variants[0]?.display_price}{" "}
                       |{" "}
                       {itemId?.id === favourite?.id
-                        ? itemId?.variants[color].options_text.split(" ")[3] ||
-                          itemId?.variants[color].options_text.split(" ")[1]
-                        : favourite?.variants[0].options_text.split(" ")[3] ||
-                          favourite?.variants[0].options_text.split(" ")[1]}
+                        ? itemId?.variants[color]?.options_text.split(" ")[3] ||
+                          itemId?.variants[color]?.options_text.split(" ")[1]
+                        : favourite?.variants[0]?.options_text.split(" ")[3] ||
+                          favourite?.variants[0]?.options_text.split(" ")[1]}
                     </Text>
                   </View>
                   <Icon

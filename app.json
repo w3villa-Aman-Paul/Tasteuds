@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "TasteBuds",
+    "name": "Tastebuds - Lokalmat rett hjem",
     "slug": "Tastebuds-app-slug",
     "owner": "aman.paul",
     "version": "1.0.0",
@@ -13,12 +13,11 @@
     "splash": {
       "shown": false
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.w3villa.tastebuds",
+      "buildNumber": "1.0.2",
       "config": {
         "googleSignIn": {
           "reservedClientId": "com.googleusercontent.apps.575803309006-hqi5d55e9ge3vhund8kifreii46atgnc"
@@ -27,6 +26,7 @@
       "usesAppleSignIn": true,
       "infoPlist": {
         "NSUserTrackingUsageDescription": true,
+        "NSCameraUsageDescription": "This app uses the camera to take the profile image of user.",
         "SKAdNetworkItems": [
           {
             "SKAdNetworkIdentifier": "v9wttpbfk9.skadnetwork"

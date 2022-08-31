@@ -497,6 +497,31 @@ export default function productsReducer(state = DEFAULT_STATE, action) {
       return { ...state, ...changes };
 
     /**
+     * SORT_BY_PRICE
+     */
+    case "SORT_BY_PRICE_PENDING":
+      return { ...state, saving: true };
+
+    case "SORT_BY_PRICE_REJECTED":
+      changes = {
+        saving: false,
+      };
+      return { ...state, ...changes };
+
+    case "SORT_BY_PRICE_FULLFILLED":
+      let uniqueNewByPrice = [...action.payload.data, ...state.productsList];
+
+      changes = {
+        productsList: [
+          ...new Map(
+            uniqueNewByPrice.map((item) => [item["id"], item])
+          ).values(),
+        ],
+        saving: false,
+      };
+      return { ...state, ...changes };
+
+    /**
      * Default State
      */
     default:

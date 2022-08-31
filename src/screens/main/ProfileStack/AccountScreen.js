@@ -11,7 +11,14 @@ import { connect, useSelector } from "react-redux";
 import { colors } from "../../../res/palette";
 import { accountRetrieve, retrieveAddress, userLogout } from "../../../redux";
 
-const AccountScreen = ({ dispatch, navigation, address, account, acc }) => {
+const AccountScreen = ({
+  dispatch,
+  navigation,
+  address,
+  account,
+  acc,
+  route,
+}) => {
   const { isAuth } = useSelector((state) => state.auth);
 
   let user = address.filter((add) => add.id === account?.id);
@@ -114,7 +121,7 @@ const AccountScreen = ({ dispatch, navigation, address, account, acc }) => {
             <TouchableOpacity
               style={{ ...styles.button, marginBottom: 10 }}
               onPress={() => {
-                navigation.navigate("SignIn");
+                navigation.navigate("SignIn", { route: route.name });
               }}
             >
               <Text style={styles.text2}>SignIn</Text>

@@ -136,7 +136,7 @@ export default function taxonsReducer(state = DEFAULT_STATE, action) {
 
     case "GET_FILTERED_VENDOR_LIST_FULFILLED":
       changes = {
-        filteredVendors: dataFormatter.deserialize(response),
+        filteredVendors: response,
         saving: false,
       };
       return { ...state, ...changes };

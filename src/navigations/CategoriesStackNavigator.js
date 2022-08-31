@@ -28,70 +28,65 @@ function CategoriesStackNavigator({ navigation, route }) {
     <CategoriesStack.Navigator
       screenOptions={{
         headerTitle: "",
-        headerBackTitle: "Go Back",
-        headerLeft: () => (
-          <TouchableOpacity
-            style={styles.header}
-            onPress={() => navigation.navigate("Shop")}
-          >
-            <Image
-              source={require("../../assets/images/Header-Icon/banner-logo.png")}
-              style={styles.headerImg}
-            />
-          </TouchableOpacity>
-        ),
-        title: "",
-
-        headerRight: () => (
-          <Icon
-            name="search"
-            type="font-awesome"
-            size={22}
-            color={colors.primary}
-            onPress={() => navigation.navigate("SearchScreen")}
+        headerBackTitle: " ",
+        headerBackImage: () => (
+          <Image
+            source={require("../../assets/images/icons/chevron-left.png")}
+            style={{
+              height: 25,
+              width: 25,
+              zIndex: 1,
+            }}
           />
         ),
-        headerRightContainerStyle: {
-          top: 4,
-          right: 20,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#ffffff",
-          borderRadius: 50,
-          elevation: 10,
-          height: 33,
-          width: 33,
-          ...globalStyles.iosShadow,
-        },
+
+        title: "",
       }}
     >
-      <CategoriesStack.Screen name="Categories" component={CategoriesScreen} />
+      <CategoriesStack.Screen
+        name="Categories"
+        options={{
+          headerLeft: () => (
+            <TouchableOpacity
+              style={styles.header}
+              onPress={() => navigation.navigate("Shop")}
+            >
+              <Image
+                source={require("../../assets/images/Header-Icon/banner-logo.png")}
+                style={styles.headerImg}
+              />
+            </TouchableOpacity>
+          ),
+          headerRight: () => (
+            <Icon
+              name="search"
+              type="font-awesome"
+              size={22}
+              color={colors.primary}
+              onPress={() => navigation.navigate("SearchScreen")}
+            />
+          ),
+          headerRightContainerStyle: {
+            top: 4,
+            right: 20,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#ffffff",
+            borderRadius: 50,
+            elevation: 10,
+            height: 33,
+            width: 33,
+            ...globalStyles.iosShadow,
+          },
+        }}
+        component={CategoriesScreen}
+      />
       <CategoriesStack.Screen
         name="NewProducts"
         component={NewlyAddedProducts}
         options={{
           headerTitle: "Nyheter",
           headerTitleAlign: "center",
-          headerLeft: () => (
-            <TouchableOpacity
-              style={{
-                borderWidth: 1,
-                borderColor: "transparent",
-                elevation: 2,
-                backgroundColor: "white",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-              onPress={() => navigation.navigate("Categories")}
-            >
-              <Image
-                source={require("../../assets/images/icons/chevron-left.png")}
-                title="Back"
-                style={{ height: "80%", resizeMode: "contain" }}
-              />
-            </TouchableOpacity>
-          ),
-          headerRight: "",
         }}
       />
       <CategoriesStack.Screen
@@ -100,29 +95,6 @@ function CategoriesStackNavigator({ navigation, route }) {
         options={{
           headerTitle: "Dine mest kjøpte varer",
           headerTitleAlign: "center",
-          headerLeft: () => (
-            <TouchableOpacity
-              style={{
-                borderWidth: 1,
-                borderRadius: 50,
-                borderColor: "transparent",
-                elevation: 2,
-                backgroundColor: "white",
-                justifyContent: "center",
-                alignItems: "center",
-                padding: 5,
-                marginHorizontal: 20,
-              }}
-            >
-              <Icon
-                name="arrowleft"
-                type="ant-design"
-                onPress={() => navigation.navigate("Categories")}
-                title="Back"
-              />
-            </TouchableOpacity>
-          ),
-          headerRight: "",
         }}
       />
     </CategoriesStack.Navigator>

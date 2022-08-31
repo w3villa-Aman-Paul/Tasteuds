@@ -31,6 +31,7 @@ const ShopitStack = createStackNavigator();
 function ShopitStackNavigator({ navigation, route }) {
   const dispatch = useDispatch();
   const { cart } = useSelector((state) => state.checkout);
+  const { mostBoughtGoods } = useSelector((state) => state.taxons);
 
   const { isAuth } = useSelector((state) => state.auth);
 
@@ -38,7 +39,9 @@ function ShopitStackNavigator({ navigation, route }) {
     if (!cart.token || cart.token === "yNgtO10tKJk_hmw4ETtv5Q1657624186384") {
       dispatch(createCart(isAuth));
     }
-    dispatch(getMostBoughtGoods());
+    {
+      mostBoughtGoods?.length === 0 && dispatch(getMostBoughtGoods());
+    }
   }, []);
 
   useLayoutEffect(() => {
@@ -56,7 +59,21 @@ function ShopitStackNavigator({ navigation, route }) {
   }, [navigation, route]);
 
   return (
-    <ShopitStack.Navigator screenOptions={{ headerBackTitle: "Go Back" }}>
+    <ShopitStack.Navigator
+      screenOptions={{
+        headerBackTitle: " ",
+        headerBackImage: (props) => (
+          <Image
+            source={require("../../assets/images/icons/chevron-left.png")}
+            style={{
+              height: 25,
+              width: 25,
+              zIndex: 1,
+            }}
+          />
+        ),
+      }}
+    >
       <ShopitStack.Screen
         name="Shop"
         component={HomeComponent}
@@ -362,30 +379,6 @@ function ShopitStackNavigator({ navigation, route }) {
           headerRightContainerStyle: {
             elevation: 0,
           },
-          // headerLeft: () => (
-          //   <TouchableOpacity
-          //     style={{
-          //       width: 30,
-          //       height: 30,
-          //       borderWidth: 1,
-          //       borderRadius: 50,
-          //       borderColor: "transparent",
-          //       elevation: 2,
-          //       backgroundColor: "white",
-          //       justifyContent: "center",
-          //       alignItems: "center",
-          //       ...globalStyles.iosShadow
-          //     }}
-          //   >
-          //     <Icon
-          //       name="cross"
-          //       type="entypo"
-          //       size={24}
-          //       style={{ color: colors.black }}
-          //       onPress={() => navigation.goBack()}
-          //     />
-          //   </TouchableOpacity>
-          // ),
         }}
       />
       <ShopitStack.Screen
@@ -423,10 +416,6 @@ function ShopitStackNavigator({ navigation, route }) {
       <ShopitStack.Screen name="SavedAddress" component={SavedAddress} />
       <ShopitStack.Screen name="AddAdress" component={AddAddress} />
       <ShopitStack.Screen name="updateAddress" component={updateAddress} />
-      <ShopitStack.Screen
-        name="ApplePayCheckoutScreen"
-        component={AppleCheckoutScreen}
-      />
 
       <ShopitStack.Screen
         name="SearchScreen"

@@ -18,11 +18,9 @@ const splash = ({ navigation, dispatch }) => {
     let load = false;
 
     if (!load) {
-      setTimeout(() => {
-        initialization().then(() => {
-          navigation.replace("Shopit");
-        });
-      }, 1000);
+      initialization().then(() => {
+        navigation.replace("Shopit");
+      });
     }
     return () => {
       load = true;

@@ -24,7 +24,11 @@ const FoodFooter = ({ navigation, dispatch }) => {
             menu.name !== "Lokalprodukter"
         )
         .map((ele) => {
-          return { id: ele?.linked_resource?.id, name: ele.name };
+          return {
+            id: ele?.linked_resource?.id,
+            name: ele.name,
+            taxonId: ele?.id,
+          };
         })
     );
   }, []);

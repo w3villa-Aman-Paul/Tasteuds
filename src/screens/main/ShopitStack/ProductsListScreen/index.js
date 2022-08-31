@@ -36,6 +36,7 @@ import {
   setQuantity,
   sortByMostBought,
   sortByNewlyAdd,
+  sortByPrice,
 } from "../../../../redux";
 import FilterFooter from "../../../../library/components/ActionButtonFooter/FilterFooter";
 import { HOST } from "../../../../res/env";
@@ -72,6 +73,8 @@ const ProductListScreen = ({
   const [inCart, setInCart] = useState(false);
   const [inc, setInc] = useState("false");
   const [isModelVisible, setModelVisible] = useState(false);
+  const [today, setToday] = useState(new Date());
+  const [delieveryDate, setDelieveryDate] = useState(new Date(2));
 
   const [mostBought, setMostBought] = useState([]);
   const [newlyAdded, setNewlyAdded] = useState([]);
@@ -88,10 +91,19 @@ const ProductListScreen = ({
   const { mostBoughtGoods } = useSelector((state) => state.taxons);
   const { newAddedProducts } = useSelector((state) => state.taxons);
 
+  const weekday = [
+    "Søndag",
+    "Mandag",
+    "Tirsdag",
+    "Onsdag",
+    "Torsdag",
+    "Fredag",
+    "Lørdag",
+  ];
+
   const params = route?.params;
 
   const timeoutIdRef = useRef();
-  console.log("params", params);
 
   useEffect(() => {
     loadMostBoughtGoods();
@@ -103,6 +115,12 @@ const ProductListScreen = ({
 
   useEffect(() => {
     const timeOutId = timeoutIdRef.current;
+
+    setToday(new Date());
+    let finalDate = new Date();
+    finalDate.setDate(finalDate.getDate() + 2);
+
+    setDelieveryDate(finalDate);
 
     {
       products.sortedProductsList || dispatch(sortByMostBought(mostBought));
@@ -174,12 +192,6 @@ const ProductListScreen = ({
   };
 
   const handleAfterMenuSelect = (params) => {
-    // {
-    //   (params.route === "Categories" || params.route === "ProductDetail") &&
-    //     handleActiveMenu() &&
-    //     paramsDispatchHandler(params);
-    // }
-
     if (params.route === "ProductDetail") {
       switch (params.type) {
         case 2:
@@ -590,11 +602,19 @@ const ProductListScreen = ({
   const productsSortList = [
     {
       title: " Pris lav til høyh",
-      onPress: () => setProductListHighToLow(),
+      onPress: () => {
+        // dispatch(sortByPrice(1, null, {}));
+        setProductListLowToHigh();
+        setSort(false);
+      },
     },
     {
       title: "Pris høy til lav",
-      onPress: () => setProductListLowToHigh(),
+      onPress: () => {
+        // dispatch(sortByPrice(-1, null, {}));
+        setProductListHighToLow();
+        setSort(false);
+      },
     },
 
     {
@@ -710,9 +730,17 @@ const ProductListScreen = ({
               }}
             >
               Bestill innen{" "}
-              <Text style={{ color: colors.btnLink }}>tirdag 19.07</Text> og få
-              varene levert hjem{" "}
-              <Text style={{ color: colors.btnLink }}>torsdag 21.07</Text>
+              <Text style={{ color: colors.btnLink }}>{`${
+                weekday[today?.getDay()]
+              } ${String(today.getDate()).padStart(2, "0")}.${String(
+                today.getMonth() + 1
+              ).padStart(2, "0")}`}</Text>{" "}
+              og få varene levert hjem{" "}
+              <Text style={{ color: colors.btnLink }}>{`${
+                weekday[delieveryDate?.getDay()]
+              } ${String(delieveryDate.getDate()).padStart(2, "0")}.${String(
+                delieveryDate.getMonth() + 1
+              ).padStart(2, "0")}`}</Text>
             </Text>
           </View>
         </View>

@@ -10,6 +10,7 @@ import { connect } from "react-redux";
 import { Icon } from "react-native-elements";
 import { Button, Image, StyleSheet } from "react-native";
 import { IconButton } from "react-native-paper";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const FavouritesStack = createStackNavigator();
 
@@ -21,37 +22,21 @@ function FavouritesStackNavigator({ navigation }) {
       screenOptions={{
         headerTitle: "FAVORITTER",
         headerLeft: () => (
-          <Icon
-            name="arrowleft"
-            type="ant-design"
+          <TouchableOpacity
             onPress={() => navigation.goBack()}
-            title="Back"
-          />
+            style={{ paddingHorizontal: 10 }}
+          >
+            <Image
+              source={require("../../assets/images/icons/chevron-left.png")}
+              style={{
+                height: 25,
+                width: 25,
+                zIndex: 1,
+              }}
+            />
+          </TouchableOpacity>
         ),
         headerTitleAlign: "center",
-        headerLeftContainerStyle: {
-          paddingHorizontal: 10,
-          top: 4,
-          left: 20,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#ffffff",
-          borderRadius: 50,
-          elevation: 10,
-          height: 40,
-          width: 40,
-        },
-        headerRightContainerStyle: {
-          top: 4,
-          right: 20,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#ffffff",
-          borderRadius: 50,
-          elevation: 10,
-          height: 40,
-          width: 40,
-        },
       }}
     >
       <FavouritesStack.Screen name="Favorites" component={FavouritesScreen} />

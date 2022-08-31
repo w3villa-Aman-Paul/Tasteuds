@@ -6,28 +6,40 @@ import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { colors } from "../../../res/palette";
 import { getData, storeData } from "../../../redux/rootReducer";
 import { connect } from "react-redux";
-import { getSearchProduct } from "../../../redux";
+import { getFilteredVendors, getSearchProduct } from "../../../redux";
 
 const ProducersFooter = ({ navigation, dispatch }) => {
   let vendors = useSelector((state) => state.taxons.vendors);
+  let { filteredVendors } = useSelector((state) => state.taxons);
 
   vendors = vendors?.filter((item) => item.state === "active");
 
   const [food, setFood] = useState([]);
 
   const [checked, setChecked] = useState([]);
+  const [foodSelectedId, setFoodSelectedId] = useState([]);
 
   const selectedFood = async () => {
     let data = await getData("food");
+
     return data;
   };
-  useEffect(() => {
+  console.log("selectedFood", foodSelectedId);
+  useEffect(async () => {
     setChecked(
-      vendors
+      filteredVendors
         // ?.sort((a, b) => a.name.localeCompare(b.name))
         .map((ele) => {
           return { name: ele.name, id: ele.id };
         })
+    );
+
+    let foodData = await selectedFood();
+    console.log("foodData", foodData);
+    setFoodSelectedId(
+      foodData
+        ?.filter((item) => item?.isChecked === true)
+        .map((item) => Number(item?.taxonId))
     );
   }, []);
 
@@ -41,6 +53,16 @@ const ProducersFooter = ({ navigation, dispatch }) => {
 
     getVendors();
   }, []);
+
+  useEffect(() => {
+    if (foodSelectedId?.length > 0) {
+      dispatch(
+        getFilteredVendors(
+          selectedFood.length === 1 ? foodSelectedId[0] : foodSelectedId
+        )
+      );
+    }
+  }, [foodSelectedId]);
 
   const handleSetFood = (data) => {
     setFood(data);
@@ -107,7 +129,8 @@ const ProducersFooter = ({ navigation, dispatch }) => {
 
         {/* // *RENDER VENDORS LIST */}
         <BottomSheetScrollView containerStyle={{ width: "90%", flex: 1 }}>
-          {vendors
+          {filteredVendors
+            .filter((item) => item.state === "active")
             // ?.sort((a, b) => a.name.localeCompare(b.name))
             ?.map((vendor, index) => {
               return (

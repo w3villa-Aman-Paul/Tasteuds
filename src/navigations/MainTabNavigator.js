@@ -25,8 +25,7 @@ function MainTabNavigator({ navigation }) {
           fontFamily: "lato-bold",
         },
         style: {
-          height: 55,
-          paddingVertical: 8,
+          paddingVertical: 10,
         },
       }}
     >
@@ -48,7 +47,7 @@ function MainTabNavigator({ navigation }) {
                     ? require("../../assets/images/icons/shop_active.png")
                     : require("../../assets/images/icons/shop.png")
                 }
-                style={{ resizeMode: "contain", height: "100%" }}
+                style={{ resizeMode: "contain", height: "90%" }}
               />
             </TouchableOpacity>
           ),
@@ -72,7 +71,7 @@ function MainTabNavigator({ navigation }) {
                     ? require("../../assets/images/icons/ingredients_active.png")
                     : require("../../assets/images/icons/ingredients.png")
                 }
-                style={{ resizeMode: "contain", height: "100%" }}
+                style={{ resizeMode: "contain", height: "85%" }}
               />
             </TouchableOpacity>
           ),
@@ -96,7 +95,7 @@ function MainTabNavigator({ navigation }) {
                     ? require("../../assets/images/icons/favorite_active.png")
                     : require("../../assets/images/icons/favorite.png")
                 }
-                style={{ resizeMode: "contain", height: "100%" }}
+                style={{ resizeMode: "contain", height: "85%" }}
               />
             </TouchableOpacity>
           ),
@@ -120,7 +119,7 @@ function MainTabNavigator({ navigation }) {
                     ? require("../../assets/images/icons/user-menu-male_active.png")
                     : require("../../assets/images/icons/user-menu-male.png")
                 }
-                style={{ resizeMode: "contain", height: "100%" }}
+                style={{ resizeMode: "contain", height: "85%" }}
               />
             </TouchableOpacity>
           ),

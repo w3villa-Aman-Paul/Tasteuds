@@ -444,6 +444,71 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
               return (
                 <View key={ele?.variant?.id.toString()}>
                   <View style={styles.body}>
+                    <View style={styles.body_second}>
+                      {/* {showItemCard ? (
+                        <View
+                          style={{ display: "flex", flex: 1, marginLeft: 10 }}
+                        >
+                          <View style={styles.after_img}>
+                            <Image
+                              source={{
+                                uri: `${HOST}/${cartProductImage?.url}`,
+                              }}
+                              style={styles.image}
+                            />
+                          </View>
+                          <Text style={styles.name} numberOfLines={1}>
+                            {ele.name}
+                          </Text>
+                          <Text>
+                            {ele.variant.options_text
+                              ? ele.variant.options_text.split(" ")[3] ||
+                                ele.variant.options_text.split(" ")[1]
+                              : ""}
+                          </Text>
+                        </View>
+                      ) : ( */}
+                      <>
+                        <TouchableOpacity
+                          style={styles.body_first}
+                          onPress={() => {
+                            dispatch(getProduct(enableQty?.id));
+                            navigation.navigate("ProductDetail");
+                          }}
+                        >
+                          <Image
+                            source={{
+                              uri: `${HOST}/${cartProductImage?.url}`,
+                            }}
+                            style={styles.image}
+                          />
+                        </TouchableOpacity>
+                        <View
+                          style={{
+                            display: "flex",
+                            flex: 1,
+                            marginLeft: 10,
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Text style={styles.name} numberOfLines={1}>
+                            {ele.name}
+                          </Text>
+                          <Text>
+                            {ele.variant.options_text
+                              ? ele.variant.options_text.split(" ")[3] ||
+                                ele.variant.options_text.split(" ")[1]
+                              : ""}
+                          </Text>
+                        </View>
+                      </>
+                      {/* )} */}
+                    </View>
+                    <View style={styles.body_third}>
+                      <Text style={styles.price}>{ele.display_total}</Text>
+                    </View>
+
                     <Pressable
                       style={styles.cart_btn}
                       onPress={() => {
@@ -498,19 +563,11 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
                               />
                             </TouchableOpacity>
                           </View>
-                          <View style={styles.after_img}>
-                            <Image
-                              source={{
-                                uri: `${HOST}/${cartProductImage?.url}`,
-                              }}
-                              style={styles.image}
-                            />
-                          </View>
                         </>
                       ) : (
                         <>
                           <View style={styles.inc_btn}>
-                            <Text style={{ fontSize: 25 }}>{ele.quantity}</Text>
+                            <Text style={{ fontSize: 23 }}>{ele.quantity}</Text>
 
                             <View style={styles.before_btn}>
                               <Text
@@ -524,7 +581,7 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
                               </Text>
                               <Text
                                 style={{
-                                  fontSize: 15,
+                                  fontSize: 18,
                                   color: "#EB1741",
                                   fontWeight: "bold",
                                 }}
@@ -536,57 +593,6 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
                         </>
                       )}
                     </Pressable>
-
-                    <View style={styles.body_second}>
-                      {showItemCard ? (
-                        <View
-                          style={{ display: "flex", flex: 1, marginLeft: 10 }}
-                        >
-                          <Text style={styles.name} numberOfLines={1}>
-                            {ele.name}
-                          </Text>
-                          <Text>
-                            {ele.variant.options_text
-                              ? ele.variant.options_text.split(" ")[3] ||
-                                ele.variant.options_text.split(" ")[1]
-                              : ""}
-                          </Text>
-                        </View>
-                      ) : (
-                        <>
-                          <TouchableOpacity
-                            style={styles.body_first}
-                            onPress={() => {
-                              dispatch(getProduct(enableQty?.id));
-                              navigation.navigate("ProductDetail");
-                            }}
-                          >
-                            <Image
-                              source={{
-                                uri: `${HOST}/${cartProductImage?.url}`,
-                              }}
-                              style={styles.image}
-                            />
-                          </TouchableOpacity>
-                          <View
-                            style={{ display: "flex", flex: 1, marginLeft: 10 }}
-                          >
-                            <Text style={styles.name} numberOfLines={1}>
-                              {ele.name}
-                            </Text>
-                            <Text>
-                              {ele.variant.options_text
-                                ? ele.variant.options_text.split(" ")[3] ||
-                                  ele.variant.options_text.split(" ")[1]
-                                : ""}
-                            </Text>
-                          </View>
-                        </>
-                      )}
-                    </View>
-                    <View style={styles.body_third}>
-                      <Text style={styles.price}>{ele.display_total}</Text>
-                    </View>
                     {/* <Text onPress={() => handleRemoveLineItem(ele?.id)}>
                       XX
                     </Text> */}

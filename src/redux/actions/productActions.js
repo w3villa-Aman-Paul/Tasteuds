@@ -157,3 +157,26 @@ export const sortByNewlyAdd = (data) => {
     payload: data,
   };
 };
+
+export const sortByPrice = (
+  order,
+  data = null,
+  { pageIndex = 1, filter = null }
+) => {
+  const url = `${API_VERSION_STOREFRONT}/products`;
+  const method = "GET";
+  const sortBy = order < 0 ? "-price" : "price";
+  const params = {
+    sort: sortBy,
+    // include:
+    //   "default_variant,variants,option_types,product_properties,taxons,images,primary_variant",
+    // filter: filter,
+    // "Content-Type": "application/json",
+    // page: pageIndex || 1,
+    // per_page: 20,
+  };
+  return {
+    type: "SORT_BY_PRICE",
+    payload: handleAPIWithoutToken(url, params, method, data),
+  };
+};

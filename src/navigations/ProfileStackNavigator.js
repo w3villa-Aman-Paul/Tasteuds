@@ -24,22 +24,18 @@ function ProfileStackNavigator({ navigation }) {
     <ProfileStack.Navigator
       screenOptions={{
         headerTitle: "",
-        headerLeft: () => (
-          <TouchableOpacity onPress={() => navigation.goBack()} style={[globalStyles.iosShadow, {padding: 5, backgroundColor: '#fff', borderRadius: 50}]}>
-            <Icon name="arrowleft" type="ant-design" title="Back" />
-          </TouchableOpacity>
+        headerBackTitle: " ",
+        headerBackImage: () => (
+          <Image
+            source={require("../../assets/images/icons/chevron-left.png")}
+            style={{
+              height: 25,
+              width: 25,
+              zIndex: 1,
+            }}
+          />
         ),
-        headerLeftContainerStyle: {
-          top: 4,
-          left: 10,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#ffffff",
-          borderRadius: 50,
-          elevation: 10,
-          height: 40,
-          width: 40,
-        },
+
         headerRight: () => (
           <Icon
             name="search"
@@ -65,7 +61,25 @@ function ProfileStackNavigator({ navigation }) {
       <ProfileStack.Screen
         name="Account"
         component={AccountScreen}
-        options={{ headerTitle: "ACCOUNT", headerTitleAlign: "center" }}
+        options={{
+          headerTitle: "ACCOUNT",
+          headerTitleAlign: "center",
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={{ paddingHorizontal: 10 }}
+            >
+              <Image
+                source={require("../../assets/images/icons/chevron-left.png")}
+                style={{
+                  height: 25,
+                  width: 25,
+                  zIndex: 1,
+                }}
+              />
+            </TouchableOpacity>
+          ),
+        }}
       />
       <ProfileStack.Screen
         name="Profile"
