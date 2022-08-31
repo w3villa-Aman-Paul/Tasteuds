@@ -19,18 +19,21 @@ import { colors } from "../../../res/palette";
 import {
   addItem,
   getProduct,
+  getSelectedVendor,
   getTaxon,
   removeLineItem,
   setQuantity,
 } from "../../../redux";
 import { globalStyles } from "../../../styles/global";
+import ActivityIndicatorCard from "../../../library/components/ActivityIndicatorCard";
 
 const ProducerDetailScreen = ({ dispatch, navigation, route }) => {
   const selectedVendor = useSelector((state) => state?.taxons?.selectedVendor);
   const cart = useSelector((state) => state.checkout.cart);
-  const productsList = useSelector((state) => state.products.productsList);
+  const { productsList } = useSelector((state) => state.products);
   const width = Dimensions.get("window").width - 20;
   const vendorList = useSelector((state) => state.taxons.vendors);
+  const { saving } = useSelector((state) => state.taxons);
   const [vendorCover, setVendorCover] = useState({});
 
   const [showItemCard, setShowItemCard] = useState(false);
@@ -38,12 +41,16 @@ const ProducerDetailScreen = ({ dispatch, navigation, route }) => {
   const [inc, setInc] = useState("false");
   const [itemQuantity, setItemQuantity] = useState(1);
   const [inCart, setInCart] = useState(false);
-  const { bio, cover_image_url, logo_image_url } = route.params;
+  const { bio, cover_image_url, logo_image_url, vendorSlug } = route.params;
 
   const timeoutIdRef = useRef();
 
   React.useEffect(() => {
     const timeOutId = timeoutIdRef.current;
+
+    if (vendorSlug) {
+      dispatch(getSelectedVendor(vendorSlug));
+    }
 
     return () => {
       clearTimeout(timeOutId);
@@ -421,61 +428,65 @@ const ProducerDetailScreen = ({ dispatch, navigation, route }) => {
     );
   };
 
-  return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        alignItems: "center",
-        backgroundColor: "#fff",
-      }}
-    >
-      {/*//* Header */}
-
-      <View
-        style={[
-          styles.detailHeader,
-          Platform.OS === "android" ? { marginTop: 30 } : { marginTop: 0 },
-        ]}
-      >
-        <TouchableOpacity
-          style={[styles.detailHeaderContainer, globalStyles.iosShadow]}
-          onPress={() => navigation.goBack()}
-        >
-          <Icon
-            name="cross"
-            type="entypo"
-            size={24}
-            style={{ color: colors.black }}
-          />
-        </TouchableOpacity>
-
-        <Text style={styles.detailHeaderText} numberOfLines={1}>
-          {selectedVendor.name}
-        </Text>
-      </View>
-
+  if (saving) {
+    return <ActivityIndicatorCard />;
+  } else {
+    return (
       <SafeAreaView
-        style={styles.container}
-        showsVerticalScrollIndicator={false}
+        style={{
+          flex: 1,
+          alignItems: "center",
+          backgroundColor: "#fff",
+        }}
       >
-        {/* // TODO: Popular Items */}
-        <View style={{ marginVertical: 10 }}>
-          <FlatList
-            data={selectedVendor.products.slice(0, 4)}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={newJustInRenderItem}
-            numColumns={2}
-            ListHeaderComponent={flatListUpperComponent}
-            ListFooterComponent={listFooterComponent}
-            showsVerticalScrollIndicator={false}
-            columnWrapperStyle={{
-              justifyContent: "space-between",
-            }}
-          />
+        {/*//* Header */}
+
+        <View
+          style={[
+            styles.detailHeader,
+            Platform.OS === "android" ? { marginTop: 30 } : { marginTop: 0 },
+          ]}
+        >
+          <TouchableOpacity
+            style={[styles.detailHeaderContainer, globalStyles.iosShadow]}
+            onPress={() => navigation.goBack()}
+          >
+            <Icon
+              name="cross"
+              type="entypo"
+              size={24}
+              style={{ color: colors.black }}
+            />
+          </TouchableOpacity>
+
+          <Text style={styles.detailHeaderText} numberOfLines={1}>
+            {selectedVendor.name}
+          </Text>
         </View>
+
+        <SafeAreaView
+          style={styles.container}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* // TODO: Popular Items */}
+          <View style={{ marginVertical: 10 }}>
+            <FlatList
+              data={selectedVendor.products.slice(0, 4)}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={newJustInRenderItem}
+              numColumns={2}
+              ListHeaderComponent={flatListUpperComponent}
+              ListFooterComponent={listFooterComponent}
+              showsVerticalScrollIndicator={false}
+              columnWrapperStyle={{
+                justifyContent: "space-between",
+              }}
+            />
+          </View>
+        </SafeAreaView>
       </SafeAreaView>
-    </SafeAreaView>
-  );
+    );
+  }
 };
 
 export default connect()(ProducerDetailScreen);

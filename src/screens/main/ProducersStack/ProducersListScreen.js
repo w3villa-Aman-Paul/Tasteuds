@@ -16,7 +16,10 @@ import { connect, useSelector } from "react-redux";
 import Modal from "react-native-modal";
 
 import { HOST } from "../../../res/env";
-import { getSelectedVendor } from "../../../redux/actions/taxonsActions";
+import {
+  getSelectedVendor,
+  getVendorsList,
+} from "../../../redux/actions/taxonsActions";
 import { globalStyles } from "../../../styles/global";
 
 const ProducersListScreen = ({ dispatch, navigation }) => {
@@ -27,6 +30,7 @@ const ProducersListScreen = ({ dispatch, navigation }) => {
   const [isModalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
+    dispatch(getVendorsList());
     setVendorsList(vendors?.sort((a, b) => a.name.localeCompare(b.name)));
   }, []);
 
@@ -35,11 +39,12 @@ const ProducersListScreen = ({ dispatch, navigation }) => {
   };
 
   const handleProducerClick = async (vendor) => {
-    await dispatch(getSelectedVendor(vendor.slug));
+    
     navigation.navigate("ProducersDetailScreen", {
       bio: vendor.bio,
       cover_image_url: vendor.cover_image_url,
       logo_image_url: vendor.logo_image_url,
+      vendorSlug: vendor.slug,
     });
   };
 

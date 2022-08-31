@@ -72,8 +72,12 @@ const ProductDetailScreen = ({ navigation, dispatch, cart, route }) => {
   };
 
   const handleProducerClick = async (vendor) => {
-    await dispatch(getSelectedVendor(vendor.slug));
-    navigation.navigate("ProducersDetailScreen");
+    navigation.navigate("ProducersDetailScreen", {
+      bio: vendor.bio,
+      cover_image_url: vendor.cover_image_url,
+      logo_image_url: vendor.logo_image_url,
+      vendorSlug: vendor.slug,
+    });
   };
 
   const breadCrumArray = taxon?.permalink?.toUpperCase().slice(11).split("/");
