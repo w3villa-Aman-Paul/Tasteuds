@@ -30,8 +30,15 @@ const ProducersListScreen = ({ dispatch, navigation }) => {
   const [isModalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
+    let load = false;
+
     dispatch(getVendorsList());
-    setVendorsList(vendors?.sort((a, b) => a.name.localeCompare(b.name)));
+    if (!load) {
+      setVendorsList(vendors?.sort((a, b) => a.name.localeCompare(b.name)));
+    }
+    return () => {
+      load = true;
+    };
   }, []);
 
   const toggleModal = () => {
@@ -39,7 +46,7 @@ const ProducersListScreen = ({ dispatch, navigation }) => {
   };
 
   const handleProducerClick = async (vendor) => {
-    
+    await dispatch(getSelectedVendor(vendor.slug));
     navigation.navigate("ProducersDetailScreen", {
       bio: vendor.bio,
       cover_image_url: vendor.cover_image_url,

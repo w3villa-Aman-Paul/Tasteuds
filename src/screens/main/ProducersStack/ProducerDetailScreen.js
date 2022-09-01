@@ -5,7 +5,7 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Dimensions,
+  useWindowDimensions,
   Platform,
   Pressable,
 } from "react-native";
@@ -26,15 +26,15 @@ import {
 } from "../../../redux";
 import { globalStyles } from "../../../styles/global";
 import ActivityIndicatorCard from "../../../library/components/ActivityIndicatorCard";
+import { storeData } from "../../../redux/rootReducer";
 
 const ProducerDetailScreen = ({ dispatch, navigation, route }) => {
   const selectedVendor = useSelector((state) => state?.taxons?.selectedVendor);
   const cart = useSelector((state) => state.checkout.cart);
   const { productsList } = useSelector((state) => state.products);
-  const width = Dimensions.get("window").width - 20;
+  const { height, width } = useWindowDimensions();
   const vendorList = useSelector((state) => state.taxons.vendors);
   const { saving } = useSelector((state) => state.taxons);
-  const [vendorCover, setVendorCover] = useState({});
 
   const [showItemCard, setShowItemCard] = useState(false);
   const [enableQty, setEnableQty] = useState(null);
@@ -45,29 +45,21 @@ const ProducerDetailScreen = ({ dispatch, navigation, route }) => {
 
   const timeoutIdRef = useRef();
 
-  React.useEffect(() => {
+  useEffect(() => {
     const timeOutId = timeoutIdRef.current;
+    let load = false;
 
-    if (vendorSlug) {
-      dispatch(getSelectedVendor(vendorSlug));
+    if (!load) {
+      if (vendorSlug) {
+        dispatch(getSelectedVendor(vendorSlug));
+      }
     }
 
     return () => {
       clearTimeout(timeOutId);
+      load = true;
     };
   }, []);
-
-  useEffect(() => {
-    setVendorCover(findVendorCoverImage(selectedVendor.id));
-  }, [selectedVendor]);
-
-  const findVendorCoverImage = (vendorId) => {
-    const { cover_image_url, logo_image_url } = vendorList.find(
-      (ele) => Number(ele.id) === Number(vendorId)
-    );
-
-    return { cover: cover_image_url, logo: logo_image_url };
-  };
 
   const resultVendor = (id) => {
     const vendor = vendorList?.filter((vendor) => {
@@ -87,16 +79,17 @@ const ProducerDetailScreen = ({ dispatch, navigation, route }) => {
 
   // cart functions
 
-  const findCartProduct = (itemID) => {
-    const newItem = productsList.find((ele) => ele.id == itemID);
-    setEnableQty(newItem);
+  const findCartProduct = (item) => {
+    // const newItem = productsList.find((ele) => ele.id == itemID);
+    setEnableQty(item);
   };
 
-  const handleCart = () => {
-    let item = productsList.find((x) => x.id === enableQty?.id);
+  const handleCart = (item) => {
+    // let item = productsList.find((x) => x.id === enableQty?.id);
 
     return item?.default_variant?.id;
   };
+  console.log("enable", enableQty);
 
   const handleItemIncrement = () => {
     setInc(true);
@@ -130,12 +123,12 @@ const ProducerDetailScreen = ({ dispatch, navigation, route }) => {
     }, 2000);
   };
 
-  const handleSetTimeoutInc = (tempId, qty) => {
+  const handleSetTimeoutInc = (item, tempId, qty) => {
     const id = setTimeout(() => {
       if (!inCart) {
         dispatch(
           addItem(cart?.token, {
-            variant_id: handleCart(),
+            variant_id: handleCart(item),
             quantity: itemQuantity,
           })
         );
@@ -191,20 +184,18 @@ const ProducerDetailScreen = ({ dispatch, navigation, route }) => {
     imageStyle,
     itemContainerStyle,
   }) => {
-    const tempArr = cart.line_items.filter(
+    const tempArr = cart?.line_items?.filter(
       (ele) => item.id == ele?.variant?.product?.id
     );
+
     return (
-      <TouchableOpacity
-        onPress={onPress}
-        style={{ ...itemContainerStyle, width: width / 2 - 10 }}
-      >
+      <TouchableOpacity onPress={onPress} style={{ ...itemContainerStyle }}>
         <View style={{ position: "relative" }}>
           <Image
             source={{
-              uri: `${HOST}/${item?.images[0]?.styles[3].url}`
+              uri: item.images
                 ? `${HOST}/${item?.images[0]?.styles[3].url}`
-                : "",
+                : null,
             }}
             style={{
               width: imageStyle.width,
@@ -212,11 +203,12 @@ const ProducerDetailScreen = ({ dispatch, navigation, route }) => {
               resizeMode: "contain",
             }}
           />
-          {showItemCard && item?.id === enableQty?.id ? (
+
+          {showItemCard && item?.id === enableQty ? (
             <View
               style={[
                 styles.addLogo,
-                { width: "95%", justifyContent: "space-between" },
+                { width: "100%", justifyContent: "space-between" },
               ]}
             >
               <TouchableOpacity
@@ -246,7 +238,7 @@ const ProducerDetailScreen = ({ dispatch, navigation, route }) => {
                 onPress={() => {
                   handleChangeQuantityClick();
                   handleItemIncrement();
-                  handleSetTimeoutInc(tempArr[0]?.id, tempArr[0]?.quantity);
+                  handleSetTimeoutInc(item, item?.id, tempArr[0]?.quantity);
                 }}
               >
                 <Icon
@@ -264,7 +256,7 @@ const ProducerDetailScreen = ({ dispatch, navigation, route }) => {
                 closeIncBar();
                 setItemQuantity(1);
                 setShowItemCard(true);
-                findCartProduct(item?.id);
+                findCartProduct(item);
               }}
             >
               {item?.id == tempArr[0]?.variant?.product?.id && (
@@ -276,7 +268,15 @@ const ProducerDetailScreen = ({ dispatch, navigation, route }) => {
               )}
             </Pressable>
           ) : (
-            <TouchableOpacity style={styles.addLogo}>
+            <TouchableOpacity
+              style={styles.addLogo}
+              onPress={() => {
+                setItemQuantity(1);
+                setShowItemCard(true);
+                findCartProduct(item?.id);
+                handleSetTimeoutDefault(item?.id);
+              }}
+            >
               <Icon
                 name="plus"
                 type="ant-design"
@@ -284,12 +284,6 @@ const ProducerDetailScreen = ({ dispatch, navigation, route }) => {
                 borderRadius={10}
                 color={colors.btnLink}
                 backgroundColor={colors.white}
-                onPress={() => {
-                  setItemQuantity(1);
-                  setShowItemCard(true);
-                  findCartProduct(item?.id);
-                  handleSetTimeoutDefault(item?.id);
-                }}
               />
             </TouchableOpacity>
           )}
@@ -298,14 +292,20 @@ const ProducerDetailScreen = ({ dispatch, navigation, route }) => {
           <Text numberOfLines={1} style={styles.title}>
             {item.name}
           </Text>
+          <View style={styles.pricingContainer}>
+            <Text style={[styles.prices, { color: colors.black }]}>
+              {item.display_price} |
+            </Text>
+            <Text style={{ ...styles.prices, color: "#808080" }}>
+              {item?.default_variant?.options_text
+                ? item?.default_variant?.options_text.split(" ")[3] ||
+                  item?.default_variant?.options_text.split(" ")[1]
+                : null}
+            </Text>
+          </View>
           <Text numberOfLines={1} style={styles.description}>
             {`${resultVendor(item?.vendor?.id)[0]}`}
           </Text>
-          <View style={styles.pricingContainer}>
-            <Text style={[styles.prices, { color: colors.black }]}>
-              {item.display_price}
-            </Text>
-          </View>
         </View>
       </TouchableOpacity>
     );
@@ -317,6 +317,7 @@ const ProducerDetailScreen = ({ dispatch, navigation, route }) => {
         key={index.toString()}
         item={item}
         onPress={() => {
+          storeData("selectedVendor", resultVendor(item?.vendor?.id)[1]);
           handleProductLoad(item?.id, item);
         }}
         imageStyle={styles.newJustInImage}
@@ -402,7 +403,7 @@ const ProducerDetailScreen = ({ dispatch, navigation, route }) => {
           <Text style={styles.descriptionTitle}>Om oss</Text>
           <HTML
             source={{
-              html: `<p style='text-align: justify;'>${selectedVendor?.about_us}</p>`,
+              html: `<p style='text-align: justify;margin: 0; padding: 0;'>${selectedVendor?.about_us}</p>`,
             }}
             style={styles.buttonText}
           />
@@ -471,7 +472,9 @@ const ProducerDetailScreen = ({ dispatch, navigation, route }) => {
           {/* // TODO: Popular Items */}
           <View style={{ marginVertical: 10 }}>
             <FlatList
-              data={selectedVendor.products.slice(0, 4)}
+              data={selectedVendor?.products
+                ?.filter((item) => item.available)
+                .slice(0, 4)}
               keyExtractor={(item, index) => index.toString()}
               renderItem={newJustInRenderItem}
               numColumns={2}

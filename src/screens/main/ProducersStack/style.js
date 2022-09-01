@@ -98,7 +98,6 @@ export const styles = StyleSheet.create({
   descriptionTitle: {
     fontSize: 18,
     fontFamily: "lato-bold",
-    marginBottom: 10,
   },
   newJustInImage: {
     height: 180,
@@ -175,15 +174,15 @@ export const styles = StyleSheet.create({
 
   addLogo: {
     position: "absolute",
-    bottom: 2,
-    right: 0,
-    ...globalStyles.iosShadow,
+    bottom: 10,
+    right: 10,
     flexDirection: "row",
     elevation: 8,
     borderRadius: 12,
-    padding: 8,
+    padding: 10,
     zIndex: 8,
     backgroundColor: "#fff",
+    ...globalStyles.iosShadow,
   },
   afterText: {
     position: "absolute",

@@ -20,6 +20,7 @@ import {
   getProductsList,
   getSelectedVendor,
   getTaxon,
+  getWeeklyProducer,
   removeLineItem,
   setQuantity,
 } from "../../../../redux";
@@ -52,6 +53,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     }
 
     dispatch(getMostBoughtGoods());
+    dispatch(getWeeklyProducer());
 
     // dispatch(createCart());
 
@@ -216,11 +218,11 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   };
 
   const handleWeeklyProducerClick = async (vendor) => {
-    await dispatch(getSelectedVendor(vendor.slug));
     navigation.navigate("ProducersDetailScreen", {
       bio: vendor.bio,
       cover_image_url: vendor.cover_image_url,
       logo_image_url: vendor.logo_image_url,
+      vendorSlug: vendor.slug,
     });
   };
 
@@ -314,7 +316,15 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
               )}
             </Pressable>
           ) : (
-            <TouchableOpacity style={styles.addLogo}>
+            <TouchableOpacity
+              style={styles.addLogo}
+              onPress={() => {
+                setItemQuantity(1);
+                setShowItemCard(true);
+                findCartProduct(item?.id);
+                handleSetTimeoutDefault(item?.id);
+              }}
+            >
               <Icon
                 name="plus"
                 type="ant-design"
@@ -322,12 +332,6 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
                 borderRadius={10}
                 color={colors.btnLink}
                 backgroundColor={colors.white}
-                onPress={() => {
-                  setItemQuantity(1);
-                  setShowItemCard(true);
-                  findCartProduct(item?.id);
-                  handleSetTimeoutDefault(item?.id);
-                }}
               />
             </TouchableOpacity>
           )}

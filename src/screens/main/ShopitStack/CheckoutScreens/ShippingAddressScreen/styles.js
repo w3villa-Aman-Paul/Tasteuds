@@ -260,4 +260,25 @@ export const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "700",
   },
+  fontProgress: {
+    fontFamily: "lato-medium",
+    fontSize: 14,
+  },
+
+  fontProgressBold: {
+    fontFamily: "lato-bold",
+  },
+  circle: {
+    width: 14,
+    height: 14,
+    borderRadius: 14,
+    backgroundColor: colors.btnLink,
+  },
+
+  bar: {
+    width: "40%",
+    height: 3,
+    // borderRadius: 20,
+    backgroundColor: colors.btnLink,
+  },
 });

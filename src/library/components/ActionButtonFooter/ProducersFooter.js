@@ -7,10 +7,11 @@ import { colors } from "../../../res/palette";
 import { getData, storeData } from "../../../redux/rootReducer";
 import { connect } from "react-redux";
 import { getFilteredVendors, getSearchProduct } from "../../../redux";
+import ActivityIndicatorCard from "../ActivityIndicatorCard";
 
 const ProducersFooter = ({ navigation, dispatch }) => {
   let vendors = useSelector((state) => state.taxons.vendors);
-  let { filteredVendors } = useSelector((state) => state.taxons);
+  let { filteredVendors, saving } = useSelector((state) => state.taxons);
 
   vendors = vendors?.filter((item) => item.state === "active");
 
@@ -25,12 +26,23 @@ const ProducersFooter = ({ navigation, dispatch }) => {
     return data;
   };
   console.log("selectedFood", foodSelectedId);
+
+  useEffect(() => {
+    if (foodSelectedId?.length > 0) {
+      dispatch(
+        getFilteredVendors(
+          selectedFood.length === 1 ? foodSelectedId[0] : foodSelectedId
+        )
+      );
+    }
+  }, [foodSelectedId]);
+
   useEffect(async () => {
     setChecked(
       filteredVendors
         // ?.sort((a, b) => a.name.localeCompare(b.name))
         .map((ele) => {
-          return { name: ele.name, id: ele.id };
+          return { name: ele.name, id: ele.id, state: ele?.state };
         })
     );
 
@@ -43,6 +55,8 @@ const ProducersFooter = ({ navigation, dispatch }) => {
     );
   }, []);
 
+  console.log("checked", checked);
+
   useEffect(() => {
     const getVendors = async () => {
       let data = await getData("vendors");
@@ -53,16 +67,6 @@ const ProducersFooter = ({ navigation, dispatch }) => {
 
     getVendors();
   }, []);
-
-  useEffect(() => {
-    if (foodSelectedId?.length > 0) {
-      dispatch(
-        getFilteredVendors(
-          selectedFood.length === 1 ? foodSelectedId[0] : foodSelectedId
-        )
-      );
-    }
-  }, [foodSelectedId]);
 
   const handleSetFood = (data) => {
     setFood(data);
@@ -129,45 +133,49 @@ const ProducersFooter = ({ navigation, dispatch }) => {
 
         {/* // *RENDER VENDORS LIST */}
         <BottomSheetScrollView containerStyle={{ width: "90%", flex: 1 }}>
-          {filteredVendors
-            .filter((item) => item.state === "active")
-            // ?.sort((a, b) => a.name.localeCompare(b.name))
-            ?.map((vendor, index) => {
-              return (
-                <View
-                  key={vendor.id}
-                  style={{
-                    justifyContent: "center",
-                    alignItems: "flex-start",
-                    borderWidth: 1,
-                    borderColor: "transparent",
-                    borderBottomColor: "rgba(58, 58, 89, 1)",
-                  }}
-                >
-                  <CheckBox
-                    title={vendor.name}
-                    checked={checked[index]?.isChecked || false}
-                    onPress={() => handleChange(vendor.name)}
-                    size={28}
-                    iconType="material"
-                    checkedIcon="check-box"
-                    uncheckedIcon="check-box-outline-blank"
-                    checkedColor={colors.btnLink}
-                    containerStyle={{
-                      backgroundColor: "#232332",
+          {saving ? (
+            <ActivityIndicatorCard />
+          ) : (
+            checked
+              // .filter((item) => item.state === "active")
+              // ?.sort((a, b) => a.name.localeCompare(b.name))
+              ?.map((vendor, index) => {
+                return (
+                  <View
+                    key={vendor.id}
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "flex-start",
+                      borderWidth: 1,
                       borderColor: "transparent",
-                      padding: 5,
+                      borderBottomColor: "rgba(58, 58, 89, 1)",
                     }}
-                    // checkedColor={colors.btnLink}
-                    textStyle={{
-                      color: "#fff",
-                      fontFamily: "lato-medium",
-                      fontSize: 16,
-                    }}
-                  />
-                </View>
-              );
-            })}
+                  >
+                    <CheckBox
+                      title={vendor.name}
+                      checked={checked[index]?.isChecked || false}
+                      onPress={() => handleChange(vendor.name)}
+                      size={28}
+                      iconType="material"
+                      checkedIcon="check-box"
+                      uncheckedIcon="check-box-outline-blank"
+                      checkedColor={colors.btnLink}
+                      containerStyle={{
+                        backgroundColor: "#232332",
+                        borderColor: "transparent",
+                        padding: 5,
+                      }}
+                      // checkedColor={colors.btnLink}
+                      textStyle={{
+                        color: "#fff",
+                        fontFamily: "lato-medium",
+                        fontSize: 16,
+                      }}
+                    />
+                  </View>
+                );
+              })
+          )}
         </BottomSheetScrollView>
 
         <View

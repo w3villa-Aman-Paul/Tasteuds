@@ -20,6 +20,7 @@ const FilterFooter = ({
   isModelVisible,
   setModelVisible,
   setIsOpen,
+  dispatchFunction,
 }) => {
   const BackdropComponent = (backdropProps) => (
     // <BottomSheetBackdrop

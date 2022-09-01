@@ -1,3 +1,4 @@
+import { useSelector } from "react-redux";
 import {
   handleAPI,
   API_VERSION_STOREFRONT,
@@ -113,7 +114,7 @@ export const getSearchProduct = (data = null, taxon = [], vendorId = []) => {
     include: "images",
     "Content-Type": "application/json",
     // page: pageIndex,
-    per_page: 10,
+    // per_page: 10,
     filter: {
       taxons: "" + taxon,
       vendor_ids: "" + vendorId,
@@ -145,6 +146,7 @@ export const getSearchByProductName = (data = null, filter = null) => {
 };
 
 export const sortByMostBought = (data) => {
+  // console.log("most bought", data);
   return {
     type: "SORT_MOST_BOUGHT",
     payload: data,
@@ -168,15 +170,18 @@ export const sortByPrice = (
   const sortBy = order < 0 ? "-price" : "price";
   const params = {
     sort: sortBy,
-    // include:
-    //   "default_variant,variants,option_types,product_properties,taxons,images,primary_variant",
+    include:
+      "default_variant,variants,option_types,product_properties,taxons,images,primary_variant",
     // filter: filter,
     // "Content-Type": "application/json",
     // page: pageIndex || 1,
     // per_page: 20,
   };
+
   return {
     type: "SORT_BY_PRICE",
     payload: handleAPIWithoutToken(url, params, method, data),
   };
 };
+
+//** Helper Methods */

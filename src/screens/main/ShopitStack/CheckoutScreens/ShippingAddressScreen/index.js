@@ -21,6 +21,8 @@ import {
   checkoutNext,
   getPaymentMethods,
   completeCheckout,
+  getDefaultCountry,
+  getCountriesList,
 } from "../../../../../redux/actions/checkoutActions";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { retrieveAddress } from "../../../../../redux/actions/checkoutActions";
@@ -60,6 +62,8 @@ const ShippingAddressScreen = ({
   const { email } = useSelector((state) => state.account.account);
 
   useEffect(() => {
+    dispatch(getDefaultCountry());
+    dispatch(getCountriesList());
     dispatch(accountRetrieve());
     dispatch(retrieveAddress());
   }, []);
@@ -330,63 +334,62 @@ const ShippingAddressScreen = ({
       >
         <ScrollView>
           {/* Status Bar Starts */}
-          <View style={checkoutStyles.statusBarWrapper}>
-            <View style={checkoutStyles.statusBarContainer}>
-              <View
-                style={[checkoutStyles.rowContainer, { alignItems: "center" }]}
+          <View
+            style={{
+              width: "90%",
+              height: 100,
+              alignSelf: "center",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <View
+              style={{
+                width: "90%",
+                flex: 1,
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "flex-end",
+              }}
+            >
+              <Text style={{ ...styles.fontProgress }}>Bestilling</Text>
+              <Text style={{ ...styles.fontProgress }}>Handlekurv</Text>
+              <Text
+                style={{ ...styles.fontProgress, ...styles.fontProgressBold }}
               >
-                <CheckO
-                  size={16}
-                  stylcountryPickerSelectedValuee={[
-                    checkoutStyles.iconStyle,
-                    { color: colors.success },
-                  ]}
-                />
-                <TouchableOpacity onPress={() => navigation.navigate("Bag")}>
-                  <Text style={globalStyles.latoRegular}>Bag</Text>
-                </TouchableOpacity>
-              </View>
+                Betaling
+              </Text>
+            </View>
+            <View
+              style={{
+                width: "90%",
+                flex: 1,
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "flex-start",
+              }}
+            >
               <View
-                style={[
-                  checkoutStyles.shippingIndicatorLine,
-                  {
-                    borderBottomColor: colors.success,
-                  },
-                ]}
-              />
-              <View
-                style={[checkoutStyles.rowContainer, { alignItems: "center" }]}
+                style={{
+                  flex: 1,
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
               >
-                <CheckO
-                  size={16}
-                  style={[checkoutStyles.iconStyle, { color: colors.black }]}
-                />
-                <TouchableOpacity
-                  onPress={() => navigation.navigate("ShippingAddress")}
-                >
-                  <Text style={globalStyles.latoRegular}>Address</Text>
-                </TouchableOpacity>
-              </View>
-              <View
-                style={[
-                  checkoutStyles.shippingIndicatorLine,
-                  {
-                    borderBottomColor: colors.black,
-                  },
-                ]}
-              />
-              <View
-                style={[checkoutStyles.rowContainer, { alignItems: "center" }]}
-              >
-                <CheckO
-                  size={16}
-                  style={[checkoutStyles.iconStyle, { color: colors.black }]}
-                />
-                <TouchableOpacity
-                  onPress={() => navigation.navigate("CheckoutPayment")}
-                >
-                  <Text style={globalStyles.latoRegular}>Payment</Text>
-                </TouchableOpacity>
+                <View style={styles.circle}></View>
+                <View style={styles.bar}></View>
+                <View style={{ ...styles.circle }}></View>
+                <View
+                  style={{ ...styles.bar, ...styles.bgWhite, elevation: 3 }}
+                ></View>
+                <View
+                  style={{
+                    ...styles.circle,
+                    ...styles.bgWhite,
+                    elevation: 3,
+                  }}
+                ></View>
               </View>
             </View>
           </View>
@@ -440,14 +443,14 @@ const ShippingAddressScreen = ({
                   />
                 </View>
 
-                <View style={styles.payment_btn_body}>
+                {/* <View style={styles.payment_btn_body}>
                   <TouchableOpacity style={styles.payment_btn}>
                     <Image
                       source={require("../../../../../../assets/images/Header-Icon/vpay.png")}
                       style={styles.payment_img}
                     />
                   </TouchableOpacity>
-                </View>
+                </View> */}
 
                 <View style={styles.payment_btn_body}>
                   <TouchableOpacity style={styles.payment_btn}>

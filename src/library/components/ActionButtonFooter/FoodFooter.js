@@ -70,6 +70,21 @@ const FoodFooter = ({ navigation, dispatch }) => {
     console.log("menu", tempMenu);
   };
 
+  const dispatchFunction = async () => {
+    storeData("food", checked);
+    const filterFood = checked
+      ?.filter((item) => item?.isChecked)
+      ?.map((item) => parseInt(item?.id));
+
+    let vendor = await selectedVendor();
+    const filterVendor = vendor
+      ?.filter((item) => item?.isChecked)
+      ?.map((item) => parseInt(item?.id));
+
+    dispatch(getSearchProduct(null, filterFood, filterVendor));
+    navigation.goBack();
+  };
+
   return (
     <>
       <View style={{ backgroundColor: "#232332", flex: 1, paddingTop: 10 }}>
@@ -89,7 +104,7 @@ const FoodFooter = ({ navigation, dispatch }) => {
               top: 0,
               left: 10,
             }}
-            onPress={() => navigation.goBack()}
+            onPress={() => dispatchFunction()}
           >
             <Icon
               name="chevron-left"
@@ -184,20 +199,7 @@ const FoodFooter = ({ navigation, dispatch }) => {
               alignItems: "center",
               backgroundColor: colors.btnLink,
             }}
-            onPress={async () => {
-              storeData("food", checked);
-              const filterFood = checked
-                ?.filter((item) => item?.isChecked)
-                ?.map((item) => parseInt(item?.id));
-
-              let vendor = await selectedVendor();
-              const filterVendor = vendor
-                ?.filter((item) => item?.isChecked)
-                ?.map((item) => parseInt(item?.id));
-
-              dispatch(getSearchProduct(null, filterFood, filterVendor));
-              navigation.goBack();
-            }}
+            onPress={() => dispatchFunction()}
           >
             <Text
               style={{

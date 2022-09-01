@@ -230,4 +230,18 @@ export const styles = StyleSheet.create({
     fontFamily: "lato-bold",
     marginTop: 10,
   },
+  qty_footer: {
+    flex: 1,
+    width: "100%",
+    backgroundColor: colors.btnLink,
+    maxHeight: 40,
+    borderWidth: 1,
+    borderColor: "transparent",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingVertical: 8,
+    paddingHorizontal: 8,
+    alignItems: "center",
+    alignSelf: "center",
+  },
 });

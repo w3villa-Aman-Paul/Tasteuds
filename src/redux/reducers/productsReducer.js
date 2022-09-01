@@ -7,6 +7,7 @@ const DEFAULT_STATE = {
   pageIndex: 1,
   selectedVendor: {},
   sortedProductsList: false,
+  isFiltered: false,
   params: {
     priceRange: {
       minimum: 20,
@@ -140,64 +141,11 @@ const DEFAULT_STATE = {
     ],
     product_properties: [],
     default_variant: {
-      option_values: [
-        {
-          presentation: "",
-        },
-        {
-          presentation: "",
-        },
-      ],
+      option_values: [],
     },
   },
   searchedProducts: [],
-  productsList: [
-    {
-      display_price: "$",
-      images: [
-        {
-          styles: [
-            {
-              url: "",
-            },
-            {
-              url: "",
-            },
-            {
-              url: "",
-            },
-            {
-              url: "",
-            },
-            {
-              url: "",
-            },
-            {
-              url: "",
-            },
-            {
-              url: "",
-            },
-            {
-              url: "",
-            },
-            {
-              url: "",
-            },
-            {
-              url: "",
-            },
-            {
-              url: "",
-            },
-            {
-              url: "",
-            },
-          ],
-        },
-      ],
-    },
-  ],
+  productsList: [],
 };
 
 let changes = null;
@@ -227,6 +175,7 @@ export default function productsReducer(state = DEFAULT_STATE, action) {
         productsList: [
           ...new Map(uniqueProducts.map((item) => [item["id"], item])).values(),
         ],
+        isFiltered: false,
         isViewing: true,
         saving: false,
         meta: response.meta,
@@ -252,6 +201,7 @@ export default function productsReducer(state = DEFAULT_STATE, action) {
         productsList: [
           ...new Map(unique.map((item) => [item["id"], item])).values(),
         ],
+        isFiltered: true,
         isViewing: true,
         saving: false,
         meta: response.meta,
@@ -500,7 +450,7 @@ export default function productsReducer(state = DEFAULT_STATE, action) {
      * SORT_BY_PRICE
      */
     case "SORT_BY_PRICE_PENDING":
-      return { ...state, saving: true };
+      return { ...state, saving: state.isViewing ? false : true };
 
     case "SORT_BY_PRICE_REJECTED":
       changes = {
@@ -508,16 +458,29 @@ export default function productsReducer(state = DEFAULT_STATE, action) {
       };
       return { ...state, ...changes };
 
-    case "SORT_BY_PRICE_FULLFILLED":
-      let uniqueNewByPrice = [...action.payload.data, ...state.productsList];
+    case "SORT_BY_PRICE_FULFILLED":
+      let responseData = [...response.data];
+      let sortedPro = [];
+      let list = [...state.productsList];
 
-      changes = {
+      responseData.forEach((product) => {
+        sortedPro.push({
+          id: product?.id,
+          ...product?.attributes,
+          ...product?.relationships,
+          type: product?.type,
+        });
+      });
+
+      let changes = {
         productsList: [
-          ...new Map(
-            uniqueNewByPrice.map((item) => [item["id"], item])
-          ).values(),
+          ...new Map(sortedPro.map((item) => [item["id"], item])).values(),
+          ...state.productsList,
         ],
+        isFiltered: false,
+        isViewing: true,
         saving: false,
+        meta: response.meta,
       };
       return { ...state, ...changes };
 

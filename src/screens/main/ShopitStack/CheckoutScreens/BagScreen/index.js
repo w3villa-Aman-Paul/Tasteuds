@@ -86,7 +86,7 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
   useEffect(() => {
     if (response?.type === "success") {
       setGoogleSubmitting(true);
-      setAccessToken(response.authentication.accessToken);
+      // setAccessToken(response.authentication.accessToken);
       dispatch(googleLogin(response.authentication.accessToken));
       console.log("acc", response.authentication.accessToken);
       setTimeout(() => {
@@ -128,8 +128,6 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
   };
 
   const handleToCheckout = async () => {
-    await dispatch(getDefaultCountry());
-    await dispatch(getCountriesList());
     navigation.navigate("ShippingAddress");
   };
 
@@ -445,29 +443,6 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
                 <View key={ele?.variant?.id.toString()}>
                   <View style={styles.body}>
                     <View style={styles.body_second}>
-                      {/* {showItemCard ? (
-                        <View
-                          style={{ display: "flex", flex: 1, marginLeft: 10 }}
-                        >
-                          <View style={styles.after_img}>
-                            <Image
-                              source={{
-                                uri: `${HOST}/${cartProductImage?.url}`,
-                              }}
-                              style={styles.image}
-                            />
-                          </View>
-                          <Text style={styles.name} numberOfLines={1}>
-                            {ele.name}
-                          </Text>
-                          <Text>
-                            {ele.variant.options_text
-                              ? ele.variant.options_text.split(" ")[3] ||
-                                ele.variant.options_text.split(" ")[1]
-                              : ""}
-                          </Text>
-                        </View>
-                      ) : ( */}
                       <>
                         <TouchableOpacity
                           style={styles.body_first}

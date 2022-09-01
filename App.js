@@ -10,6 +10,7 @@ import * as Font from "expo-font";
 import ActivityIndicatorCard from "./src/library/components/ActivityIndicatorCard";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StripeProvider } from "@stripe/stripe-react-native";
+import { LogBox } from "react-native";
 
 const getFonts = () =>
   Font.loadAsync({
@@ -17,6 +18,13 @@ const getFonts = () =>
     "lato-regular": require("./assets/fonts/Montserrat-Regular.ttf"),
     "lato-medium": require("./assets/fonts/Montserrat-Medium.ttf"),
   });
+
+LogBox.ignoreAllLogs(true);
+LogBox.ignoreLogs([
+  "Possible",
+  "You should always pass contentWidth prop",
+  "Warning: Each child",
+]);
 
 const App = () => {
   const [fontsLoaded, setFontsLoaded] = React.useState(false);

@@ -37,6 +37,7 @@ import {
   sortByMostBought,
   sortByNewlyAdd,
   sortByPrice,
+  getVendorsList,
 } from "../../../../redux";
 import FilterFooter from "../../../../library/components/ActionButtonFooter/FilterFooter";
 import { HOST } from "../../../../res/env";
@@ -73,8 +74,8 @@ const ProductListScreen = ({
   const [inCart, setInCart] = useState(false);
   const [inc, setInc] = useState("false");
   const [isModelVisible, setModelVisible] = useState(false);
-  const [today, setToday] = useState(new Date());
-  const [delieveryDate, setDelieveryDate] = useState(new Date(2));
+  const [today, setToday] = useState(null);
+  const [delieveryDate, setDelieveryDate] = useState(null);
 
   const [mostBought, setMostBought] = useState([]);
   const [newlyAdded, setNewlyAdded] = useState([]);
@@ -87,19 +88,10 @@ const ProductListScreen = ({
   const menus = useSelector((state) => state.taxons.menus);
   const submenus = useSelector((state) => state.taxons.submenus);
   const { products } = useSelector((state) => state);
+  const { isFiltered } = useSelector((state) => state.products);
 
   const { mostBoughtGoods } = useSelector((state) => state.taxons);
   const { newAddedProducts } = useSelector((state) => state.taxons);
-
-  const weekday = [
-    "Søndag",
-    "Mandag",
-    "Tirsdag",
-    "Onsdag",
-    "Torsdag",
-    "Fredag",
-    "Lørdag",
-  ];
 
   const params = route?.params;
 
@@ -115,16 +107,12 @@ const ProductListScreen = ({
 
   useEffect(() => {
     const timeOutId = timeoutIdRef.current;
-
-    setToday(new Date());
-    let finalDate = new Date();
-    finalDate.setDate(finalDate.getDate() + 2);
-
-    setDelieveryDate(finalDate);
-
+    dispatch(getVendorsList());
     {
       products.sortedProductsList || dispatch(sortByMostBought(mostBought));
     }
+
+    handleDelieveryDate();
 
     return () => {
       clearTimeout(timeOutId);
@@ -141,7 +129,7 @@ const ProductListScreen = ({
 
   useEffect(() => {
     if (params) handleAfterMenuSelect(params);
-  }, [params]);
+  }, [params, route]);
 
   useEffect(() => {
     {
@@ -169,10 +157,35 @@ const ProductListScreen = ({
     "Non-serializable values were found in the navigation state",
   ]);
 
+  const handleDelieveryDate = () => {
+    let todayDate = new Date();
+    let delieveryDate = new Date(todayDate);
+
+    if (today?.getDay() === 2) {
+      setToday(todayDate);
+      delieveryDate?.setDate(
+        delieveryDate?.getDate() + ((4 + 7 - delieveryDate?.getDay()) % 7 || 7)
+      );
+      setDelieveryDate(delieveryDate);
+    } else {
+      todayDate?.setDate(
+        todayDate?.getDate() + ((2 + 7 - todayDate?.getDay()) % 7 || 7)
+      );
+      delieveryDate?.setDate(
+        delieveryDate?.getDate() + ((4 + 7 - delieveryDate?.getDay()) % 7 || 7)
+      );
+      setDelieveryDate(delieveryDate);
+    }
+
+    setToday(todayDate);
+  };
+
   const paramsDispatchHandler = async (params) => {
     await handleActiveMenuClick(params.menu);
     setAll(true);
     setIsAll(false);
+    setIsSubLink(true);
+    setIsSubAll(true);
     await dispatch(
       getSubMenu(
         params?.menu?.permalink
@@ -187,8 +200,6 @@ const ProductListScreen = ({
     );
     handleClick(handleUncheckAllMenus(activeMenus), params?.menu);
     await dispatch(getSubMenuProducts(subLink));
-    setIsSubLink(true);
-    setIsSubAll(true);
   };
 
   const handleAfterMenuSelect = (params) => {
@@ -215,6 +226,8 @@ const ProductListScreen = ({
 
     if (params.route === "Categories") {
       paramsDispatchHandler(params);
+      handleActiveMenu();
+      handleActiveSubMenu();
     }
   };
 
@@ -603,9 +616,9 @@ const ProductListScreen = ({
     {
       title: " Pris lav til høyh",
       onPress: () => {
+        setIsAll(true);
         // dispatch(sortByPrice(1, null, {}));
         setProductListLowToHigh();
-        setSort(false);
       },
     },
     {
@@ -613,7 +626,6 @@ const ProductListScreen = ({
       onPress: () => {
         // dispatch(sortByPrice(-1, null, {}));
         setProductListHighToLow();
-        setSort(false);
       },
     },
 
@@ -677,7 +689,12 @@ const ProductListScreen = ({
         item={item}
         keyExtractor={(index) => index.toString()}
         onPress={() => {
-          storeData("selectedVendor", resultVendor(item?.vendor?.id)[1]);
+          storeData(
+            "selectedVendor",
+            resultVendor(
+              item?.vendor?.data ? item.vendor?.data?.id : item?.vendor?.id
+            )[1]
+          );
 
           handleProductLoad(item?.id, item);
         }}
@@ -699,7 +716,6 @@ const ProductListScreen = ({
 
   const scrollMenuRef = React.useRef();
   const scrollSubMenuRef = React.useRef();
-
   const flatListUpperElement = () => {
     return (
       <View
@@ -730,16 +746,17 @@ const ProductListScreen = ({
               }}
             >
               Bestill innen{" "}
-              <Text style={{ color: colors.btnLink }}>{`${
-                weekday[today?.getDay()]
-              } ${String(today.getDate()).padStart(2, "0")}.${String(
-                today.getMonth() + 1
-              ).padStart(2, "0")}`}</Text>{" "}
+              <Text style={{ color: colors.btnLink }}>{`Tirsdag ${String(
+                today?.getDate()
+              ).padStart(2, "0")}.${String(today?.getMonth() + 1).padStart(
+                2,
+                "0"
+              )}`}</Text>{" "}
               og få varene levert hjem{" "}
-              <Text style={{ color: colors.btnLink }}>{`${
-                weekday[delieveryDate?.getDay()]
-              } ${String(delieveryDate.getDate()).padStart(2, "0")}.${String(
-                delieveryDate.getMonth() + 1
+              <Text style={{ color: colors.btnLink }}>{`Torsdag ${String(
+                delieveryDate?.getDate()
+              ).padStart(2, "0")}.${String(
+                delieveryDate?.getMonth() + 1
               ).padStart(2, "0")}`}</Text>
             </Text>
           </View>
@@ -1337,9 +1354,11 @@ const ProductListScreen = ({
           ListHeaderComponent={flatListUpperElement}
           ListFooterComponent={flatListLowerElement}
           ref={scrollRef}
-          onEndReachedThreshold={0.3}
+          onEndReachedThreshold={0.5}
           onEndReached={() => {
-            handleEndReached();
+            if (isFiltered === false) {
+              handleEndReached();
+            }
           }}
           columnWrapperStyle={{
             width: "100%",

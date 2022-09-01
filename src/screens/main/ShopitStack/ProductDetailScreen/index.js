@@ -72,6 +72,7 @@ const ProductDetailScreen = ({ navigation, dispatch, cart, route }) => {
   };
 
   const handleProducerClick = async (vendor) => {
+    await dispatch(getSelectedVendor(vendor.slug));
     navigation.navigate("ProducersDetailScreen", {
       bio: vendor.bio,
       cover_image_url: vendor.cover_image_url,
@@ -300,18 +301,10 @@ const ProductDetailScreen = ({ navigation, dispatch, cart, route }) => {
                 style={{
                   ...styles.description,
                   width: 300,
-                  padding: 10,
                   borderWidth: 1,
                   borderRadius: 10,
                   borderColor: "transparent",
-                  shadowColor: "grey",
-                  shadowRadius: 10,
-                  shadowOffset: {
-                    width: 0,
-                    height: 4,
-                  },
-                  shadowOpacity: 0.8,
-                  elevation: 1,
+
                   backgroundColor: "white",
                 }}
               >
@@ -351,7 +344,7 @@ const ProductDetailScreen = ({ navigation, dispatch, cart, route }) => {
               }}
             >
               <Button
-                title="TILLBAKE"
+                title="TILBAKE"
                 type="solid"
                 containerStyle={{ flex: 1 }}
                 titleStyle={{ ...styles.titleStyle, fontSize: 24 }}
@@ -367,6 +360,27 @@ const ProductDetailScreen = ({ navigation, dispatch, cart, route }) => {
             </View>
           </View>
         </ScrollView>
+
+        {cart?.item_count > 0 ? (
+          <View style={styles.qty_footer}>
+            <Text
+              style={{ color: colors.white, fontSize: 15, fontWeight: "bold" }}
+            >
+              {cart?.item_count} VARER
+            </Text>
+            <TouchableOpacity onPress={() => navigation.navigate("Bag")}>
+              <Text
+                style={{
+                  color: colors.white,
+                  fontSize: 15,
+                  fontWeight: "bold",
+                }}
+              >
+                SE HANDLEVOGN
+              </Text>
+            </TouchableOpacity>
+          </View>
+        ) : null}
 
         {checkout.error !== null && saving === false ? (
           <Snackbar visible={snackbarVisible} onDismiss={dismissSnackbar}>
