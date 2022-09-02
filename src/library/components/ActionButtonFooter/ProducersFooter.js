@@ -31,7 +31,7 @@ const ProducersFooter = ({ navigation, dispatch }) => {
     if (foodSelectedId?.length > 0) {
       dispatch(
         getFilteredVendors(
-          selectedFood.length === 1 ? foodSelectedId[0] : foodSelectedId
+          foodSelectedId.length === 1 ? foodSelectedId[0] : foodSelectedId
         )
       );
     }

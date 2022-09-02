@@ -5,6 +5,7 @@ import {
   Pressable,
   Text,
   TouchableOpacity,
+  useWindowDimensions,
   View,
 } from "react-native";
 import React, { useCallback, useRef, useState, useEffect } from "react";
@@ -29,6 +30,7 @@ import { HOST } from "../../../../res/env";
 import { colors } from "../../../../res/palette";
 import { Icon } from "react-native-elements";
 import { storeData } from "../../../../redux/rootReducer";
+import BottomBarCart from "../../../components/bottomBarCart";
 
 const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   const vendorList = useSelector((state) => state.taxons.vendors);
@@ -44,6 +46,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   const [inCart, setInCart] = useState(false);
 
   const timeoutIdRef = useRef();
+  const { height, width } = useWindowDimensions();
 
   useEffect(() => {
     const timeOutId = timeoutIdRef.current;
@@ -243,7 +246,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
             source={{
               uri: item.images
                 ? `${HOST}/${item?.images[0]?.styles[3].url}`
-                : null,
+                : item.image_attachement,
             }}
             style={{
               width: imageStyle.width,
@@ -391,14 +394,26 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
 
   const flatListHeaderComponent = () => {
     return (
-      <>
-        <TouchableOpacity onPress={() => navigation.navigate("ProductsList")}>
-          <Image
-            source={require("../../../../../assets/images/Header-Icon/home_item.png")}
-            style={styles.bannerFirst}
-          />
-          <Text style={styles.banner}>SE UTVALG</Text>
-        </TouchableOpacity>
+      <View>
+        <View>
+          <TouchableOpacity
+            style={[styles.bannerFirstDiv, { flex: 1, margin: 0 }]}
+            onPress={() => navigation.navigate("ProductsList")}
+          >
+            <ImageBackground
+              source={require("../../../../../assets/images/Header-Icon/home_item.png")}
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: 10,
+              }}
+              resizeMode="cover"
+            >
+              <Text style={styles.banner}>SE UTVALG</Text>
+            </ImageBackground>
+          </TouchableOpacity>
+        </View>
 
         <View style={styles.body_second}>
           <TouchableOpacity
@@ -557,7 +572,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
         <Text style={{ ...styles.content_text, ...globalStyles.container }}>
           MEST KJØPTE
         </Text>
-      </>
+      </View>
     );
   };
 
@@ -570,7 +585,9 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
           style={styles.home_btn}
           onPress={() => navigation.navigate("ProductsList")}
         >
-          <Text style={styles.btn_text}>SE HELE UTVALGET</Text>
+          <Text style={[styles.btn_text, { textAlign: "center" }]}>
+            SE HELE UTVALGET
+          </Text>
         </TouchableOpacity>
       </>
     );
@@ -590,6 +607,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
         style={{
           ...globalStyles.container,
           ...styles.bg_white,
+          width: "95%",
         }}
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={flatListHeaderComponent}
@@ -599,26 +617,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
       <Snackbar visible={snackbarVisible} onDismiss={dismissSnackbar}>
         Added to Cart !
       </Snackbar>
-      {cart?.item_count > 0 ? (
-        <View style={styles.qty_footer}>
-          <Text
-            style={{ color: colors.white, fontSize: 15, fontWeight: "bold" }}
-          >
-            {cart?.item_count} VARER
-          </Text>
-          <TouchableOpacity onPress={() => navigation.navigate("Bag")}>
-            <Text
-              style={{
-                color: colors.white,
-                fontSize: 15,
-                fontWeight: "bold",
-              }}
-            >
-              SE HANDLEVOGN
-            </Text>
-          </TouchableOpacity>
-        </View>
-      ) : null}
+      <BottomBarCart />
     </View>
   );
 };

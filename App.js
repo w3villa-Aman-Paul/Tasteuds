@@ -41,7 +41,10 @@ const App = () => {
   }
 
   return (
-    <StripeProvider merchantIdentifier="merchant.com.tastebuds">
+    <StripeProvider
+      publishableKey="pk_test_51LdSV1SH62860s701ZWgszH08MEcAWUWjjvAQ37szzxhyCjlha0Q4vla5z9x8YBqbamQlbx7IO6wh0mKXTL8d5Kz00XmYNzGag"
+      merchantIdentifier="merchant.com.tastebuds"
+    >
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <SafeAreaProvider>

@@ -5,7 +5,7 @@
     "owner": "aman.paul",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/appLogo.png",
     "scheme": "mycoolredirect",
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -17,7 +17,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.w3villa.tastebuds",
-      "buildNumber": "1.0.3",
+      "buildNumber": "1.0.5",
       "config": {
         "googleSignIn": {
           "reservedClientId": "com.googleusercontent.apps.575803309006-hqi5d55e9ge3vhund8kifreii46atgnc"

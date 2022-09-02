@@ -45,6 +45,7 @@ import { useSelector } from "react-redux";
 import { Snackbar } from "react-native-paper";
 import { getData, removeData, storeData } from "../../../../redux/rootReducer";
 import { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
+import BottomBarCart from "../../../components/bottomBarCart";
 
 const ProductListScreen = ({
   navigation,
@@ -107,7 +108,6 @@ const ProductListScreen = ({
 
   useEffect(() => {
     const timeOutId = timeoutIdRef.current;
-    dispatch(getVendorsList());
     {
       products.sortedProductsList || dispatch(sortByMostBought(mostBought));
     }
@@ -617,15 +617,17 @@ const ProductListScreen = ({
       title: " Pris lav til høyh",
       onPress: () => {
         setIsAll(true);
-        // dispatch(sortByPrice(1, null, {}));
-        setProductListLowToHigh();
+        dispatch(sortByPrice(1, null, {})).then(() =>
+          setProductListLowToHigh()
+        );
       },
     },
     {
       title: "Pris høy til lav",
       onPress: () => {
-        // dispatch(sortByPrice(-1, null, {}));
-        setProductListHighToLow();
+        dispatch(sortByPrice(-1, null, {})).then(() =>
+          setProductListHighToLow()
+        );
       },
     },
 
@@ -646,8 +648,10 @@ const ProductListScreen = ({
   ];
 
   const handleEndReached = () => {
-    const response = dispatch(setPageIndex(pageIndex + 1));
-    handleProductsLoad(response.payload);
+    if (isFiltered === false) {
+      const response = dispatch(setPageIndex(pageIndex + 1));
+      handleProductsLoad(response.payload);
+    }
   };
 
   const handleAll = () => {
@@ -954,7 +958,7 @@ const ProductListScreen = ({
         style={{
           width: "100%",
           position: "absolute",
-          bottom: 0,
+          bottom: 30,
           alignSelf: "center",
           flexDirection: "column",
           alignItems: "center",
@@ -971,7 +975,16 @@ const ProductListScreen = ({
               handleFilter();
             }}
           >
-            <Text>FILTER</Text>
+            <Image
+              source={require("../../../../../assets/images/icons/slider.png")}
+              style={{
+                flex: 0.4,
+                width: "100%",
+                height: "100%",
+                resizeMode: "contain",
+              }}
+            />
+            <Text style={styles.buttonText}>FILTER</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.stickyBottomBtn, globalStyles.iosShadow]}
@@ -980,30 +993,18 @@ const ProductListScreen = ({
               handleSort();
             }}
           >
-            <Text>SORTER</Text>
+            <Image
+              source={require("../../../../../assets/images/icons/up-down-arrow.png")}
+              style={{
+                flex: 0.4,
+                width: "100%",
+                height: "100%",
+                resizeMode: "contain",
+              }}
+            />
+            <Text style={styles.buttonText}>SORTER</Text>
           </TouchableOpacity>
         </View>
-
-        {cart?.item_count > 0 ? (
-          <View style={styles.qty_footer}>
-            <Text
-              style={{ color: colors.white, fontSize: 15, fontWeight: "bold" }}
-            >
-              {cart?.item_count} VARER
-            </Text>
-            <TouchableOpacity onPress={() => navigation.navigate("Bag")}>
-              <Text
-                style={{
-                  color: colors.white,
-                  fontSize: 15,
-                  fontWeight: "bold",
-                }}
-              >
-                SE HANDLEVOGN
-              </Text>
-            </TouchableOpacity>
-          </View>
-        ) : null}
       </View>
     );
   };
@@ -1348,46 +1349,24 @@ const ProductListScreen = ({
       <View style={[globalStyles.containerFluid, styles.bgwhite, { flex: 1 }]}>
         <FlatList
           keyExtractor={(item, index) => index.toString()}
-          data={isAll || all ? productsList : data}
+          data={
+            isAll || all ? productsList.filter((item) => item?.available) : data
+          }
           renderItem={newJustInRenderItem}
           numColumns={2}
           ListHeaderComponent={flatListUpperElement}
           ListFooterComponent={flatListLowerElement}
           ref={scrollRef}
-          onEndReachedThreshold={0.5}
-          onEndReached={() => {
-            if (isFiltered === false) {
-              handleEndReached();
-            }
-          }}
+          onEndReachedThreshold={0.3}
+          onEndReached={() => handleEndReached()}
           columnWrapperStyle={{
             width: "100%",
             justifyContent: "space-evenly",
           }}
         />
-
         {stikyOptions()}
 
-        {cart?.item_count > 0 ? (
-          <View style={styles.qty_footer}>
-            <Text
-              style={{ color: colors.white, fontSize: 15, fontWeight: "bold" }}
-            >
-              {cart?.item_count} VARER
-            </Text>
-            <TouchableOpacity onPress={() => navigation.navigate("Bag")}>
-              <Text
-                style={{
-                  color: colors.white,
-                  fontSize: 15,
-                  fontWeight: "bold",
-                }}
-              >
-                SE HANDLEVOGN
-              </Text>
-            </TouchableOpacity>
-          </View>
-        ) : null}
+        <BottomBarCart />
 
         {checkout.error !== null && saving === false ? (
           <Snackbar visible={snackbarVisible} onDismiss={dismissSnackbar}>
@@ -1396,7 +1375,6 @@ const ProductListScreen = ({
         ) : (
           <></>
         )}
-
         {isOpen && (
           <FilterFooter
             value={sheetRef}
@@ -1408,7 +1386,6 @@ const ProductListScreen = ({
             setIsOpen={setIsOpen}
           />
         )}
-
         {sort && (
           <FilterFooter
             value={sheetRef}

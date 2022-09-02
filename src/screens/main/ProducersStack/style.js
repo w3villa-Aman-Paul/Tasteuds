@@ -253,4 +253,17 @@ export const styles = StyleSheet.create({
     color: colors.white,
     textAlign: "center",
   },
+  filterSortBtn: {
+    height: 30,
+    width: 100,
+    borderWidth: 1,
+    borderRadius: 10,
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    alignItems: "center",
+    marginRight: 10,
+    borderColor: "transparent",
+    backgroundColor: "#fff",
+    elevation: 5,
+  },
 });

@@ -18,6 +18,7 @@ import { capitalizeFirstLetter } from "../../../../res/helperFunctions";
 import { HOST } from "../../../../res/env";
 import { useSelector } from "react-redux";
 import { getData } from "../../../../redux/rootReducer";
+import BottomBarCart from "../../../components/bottomBarCart";
 
 const ProductDetailScreen = ({ navigation, dispatch, cart, route }) => {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
@@ -341,6 +342,7 @@ const ProductDetailScreen = ({ navigation, dispatch, cart, route }) => {
                 ...globalStyles.container,
                 marginTop: 40,
                 marginBottom: 40,
+                alignSelf: "center",
               }}
             >
               <Button
@@ -361,26 +363,7 @@ const ProductDetailScreen = ({ navigation, dispatch, cart, route }) => {
           </View>
         </ScrollView>
 
-        {cart?.item_count > 0 ? (
-          <View style={styles.qty_footer}>
-            <Text
-              style={{ color: colors.white, fontSize: 15, fontWeight: "bold" }}
-            >
-              {cart?.item_count} VARER
-            </Text>
-            <TouchableOpacity onPress={() => navigation.navigate("Bag")}>
-              <Text
-                style={{
-                  color: colors.white,
-                  fontSize: 15,
-                  fontWeight: "bold",
-                }}
-              >
-                SE HANDLEVOGN
-              </Text>
-            </TouchableOpacity>
-          </View>
-        ) : null}
+        <BottomBarCart />
 
         {checkout.error !== null && saving === false ? (
           <Snackbar visible={snackbarVisible} onDismiss={dismissSnackbar}>

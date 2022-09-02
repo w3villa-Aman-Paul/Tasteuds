@@ -39,10 +39,10 @@ import {
 } from "../../../../../res/env";
 import FilterFooter from "../../../../../library/components/ActionButtonFooter/FilterFooter";
 import { colors } from "../../../../../res/palette";
+import ApplePay from "../../../../components/ApplePay/ApplePay";
 
 import * as Google from "expo-auth-session/providers/google";
 import * as Facebook from "expo-auth-session/providers/facebook";
-// import * as Facebook from "expo-facebook";
 import * as AppleAuthentication from "expo-apple-authentication";
 import * as WebBrowser from "expo-web-browser";
 
@@ -57,6 +57,8 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
 
   const [accessToken, setAccessToken] = useState(null);
   const [googleSubmitting, setGoogleSubmitting] = useState(false);
+  const [today, setToday] = useState(null);
+  const [delieveryDate, setDelieveryDate] = useState(null);
 
   const onDismiss = () => setSnackbarVisible(false);
   const [showItemCard, setShowItemCard] = useState(false);
@@ -66,9 +68,16 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
   const [inc, setInc] = useState("false");
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [fbResponse, setFbResponse] = useState({});
+  const [googleResponse, setGoogleResponse] = useState({});
 
   const snapPoints = Platform.OS === "ios" ? ["50%"] : ["30%"];
   const timeoutIdRef = React.useRef();
+
+  useEffect(() => {
+    if (isAuth) {
+      setIsOpen(false);
+    }
+  }, [isAuth]);
 
   useEffect(() => {
     const timeOutId = timeoutIdRef.current;
@@ -79,18 +88,20 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
   }, []);
 
   useEffect(() => {
+    handleDelieveryDate();
     dispatch(getCart(cart?.token));
     setIsLoggedin(false);
   }, []);
 
   useEffect(() => {
-    if (response?.type === "success") {
+    console.log(googleResponse);
+    if (googleResponse?.type === "success") {
       setGoogleSubmitting(true);
       // setAccessToken(response.authentication.accessToken);
-      dispatch(googleLogin(response.authentication.accessToken));
-      console.log("acc", response.authentication.accessToken);
+      dispatch(googleLogin(googleResponse.authentication.accessToken));
+      console.log("acc", googleResponse.authentication.accessToken);
       setTimeout(() => {
-        setIsOpen(false);
+        setGoogleSubmitting(false);
         setIsOpen(false);
       }, 1000);
     }
@@ -101,7 +112,7 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
         setIsOpen(false);
       }, 1000);
     }
-  }, [response, fbResponse]);
+  }, [googleResponse, fbResponse]);
 
   useEffect(() => {
     const timeOutId = timeoutIdRef.current;
@@ -110,7 +121,30 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
     };
   }, []);
 
-  const [request, response, promptAsync] = Google.useAuthRequest({
+  const handleDelieveryDate = () => {
+    let todayDate = new Date();
+    let delieveryDate = new Date(todayDate);
+
+    if (today?.getDay() === 2) {
+      setToday(todayDate);
+      delieveryDate?.setDate(
+        delieveryDate?.getDate() + ((4 + 7 - delieveryDate?.getDay()) % 7 || 7)
+      );
+      setDelieveryDate(delieveryDate);
+    } else {
+      todayDate?.setDate(
+        todayDate?.getDate() + ((2 + 7 - todayDate?.getDay()) % 7 || 7)
+      );
+      delieveryDate?.setDate(
+        delieveryDate?.getDate() + ((4 + 7 - delieveryDate?.getDay()) % 7 || 7)
+      );
+      setDelieveryDate(delieveryDate);
+    }
+
+    setToday(todayDate);
+  };
+
+  const [_, ___, googlePromptAsync] = Google.useAuthRequest({
     iosClientId: GOOGLE_IOS_CLIENT_ID,
     androidClientId: GOOGLE_ANDROID_CLIENT_ID,
     expoClientId: GOOGLE_EXPO_ID,
@@ -134,6 +168,11 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
   const handleFacebookAuth = async () => {
     const response = await fbPromptAsync();
     setFbResponse(response);
+  };
+
+  const handleGoogleAuth = async () => {
+    const response = await googlePromptAsync({ showInRecents: true });
+    setGoogleResponse(response);
   };
 
   const handleAppleLogin = async () => {
@@ -186,7 +225,6 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
               </TouchableOpacity>
             </View>
           )}
-
           <View style={styles.login_content}>
             {!googleSubmitting ? (
               <TouchableOpacity
@@ -197,7 +235,7 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
                   ) : (
                     () => {
                       setGoogleSubmitting(true);
-                      promptAsync({ showInRecents: true });
+                      handleGoogleAuth();
                     }
                   )
                 }
@@ -222,7 +260,6 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
               </View>
             )}
           </View>
-
           <View style={styles.login_content}>
             <TouchableOpacity
               style={styles.login_btn}
@@ -416,7 +453,13 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
               style={{ flex: 0.2, marginRight: 10, height: "100%" }}
             />
 
-            <View style={{ flex: 0.9, justifyContent: "center" }}>
+            <View
+              style={{
+                flex: 0.9,
+                justifyContent: "center",
+                textAlign: "justify",
+              }}
+            >
               <Text
                 style={{
                   fontSize: 16,
@@ -424,9 +467,19 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
                   fontWeight: "bold",
                 }}
               >
-                Bestill nå og få varene levert hjem{" "}
-                <Text style={{ color: colors.btnLink }}>tirdag 04.08</Text>{" "}
-                mellom 16.00-21.00.
+                Bestill innen{" "}
+                <Text style={{ color: colors.btnLink }}>{`Tirsdag ${String(
+                  today?.getDate()
+                ).padStart(2, "0")}.${String(today?.getMonth() + 1).padStart(
+                  2,
+                  "0"
+                )}`}</Text>{" "}
+                og få varene levert hjem{" "}
+                <Text style={{ color: colors.btnLink }}>{`Torsdag ${String(
+                  delieveryDate?.getDate()
+                ).padStart(2, "0")}.${String(
+                  delieveryDate?.getMonth() + 1
+                ).padStart(2, "0")}`}</Text>
               </Text>
             </View>
           </View>

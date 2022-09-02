@@ -29,6 +29,7 @@ import { colors } from "../../../../res/palette";
 import { Icon } from "react-native-elements";
 import { storeData } from "../../../../redux/rootReducer";
 import ActivityIndicatorCard from "../../../../library/components/ActivityIndicatorCard";
+import BottomBarCart from "../../../components/bottomBarCart";
 
 const MostBoughtProducts = ({
   dispatch,
@@ -406,26 +407,8 @@ const MostBoughtProducts = ({
         <Snackbar visible={snackbarVisible} onDismiss={dismissSnackbar}>
           Added to Cart !
         </Snackbar>
-        {cart?.item_count > 0 ? (
-          <View style={styles.qty_footer}>
-            <Text
-              style={{ color: colors.white, fontSize: 15, fontWeight: "bold" }}
-            >
-              {cart?.item_count} VARER
-            </Text>
-            <TouchableOpacity onPress={() => navigation.navigate("Bag")}>
-              <Text
-                style={{
-                  color: colors.white,
-                  fontSize: 15,
-                  fontWeight: "bold",
-                }}
-              >
-                SE HANDLEVOGN
-              </Text>
-            </TouchableOpacity>
-          </View>
-        ) : null}
+
+        <BottomBarCart />
       </View>
     );
   }

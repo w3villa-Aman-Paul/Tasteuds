@@ -26,11 +26,33 @@ export const styles = StyleSheet.create({
     color: colors.black,
     marginVertical: 16,
   },
-  bannerFirst: {
-    resizeMode: "contain",
-    width: "100%",
-    height: 200,
+  bannerCon: {
+    flex: 1,
     borderRadius: 10,
+    margin: 0,
+    marginVertical: 10,
+    marginBottom: 20,
+    position: "relative",
+    height: 150,
+    overflow: "hidden",
+  },
+
+  bannerFirstDiv: {
+    top: 10,
+    left: 0,
+    flex: 1,
+    borderRadius: 10,
+    margin: 0,
+    marginVertical: 10,
+    marginBottom: 20,
+    position: "relative",
+    height: 150,
+    overflow: "hidden",
+  },
+  bannerFirst: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   discountStripe: {
     ...globalStyles.mt16,
@@ -81,7 +103,7 @@ export const styles = StyleSheet.create({
   banner: {
     position: "absolute",
     right: 40,
-    bottom: 30,
+    bottom: 20,
     color: "#ffffff",
     fontSize: 30,
     fontWeight: "bold",
@@ -92,13 +114,11 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   first: {
-    flex: 0.6,
-    width: 220,
+    flex: 0.55,
     height: 119,
   },
   second: {
-    flex: 0.4,
-    width: 139,
+    flex: 0.42,
     height: 119,
   },
   body_second_image: {
@@ -197,13 +217,13 @@ export const styles = StyleSheet.create({
   home_btn: {
     flex: 1,
     alignItems: "center",
-    marginLeft: 80,
-    marginRight: 80,
+    width: "70%",
     paddingTop: 10,
     paddingBottom: 10,
     backgroundColor: colors.btnLink,
     marginBottom: 25,
     borderRadius: 10,
+    alignSelf: "center",
   },
   btn_text: {
     color: colors.white,

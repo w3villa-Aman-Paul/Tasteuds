@@ -450,7 +450,7 @@ export default function productsReducer(state = DEFAULT_STATE, action) {
      * SORT_BY_PRICE
      */
     case "SORT_BY_PRICE_PENDING":
-      return { ...state, saving: state.isViewing ? false : true };
+      return { ...state, saving: true };
 
     case "SORT_BY_PRICE_REJECTED":
       changes = {
@@ -459,18 +459,10 @@ export default function productsReducer(state = DEFAULT_STATE, action) {
       return { ...state, ...changes };
 
     case "SORT_BY_PRICE_FULFILLED":
-      let responseData = [...response.data];
-      let sortedPro = [];
-      let list = [...state.productsList];
-
-      responseData.forEach((product) => {
-        sortedPro.push({
-          id: product?.id,
-          ...product?.attributes,
-          ...product?.relationships,
-          type: product?.type,
-        });
-      });
+      let sortedPro = [
+        ...dataFormatter.deserialize(response),
+        ...state.productsList,
+      ];
 
       let changes = {
         productsList: [

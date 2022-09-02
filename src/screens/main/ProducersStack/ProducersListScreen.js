@@ -32,7 +32,7 @@ const ProducersListScreen = ({ dispatch, navigation }) => {
   useEffect(() => {
     let load = false;
 
-    dispatch(getVendorsList());
+    // dispatch(getVendorsList());
     if (!load) {
       setVendorsList(vendors?.sort((a, b) => a.name.localeCompare(b.name)));
     }
@@ -135,34 +135,32 @@ const ProducersListScreen = ({ dispatch, navigation }) => {
           }}
         >
           <TouchableOpacity
-            style={[
-              {
-                width: 100,
-                borderWidth: 1,
-                borderRadius: 10,
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-              },
-              globalStyles.iosShadow,
-            ]}
+            style={[styles.filterSortBtn, globalStyles.iosShadow]}
           >
-            <Icon name="filter-list" type="material-icons" />
+            <Image
+              source={require("./../../../../assets/images/icons/slider.png")}
+              style={{
+                flex: 0.4,
+                width: "100%",
+                height: "100%",
+                resizeMode: "contain",
+              }}
+            />
             <Text style={styles.buttonText}>FILTER</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={{
-              width: 100,
-              marginLeft: 10,
-              borderWidth: 1,
-              borderRadius: 10,
-              alignItems: "center",
-              flexDirection: "row",
-              justifyContent: "center",
-            }}
+            style={[styles.filterSortBtn, globalStyles.iosShadow]}
             onPress={toggleModal}
           >
-            <Icon name="sort" type="material-icons" />
+            <Image
+              source={require("./../../../../assets/images/icons/up-down-arrow.png")}
+              style={{
+                flex: 0.4,
+                width: "100%",
+                height: "100%",
+                resizeMode: "contain",
+              }}
+            />
             <Text style={styles.buttonText}>SORTER</Text>
           </TouchableOpacity>
         </View>

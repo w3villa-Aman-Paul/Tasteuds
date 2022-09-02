@@ -25,6 +25,17 @@ async function handleAPIWithoutToken(path, params, method, data = null) {
   return await axios({ url, headers, method, data });
 }
 
+async function handleAPIForFilteredVendors(path, params, method, data = null) {
+  const headers = {
+    "Content-Type": "application/vnd.api+json",
+    Accept: "application/json",
+  };
+  let url = API_ROOT + path;
+  url = params ? url + "?" + qs.stringify(params) : url;
+
+  return await axios({ url, headers, method, data });
+}
+
 async function handleAPI(path, params, method, data = null, filter = null) {
   const authToken = await getAuthToken();
 
@@ -77,4 +88,5 @@ export {
   handleAddCartItem,
   handleAPIWithoutToken,
   handleSocialLogin,
+  handleAPIForFilteredVendors,
 };

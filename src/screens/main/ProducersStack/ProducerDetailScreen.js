@@ -335,6 +335,7 @@ const ProducerDetailScreen = ({ dispatch, navigation, route }) => {
               height: 96,
               flexDirection: "row",
               justifyContent: "space-between",
+              alignItems: "center",
               backgroundColor: "white",
               padding: 10,
               marginVertical: 20,
@@ -350,7 +351,7 @@ const ProducerDetailScreen = ({ dispatch, navigation, route }) => {
                 ? logo_image_url
                 : "https://cdn.pixabay.com/photo/2018/06/29/08/15/doodle-3505459_960_720.png",
             }}
-            style={{ flex: 0.3 }}
+            style={{ flex: 0.3, height: "100%" }}
             resizeMode={"contain"}
           />
           <Text

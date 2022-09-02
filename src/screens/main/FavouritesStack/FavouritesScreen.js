@@ -232,120 +232,144 @@ const FavouritesScreen = ({
     (ele) => particularFav?.id == ele?.variant?.product?.id
   );
 
-  console.log("TEMP", itemQuantity);
   return (
     <>
       <ScrollView>
         <View style={styles.container}>
-          {favorites?.map((favourite) => {
-            let result = producer(favourite?.vendor?.id);
+          {favorites?.length > 0 ? (
+            favorites?.map((favourite) => {
+              let result = producer(favourite?.vendor?.id);
 
-            return (
-              <View key={favourite?.id} style={styles.contentContainer}>
-                <View style={styles.first_content}>
-                  <Image
-                    source={{
-                      uri: `${HOST}/${favourite?.images[0].styles[3].url}`,
-                    }}
-                    style={styles.fav_image}
-                  />
-                  <View style={styles.first_body}>
-                    <Text style={{ color: colors.black, fontSize: 14 }}>
-                      {favourite?.name}
-                    </Text>
-                    <Text style={{ color: colors.btnLink, fontSize: 14 }}>
-                      {result?.name}
-                    </Text>
-                    <Text style={{ color: colors.black, fontSize: 14 }}>
-                      {itemId?.id === favourite?.id
-                        ? itemId?.variants[color]?.display_price
-                        : favourite?.variants[0]?.display_price}{" "}
-                      |{" "}
-                      {itemId?.id === favourite?.id
-                        ? itemId?.variants[color]?.options_text.split(" ")[3] ||
-                          itemId?.variants[color]?.options_text.split(" ")[1]
-                        : favourite?.variants[0]?.options_text.split(" ")[3] ||
-                          favourite?.variants[0]?.options_text.split(" ")[1]}
-                    </Text>
-                  </View>
-                  <Icon
-                    type="entypo"
-                    name="dots-three-horizontal"
-                    size={25}
-                    color={colors.black}
-                    onPress={() => {
-                      setIsOpen(true);
-                      setItemId(favourite);
-                    }}
-                  />
-                </View>
-                <View style={styles.second_content}>
-                  {qtyBtn && particularFav?.id === favourite?.id ? (
-                    <View style={styles.fav_qty_style}>
-                      <TouchableOpacity
-                        style={styles.qty_icon_first}
-                        onPress={() => {
-                          handleChangeQuantityClick();
-                          handleDecrement();
-                          handleDecrementQuantity(tempArr?.id);
-                        }}
-                      >
-                        <Icon
-                          type="ant-design"
-                          name="minus"
-                          size={22}
-                          color={colors.white}
-                        />
-                      </TouchableOpacity>
-                      <Text style={{ fontWeight: "bold" }}>
-                        {tempArr
-                          ? inc
-                            ? tempArr?.quantity + itemQuantity
-                            : tempArr?.quantity - itemQuantity
-                          : 1}
+              return (
+                <View key={favourite?.id} style={styles.contentContainer}>
+                  <View style={styles.first_content}>
+                    <Image
+                      source={{
+                        uri: `${HOST}/${favourite?.images[0].styles[3].url}`,
+                      }}
+                      style={styles.fav_image}
+                    />
+                    <View style={styles.first_body}>
+                      <Text style={{ color: colors.black, fontSize: 14 }}>
+                        {favourite?.name}
                       </Text>
-                      <TouchableOpacity
-                        style={styles.qty_icon_second}
-                        onPress={() => {
-                          handleChangeQuantityClick();
-                          handleIncrement();
-                          handleIncrementQuantity(tempArr?.id);
-                        }}
-                      >
-                        <Icon
-                          type="ant-design"
-                          name="plus"
-                          size={22}
-                          color={colors.white}
-                        />
-                      </TouchableOpacity>
+                      <Text style={{ color: colors.btnLink, fontSize: 14 }}>
+                        {result?.name}
+                      </Text>
+                      <Text style={{ color: colors.black, fontSize: 14 }}>
+                        {itemId?.id === favourite?.id
+                          ? itemId?.variants[color]?.display_price
+                          : favourite?.variants[0]?.display_price}{" "}
+                        |{" "}
+                        {itemId?.id === favourite?.id
+                          ? itemId?.variants[color]?.options_text.split(
+                              " "
+                            )[3] ||
+                            itemId?.variants[color]?.options_text.split(" ")[1]
+                          : favourite?.variants[0]?.options_text.split(
+                              " "
+                            )[3] ||
+                            favourite?.variants[0]?.options_text.split(" ")[1]}
+                      </Text>
                     </View>
-                  ) : (
-                    <>
-                      <TouchableOpacity
-                        style={styles.sec_btn}
-                        onPress={() => {
-                          setParticularFav(favourite);
-                          setQtyBtn(true);
-                        }}
-                      >
-                        <Icon
-                          type="ant-design"
-                          name="shoppingcart"
-                          size={18}
-                          color={colors.white}
-                          style={{ marginRight: 6 }}
-                        />
-                        <Text style={{ color: colors.white }}>KJØP</Text>
-                      </TouchableOpacity>
-                    </>
-                  )}
+                    <Icon
+                      type="entypo"
+                      name="dots-three-horizontal"
+                      size={25}
+                      color={colors.black}
+                      onPress={() => {
+                        setIsOpen(true);
+                        setItemId(favourite);
+                      }}
+                    />
+                  </View>
+                  <View style={styles.second_content}>
+                    {qtyBtn && particularFav?.id === favourite?.id ? (
+                      <View style={styles.fav_qty_style}>
+                        <TouchableOpacity
+                          style={styles.qty_icon_first}
+                          onPress={() => {
+                            handleChangeQuantityClick();
+                            handleDecrement();
+                            handleDecrementQuantity(tempArr?.id);
+                          }}
+                        >
+                          <Icon
+                            type="ant-design"
+                            name="minus"
+                            size={22}
+                            color={colors.white}
+                          />
+                        </TouchableOpacity>
+                        <Text style={{ fontWeight: "bold" }}>
+                          {tempArr
+                            ? inc
+                              ? tempArr?.quantity + itemQuantity
+                              : tempArr?.quantity - itemQuantity
+                            : 1}
+                        </Text>
+                        <TouchableOpacity
+                          style={styles.qty_icon_second}
+                          onPress={() => {
+                            handleChangeQuantityClick();
+                            handleIncrement();
+                            handleIncrementQuantity(tempArr?.id);
+                          }}
+                        >
+                          <Icon
+                            type="ant-design"
+                            name="plus"
+                            size={22}
+                            color={colors.white}
+                          />
+                        </TouchableOpacity>
+                      </View>
+                    ) : (
+                      <>
+                        <TouchableOpacity
+                          style={styles.sec_btn}
+                          onPress={() => {
+                            setParticularFav(favourite);
+                            setQtyBtn(true);
+                          }}
+                        >
+                          <Icon
+                            type="ant-design"
+                            name="shoppingcart"
+                            size={18}
+                            color={colors.white}
+                            style={{ marginRight: 6 }}
+                          />
+                          <Text style={{ color: colors.white }}>KJØP</Text>
+                        </TouchableOpacity>
+                      </>
+                    )}
+                  </View>
                 </View>
-              </View>
-            );
-          })}
+              );
+            })
+          ) : (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: "lato-bold",
+                  fontSize: 18,
+                  color: colors.btnLink,
+                }}
+              >
+                Ingen favoritter lagt til ennå
+              </Text>
+            </View>
+          )}
         </View>
       </ScrollView>
+
       {tempArr ? (
         <View style={styles.qty_footer}>
           <Text

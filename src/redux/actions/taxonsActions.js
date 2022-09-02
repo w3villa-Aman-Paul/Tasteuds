@@ -2,6 +2,7 @@ import {
   handleAPI,
   API_VERSION_STOREFRONT,
   handleAPIWithoutToken,
+  handleAPIForFilteredVendors,
 } from "../../library/utils/apiUtils";
 
 export function getTaxonsList(filters = {}) {
@@ -56,12 +57,12 @@ export function getFilteredVendors(ids = []) {
   const url = `${API_VERSION_STOREFRONT}/new_api/taxon_vendors.json`;
   const method = "GET";
   const params = {
-    ids: ids,
+    ids: "" + ids,
   };
 
   return {
     type: "GET_FILTERED_VENDOR_LIST",
-    payload: handleAPIWithoutToken(url, params, method),
+    payload: handleAPIForFilteredVendors(url, params, method),
   };
 }
 

@@ -5,6 +5,7 @@ import { getMenus, getNewlyAddProducts } from "../../../redux";
 import { connect, useSelector } from "react-redux";
 import ActivityIndicatorCard from "../../../library/components/ActivityIndicatorCard";
 import { colors } from "../../../res/palette";
+import { HOST } from "../../../res/env";
 
 const CategoriesScreen = ({
   navigation,
@@ -127,7 +128,13 @@ const CategoriesScreen = ({
                       ]}
                     >
                       <Image
-                        source={require("../../../../assets/images/icons/Meieri.png")}
+                        source={
+                          item?.icon?.url
+                            ? {
+                                uri: `${HOST}${item.icon.url}`,
+                              }
+                            : require("../../../../assets/images/icons/Meieri.png")
+                        }
                         style={styles.icon}
                       />
                       <Text
