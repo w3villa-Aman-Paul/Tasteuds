@@ -17,7 +17,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.w3villa.tastebuds",
-      "buildNumber": "1.0.5",
+      "buildNumber": "1.0.7",
       "config": {
         "googleSignIn": {
           "reservedClientId": "com.googleusercontent.apps.575803309006-hqi5d55e9ge3vhund8kifreii46atgnc"

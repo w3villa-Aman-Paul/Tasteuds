@@ -31,17 +31,17 @@ const splash = ({ navigation, dispatch }) => {
 
   const initialization = async () => {
     {
-      menus.length !== 0 && (await dispatch(getMenus()));
+      menus.length === 0 && (await dispatch(getMenus()));
     }
     {
-      vendorList.length !== 0 && (await dispatch(getVendorsList()));
+      vendorList.length === 0 && (await dispatch(getVendorsList()));
     }
     {
-      weeklyProducer.length !== 0 && (await dispatch(getWeeklyProducer()));
+      weeklyProducer.length === 0 && (await dispatch(getWeeklyProducer()));
     }
 
     {
-      mostBoughtGoods.length !== 0 && (await dispatch(getMostBoughtGoods()));
+      mostBoughtGoods.length === 0 && (await dispatch(getMostBoughtGoods()));
     }
   };
 

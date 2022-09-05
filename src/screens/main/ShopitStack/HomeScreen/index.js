@@ -44,19 +44,16 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   const [inc, setInc] = useState("false");
   const [itemQuantity, setItemQuantity] = useState(1);
   const [inCart, setInCart] = useState(false);
+  const [productsUnique, setProductsUnique] = useState([]);
 
   const timeoutIdRef = useRef();
   const { height, width } = useWindowDimensions();
 
   useEffect(() => {
     const timeOutId = timeoutIdRef.current;
-    setMostBought([]);
     if (productsList.length === 0) {
       handleProductsLoad();
     }
-
-    dispatch(getMostBoughtGoods());
-    dispatch(getWeeklyProducer());
 
     // dispatch(createCart());
 
@@ -80,15 +77,13 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   }, [productsList]);
 
   useEffect(() => {
-    let load = false;
-
-    if (!load) {
-      loadMostBoughtGoods();
-    }
-    return () => {
-      load = true;
-    };
-  }, [mostBought, mostBoughtGoods]);
+    loadMostBoughtGoods();
+    setTimeout(() => {
+      setProductsUnique([
+        ...new Map(mostBought.map((item) => [item["id"], item])).values(),
+      ]);
+    }, 1000);
+  }, [mostBoughtGoods]);
 
   const dismissSnackbar = () => setSnackbarVisible(false);
 
@@ -592,10 +587,6 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
       </>
     );
   };
-
-  const productsUnique = [
-    ...new Map(mostBought.map((item) => [item["id"], item])).values(),
-  ];
 
   return (
     <View style={{ ...globalStyles.containerFluid, ...styles.bg_white }}>
