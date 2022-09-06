@@ -167,6 +167,7 @@ export const styles = StyleSheet.create({
   login_container: {
     backgroundColor: "#232332",
     flex: 1,
+    justifyContent: "flex-end",
   },
 
   fav_close_container: {
@@ -175,6 +176,7 @@ export const styles = StyleSheet.create({
     top: 10,
     marginBottom: 15,
     elevation: 5,
+    zIndex: 3,
   },
   fav_close: {
     borderRadius: 30,
@@ -221,6 +223,8 @@ export const styles = StyleSheet.create({
     borderRadius: 10,
     width: "30%",
     paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginHorizontal: 2,
   },
   lastInputs: {
     width: "90%",

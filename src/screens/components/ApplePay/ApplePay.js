@@ -51,7 +51,7 @@ const ApplePay = ({ styles }) => {
   return (
     <View>
       {/* {isApplePaySupported && ( */}
-      <TouchableOpacity>
+      <TouchableOpacity style={styles}>
         <ApplePayButton
           onPress={pay}
           type="plain"

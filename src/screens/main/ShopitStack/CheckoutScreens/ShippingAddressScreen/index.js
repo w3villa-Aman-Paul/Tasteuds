@@ -35,6 +35,8 @@ import { accountRetrieve } from "../../../../../redux";
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import { useNavigation } from "@react-navigation/native";
 import { MethodSelector } from "./MethodSelector";
+import ApplePay from "../../../../components/ApplePay/ApplePay";
+import ApplePayReactNative from "../../../../components/ApplePay/ApplePayReactNative";
 
 const FormInput = ({ placeholder, ...rest }) => {
   return (
@@ -170,13 +172,12 @@ const ShippingAddressScreen = ({
     return (
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        enabled
         style={styles.login_container}
       >
         <View>
           <TouchableOpacity
             style={styles.fav_close_container}
-            onPress={() => setIsOpen(!isOpen)}
+            onPress={() => setIsOpen()}
           >
             <Icon
               type="entypo"
@@ -435,12 +436,8 @@ const ShippingAddressScreen = ({
               <Text style={styles.payment_title}>BETALINGSMÅTE</Text>
               <View style={styles.payment_body}>
                 <View style={styles.payment_btn_body}>
-                  <MethodSelector
-                    style={styles.payment_btn}
-                    // onPress={handleSelectMethod}
-                    onPress={() => {}}
-                    paymentMethod={paymentMethod}
-                  />
+                  <ApplePay styles={styles.payment_btn} />
+                  {/* <ApplePayReactNative /> */}
                 </View>
 
                 {/* <View style={styles.payment_btn_body}>
@@ -453,7 +450,10 @@ const ShippingAddressScreen = ({
                 </View> */}
 
                 <View style={styles.payment_btn_body}>
-                  <TouchableOpacity style={styles.payment_btn}>
+                  <TouchableOpacity
+                    style={styles.payment_btn}
+                    onPress={() => setIsOpen(true)}
+                  >
                     <Image
                       source={require("../../../../../../assets/images/Header-Icon/cardpay.png")}
                       style={styles.payment_img}
