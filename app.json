@@ -1,0 +1,68 @@
+{
+  "expo": {
+    "name": "Tastebuds - Lokalmat rett hjem",
+    "slug": "Tastebuds-app-slug",
+    "owner": "aman.paul",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/appLogo.png",
+    "scheme": "mycoolredirect",
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "splash": {
+      "shown": false
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.w3villa.tastebuds",
+      "buildNumber": "1.0.7",
+      "config": {
+        "googleSignIn": {
+          "reservedClientId": "com.googleusercontent.apps.575803309006-hqi5d55e9ge3vhund8kifreii46atgnc"
+        }
+      },
+      "usesAppleSignIn": true,
+      "infoPlist": {
+        "NSUserTrackingUsageDescription": true,
+        "NSCameraUsageDescription": "This app uses the camera to take the profile image of user.",
+        "SKAdNetworkItems": [
+          {
+            "SKAdNetworkIdentifier": "v9wttpbfk9.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "n38lu8286q.skadnetwork"
+          }
+        ]
+      }
+    },
+    "android": {
+      "package": "com.w3villa.tastebuds",
+      "versionCode": 1
+    },
+    "web": {
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-facebook",
+        {
+          "userTrackingPermission": true
+        }
+      ],
+      [
+        "@stripe/stripe-react-native",
+        {
+          "merchantIdentifier": "merchant.com.tastebuds",
+          "enableGooglePay": true
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "3d3590cf-72f3-468a-bd76-b8d4dbd8934a"
+      }
+    }
+  }
+}
