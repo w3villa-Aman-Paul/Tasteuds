@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useWindowDimensions } from "react-native";
 import {
   StyleSheet,
   Text,
@@ -24,6 +25,9 @@ const BottomModal = ({ isModalVisible, setModalVisible }) => {
     PIN: "",
   });
 
+  const { height, width } = useWindowDimensions();
+  const rowWidth = width * 0.9;
+
   return (
     <Modal
       isVisible={isModalVisible}
@@ -39,30 +43,79 @@ const BottomModal = ({ isModalVisible, setModalVisible }) => {
       <View style={styles.sorterBtnContainer}>
         <Text style={styles.sorterHeaderText}>ENDRE KONTOINFORMASJON</Text>
 
-        <View style={{ flex: 1, paddingHorizontal: 10 }}>
-          {/* <View
-            style={{
-              flex: 0.2,
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          > */}
-          {/* <View style={{ flex: 0.4, height: 40, backgroundColor: "#fff" }}> */}
-          <Text style={{ color: "#fff" }}>FORNAVN</Text>
-          <TextInput
-            placeholder="FORNAVN"
-            style={{ height: 10, width: "100%" }}
-          />
-        </View>
-        <View style={{ flex: 0.4 }}></View>
-        {/* </View> */}
-      </View>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "flex-start",
+            alignItems: "center",
+          }}
+        >
+          <View
+            style={[
+              styles.formRow,
+              {
+                width: rowWidth,
+                flexDirection: "row",
+                justifyContent: "space-between",
+              },
+            ]}
+          >
+            <View style={{ flex: 0.45, height: 40 }}>
+              <Text style={styles.formLabel}>FORNAVN</Text>
+              <TextInput placeholder="FORNAVN" style={styles.formInput} />
+            </View>
+            <View style={{ flex: 0.45, height: 40 }}>
+              <Text style={styles.formLabel}>ETTERNAVN</Text>
+              <TextInput placeholder="ETTERNAVN" style={styles.formInput} />
+            </View>
+          </View>
 
-      <TouchableOpacity style={styles.hideButton}>
-        <Text style={styles.hideButtonText}> Cancle </Text>
-      </TouchableOpacity>
-      {/* </View> */}
+          <View style={[styles.formRow, { width: rowWidth }]}>
+            <Text style={[styles.formLabel, { alignSelf: "left" }]}>
+              E-POST
+            </Text>
+            <TextInput placeholder="E-POST" style={styles.formInput} />
+          </View>
+
+          <View style={[styles.formRow, { width: rowWidth }]}>
+            <Text style={[styles.formLabel, { alignSelf: "left" }]}>
+              TELEFONNUMMER
+            </Text>
+            <TextInput placeholder="TELEFONNUMMER" style={styles.formInput} />
+          </View>
+
+          <View style={[styles.formRow, { width: rowWidth }]}>
+            <Text style={[styles.formLabel, { alignSelf: "left" }]}>
+              ADRESSE
+            </Text>
+            <TextInput placeholder="ADRESSE" style={styles.formInput} />
+          </View>
+
+          <View
+            style={[
+              styles.formRow,
+              {
+                flexDirection: "row",
+                justifyContent: "flex-start",
+                width: rowWidth,
+              },
+            ]}
+          >
+            <TextInput
+              placeholder="PIN"
+              style={[
+                styles.formInput,
+                { width: "20%", alignSelf: "center", marginRight: 10 },
+              ]}
+            />
+            <Text style={styles.formLabel}>Bergen</Text>
+          </View>
+        </View>
+
+        <TouchableOpacity style={styles.hideButton}>
+          <Text style={[styles.hideButtonText, styles.formLabel]}> LAGRE </Text>
+        </TouchableOpacity>
+      </View>
     </Modal>
   );
 };
@@ -81,6 +134,7 @@ const styles = StyleSheet.create({
     flex: 0.6,
     justifyContent: "space-between",
     alignItems: "center",
+    padding: 0,
     paddingVertical: 20,
     backgroundColor: colors.primary,
   },
@@ -111,7 +165,7 @@ const styles = StyleSheet.create({
   hideButton: {
     width: 100,
     padding: 10,
-    backgroundColor: colors.skyBlue,
+    backgroundColor: colors.btnLink,
     borderRadius: 10,
     marginTop: 10,
   },
@@ -175,5 +229,25 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderRadius: 8,
     color: "#007DFF",
+  },
+  formRow: {
+    flex: 0.2,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 10,
+  },
+  formLabel: {
+    color: "#fff",
+    fontFamily: "lato-medium",
+    fontSize: 16,
+    marginBottom: 3,
+  },
+  formInput: {
+    height: 40,
+    width: "100%",
+    padding: 5,
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    paddingLeft: 10,
   },
 });
