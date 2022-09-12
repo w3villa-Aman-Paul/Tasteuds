@@ -37,6 +37,7 @@ import { useNavigation } from "@react-navigation/native";
 import { MethodSelector } from "./MethodSelector";
 import ApplePay from "../../../../components/ApplePay/ApplePay";
 import ApplePayReactNative from "../../../../components/ApplePay/ApplePayReactNative";
+import BottomModal from "../../../../components/BottomModal/BottomModal";
 
 const FormInput = ({ placeholder, ...rest }) => {
   return (
@@ -57,7 +58,7 @@ const ShippingAddressScreen = ({
 }) => {
   let newAddress = Address.filter((x) => x.id === route.params?.Id);
   const [paymentMethod, setPaymentMethod] = useState();
-
+  const [isModalVisible, setModalVisible] = useState(false);
   const { initPaymentSheet, presentPaymentSheet, confirmPaymentSheetPayment } =
     useStripe();
 
@@ -74,6 +75,10 @@ const ShippingAddressScreen = ({
   const [isOpen, setIsOpen] = useState(false);
 
   const snapPoints = useMemo(() => ["65%", "75%"], []);
+
+  const hideAddressModal = () => {
+    setModalVisible(false);
+  };
 
   const paymentHandler = () => {
     setIsOpen(true);
@@ -402,7 +407,7 @@ const ShippingAddressScreen = ({
                 <Text style={styles.address_text}>LEVERINGS INFORMASJON</Text>
                 <TouchableOpacity
                   style={styles.address_btn}
-                  onPress={() => navigation.navigate("SavedAddress")}
+                  onPress={() => setModalVisible(true)}
                 >
                   <Text style={styles.address_btn_text}>ENDRE</Text>
                 </TouchableOpacity>
@@ -491,6 +496,13 @@ const ShippingAddressScreen = ({
             snapPoints={snapPoints}
             onClose={() => setIsOpen(false)}
             bottomSheetContent={bottomSheetContent}
+          />
+        )}
+
+        {isModalVisible && (
+          <BottomModal
+            isModalVisible={isModalVisible}
+            setModalVisible={hideAddressModal}
           />
         )}
       </View>

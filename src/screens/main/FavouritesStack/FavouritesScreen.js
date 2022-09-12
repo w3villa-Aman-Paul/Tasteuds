@@ -428,9 +428,9 @@ const styles = StyleSheet.create({
     height: 100,
   },
   fav_image: {
-    height: "100%",
+    // height: "100%",
     width: 90,
-    // resizeMode: "cover",
+    resizeMode: "cover",
     marginRight: 10,
   },
   first_body: {

@@ -63,7 +63,7 @@ const ProfileScreen = ({ dispatch, navigation }) => {
   }, [isAuth]);
 
   return (
-    <ScrollView>
+    <ScrollView style={{ flex: 1 }}>
       <View style={{ ...styles.mainContainer }}>
         <View style={{ ...styles.jumbotron }}>
           <LinearGradient
@@ -89,7 +89,7 @@ const ProfileScreen = ({ dispatch, navigation }) => {
         </View>
 
         {isAuth ? (
-          <>
+          <View>
             <View>
               <Divider />
               {list.map((item, i) => (
@@ -123,7 +123,7 @@ const ProfileScreen = ({ dispatch, navigation }) => {
                 }}
               />
             </View>
-          </>
+          </View>
         ) : (
           <>
             <View style={{ ...globalStyles.container, height: 290 }}>
