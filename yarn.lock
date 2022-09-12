@@ -10868,11 +10868,6 @@
   dependencies:
     "prop-types" "^15.7.2"
 
-"react-native-apple-payment@^1.1.1":
-  "integrity" "sha512-Y48yAzW876jZdF3/YX2gZ7yYMtEEIE2ffkpsfjzko64nRy2u6v3AhcxYpU4wx9i8fBT46bwMVxs1DyP9Owl0NQ=="
-  "resolved" "https://registry.npmjs.org/react-native-apple-payment/-/react-native-apple-payment-1.1.1.tgz"
-  "version" "1.1.1"
-
 "react-native-codegen@^0.0.6":
   "integrity" "sha512-cMvrUelD81wiPitEPiwE/TCNscIVauXxmt4NTGcy18HrUd0WRWXfYzAQGXm0eI87u3NMudNhqFj2NISJenxQHg=="
   "resolved" "https://registry.npmjs.org/react-native-codegen/-/react-native-codegen-0.0.6.tgz"
