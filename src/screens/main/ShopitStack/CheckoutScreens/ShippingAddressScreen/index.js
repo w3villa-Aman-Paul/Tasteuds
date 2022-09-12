@@ -36,7 +36,6 @@ import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import { useNavigation } from "@react-navigation/native";
 import { MethodSelector } from "./MethodSelector";
 import ApplePay from "../../../../components/ApplePay/ApplePay";
-import ApplePayReactNative from "../../../../components/ApplePay/ApplePayReactNative";
 import BottomModal from "../../../../components/BottomModal/BottomModal";
 
 const FormInput = ({ placeholder, ...rest }) => {
@@ -442,7 +441,6 @@ const ShippingAddressScreen = ({
               <View style={styles.payment_body}>
                 <View style={styles.payment_btn_body}>
                   <ApplePay styles={styles.payment_btn} />
-                  {/* <ApplePayReactNative /> */}
                 </View>
 
                 {/* <View style={styles.payment_btn_body}>
