@@ -177,6 +177,7 @@ export const styles = StyleSheet.create({
   size: {
     flexDirection: "row",
     alignSelf: "flex-start",
+<<<<<<< HEAD
     borderWidth: 0.5,
     borderColor: colors.primary,
     borderRadius: 10,
@@ -184,10 +185,18 @@ export const styles = StyleSheet.create({
     width: "100%",
     flexWrap: "wrap",
     // height: 40,
+=======
+    borderWidth: 1,
+    borderColor: colors.primary,
+    borderRadius: 10,
+    marginTop: 40,
+    height: 40,
+>>>>>>> bc672e329cd753fe717ac2484fa24f9cb314cc75
     overflow: "hidden",
   },
   active: {
     width: "20%",
+<<<<<<< HEAD
     padding: 10,
     backgroundColor: colors.primary,
     color: colors.white,
@@ -204,6 +213,28 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     borderWidth: 0.5,
     borderColor: colors.gray,
+=======
+    backgroundColor: colors.primary,
+    borderColor: "transparent",
+    borderRightColor: colors.primary,
+    color: colors.white,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#000",
+    // borderRadius: 10,
+    // borderTopLeftRadius: 10,
+    // borderBottomLeftRadius: 10,
+  },
+  unactive: {
+    width: "20%",
+    backgroundColor: "#fff",
+    borderRightColor: colors.primary,
+    borderColor: "transparent",
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1,
+>>>>>>> bc672e329cd753fe717ac2484fa24f9cb314cc75
     // borderRadius: 10,
   },
   last: {

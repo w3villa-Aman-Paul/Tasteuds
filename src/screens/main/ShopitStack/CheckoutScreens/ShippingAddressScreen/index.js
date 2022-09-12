@@ -59,7 +59,6 @@ const ShippingAddressScreen = ({
   let newAddress = Address.filter((x) => x.id === route.params?.Id);
   const [paymentMethod, setPaymentMethod] = useState();
   const [isModalVisible, setModalVisible] = useState(false);
-
   const { initPaymentSheet, presentPaymentSheet, confirmPaymentSheetPayment } =
     useStripe();
 
