@@ -107,9 +107,22 @@ export function retrieveAddress(data = null, filters = null) {
 export function updateAddressFunc(data, filters = null, id) {
   const url = `${API_VERSION_STOREFRONT}/account/addresses/${id}`;
   const method = "PATCH";
+
+  const updatedData = {
+    address: {
+      firstname: data?.FORNAVN,
+      lastname: data?.ETTERNAVN,
+      address1: data?.ADRESSE,
+      zipcode: data?.PIN,
+      city: data?.CITY,
+      state_name: "Bergen",
+      country_iso: "NO",
+      phone: data?.TELEFONNUMMER,
+    },
+  };
   return {
     type: "UPDATE_ADDRESS",
-    payload: handleAPI(url, filters, method, data),
+    payload: handleAPI(url, filters, method, updatedData),
   };
 }
 

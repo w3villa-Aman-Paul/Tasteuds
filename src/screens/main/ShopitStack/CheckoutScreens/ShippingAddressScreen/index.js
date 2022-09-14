@@ -37,6 +37,7 @@ import { useNavigation } from "@react-navigation/native";
 import { MethodSelector } from "./MethodSelector";
 import ApplePay from "../../../../components/ApplePay/ApplePay";
 import BottomModal from "../../../../components/BottomModal/BottomModal";
+import Payments from "../../../../../library/components/Payments/Payments";
 
 const FormInput = ({ placeholder, ...rest }) => {
   return (
@@ -52,28 +53,56 @@ const ShippingAddressScreen = ({
   dispatch,
   saving,
   cart,
-  Address,
   route,
 }) => {
-  let newAddress = Address.filter((x) => x.id === route.params?.Id);
+  let newAddress = Address?.filter((x) => x.id === route.params?.Id);
   const [paymentMethod, setPaymentMethod] = useState();
+  const [paymentVisible, setPaymentVisible] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
+  const [updateAddress, setUpdateAddress] = useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+    phone: "",
+    address: "",
+    pin: "",
+    city: "",
+    state_name: "Bergen",
+    country_iso: "NO",
+  });
   const { initPaymentSheet, presentPaymentSheet, confirmPaymentSheetPayment } =
     useStripe();
 
-  const { email } = useSelector((state) => state.account.account);
+  const Account = useSelector((state) => state.account.account);
+  const Address = useSelector((state) => state.checkout.address);
 
   useEffect(() => {
     dispatch(getDefaultCountry());
     dispatch(getCountriesList());
     dispatch(accountRetrieve());
     dispatch(retrieveAddress());
+    dispatch(getPaymentMethods(cart?.token));
   }, []);
+
+  useEffect(() => {
+    if (Address.length > 0) {
+      setUpdateAddress({
+        firstname: Address[0]?.firstname,
+        lastname: Address[0]?.lastname,
+        phone: Address[0]?.phone,
+        address: Address[0]?.address1,
+        pin: Address[0]?.zipcode,
+        email: Account?.email,
+        city: Address[0]?.city,
+        state_name: Address[0]?.state_name,
+      });
+    }
+  }, [Address, Account]);
 
   const sheetRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
 
-  const snapPoints = useMemo(() => ["65%", "75%"], []);
+  const snapPoints = useMemo(() => ["50%", "75%"], []);
 
   const hideAddressModal = () => {
     setModalVisible(false);
@@ -82,26 +111,11 @@ const ShippingAddressScreen = ({
   const paymentHandler = () => {
     setIsOpen(true);
   };
-  useEffect(() => {
-    (async () => {
-      await initStripe({
-        publishableKey,
-        // Only if implementing applePay
-        // Set the merchantIdentifier to the same
-        // value in the StripeProvider and
-        // striple plugin in app.json
-        merchantIdentifier: "merchant.com.tastebuds",
-      });
-
-      // Initialize the PaymentSheet with the paymentIntent data,
-      // we will later present and confirm this
-      await initializePaymentSheet();
-    })();
-  }, []);
 
   const initializePaymentSheet = async () => {
     const { error, paymentOption } = await initPaymentSheet({
-      paymentIntentClientSecret: clientSecret,
+      paymentIntentClientSecret:
+        "pi_3LhYyaB9Bg3ozT7m1v6FlMB5_secret_wO2rweHrK2YlyahJdVyXRHFnC",
       customFlow: true,
       merchantDisplayName: merchantName,
       style: "alwaysDark", // If darkMode
@@ -129,11 +143,11 @@ const ShippingAddressScreen = ({
 
   // *Bottom Sheet content ================================================================= */
   const bottomSheetContent = () => {
-    const [cardName, setCardName] = useState(null);
-    const [profileId, setProfileId] = useState("tok_visa");
-    const [cvv, setCvv] = useState(null);
-    const [month, setMonth] = useState(null);
-    const [year, setYear] = useState(null);
+    const [cardName, setCardName] = useState("");
+    const [profileId, setProfileId] = useState("");
+    const [cvv, setCvv] = useState("");
+    const [month, setMonth] = useState("");
+    const [year, setYear] = useState("");
 
     const { cart } = useSelector((state) => state.checkout);
     const dispatch = useDispatch();
@@ -159,11 +173,12 @@ const ShippingAddressScreen = ({
                 ],
               },
             })
-          );
-          dispatch(completeCheckout(cart?.token)).then(() => {
-            setIsOpen(false);
-            dispatch(createCart());
-            navigation.navigate("OrderComplete");
+          ).then(() => {
+            dispatch(completeCheckout(cart?.token)).then(() => {
+              setIsOpen(false);
+              dispatch(createCart());
+              navigation.navigate("OrderComplete");
+            });
           });
         } catch (error) {
           console.log(error);
@@ -178,7 +193,7 @@ const ShippingAddressScreen = ({
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.login_container}
       >
-        <View>
+        <View style={{ height: 50 }}>
           <TouchableOpacity
             style={styles.fav_close_container}
             onPress={() => setIsOpen()}
@@ -190,6 +205,7 @@ const ShippingAddressScreen = ({
               style={styles.fav_close}
             />
           </TouchableOpacity>
+
           <View style={styles.headerTextContainer}>
             <Text style={styles.headerTitle}>REGISTRER KORT</Text>
           </View>
@@ -221,19 +237,25 @@ const ShippingAddressScreen = ({
                   style={styles.cardInputDate}
                   value={month}
                   onChangeText={(value) => setMonth(value)}
+                  maxLength={2}
+                  keyboardType="number"
                 />
                 <FormInput
                   style={styles.cardInputDate}
                   value={year}
                   onChangeText={(value) => setYear(value)}
+                  maxLength={4}
+                  keyboardType="number"
                 />
               </View>
             </View>
             <View style={styles.cardContent}>
               <Text style={styles.cardText}>CVC</Text>
               <FormInput
-                style={{ ...styles.cardInputDate, width: "100%" }}
+                style={{ ...styles.cardInputDate }}
                 value={cvv}
+                maxLength={3}
+                keyboardType="number"
                 onChangeText={(value) => setCvv(value)}
               />
             </View>
@@ -242,7 +264,8 @@ const ShippingAddressScreen = ({
           <View style={{ ...styles.cardContent, marginTop: 20 }}>
             <TouchableOpacity
               style={styles.cardBtn}
-              onPress={handlePaymentConfirmation}
+              // onPress={handlePaymentConfirmation}
+              onPress={() => navigation.navigate("Payments")}
             >
               <Text style={{ ...styles.cardText, fontFamily: "lato-bold" }}>
                 LEGG TIL
@@ -255,75 +278,43 @@ const ShippingAddressScreen = ({
   };
   //* ===========================================================*/
 
-  const handleUpdateCheckout = async () => {
-    await dispatch(
+  const handleUpdateCheckout = () => {
+    dispatch(
       updateCheckout(cart?.token, {
         order: {
           email: email,
           special_instructions: "Please leave at door",
           bill_address_attributes: {
-            firstname:
-              newAddress.length > 0
-                ? newAddress[0].firstname
-                : Address[0].firstname,
-            lastname:
-              newAddress.length > 0
-                ? newAddress[0].lastname
-                : Address[0].lastname,
-            address1:
-              newAddress.length > 0
-                ? newAddress[0].address1
-                : Address[0].address1,
-            city: newAddress.length > 0 ? newAddress[0].city : Address[0].city,
-            phone:
-              newAddress.length > 0 ? newAddress[0].phone : Address[0].phone,
-            zipcode:
-              newAddress.length > 0
-                ? newAddress[0].zipcode
-                : Address[0].zipcode,
-            state_name:
-              newAddress.length > 0
-                ? newAddress[0].state_name
-                : Address[0].state_name,
-            country_iso:
-              newAddress.length > 0
-                ? newAddress[0].country_iso
-                : Address[0].country_iso,
+            firstname: updateAddress.firstname,
+            lastname: updateAddress.lastname,
+            address1: updateAddress.address1,
+            city: updateAddress.city,
+            phone: updateAddress.phone,
+            zipcode: updateAddress.pin,
+            // state_name:
+            //   newAddress.length > 0
+            //     ? newAddress[0].state_name
+            //     : Address[0].state_name,
+            country_iso: updateAddress.country_iso,
           },
           ship_address_attributes: {
-            firstname:
-              newAddress.length > 0
-                ? newAddress[0].firstname
-                : Address[0].firstname,
-            lastname:
-              newAddress.length > 0
-                ? newAddress[0].lastname
-                : Address[0].lastname,
-            address1:
-              newAddress.length > 0
-                ? newAddress[0].address1
-                : Address[0].address1,
-            city: newAddress.length > 0 ? newAddress[0].city : Address[0].city,
-            phone:
-              newAddress.length > 0 ? newAddress[0].phone : Address[0].phone,
-            zipcode:
-              newAddress.length > 0
-                ? newAddress[0].zipcode
-                : Address[0].zipcode,
-            state_name:
-              newAddress.length > 0
-                ? newAddress[0].state_name
-                : Address[0].state_name,
-            country_iso:
-              newAddress.length > 0
-                ? newAddress[0].country_iso
-                : Address[0].country_iso,
+            firstname: updateAddress.firstname,
+            lastname: updateAddress.lastname,
+            address1: updateAddress.address1,
+            city: updateAddress.city,
+            phone: updateAddress.phone,
+            zipcode: updateAddress.pin,
+            // state_name:
+            //   newAddress.length > 0
+            //     ? newAddress[0].state_name
+            //     : Address[0].state_name,
+            country_iso: updateAddress.country_iso,
           },
         },
       })
     );
-    await dispatch(getPaymentMethods(cart?.token));
-    await dispatch(checkoutNext(cart.token));
+    // dispatch(getPaymentMethods(cart?.token));
+    dispatch(checkoutNext(cart.token));
     paymentHandler();
   };
 
@@ -411,25 +402,26 @@ const ShippingAddressScreen = ({
                   <Text style={styles.address_btn_text}>ENDRE</Text>
                 </TouchableOpacity>
               </View>
-              <Text style={styles.title}>
-                {newAddress[0]
-                  ? newAddress[0]?.firstname
-                  : Address[0]?.firstname}
-              </Text>
-              <View style={styles.sub_body}>
-                <Text style={styles.subtitle}>
-                  {newAddress[0]
-                    ? newAddress[0]?.address1
-                    : Address[0]?.address1}
+
+              <View
+                style={{
+                  flexDirection: "row",
+                  flex: 1,
+                  justifyContent: "flex-start",
+                }}
+              >
+                <Text style={[styles.title, { marginRight: 5 }]}>
+                  {updateAddress.firstname}
                 </Text>
+                <Text style={styles.title}>{updateAddress.lastname}</Text>
+              </View>
+              <View style={styles.sub_body}>
+                <Text style={styles.subtitle}>{updateAddress.address}</Text>
                 <Text style={styles.subtitle}>
-                  {newAddress[0] ? newAddress[0]?.zipcode : Address[0]?.zipcode}{" "}
-                  {newAddress[0] ? newAddress[0]?.city : Address[0]?.city}
+                  {updateAddress.pin} {updateAddress.city}
                 </Text>
               </View>
-              <Text style={styles.profileContact}>
-                {newAddress[0] ? newAddress[0]?.phone : Address[0]?.phone}
-              </Text>
+              <Text style={styles.profileContact}>{updateAddress.phone}</Text>
             </View>
           </View>
 
@@ -453,18 +445,10 @@ const ShippingAddressScreen = ({
                 </View> */}
 
                 <View style={styles.payment_btn_body}>
-                  <TouchableOpacity
-                    style={styles.payment_btn}
-                    onPress={() => setIsOpen(true)}
-                  >
-                    <Image
-                      source={require("../../../../../../assets/images/Header-Icon/cardpay.png")}
-                      style={styles.payment_img}
-                    />
-                    <Text style={{ marginLeft: 10, fontSize: 14 }}>
-                      KORTBETALING
-                    </Text>
-                  </TouchableOpacity>
+                  <Payments
+                    payment_btn={styles.payment_btn}
+                    img_style={styles.payment_img}
+                  />
                 </View>
               </View>
             </View>
@@ -497,6 +481,14 @@ const ShippingAddressScreen = ({
           />
         )}
 
+        {/* {paymentVisible && (
+          <FilterFooter
+            snapPoints={snapPoints}
+            onClose={() => setIsOpen(false)}
+            bottomSheetContent={Payments}
+          />
+        )} */}
+
         {isModalVisible && (
           <BottomModal
             isModalVisible={isModalVisible}
@@ -514,7 +506,6 @@ const mapStateToProps = (state) => ({
   saving: state.checkout.saving,
   cart: state.checkout.cart,
   auth: state.auth,
-  Address: state.checkout.address,
 });
 
 export default connect(mapStateToProps)(ShippingAddressScreen);

@@ -9,7 +9,6 @@ import store, { persistor } from "./src/redux/store";
 import * as Font from "expo-font";
 import ActivityIndicatorCard from "./src/library/components/ActivityIndicatorCard";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { StripeProvider } from "@stripe/stripe-react-native";
 import { LogBox } from "react-native";
 
 const getFonts = () =>
@@ -41,22 +40,17 @@ const App = () => {
   }
 
   return (
-    <StripeProvider
-      publishableKey="pk_test_51LdSV1SH62860s701ZWgszH08MEcAWUWjjvAQ37szzxhyCjlha0Q4vla5z9x8YBqbamQlbx7IO6wh0mKXTL8d5Kz00XmYNzGag"
-      merchantIdentifier="merchant.com.tastebuds"
-    >
-      <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <SafeAreaProvider>
-            <ThemeProvider>
-              <PaperProvider>
-                <RootStackNavigator />
-              </PaperProvider>
-            </ThemeProvider>
-          </SafeAreaProvider>
-        </PersistGate>
-      </Provider>
-    </StripeProvider>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <SafeAreaProvider>
+          <ThemeProvider>
+            <PaperProvider>
+              <RootStackNavigator />
+            </PaperProvider>
+          </ThemeProvider>
+        </SafeAreaProvider>
+      </PersistGate>
+    </Provider>
   );
 };
 

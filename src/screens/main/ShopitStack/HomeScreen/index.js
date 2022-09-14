@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   useWindowDimensions,
   View,
+  ScrollView,
+  SafeAreaView,
 } from "react-native";
 import React, { useCallback, useRef, useState, useEffect } from "react";
 import { globalStyles } from "../../../../styles/global";
@@ -387,7 +389,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     );
   };
 
-  const flatListHeaderComponent = () => {
+  function flatListHeaderComponent() {
     return (
       <View>
         <View>
@@ -569,11 +571,11 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
         </Text>
       </View>
     );
-  };
+  }
 
   // FlatListlowerComponent
 
-  const flatListlowerComponent = () => {
+  function flatListlowerComponent() {
     return (
       <>
         <TouchableOpacity
@@ -586,14 +588,20 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
         </TouchableOpacity>
       </>
     );
-  };
+  }
 
   return (
-    <View style={{ ...globalStyles.containerFluid, ...styles.bg_white }}>
+    <SafeAreaView
+      style={{ ...globalStyles.containerFluid, ...styles.bg_white }}
+    >
       <FlatList
         data={productsUnique}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={newJustInRenderItem}
+        renderItem={({ item, index }) =>
+          newJustInRenderItem((item = { item }), (index = { index }))
+        }
+        ListHeaderComponent={flatListHeaderComponent}
+        ListFooterComponent={flatListlowerComponent}
         numColumns={2}
         style={{
           ...globalStyles.container,
@@ -601,15 +609,12 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
           width: "95%",
         }}
         showsVerticalScrollIndicator={false}
-        ListHeaderComponent={flatListHeaderComponent}
-        ListFooterComponent={flatListlowerComponent}
       />
-
       <Snackbar visible={snackbarVisible} onDismiss={dismissSnackbar}>
         Added to Cart !
       </Snackbar>
       <BottomBarCart />
-    </View>
+    </SafeAreaView>
   );
 };
 

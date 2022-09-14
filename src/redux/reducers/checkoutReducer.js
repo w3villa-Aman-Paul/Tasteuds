@@ -277,7 +277,7 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
           ...state,
           address: state.address.map((x) =>
             x.id === action.payload.data.data.id
-              ? action.payload.data.data.attributes
+              ? { ...state.address[0], ...action.payload.data.data.attributes }
               : x
           ),
           saving: false,
@@ -285,7 +285,6 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
           isAuth: true,
         };
       }
-      ohsi;
 
     case "DELETE_ADDRESS_PENDING":
       return {

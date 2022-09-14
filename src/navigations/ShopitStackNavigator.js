@@ -25,6 +25,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { createCart, getMostBoughtGoods } from "../redux";
 import updateAddress from "../screens/main/ProfileStack/updateAddress";
 import OrderCompleteScreen from "../screens/main/ShopitStack/CheckoutScreens/OrderCompleteScreen";
+import Payments from "../library/components/Payments/Payments";
 
 const ShopitStack = createStackNavigator();
 
@@ -412,6 +413,7 @@ function ShopitStackNavigator({ navigation, route }) {
       <ShopitStack.Screen name="SavedAddress" component={SavedAddress} />
       <ShopitStack.Screen name="AddAdress" component={AddAddress} />
       <ShopitStack.Screen name="updateAddress" component={updateAddress} />
+      <ShopitStack.Screen name="Payments" component={Payments} />
 
       <ShopitStack.Screen
         name="SearchScreen"

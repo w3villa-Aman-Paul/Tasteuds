@@ -17,6 +17,8 @@ import Search from "../screens/components/Search";
 import ProfileStackNavigator from "./ProfileStackNavigator";
 import HomeScreen from "../screens/main/ShopitStack/HomeScreen";
 import MainTabNavigator from "./MainTabNavigator";
+import { useSelector } from "react-redux";
+import { StripeProvider } from "@stripe/stripe-react-native";
 
 const MyTheme = {
   ...DefaultTheme,
@@ -28,46 +30,56 @@ const MyTheme = {
 const RootStack = createStackNavigator();
 
 function RootStackNavigator({ authState, dispatch }) {
+  const { cart } = useSelector((state) => state.checkout);
+  const publishableKey = useSelector(
+    (state) => state.checkout?.paymentMethods[0]?.preferences?.publishable_key
+  );
+
   if (authState.isLoading) {
     return <ActivityIndicatorCard />;
   }
   return (
-    <NavigationContainer
-      ref={navigationRef}
-      theme={MyTheme}
-      screenOptions={{
-        headerBackTitle: " ",
-        headerBackImage: () => (
-          <Image
-            source={require("../../assets/images/icons/chevron-left.png")}
-            style={{
-              height: 25,
-              width: 25,
-              zIndex: 1,
-            }}
-          />
-        ),
-      }}
+    <StripeProvider
+      publishableKey={publishableKey}
+      merchantIdentifier="merchant.com.tastebuds"
     >
-      <RootStack.Navigator screenOptions={{ headerShown: false }}>
-        <RootStack.Screen name="Splash" component={splash} />
-        <RootStack.Screen name="Shopit" component={MainTabNavigator} />
+      <NavigationContainer
+        ref={navigationRef}
+        theme={MyTheme}
+        screenOptions={{
+          headerBackTitle: " ",
+          headerBackImage: () => (
+            <Image
+              source={require("../../assets/images/icons/chevron-left.png")}
+              style={{
+                height: 25,
+                width: 25,
+                zIndex: 1,
+              }}
+            />
+          ),
+        }}
+      >
+        <RootStack.Navigator screenOptions={{ headerShown: false }}>
+          <RootStack.Screen name="Splash" component={splash} />
+          <RootStack.Screen name="Shopit" component={MainTabNavigator} />
 
-        <RootStack.Screen name="Profile" component={ProfileStackNavigator} />
+          <RootStack.Screen name="Profile" component={ProfileStackNavigator} />
 
-        <RootStack.Screen name="SignIn" component={SignInScreen} />
-        <RootStack.Screen name="SignUp" component={SignUpScreen} />
-        <RootStack.Screen
-          name="ForgotPassword"
-          component={ForgotPasswordScreen}
-        />
-        <RootStack.Screen
-          name="ResetPassword"
-          component={ResetPasswordScreen}
-        />
-        <RootStack.Screen name="EnterCode" component={EnterCodeScreen} />
-      </RootStack.Navigator>
-    </NavigationContainer>
+          <RootStack.Screen name="SignIn" component={SignInScreen} />
+          <RootStack.Screen name="SignUp" component={SignUpScreen} />
+          <RootStack.Screen
+            name="ForgotPassword"
+            component={ForgotPasswordScreen}
+          />
+          <RootStack.Screen
+            name="ResetPassword"
+            component={ResetPasswordScreen}
+          />
+          <RootStack.Screen name="EnterCode" component={EnterCodeScreen} />
+        </RootStack.Navigator>
+      </NavigationContainer>
+    </StripeProvider>
   );
 }
 
