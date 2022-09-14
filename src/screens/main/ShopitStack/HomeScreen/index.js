@@ -47,6 +47,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   const [itemQuantity, setItemQuantity] = useState(1);
   const [inCart, setInCart] = useState(false);
   const [productsUnique, setProductsUnique] = useState([]);
+  const [cartItemQuantity, setCartItemQuantity] = useState(null);
 
   const timeoutIdRef = useRef();
   const { height, width } = useWindowDimensions();
@@ -305,6 +306,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
                 setItemQuantity(1);
                 setShowItemCard(true);
                 findCartProduct(item?.id);
+                setCartItemQuantity(1);
               }}
             >
               {item?.id == tempArr[0]?.variant?.product?.id && (

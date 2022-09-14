@@ -77,6 +77,7 @@ const ProductListScreen = ({
   const [isModelVisible, setModelVisible] = useState(false);
   const [today, setToday] = useState(null);
   const [delieveryDate, setDelieveryDate] = useState(null);
+  const [showTaxonProducts, setShowTaxonProducts] = useState(false);
 
   const [mostBought, setMostBought] = useState([]);
   const [newlyAdded, setNewlyAdded] = useState([]);
@@ -93,7 +94,7 @@ const ProductListScreen = ({
 
   const { mostBoughtGoods } = useSelector((state) => state.taxons);
   const { newAddedProducts } = useSelector((state) => state.taxons);
-
+  const { selectedTaxonProducts } = useSelector((state) => state.products);
   const params = route?.params;
 
   const timeoutIdRef = useRef();
@@ -128,7 +129,10 @@ const ProductListScreen = ({
   }, [menus, submenus, params]);
 
   useEffect(() => {
-    if (params) handleAfterMenuSelect(params);
+    if (params) {
+      handleAfterMenuSelect(params);
+      setShowTaxonProducts(true);
+    }
   }, [params, route]);
 
   useEffect(() => {
@@ -186,6 +190,7 @@ const ProductListScreen = ({
     setIsAll(false);
     setIsSubLink(true);
     setIsSubAll(true);
+    showTaxonProducts(true);
     await dispatch(
       getSubMenu(
         params?.menu?.permalink
@@ -294,6 +299,7 @@ const ProductListScreen = ({
   };
 
   const handleAllClick = (array) => {
+    setShowTaxonProducts(false);
     setActiveMenus(handleUncheckAllMenus(array));
     setIsAll(true);
   };
@@ -648,8 +654,10 @@ const ProductListScreen = ({
   ];
 
   const handleEndReached = () => {
-    if (isFiltered === false) {
-      const response = dispatch(setPageIndex(pageIndex + 1));
+    if (!showTaxonProducts) {
+      const response = dispatch(
+        setPageIndex(Math.round(productsList.length / 20) + 1)
+      );
       handleProductsLoad(response.payload);
     }
   };
@@ -820,6 +828,7 @@ const ProductListScreen = ({
                     setAll(true);
                     setIsAll(false);
                     setSubLink(menu.link.slice(2).toLowerCase());
+                    setShowTaxonProducts(true);
                     handleClick(handleUncheckAllMenus(arr), menu);
                     await dispatch(
                       getSubMenu(menu.link.slice(2).toLowerCase())
@@ -1350,7 +1359,11 @@ const ProductListScreen = ({
         <FlatList
           keyExtractor={(item, index) => index.toString()}
           data={
-            isAll || all ? productsList.filter((item) => item?.available) : data
+            isAll || all
+              ? (showTaxonProducts &&
+                  selectedTaxonProducts.filter((item) => item?.available)) ||
+                productsList.filter((item) => item?.available)
+              : data
           }
           renderItem={newJustInRenderItem}
           numColumns={2}
@@ -1358,7 +1371,7 @@ const ProductListScreen = ({
           ListFooterComponent={flatListLowerElement}
           ref={scrollRef}
           onEndReachedThreshold={0.3}
-          onEndReached={() => handleEndReached()}
+          onEndReached={handleEndReached}
           columnWrapperStyle={{
             width: "100%",
             justifyContent: "space-evenly",

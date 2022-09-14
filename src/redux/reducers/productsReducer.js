@@ -7,6 +7,7 @@ const DEFAULT_STATE = {
   pageIndex: 1,
   selectedVendor: {},
   sortedProductsList: false,
+  selectedTaxonProducts: [],
   isFiltered: false,
   params: {
     priceRange: {
@@ -198,7 +199,7 @@ export default function productsReducer(state = DEFAULT_STATE, action) {
     case "GET_SEARCH_PRODUCTS_LIST_FULFILLED":
       let unique = [...dataFormatter.deserialize(response)];
       changes = {
-        productsList: [
+        selectedTaxonProducts: [
           ...new Map(unique.map((item) => [item["id"], item])).values(),
         ],
         isFiltered: true,

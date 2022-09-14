@@ -19,7 +19,11 @@ const CategoriesScreen = ({
   const [activeCategory, setActiveCategory] = React.useState({});
 
   React.useEffect(() => {
-    dispatch(getMenus());
+    {
+      {
+        menus.menu_items === 0 && dispatch(getMenus());
+      }
+    }
   }, []);
 
   if (saving) {
