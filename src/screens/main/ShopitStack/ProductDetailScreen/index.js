@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, ScrollView, Text, Image, TouchableOpacity } from "react-native";
 import { globalStyles } from "../../../../styles/global";
 import { colors } from "../../../../res/palette";
@@ -10,6 +10,7 @@ import {
   addItem,
   getCart,
   getSelectedVendor,
+  getTaxon,
   setProductFavourite,
 } from "../../../../redux";
 import { connect } from "react-redux";
@@ -27,8 +28,11 @@ const ProductDetailScreen = ({ navigation, dispatch, cart, route }) => {
 
   const vendor = async () => {
     setSelectedVendor(await getData("selectedVendor"));
+
     console.log(selectedVendor);
   };
+
+  const params = route.params;
 
   const [color, setColor] = useState(0);
 
@@ -39,13 +43,19 @@ const ProductDetailScreen = ({ navigation, dispatch, cart, route }) => {
   const checkout = useSelector((state) => state.checkout);
   const errMessage = useSelector((state) => state.checkout.error);
 
-  React.useEffect(() => {
+  useEffect(() => {
     dispatch(getCart(cart.token));
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     vendor();
   }, [saving]);
+
+  useEffect(() => {
+    if (params?.taxonId) {
+      dispatch(getTaxon(params.taxonId));
+    }
+  }, [params]);
 
   const dismissSnackbar = () => setSnackbarVisible(false);
   const dismissFavSnackbar = () => setFavSnackbar(false);
@@ -116,7 +126,7 @@ const ProductDetailScreen = ({ navigation, dispatch, cart, route }) => {
                   color: colors.primary,
                 }}
               >
-                {`${breadCrumArray[0]}  > `}
+                {`${breadCrumArray[0]}  ${breadCrumArray[1] ? "> " : ""}`}
               </Text>
             </TouchableOpacity>
 
@@ -128,7 +138,9 @@ const ProductDetailScreen = ({ navigation, dispatch, cart, route }) => {
                   color: colors.primary,
                 }}
               >
-                {` ${breadCrumArray[1]} >  `}
+                {` ${breadCrumArray[1] ? breadCrumArray[1] : ""}  ${
+                  breadCrumArray[2] ? ">" : ""
+                }`}
               </Text>
             </TouchableOpacity>
 

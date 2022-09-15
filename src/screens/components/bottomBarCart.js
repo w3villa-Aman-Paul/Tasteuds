@@ -14,6 +14,7 @@ const BottomBarCart = () => {
         <TouchableOpacity
           onPress={() => navigation.navigate("Bag")}
           style={styles.qty_footer}
+          activeOpacity={0.8}
         >
           <Text
             style={{ color: colors.white, fontSize: 15, fontWeight: "bold" }}
@@ -62,6 +63,8 @@ export default BottomBarCart;
 
 const styles = StyleSheet.create({
   qty_footer: {
+    position: "absolute",
+    bottom: 0,
     width: "100%",
     backgroundColor: colors.btnLink,
     maxHeight: 40,

@@ -234,7 +234,7 @@ const FavouritesScreen = ({
 
   return (
     <>
-      <ScrollView>
+      <ScrollView style={{ margin: 0, padding: 0 }}>
         <View style={styles.container}>
           {favorites?.length > 0 ? (
             favorites?.map((favourite) => {
@@ -243,12 +243,15 @@ const FavouritesScreen = ({
               return (
                 <View key={favourite?.id} style={styles.contentContainer}>
                   <View style={styles.first_content}>
-                    <Image
-                      source={{
-                        uri: `${HOST}/${favourite?.images[0].styles[3].url}`,
-                      }}
-                      style={styles.fav_image}
-                    />
+                    <View style={styles.fav_image_container}>
+                      <Image
+                        source={{
+                          uri: `${HOST}/${favourite?.images[0].styles[2].url}`,
+                        }}
+                        style={styles.fav_image}
+                      />
+                    </View>
+
                     <View style={styles.first_body}>
                       <Text style={{ color: colors.black, fontSize: 14 }}>
                         {favourite?.name}
@@ -408,6 +411,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignSelf: "center",
     width: "95%",
+    margin: 0,
     marginTop: 15,
     marginBottom: 20,
   },
@@ -418,6 +422,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderWidth: 1,
     borderColor: "transparent",
+    margin: 0,
+    padding: 0,
     marginBottom: 10,
   },
   first_content: {
@@ -427,11 +433,15 @@ const styles = StyleSheet.create({
     marginRight: 8,
     height: 100,
   },
-  fav_image: {
-    // height: "100%",
-    width: 90,
-    resizeMode: "cover",
+  fav_image_container: {
+    height: 100,
+    width: 100,
+    margin: 0,
     marginRight: 10,
+  },
+  fav_image: {
+    height: "100%",
+    width: "100%",
   },
   first_body: {
     flex: 1,

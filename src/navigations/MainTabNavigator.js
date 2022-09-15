@@ -39,6 +39,7 @@ function MainTabNavigator({ navigation }) {
                 height: 45,
                 justifyContent: "center",
                 alignItems: "center",
+                paddingBottom: 4,
               }}
             >
               <Image
@@ -63,6 +64,7 @@ function MainTabNavigator({ navigation }) {
                 height: 45,
                 justifyContent: "center",
                 alignItems: "center",
+                paddingBottom: 4,
               }}
             >
               <Image
@@ -87,6 +89,7 @@ function MainTabNavigator({ navigation }) {
                 height: 45,
                 justifyContent: "center",
                 alignItems: "center",
+                paddingBottom: 4,
               }}
             >
               <Image
@@ -111,6 +114,7 @@ function MainTabNavigator({ navigation }) {
                 height: 45,
                 justifyContent: "center",
                 alignItems: "center",
+                paddingBottom: 4,
               }}
             >
               <Image

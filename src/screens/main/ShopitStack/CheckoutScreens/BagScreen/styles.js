@@ -70,7 +70,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   body_second: {
-    flex: 0.5,
+    flex: 0.65,
     display: "flex",
     flexDirection: "row",
     justifyContent: "flex-end",
@@ -91,7 +91,7 @@ export const styles = StyleSheet.create({
   cart_btn: {
     flex: 0.3,
     flexDirection: "row",
-    justifyContent: "center",
+    justifyContent: "flex-end",
     alignItems: "center",
   },
   inc_btn: {
@@ -101,7 +101,6 @@ export const styles = StyleSheet.create({
     borderColor: "transparent",
     backgroundColor: "#fff",
     flexDirection: "row",
-    marginRight: 20,
     height: "70%",
     justifyContent: "space-around",
     alignItems: "center",

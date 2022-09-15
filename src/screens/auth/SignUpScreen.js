@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { connect, useSelector } from "react-redux";
-import { View, Text, Image, KeyboardAvoidingView } from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 import { globalStyles } from "../../styles/global";
 import { ChevronLeft, Eye } from "../../library/icons";
 import { colors } from "../../res/palette";
@@ -93,12 +93,15 @@ const SignUpScreen = ({ navigation, dispatch }) => {
 
   return (
     <View style={globalStyles.container}>
-      <ChevronLeft
-        size={24}
+      <TouchableOpacity
         style={styles.backButton}
-        onPress={navigation.goBack}
-      />
-
+        onPress={() => navigation.goBack()}
+      >
+        <Image
+          style={{ height: 25, width: 25 }}
+          source={require("../../../assets/images/icons/chevron-left.png")}
+        />
+      </TouchableOpacity>
       <View style={styles.screenLogo}>
         <Image
           style={styles.loginLogo}

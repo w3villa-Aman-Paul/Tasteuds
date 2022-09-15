@@ -46,6 +46,7 @@ import { Snackbar } from "react-native-paper";
 import { getData, removeData, storeData } from "../../../../redux/rootReducer";
 import { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import BottomBarCart from "../../../components/bottomBarCart";
+import UpperNotification from "../../../components/DelieveryNotifyComponent/UpperNotification";
 
 const ProductListScreen = ({
   navigation,
@@ -75,8 +76,7 @@ const ProductListScreen = ({
   const [inCart, setInCart] = useState(false);
   const [inc, setInc] = useState("false");
   const [isModelVisible, setModelVisible] = useState(false);
-  const [today, setToday] = useState(null);
-  const [delieveryDate, setDelieveryDate] = useState(null);
+
   const [showTaxonProducts, setShowTaxonProducts] = useState(false);
 
   const [mostBought, setMostBought] = useState([]);
@@ -112,8 +112,6 @@ const ProductListScreen = ({
     {
       products.sortedProductsList || dispatch(sortByMostBought(mostBought));
     }
-
-    handleDelieveryDate();
 
     return () => {
       clearTimeout(timeOutId);
@@ -160,29 +158,6 @@ const ProductListScreen = ({
   LogBox.ignoreLogs([
     "Non-serializable values were found in the navigation state",
   ]);
-
-  const handleDelieveryDate = () => {
-    let todayDate = new Date();
-    let delieveryDate = new Date(todayDate);
-
-    if (today?.getDay() === 2) {
-      setToday(todayDate);
-      delieveryDate?.setDate(
-        delieveryDate?.getDate() + ((4 + 7 - delieveryDate?.getDay()) % 7 || 7)
-      );
-      setDelieveryDate(delieveryDate);
-    } else {
-      todayDate?.setDate(
-        todayDate?.getDate() + ((2 + 7 - todayDate?.getDay()) % 7 || 7)
-      );
-      delieveryDate?.setDate(
-        delieveryDate?.getDate() + ((4 + 7 - delieveryDate?.getDay()) % 7 || 7)
-      );
-      setDelieveryDate(delieveryDate);
-    }
-
-    setToday(todayDate);
-  };
 
   const paramsDispatchHandler = async (params) => {
     await handleActiveMenuClick(params.menu);
@@ -472,6 +447,27 @@ const ProductListScreen = ({
     }
   };
 
+  const handleProductLoad = async (id, item) => {
+    try {
+      dispatch(getProduct(id)).then(() =>
+        navigation.navigate("ProductDetail", { taxonId: item.taxons[0].id })
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleNewJustRenderItemClick = (item) => {
+    storeData(
+      "selectedVendor",
+      resultVendor(
+        item?.vendor?.data ? item.vendor?.data?.id : item?.vendor?.id
+      )[1]
+    );
+
+    handleProductLoad(item?.id, item);
+  };
+
   // Item Rendering..............................................................
   const FlatListImageItem = ({
     item,
@@ -686,13 +682,6 @@ const ProductListScreen = ({
       : setTimeout(onPress, 50);
   };
 
-  const handleProductLoad = async (id, item) => {
-    dispatch(getProduct(id));
-    dispatch(getTaxon(item.taxons[0].id));
-
-    navigation.navigate("ProductDetail");
-  };
-
   let data = taxons?.subMenuProducts?.products?.map((el) => el);
 
   const newJustInRenderItem = ({ item, index }) => {
@@ -700,16 +689,7 @@ const ProductListScreen = ({
       <FlatListImageItem
         item={item}
         keyExtractor={(index) => index.toString()}
-        onPress={() => {
-          storeData(
-            "selectedVendor",
-            resultVendor(
-              item?.vendor?.data ? item.vendor?.data?.id : item?.vendor?.id
-            )[1]
-          );
-
-          handleProductLoad(item?.id, item);
-        }}
+        onPress={() => handleNewJustRenderItemClick(item)}
         imageStyle={styles.newJustInImage}
         itemContainerStyle={[styles.newJustInItemContainer]}
       />
@@ -728,7 +708,8 @@ const ProductListScreen = ({
 
   const scrollMenuRef = React.useRef();
   const scrollSubMenuRef = React.useRef();
-  const flatListUpperElement = () => {
+
+  function flatListUpperElement() {
     return (
       <View
         style={{
@@ -736,44 +717,7 @@ const ProductListScreen = ({
           marginTop: 10,
         }}
       >
-        <View
-          style={[
-            styles.topBanner,
-            globalStyles.iosShadow,
-            Platform.OS === "android" ? { marginTop: 10 } : { marginTop: 0 },
-          ]}
-        >
-          <Image
-            source={require("../../../../../assets/images/components/delivery-truck.png")}
-            resizeMode={"contain"}
-            style={{ flex: 0.2, marginRight: 10, height: "100%" }}
-          />
-
-          <View style={{ flex: 0.9, justifyContent: "center" }}>
-            <Text
-              style={{
-                fontSize: 16,
-                lineHeight: 18.75,
-                fontWeight: "bold",
-              }}
-            >
-              Bestill innen{" "}
-              <Text style={{ color: colors.btnLink }}>{`Tirsdag ${String(
-                today?.getDate()
-              ).padStart(2, "0")}.${String(today?.getMonth() + 1).padStart(
-                2,
-                "0"
-              )}`}</Text>{" "}
-              og få varene levert hjem{" "}
-              <Text style={{ color: colors.btnLink }}>{`Torsdag ${String(
-                delieveryDate?.getDate()
-              ).padStart(2, "0")}.${String(
-                delieveryDate?.getMonth() + 1
-              ).padStart(2, "0")}`}</Text>
-            </Text>
-          </View>
-        </View>
-
+        <UpperNotification />
         <View
           style={{
             ...globalStyles.mt16,
@@ -921,7 +865,7 @@ const ProductListScreen = ({
         )}
       </View>
     );
-  };
+  }
 
   // flatListLowerElement
   const flatListLowerElement = () => {
@@ -1355,32 +1299,33 @@ const ProductListScreen = ({
     return <ActivityIndicatorCard />;
   } else
     return (
-      <View style={[globalStyles.containerFluid, styles.bgwhite, { flex: 1 }]}>
-        <FlatList
-          keyExtractor={(item, index) => index.toString()}
-          data={
-            isAll || all
-              ? (showTaxonProducts &&
-                  selectedTaxonProducts.filter((item) => item?.available)) ||
-                productsList.filter((item) => item?.available)
-              : data
-          }
-          renderItem={newJustInRenderItem}
-          numColumns={2}
-          ListHeaderComponent={flatListUpperElement}
-          ListFooterComponent={flatListLowerElement}
-          ref={scrollRef}
-          onEndReachedThreshold={0.3}
-          onEndReached={handleEndReached}
-          columnWrapperStyle={{
-            width: "100%",
-            justifyContent: "space-evenly",
-          }}
-        />
+      <>
+        <ScrollView
+          style={[globalStyles.containerFluid, styles.bgwhite, { flex: 1 }]}
+        >
+          {flatListUpperElement()}
+          <FlatList
+            keyExtractor={(item, index) => index.toString()}
+            data={
+              isAll || all
+                ? (showTaxonProducts &&
+                    selectedTaxonProducts.filter((item) => item?.available)) ||
+                  productsList.filter((item) => item?.available)
+                : data
+            }
+            renderItem={newJustInRenderItem}
+            numColumns={2}
+            ListFooterComponent={flatListLowerElement}
+            ref={scrollRef}
+            onEndReachedThreshold={0.3}
+            onEndReached={handleEndReached}
+            columnWrapperStyle={{
+              width: "100%",
+              justifyContent: "space-evenly",
+            }}
+          />
+        </ScrollView>
         {stikyOptions()}
-
-        <BottomBarCart />
-
         {checkout.error !== null && saving === false ? (
           <Snackbar visible={snackbarVisible} onDismiss={dismissSnackbar}>
             {errMessage}
@@ -1410,7 +1355,8 @@ const ProductListScreen = ({
             setIsOpen={setSort}
           />
         )}
-      </View>
+        <BottomBarCart />
+      </>
     );
 };
 

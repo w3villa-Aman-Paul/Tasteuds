@@ -22,12 +22,19 @@ const Payments = (styles) => {
   const subscribe = async () => {
     try {
       //sending request
-      //   const response = await tokenHandler();
-      //   const data = response.json();
+      // const response = await fetch(
+      //   `${HOST}/api/v2/storefront/checkout/payment_intent`,{
+      //     method: 'POST',
+      //     headers: {
+      //       ''
+      //     }
+      //   }
+      // );
+      // const data = response.json();
 
-      //   if (!response.ok) return Alert.alert(data.message);
-      //   setClientSecret(data);
-      //   console.log(data);
+      // if (!response.ok) return Alert.alert(data.message);
+      // setClientSecret(data);
+      // console.log(data);
 
       const initsheet = await stripe.initPaymentSheet({
         paymentIntentClientSecret: clientSecret,

@@ -6,10 +6,13 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { connect, useSelector } from "react-redux";
 import { colors } from "../../../res/palette";
 import { accountRetrieve, retrieveAddress, userLogout } from "../../../redux";
+import BottomModal from "../../components/BottomModal/BottomModal";
+import BottomLoginModal from "../../components/BottomModal/BottomLoginModal";
+import FilterFooter from "../../../library/components/ActionButtonFooter/FilterFooter";
 
 const AccountScreen = ({
   dispatch,
@@ -20,124 +23,195 @@ const AccountScreen = ({
   route,
 }) => {
   const { isAuth } = useSelector((state) => state.auth);
+  const Address = useSelector((state) => state.checkout.address);
+  const Account = useSelector((state) => state.account.account);
 
+  const [loginModelOpen, setLoginModelOpen] = useState(false);
+  const [isModalVisible, setModalVisible] = useState(false);
   let user = address.filter((add) => add.id === account?.id);
+  const [updateAddress, setUpdateAddress] = useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+    phone: "",
+    address: "",
+    pin: "",
+    city: "",
+    state_name: "Bergen",
+    country_iso: "NO",
+  });
+
+  const snapPoints = Platform.OS === "ios" ? ["40%"] : ["30%"];
+
+  const sheetRef = useRef(null);
+
+  useEffect(() => {
+    if (Address.length > 0) {
+      setUpdateAddress({
+        firstname: Address[0]?.firstname,
+        lastname: Address[0]?.lastname,
+        phone: Address[0]?.phone,
+        address: Address[0]?.address1,
+        pin: Address[0]?.zipcode,
+        email: Account?.email,
+        city: Address[0]?.city,
+        state_name: Address[0]?.state_name,
+      });
+    } else if (Account?.email) {
+      setUpdateAddress({ ...updateAddress, email: Account?.email });
+    }
+  }, [Address, Account]);
 
   useEffect(() => {
     dispatch(accountRetrieve());
     dispatch(retrieveAddress());
   }, [isAuth]);
 
+  const hideAddressModal = () => {
+    setModalVisible(false);
+  };
+
+  const hideLoginModal = () => {
+    setLoginModelOpen(false);
+  };
+
+  const bottomSheetContent = () => {
+    return <BottomLoginModal hideLoginModal={hideLoginModal} />;
+  };
+
   return (
-    <ScrollView style={styles.scrollContainer}>
-      {isAuth ? (
-        <>
-          <View style={styles.container}>
-            <View style={styles.header}>
-              <Text style={styles.text}>MIN SIDE</Text>
-              <View style={styles.ImageContainer}>
-                <Image
-                  style={styles.image}
-                  source={require("../../../../assets/images/Header-Icon/red_circle.png")}
-                />
-              </View>
-            </View>
-
-            <View style={styles.body}>
-              <View style={styles.first}>
-                <Text style={styles.textbtn}>KONTOINFORMASJON</Text>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate("SavedAddress")}
-                >
-                  <Text style={styles.textbtn}>ENDRE</Text>
-                </TouchableOpacity>
+    <>
+      <ScrollView style={styles.scrollContainer}>
+        {isAuth ? (
+          <>
+            <View style={styles.container}>
+              <View style={styles.header}>
+                <Text style={styles.text}>MIN SIDE</Text>
+                <View style={styles.ImageContainer}>
+                  <Image
+                    style={styles.image}
+                    source={require("../../../../assets/images/Header-Icon/red_circle.png")}
+                  />
+                </View>
               </View>
 
-              <View style={styles.second}>
-                <Text style={styles.text}>E-POST</Text>
-                <Text>{acc.email}</Text>
+              <View style={styles.body}>
+                <View style={styles.first}>
+                  <Text style={styles.textbtn}>KONTOINFORMASJON</Text>
+                  <TouchableOpacity onPress={() => setModalVisible(true)}>
+                    <Text style={styles.textbtn}>ENDRE</Text>
+                  </TouchableOpacity>
+                </View>
+
+                <View style={styles.second}>
+                  <Text style={styles.text}>E-POST</Text>
+                  <Text>{updateAddress?.email}</Text>
+                </View>
+
+                <View style={styles.second}>
+                  <Text style={styles.text}>TELEFONNUMMER</Text>
+                  <Text>{updateAddress?.phone}</Text>
+                </View>
+
+                <View style={styles.second}>
+                  <Text style={styles.text}>ADRESSE</Text>
+                  <Text>{`${updateAddress.address}, ${updateAddress.city}`}</Text>
+                  <Text>
+                    {updateAddress.pin} {user[0]?.country_name}
+                  </Text>
+                </View>
               </View>
 
-              <View style={styles.second}>
-                <Text style={styles.text}>TELEFONNUMMER</Text>
-                <Text>{user[0]?.phone}</Text>
+              <View style={styles.body}>
+                <View style={styles.first}>
+                  <Text style={styles.textbtn}>MINE BESTILLINGER</Text>
+                </View>
+                <View style={styles.first}>
+                  <Text>24/04/2022</Text>
+                  <Text>KR 2 155,00</Text>
+                  <TouchableOpacity>
+                    <Text style={styles.textbtn}>SE DETALJER</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.first}>
+                  <Text>28/04/2022 </Text>
+                  <Text>KR 455,00</Text>
+                  <TouchableOpacity>
+                    <Text style={styles.textbtn}>SE DETALJER</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
 
-              <View style={styles.second}>
-                <Text style={styles.text}>ADRESSE</Text>
-                <Text>{user[0]?.address1}</Text>
-                <Text>
-                  {user[0]?.zipcode} {user[0]?.country_name}
-                </Text>
-              </View>
-            </View>
-
-            <View style={styles.body}>
-              <View style={styles.first}>
-                <Text style={styles.textbtn}>MINE BESTILLINGER</Text>
-              </View>
-              <View style={styles.first}>
-                <Text>24/04/2022</Text>
-                <Text>KR 2 155,00</Text>
-                <TouchableOpacity>
-                  <Text style={styles.textbtn}>SE DETALJER</Text>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.first}>
-                <Text>28/04/2022 </Text>
-                <Text>KR 455,00</Text>
-                <TouchableOpacity>
-                  <Text style={styles.textbtn}>SE DETALJER</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            <View
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: colors.primary,
-              }}
-            >
-              <TouchableOpacity
-                style={{ ...styles.button, marginBottom: 10, marginTop: 10 }}
-                onPress={() => {
-                  dispatch(userLogout());
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backgroundColor: "#fff",
                 }}
               >
-                <Text style={styles.text2}>Log Out</Text>
+                <TouchableOpacity
+                  style={{ ...styles.button, marginBottom: 10, marginTop: 10 }}
+                  onPress={() => {
+                    dispatch(userLogout());
+                  }}
+                >
+                  <Text style={styles.text2}>Log Out</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </>
+        ) : (
+          <View style={styles.loginContainer}>
+            <View style={styles.btnbody}>
+              <Image
+                source={require("../../../../assets/images/logo-mark.png")}
+                style={styles.image2}
+              />
+              <TouchableOpacity
+                style={{ ...styles.button, marginBottom: 10 }}
+                onPress={() => {
+                  // navigation.navigate("SignIn", { route: route.name });
+                  setLoginModelOpen(true);
+                }}
+              >
+                <Text style={styles.text2}>SignIn</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => {
+                  navigation.navigate("SignUp");
+                }}
+              >
+                <Text style={styles.text2}>SignUp</Text>
               </TouchableOpacity>
             </View>
           </View>
-        </>
-      ) : (
-        <View style={styles.loginContainer}>
-          <View style={styles.btnbody}>
-            <Image
-              source={require("../../../../assets/images/logo-mark.png")}
-              style={styles.image2}
-            />
-            <TouchableOpacity
-              style={{ ...styles.button, marginBottom: 10 }}
-              onPress={() => {
-                navigation.navigate("SignIn", { route: route.name });
-              }}
-            >
-              <Text style={styles.text2}>SignIn</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => {
-                navigation.navigate("SignUp");
-              }}
-            >
-              <Text style={styles.text2}>SignUp</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+        )}
+        {isModalVisible && (
+          <BottomModal
+            isModalVisible={isModalVisible}
+            setModalVisible={hideAddressModal}
+            style={{
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              width: "100%",
+              height: 750,
+              zIndex: 1,
+            }}
+          />
+        )}
+      </ScrollView>
+      {loginModelOpen && (
+        <FilterFooter
+          value={sheetRef}
+          snapPoints={snapPoints}
+          onClose={() => setLoginModelOpen(false)}
+          bottomSheetContent={bottomSheetContent}
+        />
       )}
-    </ScrollView>
+    </>
   );
 };
 

@@ -118,7 +118,7 @@ export const styles = StyleSheet.create({
     height: 119,
   },
   second: {
-    flex: 0.42,
+    flex: 0.43,
     height: 119,
   },
   body_second_image: {
@@ -221,7 +221,7 @@ export const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
     backgroundColor: colors.btnLink,
-    marginBottom: 25,
+    marginBottom: 50,
     borderRadius: 10,
     alignSelf: "center",
   },

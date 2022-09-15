@@ -118,6 +118,7 @@ export function updateAddressFunc(data, filters = null, id) {
       state_name: "Bergen",
       country_iso: "NO",
       phone: data?.TELEFONNUMMER,
+      email: data?.EMAIL,
     },
   };
   return {

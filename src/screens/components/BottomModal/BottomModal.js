@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useWindowDimensions } from "react-native";
+import { KeyboardAvoidingView, useWindowDimensions } from "react-native";
 import {
   StyleSheet,
   Text,
@@ -13,7 +13,7 @@ import { updateAddressFunc } from "../../../redux";
 import { colors } from "../../../res/palette";
 import { globalStyles } from "../../../styles/global";
 
-const BottomModal = ({ isModalVisible, setModalVisible, content = null }) => {
+const BottomModal = ({ isModalVisible, setModalVisible, style = null }) => {
   const [updateProfile, setUpdateProfile] = useState({
     FORNAVN: "",
     ETTERNAVN: "",
@@ -22,9 +22,12 @@ const BottomModal = ({ isModalVisible, setModalVisible, content = null }) => {
     ADRESSE: "",
     PIN: "",
     CITY: "",
+    EMAI: "",
+    STATE: "",
   });
 
   const Address = useSelector((state) => state.checkout.address);
+  const Account = useSelector((state) => state.account);
 
   useEffect(() => {
     if (Address.length > 0) {
@@ -35,6 +38,7 @@ const BottomModal = ({ isModalVisible, setModalVisible, content = null }) => {
         ADRESSE: Address[0]?.address1,
         PIN: Address[0]?.zipcode,
         CITY: Address[0]?.city,
+        EMAIL: Account?.email,
       });
     }
   }, [Address]);
@@ -44,14 +48,16 @@ const BottomModal = ({ isModalVisible, setModalVisible, content = null }) => {
   const { height, width } = useWindowDimensions();
   const rowWidth = width * 0.9;
 
+  console.log(updateProfile.STATE);
+
   const handleUpdateAddress = () => {
     dispatch(updateAddressFunc(updateProfile, null, Address[0].id));
   };
 
   const updateAddressModalContent = () => {
     return (
-      <View style={styles.sorterBtnContainer}>
-        <Text style={styles.sorterHeaderText}>ENDRE KONTOINFORMASJON</Text>
+      <KeyboardAvoidingView style={styles.sorterBtnContainer}>
+        <Text style={styles.sorterHeaderText}>LEVERINGSINFORMASJON</Text>
 
         <View
           style={{
@@ -128,21 +134,6 @@ const BottomModal = ({ isModalVisible, setModalVisible, content = null }) => {
             />
           </View>
 
-          <View style={[styles.formRow, { width: rowWidth }]}>
-            <Text style={[styles.formLabel, { alignSelf: "left" }]}>CITY</Text>
-            <TextInput
-              placeholder="CITY"
-              onChangeText={(text) =>
-                setUpdateProfile({
-                  ...updateProfile,
-                  ...{ CITY: text },
-                })
-              }
-              value={updateProfile.CITY}
-              style={styles.formInput}
-            />
-          </View>
-
           <View
             style={[
               styles.formRow,
@@ -154,7 +145,7 @@ const BottomModal = ({ isModalVisible, setModalVisible, content = null }) => {
             ]}
           >
             <TextInput
-              placeholder="PIN"
+              placeholder=" Postnr"
               style={[
                 styles.formInput,
                 { width: "20%", alignSelf: "center", marginRight: 10 },
@@ -167,7 +158,20 @@ const BottomModal = ({ isModalVisible, setModalVisible, content = null }) => {
               }
               value={updateProfile.PIN}
             />
-            <Text style={styles.formLabel}>Bergen</Text>
+            <TextInput
+              placeholder="CITY"
+              style={[
+                styles.formInput,
+                { width: "20%", alignSelf: "center", marginRight: 10 },
+              ]}
+              onChangeText={(text) =>
+                setUpdateProfile({
+                  ...updateProfile,
+                  ...{ CITY: text },
+                })
+              }
+              value={updateProfile.STATE}
+            />
           </View>
         </View>
 
@@ -177,14 +181,14 @@ const BottomModal = ({ isModalVisible, setModalVisible, content = null }) => {
         >
           <Text style={[styles.hideButtonText, styles.formLabel]}> LAGRE </Text>
         </TouchableOpacity>
-      </View>
+      </KeyboardAvoidingView>
     );
   };
 
   return (
     <Modal
       isVisible={isModalVisible}
-      style={styles.modal}
+      style={[styles.modal, style]}
       animationIn="slideInUp"
       animationOut="slideOutDown"
       backdropColor="transparent"
@@ -193,7 +197,7 @@ const BottomModal = ({ isModalVisible, setModalVisible, content = null }) => {
       coverScreen={false}
       onBackdropPress={setModalVisible}
     >
-      {content ? () => <content /> : updateAddressModalContent()}
+      {updateAddressModalContent()}
     </Modal>
   );
 };
@@ -209,12 +213,12 @@ const styles = StyleSheet.create({
   },
 
   sorterBtnContainer: {
-    flex: 0.6,
-    justifyContent: "space-between",
+    flex: 0.63,
+    justifyContent: "space-evenly",
     alignItems: "center",
     padding: 0,
-    paddingVertical: 20,
-    backgroundColor: colors.primary,
+    paddingTop: 20,
+    backgroundColor: "#282835",
   },
 
   sorterHeaderText: {

@@ -40,9 +40,7 @@ const splash = ({ navigation, dispatch }) => {
       weeklyProducer.length === 0 && (await dispatch(getWeeklyProducer()));
     }
 
-    {
-      mostBoughtGoods.length === 0 && (await dispatch(getMostBoughtGoods()));
-    }
+    await dispatch(getMostBoughtGoods());
   };
 
   return (

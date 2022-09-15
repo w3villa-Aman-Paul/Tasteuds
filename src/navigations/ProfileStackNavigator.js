@@ -35,27 +35,6 @@ function ProfileStackNavigator({ navigation }) {
             }}
           />
         ),
-
-        headerRight: () => (
-          <Icon
-            name="search"
-            type="font-awesome"
-            size={25}
-            color={colors.primary}
-            onPress={() => navigation.navigate("Profile")}
-          />
-        ),
-        headerRightContainerStyle: {
-          top: 4,
-          right: 20,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#ffffff",
-          borderRadius: 50,
-          elevation: 10,
-          height: 40,
-          width: 40,
-        },
       }}
     >
       <ProfileStack.Screen

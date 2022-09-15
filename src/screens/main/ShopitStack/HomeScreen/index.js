@@ -33,10 +33,10 @@ import { colors } from "../../../../res/palette";
 import { Icon } from "react-native-elements";
 import { storeData } from "../../../../redux/rootReducer";
 import BottomBarCart from "../../../components/bottomBarCart";
+import HomePageUpperComponent from "./HomePageUpperComponent";
 
 const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   const vendorList = useSelector((state) => state.taxons.vendors);
-  const weeklyProducer = useSelector((state) => state.taxons.weeklyProducer);
   const { mostBoughtGoods } = useSelector((state) => state.taxons);
 
   const [snackbarVisible, setSnackbarVisible] = useState(false);
@@ -140,7 +140,7 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     setItemQuantity(itemQuantity + 1);
   };
 
-  const handleSetTimeoutInc = (tempId, qty) => {
+  function handleSetTimeoutInc(tempId, qty) {
     const id = setTimeout(() => {
       if (!inCart) {
         dispatch(
@@ -166,18 +166,18 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     }, 2000);
 
     timeoutIdRef.current = id;
-  };
+  }
 
-  const handleItemDecrement = (lineItemQuantity) => {
+  function handleItemDecrement(lineItemQuantity) {
     if (3 - itemQuantity > lineItemQuantity) {
       setShowItemCard(false);
     } else {
       setInc(false);
       setItemQuantity(itemQuantity - 1);
     }
-  };
+  }
 
-  const handleSetTimeoutDec = (tempId, qty) => {
+  function handleSetTimeoutDec(tempId, qty) {
     if (3 - itemQuantity > qty) {
       dispatch(removeLineItem(tempId, {}, cart?.token));
       setShowItemCard(false);
@@ -197,9 +197,9 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
       }, 2000);
       timeoutIdRef.current = id;
     }
-  };
+  }
 
-  const handleSetTimeoutDefault = (ID) => {
+  function handleSetTimeoutDefault(ID) {
     handleChangeQuantityClick();
     let firstItem = productsList.find((x) => x.id == ID);
     setTimeout(() => {
@@ -211,20 +211,26 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
       );
       setShowItemCard(false);
     }, 2000);
-  };
+  }
 
   const closeIncBar = () => {
     const id = setTimeout(() => setShowItemCard(false), 2000);
     timeoutIdRef.current = id;
   };
 
-  const handleWeeklyProducerClick = async (vendor) => {
-    navigation.navigate("ProducersDetailScreen", {
-      bio: vendor.bio,
-      cover_image_url: vendor.cover_image_url,
-      logo_image_url: vendor.logo_image_url,
-      vendorSlug: vendor.slug,
-    });
+  const handleProductLoad = (id, item) => {
+    try {
+      dispatch(getProduct(id)).then(() =>
+        navigation.navigate("ProductDetail", { taxonId: item.taxons[0].id })
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleNewJustRenderItemClick = (item) => {
+    storeData("selectedVendor", resultVendor(item?.vendor?.id)[1]);
+    handleProductLoad(item?.id, item);
   };
 
   const FlatListImageItem = ({
@@ -370,210 +376,17 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     );
   };
 
-  const handleProductLoad = (id, item) => {
-    dispatch(getProduct(id));
-    dispatch(getTaxon(item.taxons[0].id));
-    navigation.navigate("ProductDetail");
-  };
-
   const newJustInRenderItem = ({ item, index }) => {
     return (
       <FlatListImageItem
         keyExtractor={(item, index) => index.toString()}
         item={item}
-        onPress={() => {
-          storeData("selectedVendor", resultVendor(item?.vendor?.id)[1]);
-          handleProductLoad(item?.id, item);
-        }}
+        onPress={() => handleNewJustRenderItemClick(item)}
         imageStyle={styles.newJustInImage}
         itemContainerStyle={styles.newJustInItemContainer}
       />
     );
   };
-
-  function flatListHeaderComponent() {
-    return (
-      <View>
-        <View>
-          <TouchableOpacity
-            style={[styles.bannerFirstDiv, { flex: 1, margin: 0 }]}
-            onPress={() => navigation.navigate("ProductsList")}
-          >
-            <ImageBackground
-              source={require("../../../../../assets/images/Header-Icon/home_item.png")}
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 10,
-              }}
-              resizeMode="cover"
-            >
-              <Text style={styles.banner}>SE UTVALG</Text>
-            </ImageBackground>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.body_second}>
-          <TouchableOpacity
-            style={styles.first}
-            onPress={() => handleWeeklyProducerClick(weeklyProducer[0].vendor)}
-          >
-            <ImageBackground
-              source={require("../../../../../assets/images/Header-Icon/home_second.png")}
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Text style={styles.text1}>UKENS PRODUSENT</Text>
-              <Text style={{ ...styles.text_second, fontWeight: "700" }}>
-                {weeklyProducer[0]?.vendor ? weeklyProducer[0].vendor.name : ""}
-              </Text>
-            </ImageBackground>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.second}
-            onPress={() => navigation.navigate("ProducersListScreen")}
-          >
-            <ImageBackground
-              source={require("../../../../../assets/images/Header-Icon/home_second_2.png")}
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Text
-                style={{
-                  width: "80%",
-                  textAlign: "center",
-                  color: "#FFF",
-                  fontWeight: "700",
-                }}
-              >
-                SE ALLE PRODUSENTER
-              </Text>
-            </ImageBackground>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.third}>
-          <Text
-            style={{
-              textAlign: "center",
-              marginTop: 10,
-              marginBottom: 10,
-              color: "#EB1741",
-              fontSize: 25,
-            }}
-          >
-            HVORDAN FUNKER DET?
-          </Text>
-          <View style={styles.body_third}>
-            <View
-              style={{
-                flex: 0.8,
-              }}
-            >
-              <ImageBackground
-                source={require("../../../../../assets/images/Header-Icon/red_circle.png")}
-                resizeMode={"contain"}
-                style={{
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Image
-                  source={require("../../../../../assets/images/Header-Icon/inside_circle.png")}
-                  style={styles.center}
-                />
-              </ImageBackground>
-              <Text style={styles.bottom_text}>Legg inn bestilling</Text>
-            </View>
-            <Icon
-              name="arrowright"
-              type="ant-design"
-              size={40}
-              color={"#ed3c61"}
-              style={{
-                flex: 0.8,
-                justifyContent: "flex-start",
-                alignItems: "center",
-              }}
-            />
-            <View
-              style={{
-                // ...styles.body_image,
-                flex: 0.8,
-                width: 10,
-              }}
-            >
-              <ImageBackground
-                source={require("../../../../../assets/images/Header-Icon/red_circle.png")}
-                resizeMode={"contain"}
-                style={{
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Image
-                  source={require("../../../../../assets/images/Header-Icon/second_circle.png")}
-                  style={styles.center}
-                />
-              </ImageBackground>
-              <Text style={{ ...styles.bottom_text }}>
-                Vi henter varene rett fra bonden
-              </Text>
-            </View>
-            <Icon
-              name="arrowright"
-              type="ant-design"
-              size={40}
-              color={"#ed3c61"}
-              style={{
-                flex: 0.8,
-                justifyContent: "flex-start",
-                alignItems: "center",
-              }}
-            />
-            <View
-              style={{
-                // ...styles.body_image,
-                flex: 0.8,
-              }}
-            >
-              <ImageBackground
-                source={require("../../../../../assets/images/Header-Icon/red_circle.png")}
-                resizeMode={"contain"}
-                style={{
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Image
-                  source={require("../../../../../assets/images/Header-Icon/third_circle.png")}
-                  style={styles.center}
-                />
-              </ImageBackground>
-
-              <Text style={styles.bottom_text}>
-                Vi leverer varene hjem til deg
-              </Text>
-            </View>
-          </View>
-        </View>
-
-        <Text style={{ ...styles.content_text, ...globalStyles.container }}>
-          MEST KJØPTE
-        </Text>
-      </View>
-    );
-  }
 
   // FlatListlowerComponent
 
@@ -593,30 +406,32 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
   }
 
   return (
-    <SafeAreaView
-      style={{ ...globalStyles.containerFluid, ...styles.bg_white }}
-    >
-      <FlatList
-        data={productsUnique}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item, index }) =>
-          newJustInRenderItem((item = { item }), (index = { index }))
-        }
-        ListHeaderComponent={flatListHeaderComponent}
-        ListFooterComponent={flatListlowerComponent}
-        numColumns={2}
-        style={{
-          ...globalStyles.container,
-          ...styles.bg_white,
-          width: "95%",
-        }}
-        showsVerticalScrollIndicator={false}
-      />
-      <Snackbar visible={snackbarVisible} onDismiss={dismissSnackbar}>
-        Added to Cart !
-      </Snackbar>
+    <>
+      <ScrollView
+        style={{ ...globalStyles.containerFluid, ...styles.bg_white }}
+      >
+        <HomePageUpperComponent />
+        <FlatList
+          data={productsUnique}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item, index }) =>
+            newJustInRenderItem((item = { item }), (index = { index }))
+          }
+          ListFooterComponent={flatListlowerComponent}
+          numColumns={2}
+          style={{
+            ...globalStyles.container,
+            ...styles.bg_white,
+            width: "95%",
+          }}
+          showsVerticalScrollIndicator={false}
+        />
+        <Snackbar visible={snackbarVisible} onDismiss={dismissSnackbar}>
+          Added to Cart !
+        </Snackbar>
+      </ScrollView>
       <BottomBarCart />
-    </SafeAreaView>
+    </>
   );
 };
 

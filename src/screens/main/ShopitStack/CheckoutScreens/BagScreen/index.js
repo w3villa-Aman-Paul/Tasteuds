@@ -22,7 +22,6 @@ import {
   getCountriesList,
   googleLogin,
   facebookLogin,
-  appleLogin,
   getProduct,
 } from "../../../../../redux";
 
@@ -40,11 +39,9 @@ import {
 import FilterFooter from "../../../../../library/components/ActionButtonFooter/FilterFooter";
 import { colors } from "../../../../../res/palette";
 import ApplePay from "../../../../components/ApplePay/ApplePay";
-
-import * as Google from "expo-auth-session/providers/google";
-import * as Facebook from "expo-auth-session/providers/facebook";
-import * as AppleAuthentication from "expo-apple-authentication";
 import * as WebBrowser from "expo-web-browser";
+import UpperNotification from "../../../../components/DelieveryNotifyComponent/UpperNotification";
+import BottomLoginModal from "../../../../components/BottomModal/BottomLoginModal";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -55,8 +52,6 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
   const sheetRef = React.useRef(null);
   const [isOpen, setIsOpen] = useState(false);
 
-  const [accessToken, setAccessToken] = useState(null);
-  const [googleSubmitting, setGoogleSubmitting] = useState(false);
   const [today, setToday] = useState(null);
   const [delieveryDate, setDelieveryDate] = useState(null);
 
@@ -66,11 +61,8 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
   const [itemQuantity, setItemQuantity] = useState(0);
 
   const [inc, setInc] = useState("false");
-  const [isLoggedin, setIsLoggedin] = useState(false);
-  const [fbResponse, setFbResponse] = useState({});
-  const [googleResponse, setGoogleResponse] = useState({});
 
-  const snapPoints = Platform.OS === "ios" ? ["50%"] : ["30%"];
+  const snapPoints = Platform.OS === "ios" ? ["40%"] : ["30%"];
   const timeoutIdRef = React.useRef();
 
   useEffect(() => {
@@ -88,71 +80,8 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
   }, []);
 
   useEffect(() => {
-    handleDelieveryDate();
     dispatch(getCart(cart?.token));
-    setIsLoggedin(false);
   }, []);
-
-  useEffect(() => {
-    console.log(googleResponse);
-    if (googleResponse?.type === "success") {
-      setGoogleSubmitting(true);
-      // setAccessToken(response.authentication.accessToken);
-      dispatch(googleLogin(googleResponse.authentication.accessToken));
-      console.log("acc", googleResponse.authentication.accessToken);
-      setTimeout(() => {
-        setGoogleSubmitting(false);
-        setIsOpen(false);
-      }, 1000);
-    }
-
-    if (fbResponse?.type === "success") {
-      dispatch(facebookLogin(fbResponse.authentication.accessToken));
-      setTimeout(() => {
-        setIsOpen(false);
-      }, 1000);
-    }
-  }, [googleResponse, fbResponse]);
-
-  useEffect(() => {
-    const timeOutId = timeoutIdRef.current;
-    return () => {
-      clearTimeout(timeOutId);
-    };
-  }, []);
-
-  const handleDelieveryDate = () => {
-    let todayDate = new Date();
-    let delieveryDate = new Date(todayDate);
-
-    if (today?.getDay() === 2) {
-      setToday(todayDate);
-      delieveryDate?.setDate(
-        delieveryDate?.getDate() + ((4 + 7 - delieveryDate?.getDay()) % 7 || 7)
-      );
-      setDelieveryDate(delieveryDate);
-    } else {
-      todayDate?.setDate(
-        todayDate?.getDate() + ((2 + 7 - todayDate?.getDay()) % 7 || 7)
-      );
-      delieveryDate?.setDate(
-        delieveryDate?.getDate() + ((4 + 7 - delieveryDate?.getDay()) % 7 || 7)
-      );
-      setDelieveryDate(delieveryDate);
-    }
-
-    setToday(todayDate);
-  };
-
-  const [_, ___, googlePromptAsync] = Google.useAuthRequest({
-    iosClientId: GOOGLE_IOS_CLIENT_ID,
-    androidClientId: GOOGLE_ANDROID_CLIENT_ID,
-    expoClientId: GOOGLE_EXPO_ID,
-  });
-
-  const [__, ____, fbPromptAsync] = Facebook.useAuthRequest({
-    clientId: FACEBOOK_APP_ID,
-  });
 
   const handleCartProductImage = (cartPro) => {
     const product = productsList?.find(
@@ -165,130 +94,8 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
     navigation.navigate("ShippingAddress");
   };
 
-  const handleFacebookAuth = async () => {
-    const response = await fbPromptAsync();
-    setFbResponse(response);
-  };
-
-  const handleGoogleAuth = async () => {
-    const response = await googlePromptAsync({ showInRecents: true });
-    setGoogleResponse(response);
-  };
-
-  const handleAppleLogin = async () => {
-    try {
-      const { identityToken } = await AppleAuthentication.signInAsync({
-        requestedScopes: [
-          AppleAuthentication.AppleAuthenticationScope.EMAIL,
-          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
-        ],
-      });
-
-      if (identityToken) {
-        setIsLoggedin(true);
-        dispatch(appleLogin(identityToken));
-        setTimeout(() => {
-          setIsOpen(false);
-          setIsOpen(false);
-        }, 1000);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const bottomSheetContent = () => {
-    return (
-      <View style={styles.login_container}>
-        <Text style={styles.main_text}>LOGG INN ELLER REGISTRER DEG</Text>
-        <View style={styles.login_body}>
-          {Platform.OS === "ios" && (
-            <View style={styles.login_content}>
-              <TouchableOpacity
-                style={styles.login_btn}
-                onPress={handleAppleLogin}
-              >
-                <Image
-                  style={styles.login_image}
-                  source={require("../../../../../../assets/images/Header-Icon/apple.png")}
-                />
-
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Text style={styles.link_text}>LOGG INN MED APPLE</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-          )}
-          <View style={styles.login_content}>
-            {!googleSubmitting ? (
-              <TouchableOpacity
-                style={styles.login_btn}
-                onPress={
-                  accessToken ? (
-                    <></>
-                  ) : (
-                    () => {
-                      setGoogleSubmitting(true);
-                      handleGoogleAuth();
-                    }
-                  )
-                }
-              >
-                <Image
-                  style={styles.login_image}
-                  source={require("../../../../../../assets/images/Header-Icon/google.png")}
-                />
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Text style={styles.link_text}>LOGG INN MED GOOGLE</Text>
-                </View>
-              </TouchableOpacity>
-            ) : (
-              <View style={styles.login_content}>
-                <ActivityIndicator />
-              </View>
-            )}
-          </View>
-          <View style={styles.login_content}>
-            <TouchableOpacity
-              style={styles.login_btn}
-              onPress={() => handleFacebookAuth()}
-            >
-              <Image
-                style={styles.login_image}
-                source={require("../../../../../../assets/images/Header-Icon/fb.png")}
-              />
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Text style={styles.link_text}>LOGG INN MED FACEBOOK</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity
-            style={styles.login_content}
-            onPress={() => navigation.navigate("SignIn")}
-          >
-            <Text style={styles.bottom_text}>FORTSETT MED E-POST</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
+    return <BottomLoginModal hideLoginModal={hideLoginModal} />;
   };
 
   const loginFooterCheckout = () => {
@@ -430,59 +237,10 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
             </View>
           </View>
 
-          <View
-            style={{
-              padding: 10,
-              borderWidth: 1,
-              borderRadius: 14,
-              flex: 1,
-              flexDirection: "row",
-              elevation: 3,
-              backgroundColor: "#fff",
-              borderColor: "transparent",
-              ...globalStyles.container,
-              justifyContent: "center",
-              alignItems: "center",
-              height: 96,
-              ...globalStyles.iosShadow,
-            }}
-          >
-            <Image
-              source={require("../../../../../../assets/images/components/delivery-truck.png")}
-              resizeMode={"contain"}
-              style={{ flex: 0.2, marginRight: 10, height: "100%" }}
-            />
-
-            <View
-              style={{
-                flex: 0.9,
-                justifyContent: "center",
-                textAlign: "justify",
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 16,
-                  lineHeight: 18.75,
-                  fontWeight: "bold",
-                }}
-              >
-                Bestill innen{" "}
-                <Text style={{ color: colors.btnLink }}>{`Tirsdag ${String(
-                  today?.getDate()
-                ).padStart(2, "0")}.${String(today?.getMonth() + 1).padStart(
-                  2,
-                  "0"
-                )}`}</Text>{" "}
-                og få varene levert hjem{" "}
-                <Text style={{ color: colors.btnLink }}>{`Torsdag ${String(
-                  delieveryDate?.getDate()
-                ).padStart(2, "0")}.${String(
-                  delieveryDate?.getMonth() + 1
-                ).padStart(2, "0")}`}</Text>
-              </Text>
-            </View>
+          <View style={{ marginHorizontal: 10 }}>
+            <UpperNotification />
           </View>
+
           <View style={globalStyles.containerFluid}>
             {cart?.line_items?.map((ele) => {
               let cartProductImage = handleCartProductImage(ele);
@@ -531,7 +289,6 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
                           </Text>
                         </View>
                       </>
-                      {/* )} */}
                     </View>
                     <View style={styles.body_third}>
                       <Text style={styles.price}>{ele.display_total}</Text>
@@ -548,50 +305,48 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
                       }}
                     >
                       {showItemCard && cartItemId === enableQty?.id ? (
-                        <>
-                          <View style={styles.after_Press}>
-                            <TouchableOpacity
-                              onPress={() => {
-                                handleChangeQuantityClick();
-                                handleItemDecrement(cartProduct?.quantity);
-                                handleDecrementQuantity(
-                                  cartProduct?.id,
-                                  cartProduct.quantity
-                                );
-                              }}
-                            >
-                              <Icon
-                                type="ant-design"
-                                name="minus"
-                                size={22}
-                                color={colors.btnLink}
-                              />
-                            </TouchableOpacity>
+                        <View style={styles.after_Press}>
+                          <TouchableOpacity
+                            onPress={() => {
+                              handleChangeQuantityClick();
+                              handleItemDecrement(cartProduct?.quantity);
+                              handleDecrementQuantity(
+                                cartProduct?.id,
+                                cartProduct.quantity
+                              );
+                            }}
+                          >
+                            <Icon
+                              type="ant-design"
+                              name="minus"
+                              size={22}
+                              color={colors.btnLink}
+                            />
+                          </TouchableOpacity>
 
-                            <Text style={{ fontSize: 25 }}>
-                              {inc
-                                ? cartProduct?.quantity + itemQuantity
-                                : cartProduct?.quantity - itemQuantity}
-                            </Text>
-                            <TouchableOpacity
-                              onPress={() => {
-                                handleChangeQuantityClick();
-                                handleItemIncrement();
-                                handleIncrementQuantity(
-                                  cartProduct.id,
-                                  cartProduct.quantity
-                                );
-                              }}
-                            >
-                              <Icon
-                                type="ant-design"
-                                name="plus"
-                                size={22}
-                                color={colors.btnLink}
-                              />
-                            </TouchableOpacity>
-                          </View>
-                        </>
+                          <Text style={{ fontSize: 25 }}>
+                            {inc
+                              ? cartProduct?.quantity + itemQuantity
+                              : cartProduct?.quantity - itemQuantity}
+                          </Text>
+                          <TouchableOpacity
+                            onPress={() => {
+                              handleChangeQuantityClick();
+                              handleItemIncrement();
+                              handleIncrementQuantity(
+                                cartProduct.id,
+                                cartProduct.quantity
+                              );
+                            }}
+                          >
+                            <Icon
+                              type="ant-design"
+                              name="plus"
+                              size={22}
+                              color={colors.btnLink}
+                            />
+                          </TouchableOpacity>
+                        </View>
                       ) : (
                         <>
                           <View style={styles.inc_btn}>
@@ -621,9 +376,6 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
                         </>
                       )}
                     </Pressable>
-                    {/* <Text onPress={() => handleRemoveLineItem(ele?.id)}>
-                      XX
-                    </Text> */}
                   </View>
                   <Divider orientation="horizontal" />
                 </View>
