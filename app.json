@@ -39,7 +39,7 @@
     },
     "android": {
       "package": "com.w3villa.tastebuds",
-      "versionCode": "1.0.0"
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/images/favicon.png"

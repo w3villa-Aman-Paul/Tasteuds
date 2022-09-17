@@ -111,51 +111,53 @@ const ProductDetailScreen = ({ navigation, dispatch, cart, route }) => {
         <ScrollView
           style={{ ...globalStyles.containerFluid, ...styles.bgWhite }}
         >
-          <View
-            style={{
-              ...globalStyles.container,
-              flexDirection: "row",
-              flexWrap: "wrap",
-            }}
-          >
-            <TouchableOpacity onPress={() => handleBreadcrumPress(taxon, 1)}>
-              <Text
-                style={{
-                  ...styles.title,
+          {breadCrumArray?.length > 0 && (
+            <View
+              style={{
+                ...globalStyles.container,
+                flexDirection: "row",
+                flexWrap: "wrap",
+              }}
+            >
+              <TouchableOpacity onPress={() => handleBreadcrumPress(taxon, 1)}>
+                <Text
+                  style={{
+                    ...styles.title,
 
-                  color: colors.primary,
-                }}
-              >
-                {`${breadCrumArray[0]}  ${breadCrumArray[1] ? "> " : ""}`}
-              </Text>
-            </TouchableOpacity>
+                    color: colors.primary,
+                  }}
+                >
+                  {`${breadCrumArray[0]}  ${breadCrumArray[1] ? "> " : ""}`}
+                </Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => handleBreadcrumPress(taxon, 2)}>
-              <Text
-                style={{
-                  ...styles.title,
+              <TouchableOpacity onPress={() => handleBreadcrumPress(taxon, 2)}>
+                <Text
+                  style={{
+                    ...styles.title,
 
-                  color: colors.primary,
-                }}
-              >
-                {` ${breadCrumArray[1] ? breadCrumArray[1] : ""}  ${
-                  breadCrumArray[2] ? ">" : ""
-                }`}
-              </Text>
-            </TouchableOpacity>
+                    color: colors.primary,
+                  }}
+                >
+                  {` ${breadCrumArray[1] ? breadCrumArray[1] : ""}  ${
+                    breadCrumArray[2] ? ">" : ""
+                  }`}
+                </Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => handleBreadcrumPress(taxon, 3)}>
-              <Text
-                style={{
-                  ...styles.title,
+              <TouchableOpacity onPress={() => handleBreadcrumPress(taxon, 3)}>
+                <Text
+                  style={{
+                    ...styles.title,
 
-                  color: colors.primary,
-                }}
-              >
-                {breadCrumArray[2]}
-              </Text>
-            </TouchableOpacity>
-          </View>
+                    color: colors.primary,
+                  }}
+                >
+                  {breadCrumArray[2]}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
 
           {/* <MyCarousel key={imageURI} imageURI={imageURI} /> */}
           <Image
