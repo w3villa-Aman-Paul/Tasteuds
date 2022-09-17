@@ -151,7 +151,7 @@ export const styles = StyleSheet.create({
   },
   payment_btn: {
     flexDirection: "row",
-    width: "70%",
+    width: "80%",
     borderWidth: 1,
     backgroundColor: colors.white,
     borderColor: "transparent",

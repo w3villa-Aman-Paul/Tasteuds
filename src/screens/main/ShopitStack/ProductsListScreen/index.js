@@ -38,6 +38,7 @@ import {
   sortByNewlyAdd,
   sortByPrice,
   getVendorsList,
+  createCart,
 } from "../../../../redux";
 import FilterFooter from "../../../../library/components/ActionButtonFooter/FilterFooter";
 import { HOST } from "../../../../res/env";
@@ -112,6 +113,8 @@ const ProductListScreen = ({
     {
       products.sortedProductsList || dispatch(sortByMostBought(mostBought));
     }
+
+    // dispatch(createCart());
 
     return () => {
       clearTimeout(timeOutId);

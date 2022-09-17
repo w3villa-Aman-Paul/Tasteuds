@@ -1,10 +1,39 @@
 import React from "react";
-import { ApplePayButton, useApplePay } from "@stripe/stripe-react-native";
+import {
+  ApplePayButton,
+  confirmPaymentSheetPayment,
+  useApplePay,
+} from "@stripe/stripe-react-native";
 import { TouchableOpacity, View, Alert } from "react-native";
+import { useSelector } from "react-redux";
+import { HOST } from "../../../res/env";
 
-const ApplePay = ({ styles }) => {
+const ApplePay = ({ styles, address }) => {
+  const { cart } = useSelector((state) => state.checkout);
   const { presentApplePay, confirmApplePayPayment, isApplePaySupported } =
     useApplePay();
+
+  const fetchPaymentIntentClientSecret = async () => {
+    // Fetch payment intent created on the server, see above
+    const response = await fetch(
+      `${HOST}/api/v2/storefront/checkout/payment_intent`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          currency: "NOK",
+        }),
+      }
+    );
+
+    const { client_secret } = response;
+
+    console.log("response: ", response);
+
+    return client_secret;
+  };
 
   const pay = async () => {
     if (!isApplePaySupported) return;
@@ -12,8 +41,8 @@ const ApplePay = ({ styles }) => {
     const { error } = await presentApplePay({
       cartItems: [
         {
-          label: "Example item name",
-          amount: "400.00",
+          label: "Total Amount",
+          amount: cart?.total,
           paymentType: "Immediate",
         },
       ],
@@ -21,7 +50,7 @@ const ApplePay = ({ styles }) => {
       currency: "NOK",
       shippingMethods: [
         {
-          amount: "20.00",
+          amount: cart?.total,
           identifier: "DPS",
           label: "Courier",
           detail: "Delivery",
@@ -31,23 +60,32 @@ const ApplePay = ({ styles }) => {
       requiredShippingAddressFields: ["emailAddress", "phoneNumber"],
       requiredBillingContactFields: ["phoneNumber", "name"],
     });
+
     if (error) {
       // handle error
       console.log(error);
-    } else {
-      // const clientSecret = await fetchPaymentIntentClientSecret();
-      const clientSecret =
-        "pi_3LhYyaB9Bg3ozT7m1v6FlMB5_secret_wO2rweHrK2YlyahJdVyXRHFnC";
-
-      const data = await confirmApplePayPayment(clientSecret);
-
-      if (confirmError) {
-        // handle error
-        return Alert.alert("error", error);
-      }
-
-      Alert.alert("error", data);
+      return;
     }
+
+    const clientSecret = await fetchPaymentIntentClientSecret();
+
+    // const clientSecret = await fetchPaymentIntentClientSecret();
+    // const clientSecret =
+    // "pi_3LidrOB9Bg3ozT7m12Shdh1F_secret_oqfOlidxuor6VrRXDeoDhQdkX";
+    console.log("clientSecret: ", clientSecret);
+
+    const result = await createToken(card);
+
+    console.log("result: ", result);
+
+    const data = await confirmApplePayPayment(clientSecret);
+
+    if (confirmError) {
+      // handle error
+      return Alert.alert("error", error);
+    }
+
+    Alert.alert("error", data);
   };
   // ...
 

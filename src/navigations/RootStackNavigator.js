@@ -19,6 +19,8 @@ import HomeScreen from "../screens/main/ShopitStack/HomeScreen";
 import MainTabNavigator from "./MainTabNavigator";
 import { useSelector } from "react-redux";
 import { StripeProvider } from "@stripe/stripe-react-native";
+import * as Linking from "expo-linking";
+import Constants from "expo-constants";
 
 const MyTheme = {
   ...DefaultTheme,
@@ -34,14 +36,23 @@ function RootStackNavigator({ authState, dispatch }) {
   const publishableKey = useSelector(
     (state) => state.checkout?.paymentMethods[0]?.preferences?.publishable_key
   );
+  //"pk_test_51LiDq0SFxqwgOMtlbSa1nn0CgKjdlWAIRzLj1gIAuC5kBByE7bV7UyomAD8D9nzYFWETxyRx9zt6fbwFJULijhx100PFj4e3Hc"
+
+  console.log("PK_key", publishableKey);
 
   if (authState.isLoading) {
     return <ActivityIndicatorCard />;
   }
   return (
     <StripeProvider
+      // publishableKey="pk_test_51LiDq0SFxqwgOMtlbSa1nn0CgKjdlWAIRzLj1gIAuC5kBByE7bV7UyomAD8D9nzYFWETxyRx9zt6fbwFJULijhx100PFj4e3Hc"
       publishableKey={publishableKey}
       merchantIdentifier="merchant.com.tastebuds"
+      urlScheme={
+        Constants.appOwnership === "expo"
+          ? Linking.createURL("/--/")
+          : Linking.createURL("")
+      }
     >
       <NavigationContainer
         ref={navigationRef}

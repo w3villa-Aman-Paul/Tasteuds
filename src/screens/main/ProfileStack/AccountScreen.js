@@ -13,6 +13,7 @@ import { accountRetrieve, retrieveAddress, userLogout } from "../../../redux";
 import BottomModal from "../../components/BottomModal/BottomModal";
 import BottomLoginModal from "../../components/BottomModal/BottomLoginModal";
 import FilterFooter from "../../../library/components/ActionButtonFooter/FilterFooter";
+import { globalStyles } from "../../../styles/global";
 
 const AccountScreen = ({
   dispatch,
@@ -80,7 +81,12 @@ const AccountScreen = ({
   };
 
   return (
-    <>
+    <View
+      style={[
+        globalStyles.containerFluid,
+        { backgroundColor: colors.white, flex: 1 },
+      ]}
+    >
       <ScrollView style={styles.scrollContainer}>
         {isAuth ? (
           <>
@@ -188,20 +194,6 @@ const AccountScreen = ({
             </View>
           </View>
         )}
-        {isModalVisible && (
-          <BottomModal
-            isModalVisible={isModalVisible}
-            setModalVisible={hideAddressModal}
-            style={{
-              position: "absolute",
-              bottom: 0,
-              left: 0,
-              width: "100%",
-              height: 750,
-              zIndex: 1,
-            }}
-          />
-        )}
       </ScrollView>
       {loginModelOpen && (
         <FilterFooter
@@ -211,7 +203,13 @@ const AccountScreen = ({
           bottomSheetContent={bottomSheetContent}
         />
       )}
-    </>
+      {isModalVisible && (
+        <BottomModal
+          isModalVisible={isModalVisible}
+          setModalVisible={hideAddressModal}
+        />
+      )}
+    </View>
   );
 };
 

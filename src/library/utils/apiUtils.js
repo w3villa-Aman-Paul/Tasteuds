@@ -45,7 +45,10 @@ async function handleAPI(path, params, method, data = null, filter = null) {
     Authorization: `Bearer ${authToken}`,
   };
   let url = API_ROOT + path;
-  url = url + "?" + qs.stringify(params, { arrayFormat: "brackets" });
+
+  if (params) {
+    url = url + "?" + qs.stringify(params, { arrayFormat: "brackets" });
+  }
 
   return await axios({ url, headers, method, data });
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { KeyboardAvoidingView, useWindowDimensions } from "react-native";
 import {
   StyleSheet,
@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import Modal from "react-native-modal";
 import { useSelector, useDispatch } from "react-redux";
-import { updateAddressFunc } from "../../../redux";
+import { createAddress, updateAddressFunc } from "../../../redux";
 import { colors } from "../../../res/palette";
 import { globalStyles } from "../../../styles/global";
 
@@ -28,6 +28,12 @@ const BottomModal = ({ isModalVisible, setModalVisible, style = null }) => {
 
   const Address = useSelector((state) => state.checkout.address);
   const Account = useSelector((state) => state.account);
+
+  let secondTextInput,
+    thirdTextInput,
+    fourthTextInput,
+    fiveTextInput,
+    sixTextInput;
 
   useEffect(() => {
     if (Address.length > 0) {
@@ -48,16 +54,18 @@ const BottomModal = ({ isModalVisible, setModalVisible, style = null }) => {
   const { height, width } = useWindowDimensions();
   const rowWidth = width * 0.9;
 
-  console.log(updateProfile.STATE);
-
   const handleUpdateAddress = () => {
-    dispatch(updateAddressFunc(updateProfile, null, Address[0].id));
+    if (Address.length > 0) {
+      dispatch(updateAddressFunc(updateProfile, null, Address[0].id));
+    } else {
+      dispatch(createAddress(updateProfile, null));
+    }
   };
 
   const updateAddressModalContent = () => {
     return (
-      <KeyboardAvoidingView style={styles.sorterBtnContainer}>
-        <Text style={styles.sorterHeaderText}>LEVERINGSINFORMASJON</Text>
+      <View style={styles.sorterBtnContainer}>
+        <Text style={styles.sorterHeaderText}>LEVERINGS INFORMASJON</Text>
 
         <View
           style={{
@@ -83,6 +91,9 @@ const BottomModal = ({ isModalVisible, setModalVisible, style = null }) => {
                 onChangeText={(text) =>
                   setUpdateProfile({ ...updateProfile, ...{ FORNAVN: text } })
                 }
+                onSubmitEditing={() => {
+                  secondTextInput.focus();
+                }}
                 value={updateProfile.FORNAVN}
                 style={styles.formInput}
               />
@@ -94,6 +105,12 @@ const BottomModal = ({ isModalVisible, setModalVisible, style = null }) => {
                 onChangeText={(text) =>
                   setUpdateProfile({ ...updateProfile, ...{ ETTERNAVN: text } })
                 }
+                ref={(input) => {
+                  secondTextInput = input;
+                }}
+                onSubmitEditing={() => {
+                  thirdTextInput.focus();
+                }}
                 value={updateProfile.ETTERNAVN}
                 style={styles.formInput}
               />
@@ -106,6 +123,12 @@ const BottomModal = ({ isModalVisible, setModalVisible, style = null }) => {
             </Text>
             <TextInput
               placeholder="TELEFONNUMMER"
+              ref={(input) => {
+                thirdTextInput = input;
+              }}
+              onSubmitEditing={() => {
+                fourthTextInput.focus();
+              }}
               onChangeText={(text) =>
                 setUpdateProfile({
                   ...updateProfile,
@@ -129,6 +152,12 @@ const BottomModal = ({ isModalVisible, setModalVisible, style = null }) => {
                   ...{ ADRESSE: text },
                 })
               }
+              ref={(input) => {
+                fourthTextInput = input;
+              }}
+              onSubmitEditing={() => {
+                fiveTextInput.focus();
+              }}
               value={updateProfile.ADRESSE}
               style={styles.formInput}
             />
@@ -150,6 +179,12 @@ const BottomModal = ({ isModalVisible, setModalVisible, style = null }) => {
                 styles.formInput,
                 { width: "20%", alignSelf: "center", marginRight: 10 },
               ]}
+              ref={(input) => {
+                fiveTextInput = input;
+              }}
+              onSubmitEditing={() => {
+                sixTextInput.focus();
+              }}
               onChangeText={(text) =>
                 setUpdateProfile({
                   ...updateProfile,
@@ -164,26 +199,33 @@ const BottomModal = ({ isModalVisible, setModalVisible, style = null }) => {
                 styles.formInput,
                 { width: "20%", alignSelf: "center", marginRight: 10 },
               ]}
+              ref={(input) => {
+                sixTextInput = input;
+              }}
               onChangeText={(text) =>
                 setUpdateProfile({
                   ...updateProfile,
                   ...{ CITY: text },
                 })
               }
-              value={updateProfile.STATE}
+              value={updateProfile.CITY}
             />
           </View>
+          <TouchableOpacity
+            style={styles.hideButton}
+            onPress={handleUpdateAddress}
+          >
+            <Text style={[styles.hideButtonText, styles.formLabel]}>
+              {" "}
+              LAGRE{" "}
+            </Text>
+          </TouchableOpacity>
         </View>
-
-        <TouchableOpacity
-          style={styles.hideButton}
-          onPress={handleUpdateAddress}
-        >
-          <Text style={[styles.hideButtonText, styles.formLabel]}> LAGRE </Text>
-        </TouchableOpacity>
-      </KeyboardAvoidingView>
+      </View>
     );
   };
+
+  console.log(Address);
 
   return (
     <Modal
@@ -194,8 +236,9 @@ const BottomModal = ({ isModalVisible, setModalVisible, style = null }) => {
       backdropColor="transparent"
       onSwipeComplete={setModalVisible}
       swipeDirection="down"
-      coverScreen={false}
+      coverScreen={true}
       onBackdropPress={setModalVisible}
+      avoidKeyboard={true}
     >
       {updateAddressModalContent()}
     </Modal>
@@ -208,13 +251,13 @@ const styles = StyleSheet.create({
   modal: {
     backgroundColor: "transparent",
     margin: 0,
-    flex: 1,
     justifyContent: "flex-end",
+    // flex: 1,
   },
 
   sorterBtnContainer: {
-    flex: 0.63,
-    justifyContent: "space-evenly",
+    height: 500,
+    justifyContent: "space-between",
     alignItems: "center",
     padding: 0,
     paddingTop: 20,

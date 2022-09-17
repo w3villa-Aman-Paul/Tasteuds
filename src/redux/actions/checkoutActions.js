@@ -215,3 +215,14 @@ export const setQuantity = (data, auth_token) => {
     payload: handleAddCartItem(url, params, method, data, auth_token),
   };
 };
+
+export const fetchClientSecret = () => {
+  const url = `/api/v2/storefront/checkout/payment_intent`;
+  const method = "POST";
+  const data = {
+    currency: "NOK",
+    payment_method_types: ["card"],
+  };
+
+  return handleAddCartItem(url, null, method, data);
+};

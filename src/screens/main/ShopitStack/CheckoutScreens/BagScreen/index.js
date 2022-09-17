@@ -83,6 +83,10 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
     dispatch(getCart(cart?.token));
   }, []);
 
+  const hideLoginModal = () => {
+    setIsOpen(false);
+  };
+
   const handleCartProductImage = (cartPro) => {
     const product = productsList?.find(
       (element) => cartPro?.variant?.product.id === element.id
