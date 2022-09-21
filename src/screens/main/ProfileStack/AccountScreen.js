@@ -9,7 +9,12 @@ import {
 import { useState, useEffect, useRef } from "react";
 import { connect, useSelector } from "react-redux";
 import { colors } from "../../../res/palette";
-import { accountRetrieve, retrieveAddress, userLogout } from "../../../redux";
+import {
+  accountLogout,
+  accountRetrieve,
+  retrieveAddress,
+  userLogout,
+} from "../../../redux";
 import BottomModal from "../../components/BottomModal/BottomModal";
 import BottomLoginModal from "../../components/BottomModal/BottomLoginModal";
 import FilterFooter from "../../../library/components/ActionButtonFooter/FilterFooter";
@@ -64,8 +69,11 @@ const AccountScreen = ({
   }, [Address, Account]);
 
   useEffect(() => {
-    dispatch(accountRetrieve());
-    dispatch(retrieveAddress());
+    if (isAuth) {
+      dispatch(accountRetrieve());
+      dispatch(retrieveAddress());
+      setLoginModelOpen(false);
+    }
   }, [isAuth]);
 
   const hideAddressModal = () => {
@@ -159,6 +167,7 @@ const AccountScreen = ({
                 <TouchableOpacity
                   style={{ ...styles.button, marginBottom: 10, marginTop: 10 }}
                   onPress={() => {
+                    dispatch(accountLogout());
                     dispatch(userLogout());
                   }}
                 >
