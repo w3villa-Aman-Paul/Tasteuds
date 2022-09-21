@@ -16,16 +16,15 @@ const GooglePay = ({ styles, address }) => {
   const { createPaymentMethod, handleCardAction, paymentIntentError } =
     useStripe();
 
-  //   useEffect(() => {
-  //     const init = async () => {
-  //       //   if (!(await isGooglePaySupported({ testEnv: true }))) {
-  //       //     Alert.alert("Google Pay is not supported.");
-  //       //     return;
-  //       //   }
-
-  //     };
-  //     init();
-  //   }, []);
+  useEffect(() => {
+    const init = async () => {
+      if (!(await isGooglePaySupported({ testEnv: true }))) {
+        Alert.alert("Google Pay is not supported.");
+        return;
+      }
+    };
+    init();
+  }, []);
 
   const fetchPaymentIntentClientSecret = async () => {
     // Fetch payment intent created on the server, see above
@@ -35,38 +34,72 @@ const GooglePay = ({ styles, address }) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "X-Spree-Order-Token": `${token}`,
         },
-        body: JSON.stringify({ payment_method_id: paymentMethod.id }),
       }
     );
-    const { clientSecret } = await response.json();
 
-    return clientSecret;
+    const data = await response.json();
+
+    console.log("response: ", data);
+
+    return data.data;
   };
 
   const pay = async () => {
-    const billingDetails = {
-      email: "email@stripe.com",
-      phone: "+48888000888",
-      addressCity: "Houston",
-      addressCountry: "US",
-      addressLine1: "1459  Circle Drive",
-      addressLine2: "Texas",
-    };
+    // const billingDetails = {
+    //   email: "email@stripe.com",
+    //   phone: "+48888000888",
+    //   addressCity: "Houston",
+    //   addressCountry: "US",
+    //   addressLine1: "1459  Circle Drive",
+    //   addressLine2: "Texas",
+    // };
 
-    // Create payment method
-    let { paymentMethod, error } = await createPaymentMethod({
-      type: "Card",
-      address: billingDetails,
-      paymentMethodData: {
-        billingDetails,
-      },
-    });
+    // // Create payment method
+    // let { paymentMethod, error } = await createPaymentMethod({
+    //   type: "Card",
+    //   address: billingDetails,
+    //   paymentMethodData: {
+    //     billingDetails,
+    //   },
+    // });
 
-    console.log("paymentMethod:", paymentMethod);
-    console.log("paymentMethodError", error);
+    // console.log("paymentMethod:", paymentMethod);
+    // console.log("paymentMethodError", error);
 
-    const initData = await initGooglePay({
+    // const initData = await initGooglePay({
+    //   testEnv: true,
+    //   merchantName: "Morten Fonsai",
+    //   countryCode: "NO",
+    //   billingAddressConfig: {
+    //     format: "FULL",
+    //     isPhoneNumberRequired: true,
+    //     isRequired: false,
+    //   },
+    //   existingPaymentMethodRequired: false,
+    //   isEmailRequired: true,
+    // });
+
+    // console.log("initData", initData);
+
+    // if (initData.error) {
+    //   Alert.alert(error.code, error.message);
+    //   return;
+    // }
+
+    const { paymentIntent, ephemeralKey, customer } =
+      await fetchPaymentIntentClientSecret();
+    const clientSecret = paymentIntent;
+
+    console.log("clientSecret", clientSecret);
+
+    // const checkGPay = await presentGooglePay({
+    //   clientSecret,
+    //   forSetupIntent: false,
+    // });
+
+    const checkGPay = await presentGooglePay({
       testEnv: true,
       merchantName: "Morten Fonsai",
       countryCode: "NO",
@@ -79,17 +112,7 @@ const GooglePay = ({ styles, address }) => {
       isEmailRequired: true,
     });
 
-    if (initData.error) {
-      Alert.alert(error.code, error.message);
-      return;
-    }
-
-    const clientSecret = await fetchPaymentIntentClientSecret();
-
-    const checkGPay = await presentGooglePay({
-      clientSecret,
-      forSetupIntent: false,
-    });
+    console.log(checkGPay);
 
     if (checkGPay.error) {
       Alert.alert(checkGPay.error.code, checkGPay.error.message);
@@ -101,10 +124,7 @@ const GooglePay = ({ styles, address }) => {
 
   return (
     <View>
-      <TouchableOpacity
-        style={[styles, { elevation: 5 }]}
-        onPress={() => pay()}
-      >
+      <TouchableOpacity style={[styles, { elevation: 5 }]} onPress={pay}>
         <View
           style={{
             width: "100%",

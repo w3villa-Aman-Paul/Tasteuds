@@ -89,9 +89,23 @@ export function updateCheckout(auth_token, data) {
 export function createAddress(data, filters = null) {
   const url = `${API_VERSION_STOREFRONT}/account/addresses`;
   const method = "POST";
+
+  const updatedData = {
+    address: {
+      firstname: data?.FORNAVN,
+      lastname: data?.ETTERNAVN,
+      address1: data?.ADRESSE,
+      zipcode: data?.PIN,
+      city: data?.CITY,
+      state_name: "Bergen",
+      country_iso: "NO",
+      phone: data?.TELEFONNUMMER,
+      email: data?.EMAIL,
+    },
+  };
   return {
     type: "CREATE_ADDRESS",
-    payload: handleAPI(url, filters, method, data),
+    payload: handleAPI(url, filters, method, updatedData),
   };
 }
 

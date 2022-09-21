@@ -246,7 +246,7 @@ const FavouritesScreen = ({
                     <View style={styles.fav_image_container}>
                       <Image
                         source={{
-                          uri: `${HOST}/${favourite?.images[0].styles[2].url}`,
+                          uri: `${HOST}/${favourite?.images[0].styles[1].url}`,
                         }}
                         style={styles.fav_image}
                       />
@@ -425,13 +425,12 @@ const styles = StyleSheet.create({
     margin: 0,
     padding: 0,
     marginBottom: 10,
+    overflow: "hidden",
   },
   first_content: {
     flexDirection: "row",
-    margin: 5,
-    marginLeft: 8,
-    marginRight: 8,
     height: 100,
+    paddingRight: 10,
   },
   fav_image_container: {
     height: 100,
@@ -455,8 +454,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
     right: 0,
     bottom: 0,
-    marginRight: 5,
-    marginBottom: 5,
+    padding: 10,
   },
   first_btn: {
     flex: 0.7,

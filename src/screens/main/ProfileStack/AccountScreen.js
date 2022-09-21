@@ -174,6 +174,7 @@ const AccountScreen = ({
                 source={require("../../../../assets/images/logo-mark.png")}
                 style={styles.image2}
               />
+
               <TouchableOpacity
                 style={{ ...styles.button, marginBottom: 10 }}
                 onPress={() => {

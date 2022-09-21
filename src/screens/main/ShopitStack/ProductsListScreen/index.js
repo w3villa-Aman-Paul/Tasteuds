@@ -77,6 +77,7 @@ const ProductListScreen = ({
   const [inCart, setInCart] = useState(false);
   const [inc, setInc] = useState("false");
   const [isModelVisible, setModelVisible] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
 
   const [showTaxonProducts, setShowTaxonProducts] = useState(false);
 
@@ -151,11 +152,6 @@ const ProductListScreen = ({
     {
       productsList.length === 0 && handleProductsLoad();
     }
-    return () => {
-      {
-        pageIndex === 1 || dispatch(setPageIndex(1));
-      }
-    };
   }, [route.params]);
 
   LogBox.ignoreLogs([
@@ -472,12 +468,12 @@ const ProductListScreen = ({
   };
 
   // Item Rendering..............................................................
-  const FlatListImageItem = ({
+  function FlatListImageItem({
     item,
     onPress,
     imageStyle,
     itemContainerStyle,
-  }) => {
+  }) {
     const tempArr = cart.line_items.filter(
       (ele) => item?.id == ele?.variant?.product?.id
     );
@@ -603,7 +599,7 @@ const ProductListScreen = ({
         </View>
       </TouchableOpacity>
     );
-  };
+  }
 
   //..........................................................................................
 
@@ -687,17 +683,20 @@ const ProductListScreen = ({
 
   let data = taxons?.subMenuProducts?.products?.map((el) => el);
 
-  const newJustInRenderItem = ({ item, index }) => {
+  function newJustInRenderItem({ item, index }) {
     return (
       <FlatListImageItem
         item={item}
         keyExtractor={(index) => index.toString()}
-        onPress={() => handleNewJustRenderItemClick(item)}
+        onPress={() => {
+          handleNewJustRenderItemClick(item);
+          setSelectedId(item.id);
+        }}
         imageStyle={styles.newJustInImage}
         itemContainerStyle={[styles.newJustInItemContainer]}
       />
     );
-  };
+  }
 
   const handleActiveMenuClick = async (categories) => {
     let activeTaxons = Number(
@@ -1320,8 +1319,9 @@ const ProductListScreen = ({
             numColumns={2}
             ListFooterComponent={flatListLowerElement}
             ref={scrollRef}
-            onEndReachedThreshold={0.3}
-            onEndReached={handleEndReached}
+            extraData={selectedId}
+            onEndReachedThreshold={0.33}
+            onEndReached={() => handleEndReached()}
             columnWrapperStyle={{
               width: "100%",
               justifyContent: "space-evenly",

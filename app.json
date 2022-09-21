@@ -6,7 +6,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/appLogo.png",
-    "scheme": "mycoolredirect",
+    "scheme": "com.w3villa.tastebuds",
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -45,12 +45,6 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      [
-        "expo-facebook",
-        {
-          "userTrackingPermission": true
-        }
-      ],
       [
         "@stripe/stripe-react-native",
         {

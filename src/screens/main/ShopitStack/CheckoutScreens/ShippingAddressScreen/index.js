@@ -72,12 +72,41 @@ const ShippingAddressScreen = ({ saving, route }) => {
   const Address = useSelector((state) => state.checkout.address);
 
   useEffect(() => {
-    // dispatch(getDefaultCountry());
-    // dispatch(getCountriesList());
     dispatch(accountRetrieve());
     dispatch(retrieveAddress());
     dispatch(getPaymentMethods(cart?.token));
   }, []);
+
+  useEffect(() => {
+    if (Address.length > 0) {
+      dispatch(
+        updateCheckout(cart?.token, {
+          order: {
+            email: Account?.email,
+            special_instructions: "Please leave at door",
+            bill_address_attributes: {
+              firstname: updateAddress.firstname,
+              lastname: updateAddress.lastname,
+              address1: updateAddress.address,
+              city: updateAddress.city,
+              phone: updateAddress.phone,
+              zipcode: updateAddress.pin,
+              country_iso: updateAddress.country_iso,
+            },
+            ship_address_attributes: {
+              firstname: updateAddress.firstname,
+              lastname: updateAddress.lastname,
+              address1: updateAddress.address1,
+              city: updateAddress.city,
+              phone: updateAddress.phone,
+              zipcode: updateAddress.pin,
+              country_iso: updateAddress.country_iso,
+            },
+          },
+        })
+      );
+    }
+  }, [Address]);
 
   useEffect(() => {
     if (Address.length > 0) {
@@ -111,60 +140,13 @@ const ShippingAddressScreen = ({ saving, route }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
-  const handlePaymentConfirmation = async ({
-    cardName,
-    profileId,
-    month,
-    year,
-    last4,
-    brand,
-  }) => {
+  const handlePaymentConfirmation = async () => {
     try {
       try {
-        dispatch(
-          updateCheckout(cart?.token, {
-            order: {
-              email: Account?.email,
-              special_instructions: "Please leave at door",
-              bill_address_attributes: {
-                firstname: updateAddress.firstname,
-                lastname: updateAddress.lastname,
-                address1: updateAddress.address1,
-                city: updateAddress.city,
-                phone: updateAddress.phone,
-                zipcode: updateAddress.pin,
-                country_iso: updateAddress.country_iso,
-              },
-              ship_address_attributes: {
-                firstname: updateAddress.firstname,
-                lastname: updateAddress.lastname,
-                address1: updateAddress.address1,
-                city: updateAddress.city,
-                phone: updateAddress.phone,
-                zipcode: updateAddress.pin,
-                country_iso: updateAddress.country_iso,
-              },
-              payments_attributes: [
-                {
-                  payment_method_id: 3,
-                  source_attributes: {
-                    gateway_payment_profile_id: profileId,
-                    month: month,
-                    year: year,
-                    name: cardName,
-                    cc_type: brand,
-                    last_digits: last4,
-                  },
-                },
-              ],
-            },
-          })
-        ).then(() => {
-          dispatch(completeCheckout(cart?.token)).then(() => {
-            setIsOpen(false);
-            dispatch(createCart());
-            navigation.navigate("OrderComplete");
-          });
+        dispatch(completeCheckout(cart?.token)).then(() => {
+          setIsOpen(false);
+          dispatch(createCart());
+          navigation.navigate("OrderComplete");
         });
       } catch (error) {
         console.log(error);
@@ -173,99 +155,6 @@ const ShippingAddressScreen = ({ saving, route }) => {
       console.log(error);
     }
   };
-
-  // *Bottom Sheet content ================================================================= */
-  // const bottomSheetContent = () => {
-
-  //   return (
-  //     <KeyboardAvoidingView
-  //       behavior={Platform.OS === "ios" ? "padding" : "height"}
-  //       style={styles.login_container}
-  //     >
-  //       <View style={{ height: 50 }}>
-  //         <TouchableOpacity
-  //           style={styles.fav_close_container}
-  //           onPress={() => setIsOpen()}
-  //         >
-  //           <Icon
-  //             type="entypo"
-  //             name="cross"
-  //             size={28}
-  //             style={styles.fav_close}
-  //           />
-  //         </TouchableOpacity>
-
-  //         <View style={styles.headerTextContainer}>
-  //           <Text style={styles.headerTitle}>REGISTRER KORT</Text>
-  //         </View>
-  //       </View>
-
-  //       <View style={{ ...styles.cardContainer, flex: 1 }}>
-  //         <View style={styles.cardContent}>
-  //           <Text style={styles.cardText}>KORTHOLDERS NAVN</Text>
-  //           <FormInput
-  //             style={styles.cardInput}
-  //             placeholder="Name"
-  //             value={cardName}
-  //             onChangeText={(val) => setCardName(val)}
-  //           />
-  //         </View>
-  //         <View style={styles.cardContent}>
-  //           <Text style={styles.cardText}>KORTNUMMER</Text>
-  //           <FormInput
-  //             style={styles.cardInput}
-  //             value={profileId}
-  //             onChangeText={(val) => setProfileId(val)}
-  //           />
-  //         </View>
-  //         <View style={styles.lastInputs}>
-  //           <View style={styles.cardContent}>
-  //             <Text style={styles.cardText}>UTLØPSDATO</Text>
-  //             <View style={{ flexDirection: "row" }}>
-  //               <FormInput
-  //                 style={styles.cardInputDate}
-  //                 value={month}
-  //                 onChangeText={(value) => setMonth(value)}
-  //                 maxLength={2}
-  //                 keyboardType="number"
-  //               />
-  //               <FormInput
-  //                 style={styles.cardInputDate}
-  //                 value={year}
-  //                 onChangeText={(value) => setYear(value)}
-  //                 maxLength={4}
-  //                 keyboardType="number"
-  //               />
-  //             </View>
-  //           </View>
-  //           <View style={styles.cardContent}>
-  //             <Text style={styles.cardText}>CVC</Text>
-  //             <FormInput
-  //               style={{ ...styles.cardInputDate }}
-  //               value={cvv}
-  //               maxLength={3}
-  //               keyboardType="number"
-  //               onChangeText={(value) => setCvv(value)}
-  //             />
-  //           </View>
-  //         </View>
-
-  //         <View style={{ ...styles.cardContent, marginTop: 20 }}>
-  //           <TouchableOpacity
-  //             style={styles.cardBtn}
-  //             // onPress={handlePaymentConfirmation}
-  //             onPress={() => navigation.navigate("Payments")}
-  //           >
-  //             <Text style={{ ...styles.cardText, fontFamily: "lato-bold" }}>
-  //               LEGG TIL
-  //             </Text>
-  //           </TouchableOpacity>
-  //         </View>
-  //       </View>
-  //     </KeyboardAvoidingView>
-  //   );
-  // };
-  //* ===========================================================*/
 
   const handleUpdateCheckout = () => {
     dispatch(
@@ -421,20 +310,17 @@ const ShippingAddressScreen = ({ saving, route }) => {
               <Text style={styles.payment_title}>BETALINGSMÅTE</Text>
               <View style={styles.payment_body}>
                 <View style={styles.payment_btn_body}>
-                  {/* <ApplePay
-                    styles={styles.payment_btn}
-                    address={updateAddress}
-                  /> */}
-
                   {Platform.OS === "android" ? (
-                    <GooglePay
-                      styles={styles.payment_btn}
-                      address={updateAddress}
-                    />
+                    // <GooglePay
+                    //   styles={styles.payment_btn}
+                    //   address={updateAddress}
+                    // />
+                    <></>
                   ) : (
                     <ApplePay
                       styles={styles.payment_btn}
                       address={updateAddress}
+                      handlePaymentConfirmation={handlePaymentConfirmation}
                     />
                   )}
                 </View>

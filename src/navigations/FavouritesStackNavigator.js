@@ -9,7 +9,6 @@ import CustomTitle from "../library/components/CustomTitle";
 import { connect } from "react-redux";
 import { Icon } from "react-native-elements";
 import { Button, Image, StyleSheet } from "react-native";
-import { IconButton } from "react-native-paper";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 const FavouritesStack = createStackNavigator();

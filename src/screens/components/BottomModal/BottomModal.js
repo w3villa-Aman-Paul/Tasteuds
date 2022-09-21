@@ -72,6 +72,7 @@ const BottomModal = ({ isModalVisible, setModalVisible, style = null }) => {
             flex: 1,
             justifyContent: "flex-start",
             alignItems: "center",
+            marginTop: 20,
           }}
         >
           <View
@@ -118,9 +119,7 @@ const BottomModal = ({ isModalVisible, setModalVisible, style = null }) => {
           </View>
 
           <View style={[styles.formRow, { width: rowWidth }]}>
-            <Text style={[styles.formLabel, { alignSelf: "left" }]}>
-              TELEFONNUMMER
-            </Text>
+            <Text style={styles.formLabel}>TELEFONNUMMER</Text>
             <TextInput
               placeholder="TELEFONNUMMER"
               ref={(input) => {
@@ -141,9 +140,7 @@ const BottomModal = ({ isModalVisible, setModalVisible, style = null }) => {
           </View>
 
           <View style={[styles.formRow, { width: rowWidth }]}>
-            <Text style={[styles.formLabel, { alignSelf: "left" }]}>
-              ADRESSE
-            </Text>
+            <Text style={styles.formLabel}>ADRESSE</Text>
             <TextInput
               placeholder="ADRESSE"
               onChangeText={(text) =>
@@ -225,7 +222,7 @@ const BottomModal = ({ isModalVisible, setModalVisible, style = null }) => {
     );
   };
 
-  console.log(Address);
+  console.log(updateProfile);
 
   return (
     <Modal
@@ -358,7 +355,7 @@ const styles = StyleSheet.create({
   formRow: {
     flex: 0.2,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "flex-start",
     paddingHorizontal: 10,
   },
   formLabel: {

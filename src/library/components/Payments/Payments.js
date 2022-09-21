@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -7,12 +7,17 @@ import {
   Button,
   TouchableOpacity,
   Image,
+  Linking,
 } from "react-native";
 import {
   CardField,
   PaymentIntents,
   useStripe,
   createToken,
+  useConfirmPayment,
+  initPaymentSheet,
+  presentPaymentSheet,
+  confirmPaymentSheetPayment,
 } from "@stripe/stripe-react-native";
 import { useSelector } from "react-redux";
 import { HOST } from "../../../res/env";
@@ -21,229 +26,100 @@ const Payments = (styles) => {
   const { token } = useSelector((state) => state.checkout.cart);
   const Account = useSelector((state) => state.account.account);
 
-  const [spreeToken, setSpreeToken] = useState(null);
-  const [card, setCard] = useState(null);
-
-  const { createPaymentMethod, handleCardAction, paymentIntentError } =
-    useStripe();
-
-  // const subscribe = async () => {
-  //   try {
-  //     //sending request
-  //     const response = await fetch(
-  //       `${HOST}/api/v2/storefront/checkout/payment_intent`,
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           "X-Spree-Order-Token": `${token}`,
-  //         },
-  //       }
-  //     );
-
-  //     // console.log(response);
-  //     const data = response.json();
-
-  //     if (!response.ok) return Alert.alert(data.message);
-
-  //     const secret = await data;
-  //     console.log(secret.intent.client_secret);
-  //     setClientSecret(secret.intent.client_secret);
-
-  //     const initsheet = await stripe.initPaymentSheet({
-  //       paymentIntentClientSecret: secret.intent.client_secret,
-  //       allowsDelayedPaymentMethods: true,
-  //       applePay: {
-  //         merchantCountryCode: "NO",
-  //       },
-  //     });
-  //     if (initsheet.error) {
-  //       console.log(initsheet.error.message);
-  //       return Alert.alert(initsheet.error.message);
-  //     }
-  //     const presentSheet = await stripe.presentPaymentSheet({
-  //       clientSecret,
-  //     });
-
-  //     if (presentSheet.error) {
-  //       console.log("presentSheet date", presentSheet.error.message);
-  //       return Alert.alert(presentSheet.error.message);
-  //     }
-
-  //     console.log(presentSheet, "/n", initsheet);
-
-  //     Alert.alert("Payment complete, thank you");
-  //   } catch (error) {
-  //     Alert.alert("Something went wrong");
-  //   } cardName, profileId, cvv, month, year
-  // };
-
-  const pay = async () => {
-    // Gather customer billing information (for example, email)
-    const billingDetails = {
-      email: "email@stripe.com",
-      phone: "+48888000888",
-      addressCity: "Houston",
-      addressCountry: "US",
-      addressLine1: "1459  Circle Drive",
-      addressLine2: "Texas",
-    };
-
-    // Create payment method
-    let { paymentMethod, error } = await createPaymentMethod({
-      type: "Card",
-      address: billingDetails,
-      paymentMethodData: {
-        billingDetails,
-      },
-    });
-
-    // Send the PaymentMethod to your server to create a PaymentIntent
-    const response = await fetch(
-      `${HOST}/api/v2/storefront/checkout/payment_intent`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Spree-Order-Token": `${token}`,
-        },
-        body: JSON.stringify({ payment_method_id: paymentMethod.id }),
-      }
-    );
-    const resData = await response.json();
-
-    console.log("resData", resData);
-
-    const result = await createToken(card);
-
-    if (result.error) {
-      // Inform the customer that there was an error.
-      console.log(result.error);
-    } else {
-      // console.log("token", result.token.id);
-      // Send the token to your server.
-      const temp = result.token.id;
-      setSpreeToken(temp);
-    }
-
-    if (resData?.error) {
-      // Error creating or confirming PaymentIntent
-      Alert.alert("Error", paymentIntentError);
-      return;
-    }
-
-    if (
-      resData.intent.client_secret &&
-      resData.intent.status !== "requires_action"
-    ) {
-      // Payment succeeded
-      Alert.alert("Success", "The payment was confirmed successfully!");
-    }
-
-    if (
-      resData?.intent?.client_secret &&
-      resData.intent.status === "requires_action"
-    ) {
-      // ...continued below
-      const { error, paymentIntent } = await handleCardAction(
-        resData.intent.client_secret
+  const subscribe = async () => {
+    try {
+      const response = await fetch(
+        `${HOST}/api/v2/storefront/checkout/payment_intent`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Spree-Order-Token": `${token}`,
+          },
+        }
       );
 
-      console.log("paymentIntent", paymentIntent);
+      const data = await response.json();
 
-      if (error) {
-        Alert.alert(`Error code: ${error.code}`, error.message);
-      } else if (paymentIntent) {
-        if (
-          (paymentIntent.status === paymentIntent.status) ===
-          "RequiresConfirmation"
-        ) {
-          // Confirm the PaymentIntent again on your server
-          const response = await fetch(
-            `${HOST}/api/v2/storefront/checkout/payment_intent`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ payment_intent_id: paymentIntent.id }),
-            }
-          );
-          const { error, success } = await response.json();
-          if (error) {
-            // Error during confirming Intent
-            Alert.alert("Error", error);
-          } else if (success) {
-            console.log("stripeToken2", result.token.id);
-            Alert.alert("Success", "The payment was confirmed successfully!");
-            styles.handlePaymentConfirmation({
-              cardName: card.brand,
-              profileId: result.token.id,
-              month: card.expiryMonth,
-              year: card.expiryYear,
-              last4: card.last4,
-              brand: card.brand,
-            });
-          }
-        } else {
-          // Payment succedeed
-          console.log("stripeToken2", result.token.id);
-          Alert.alert("Success", "The payment was confirmed successfully!");
-          styles.handlePaymentConfirmation({
-            cardName: card.brand,
-            profileId: result.token.id,
-            month: card.expiryMonth,
-            year: card.expiryYear,
-            last4: card.last4,
-            brand: card.brand,
-          });
-        }
+      if (!response.ok) return Alert.alert(data.message);
+
+      const { paymentIntent, ephemeralKey, customer, cartToken, intentId } =
+        data.data;
+
+      const initsheet = await initPaymentSheet({
+        customerId: "cus_MT6T8EFMbytt7Q",
+        // customerEphemeralKeySecret: ephemeralKey,
+        paymentIntentClientSecret: paymentIntent,
+        customFlow: true,
+        merchantDisplayName: "Aman Paul",
+        allowsDelayedPaymentMethods: true,
+        style: "alwaysDark",
+        googlePay: {
+          merchantCountryCode: "IN",
+          testEnv: true, // use test environment
+        },
+      });
+
+      if (initsheet.error) {
+        console.log(initsheet.error.message);
+        return Alert.alert(initsheet.error.message);
       }
+      const presentSheet = await presentPaymentSheet({
+        clientSecret: paymentIntent,
+      });
+
+      if (presentSheet.error) {
+        console.log("presentSheet", presentSheet.error.message);
+        return Alert.alert(presentSheet.error.message);
+      }
+
+      const confirmSheet = await confirmPaymentSheetPayment();
+
+      if (confirmSheet.error) {
+        console.log("confirmSheet", confirmSheet.error.message);
+        return Alert.alert(confirmSheet.error.message);
+      }
+
+      Alert.alert("Payment complete, thank you");
+
+      const paymentStatus = await fetch(
+        `${HOST}/api/v2/storefront/checkout/stripe_payment_status`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Spree-Order-Token": `${token}`,
+          },
+          body: JSON.stringify({
+            payment_intent_id: intentId,
+            payment_method_id: 3,
+          }),
+        }
+      );
+
+      const res = await paymentStatus.json();
+
+      if (res.message === "Success") {
+        styles.handlePaymentConfirmation();
+      } else {
+        Alert.alert("An error occurred. Please try again.");
+      }
+    } catch (error) {
+      Alert.alert("Something went wrong");
     }
   };
 
   return (
-    <View
-      style={[
-        styles.payment_btn,
-        { flexDirection: "column", elevation: 5, paddingBottom: 10 },
-      ]}
-      // onPress={() => setIsOpen(true)}
-      // onPress={subscribe}
+    <TouchableOpacity
+      style={[styles.payment_btn, { flexDirection: "row", elevation: 5 }]}
+      onPress={subscribe}
     >
-      {/* <Image
+      <Image
         source={require("../../../../assets/images/Header-Icon/cardpay.png")}
         style={styles.img_style}
-      /> */}
-      {/* <Text style={{ marginLeft: 10, fontSize: 14 }}>KORTBETALING</Text> */}
-      {/* <Button title="Create Payment" onPress={subscribe} /> */}
-      {/* <View> */}
-      <CardField
-        postalCodeEnabled={false}
-        placeholders={{
-          number: "4242 4242 4242 4242",
-        }}
-        cardStyle={{
-          backgroundColor: "#FFFFFF",
-          textColor: "#000000",
-        }}
-        style={{
-          width: "100%",
-          height: 50,
-          // marginVertical: 30,
-        }}
-        onCardChange={(cardDetails) => {
-          console.log("cardDetails", cardDetails);
-          setCard(cardDetails);
-        }}
-        onFocus={(focusedField) => {
-          console.log("focusField", focusedField);
-        }}
       />
-
-      <Button title="Create Payment" onPress={pay} />
-      {/* </View> */}
-    </View>
+      <Text style={{ marginLeft: 10, fontSize: 14 }}>KORTBETALING</Text>
+    </TouchableOpacity>
   );
 };
 

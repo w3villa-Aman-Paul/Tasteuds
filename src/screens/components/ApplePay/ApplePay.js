@@ -8,8 +8,9 @@ import { TouchableOpacity, View, Alert } from "react-native";
 import { useSelector } from "react-redux";
 import { HOST } from "../../../res/env";
 
-const ApplePay = ({ styles, address }) => {
+const ApplePay = ({ styles, address, handlePaymentConfirmation }) => {
   const { cart } = useSelector((state) => state.checkout);
+  const { token } = useSelector((state) => state.checkout.cart);
   const { presentApplePay, confirmApplePayPayment, isApplePaySupported } =
     useApplePay();
 
@@ -21,24 +22,22 @@ const ApplePay = ({ styles, address }) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "X-Spree-Order-Token": `${token}`,
         },
-        body: JSON.stringify({
-          currency: "NOK",
-        }),
       }
     );
 
-    const { client_secret } = response;
+    const data = await response.json();
 
-    console.log("response: ", response);
+    console.log("response: ", data);
 
-    return client_secret;
+    return data.data;
   };
 
   const pay = async () => {
     if (!isApplePaySupported) return;
 
-    const { error } = await presentApplePay({
+    const presentData = await presentApplePay({
       cartItems: [
         {
           label: "Total Amount",
@@ -46,8 +45,8 @@ const ApplePay = ({ styles, address }) => {
           paymentType: "Immediate",
         },
       ],
-      country: "NO",
-      currency: "NOK",
+      country: "IN",
+      currency: "INR",
       shippingMethods: [
         {
           amount: cart?.total,
@@ -61,31 +60,54 @@ const ApplePay = ({ styles, address }) => {
       requiredBillingContactFields: ["phoneNumber", "name"],
     });
 
-    if (error) {
-      // handle error
-      console.log(error);
-      return;
-    }
+    // if (error) {
+    //   // handle error
+    //   console.log(error);
+    //   return;
+    // }
 
-    const clientSecret = await fetchPaymentIntentClientSecret();
+    console.log("presentapplepay", presentData);
 
-    // const clientSecret = await fetchPaymentIntentClientSecret();
-    // const clientSecret =
-    // "pi_3LidrOB9Bg3ozT7m12Shdh1F_secret_oqfOlidxuor6VrRXDeoDhQdkX";
-    console.log("clientSecret: ", clientSecret);
+    const { intentId, paymentIntent, ephemeralKey, customer } =
+      await fetchPaymentIntentClientSecret();
 
-    const result = await createToken(card);
+    console.log("secret", paymentIntent, ephemeralKey, customer);
 
-    console.log("result: ", result);
+    let clientSecret = paymentIntent;
 
     const data = await confirmApplePayPayment(clientSecret);
+    console.log("confirm", data);
 
-    if (confirmError) {
+    const paymentStatus = await fetch(
+      `${HOST}/api/v2/storefront/checkout/stripe_payment_status`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Spree-Order-Token": `${token}`,
+        },
+        body: JSON.stringify({
+          payment_intent_id: intentId,
+          payment_method_id: 3,
+        }),
+      }
+    );
+
+    const res = await paymentStatus.json();
+    console.log(res);
+
+    if (res.message === "Success") {
+      handlePaymentConfirmation();
+    } else {
+      Alert.alert("An error occurred. Please try again.");
+    }
+
+    if (data.error) {
       // handle error
       return Alert.alert("error", error);
     }
 
-    Alert.alert("error", data);
+    // Alert.alert("error", data);
   };
   // ...
 

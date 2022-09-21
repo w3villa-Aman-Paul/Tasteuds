@@ -45,8 +45,9 @@ function RootStackNavigator({ authState, dispatch }) {
   }
   return (
     <StripeProvider
-      // publishableKey="pk_test_51LiDq0SFxqwgOMtlbSa1nn0CgKjdlWAIRzLj1gIAuC5kBByE7bV7UyomAD8D9nzYFWETxyRx9zt6fbwFJULijhx100PFj4e3Hc"
+      // publishableKey="pk_test_51LiLabSIBBDyX7pB7yPW5xSudq8C8NYpnRQhAn38xbEvFLHkVSX4v51Mws38h1skeTovjef8DULxey23s1bIhmiD00HZRIExcG"
       publishableKey={publishableKey}
+      // publishableKey="pk_test_51HblssB9Bg3ozT7m3mihKBmguC3l3nTre4oeTkTJUYVHsfX3h4DhPivmJswMWQfryp3mYp5wawUDJ5KTvxmp96C000J2RVDZHf"
       merchantIdentifier="merchant.com.tastebuds"
       urlScheme={
         Constants.appOwnership === "expo"

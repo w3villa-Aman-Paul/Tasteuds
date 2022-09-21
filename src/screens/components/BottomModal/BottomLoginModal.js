@@ -9,11 +9,13 @@ import {
 import React, { useEffect, useState } from "react";
 import { styles } from "../../main/ShopitStack/CheckoutScreens/BagScreen/styles";
 import { useNavigation } from "@react-navigation/native";
-import * as Google from "expo-auth-session/providers/google";
+import * as AuthSession from "expo-auth-session";
+import * as GoogleSignIn from "expo-auth-session/providers/google";
 import * as Facebook from "expo-auth-session/providers/facebook";
 import * as AppleAuthentication from "expo-apple-authentication";
 import { facebookLogin, googleLogin, appleLogin } from "../../../redux";
 import { useDispatch } from "react-redux";
+import Constants from "expo-constants";
 import {
   APP_NAME,
   FACEBOOK_APP_ID,
@@ -33,6 +35,8 @@ const BottomLoginModal = ({ hideLoginModal }) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
+  const redirectUri = AuthSession.makeRedirectUri({ useProxy: true });
+
   useEffect(() => {
     console.log(googleResponse);
     if (googleResponse?.type === "success") {
@@ -51,9 +55,11 @@ const BottomLoginModal = ({ hideLoginModal }) => {
     }
   }, [googleResponse, fbResponse]);
 
-  const [_, ___, googlePromptAsync] = Google.useAuthRequest({
-    iosClientId: GOOGLE_IOS_CLIENT_ID,
-    androidClientId: GOOGLE_ANDROID_CLIENT_ID,
+  const [_, ___, googlePromptAsync] = GoogleSignIn.useAuthRequest({
+    iosClientId:
+      "575803309006-hqi5d55e9ge3vhund8kifreii46atgnc.apps.googleusercontent.com",
+    androidClientId:
+      "575803309006-h41b428ak4vr4q1v5akc7r4cshq9rqbr.apps.googleusercontent.com",
     expoClientId: GOOGLE_EXPO_ID,
   });
 
@@ -62,12 +68,15 @@ const BottomLoginModal = ({ hideLoginModal }) => {
   });
 
   const handleFacebookAuth = async () => {
-    const response = await fbPromptAsync();
+    const response = await fbPromptAsync({ redirectUri });
     setFbResponse(response);
   };
 
   const handleGoogleAuth = async () => {
-    const response = await googlePromptAsync({ showInRecents: true });
+    const response = await googlePromptAsync({
+      showInRecents: true,
+      redirectUri,
+    });
     setGoogleResponse(response);
   };
 
