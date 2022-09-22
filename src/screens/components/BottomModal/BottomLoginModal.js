@@ -55,17 +55,25 @@ const BottomLoginModal = ({ hideLoginModal }) => {
     }
   }, [googleResponse, fbResponse]);
 
-  const [_, ___, googlePromptAsync] = GoogleSignIn.useAuthRequest({
-    iosClientId:
-      "575803309006-hqi5d55e9ge3vhund8kifreii46atgnc.apps.googleusercontent.com",
-    androidClientId:
-      "575803309006-h41b428ak4vr4q1v5akc7r4cshq9rqbr.apps.googleusercontent.com",
-    expoClientId: GOOGLE_EXPO_ID,
-  });
+  const [_, ___, googlePromptAsync] = GoogleSignIn.useAuthRequest(
+    {
+      iosClientId:
+        "575803309006-hqi5d55e9ge3vhund8kifreii46atgnc.apps.googleusercontent.com",
+      androidClientId:
+        "575803309006-h41b428ak4vr4q1v5akc7r4cshq9rqbr.apps.googleusercontent.com",
+      expoClientId: GOOGLE_EXPO_ID,
+      redirectUri: AuthSession.makeRedirectUri({ useProxy: true }),
+    },
+    { useProxy: true }
+  );
 
-  const [__, ____, fbPromptAsync] = Facebook.useAuthRequest({
-    clientId: FACEBOOK_APP_ID,
-  });
+  const [__, ____, fbPromptAsync] = Facebook.useAuthRequest(
+    {
+      clientId: FACEBOOK_APP_ID,
+      redirectUri: AuthSession.makeRedirectUri({ useProxy: true }),
+    },
+    { useProxy: true }
+  );
 
   const handleFacebookAuth = async () => {
     const response = await fbPromptAsync({ redirectUri });

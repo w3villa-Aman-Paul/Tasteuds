@@ -339,29 +339,17 @@ const ShippingAddressScreen = ({ saving, route }) => {
                     payment_btn={styles.payment_btn}
                     img_style={styles.payment_img}
                     handlePaymentConfirmation={handlePaymentConfirmation}
+                    type={"card"}
                   />
                 </View>
               </View>
             </View>
           </View>
-
-          <Text></Text>
         </ScrollView>
 
-        {isOpen ? (
-          <></>
-        ) : (
-          <CartFooter
-            title="FULLFØR BETALING"
-            onPress={() => {
-              Address.length == 0 ? (
-                <Text>"Please fill Address"</Text>
-              ) : (
-                handleUpdateCheckout()
-              );
-            }}
-          />
-        )}
+        {isOpen ? <></> : <CartFooter payment_btn={styles.payment_btn} />}
+
+        {console.log((<Payments />).onPress)}
 
         {isOpen && (
           <FilterFooter

@@ -24,10 +24,13 @@ import { HOST } from "../../../res/env";
 
 const Payments = (styles) => {
   const { token } = useSelector((state) => state.checkout.cart);
-  const Account = useSelector((state) => state.account.account);
+  const Address = useSelector((state) => state.checkout.address);
 
   const subscribe = async () => {
     try {
+      if (Address.length === 0) {
+        return Alert.alert("Please enter the address first.");
+      }
       const response = await fetch(
         `${HOST}/api/v2/storefront/checkout/payment_intent`,
         {
@@ -40,6 +43,7 @@ const Payments = (styles) => {
       );
 
       const data = await response.json();
+      console.log("data", data);
 
       if (!response.ok) return Alert.alert(data.message);
 
@@ -59,6 +63,8 @@ const Payments = (styles) => {
           testEnv: true, // use test environment
         },
       });
+
+      console.log(initsheet);
 
       if (initsheet.error) {
         console.log(initsheet.error.message);
@@ -114,11 +120,25 @@ const Payments = (styles) => {
       style={[styles.payment_btn, { flexDirection: "row", elevation: 5 }]}
       onPress={subscribe}
     >
-      <Image
-        source={require("../../../../assets/images/Header-Icon/cardpay.png")}
-        style={styles.img_style}
-      />
-      <Text style={{ marginLeft: 10, fontSize: 14 }}>KORTBETALING</Text>
+      {styles.type === "card" ? (
+        <>
+          <Image
+            source={require("../../../../assets/images/Header-Icon/cardpay.png")}
+            style={styles.img_style}
+          />
+          <Text style={{ marginLeft: 10, fontSize: 14 }}>KORTBETALING</Text>
+        </>
+      ) : (
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <Text
+            style={{ fontFamily: "lato-bold", fontSize: 16, color: "#fff" }}
+          >
+            FULLFØR BETALING
+          </Text>
+        </View>
+      )}
     </TouchableOpacity>
   );
 };

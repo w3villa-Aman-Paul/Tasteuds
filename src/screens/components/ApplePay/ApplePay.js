@@ -11,6 +11,7 @@ import { HOST } from "../../../res/env";
 const ApplePay = ({ styles, address, handlePaymentConfirmation }) => {
   const { cart } = useSelector((state) => state.checkout);
   const { token } = useSelector((state) => state.checkout.cart);
+  const Address = useSelector((state) => state.checkout.address);
   const { presentApplePay, confirmApplePayPayment, isApplePaySupported } =
     useApplePay();
 
@@ -35,6 +36,10 @@ const ApplePay = ({ styles, address, handlePaymentConfirmation }) => {
   };
 
   const pay = async () => {
+    if (Address.length === 0) {
+      return Alert.alert("Plase enter the address first");
+    }
+
     if (!isApplePaySupported) return;
 
     const presentData = await presentApplePay({
@@ -45,8 +50,8 @@ const ApplePay = ({ styles, address, handlePaymentConfirmation }) => {
           paymentType: "Immediate",
         },
       ],
-      country: "IN",
-      currency: "INR",
+      country: "NO",
+      currency: "NOK",
       shippingMethods: [
         {
           amount: cart?.total,

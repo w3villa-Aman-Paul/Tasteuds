@@ -35,7 +35,11 @@ const AccountScreen = ({
   const [loginModelOpen, setLoginModelOpen] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
   let user = address.filter((add) => add.id === account?.id);
-  const [updateAddress, setUpdateAddress] = useState({
+  const [updateAddress, setUpdateAddress] = useState(initialAddressState);
+
+  const snapPoints = Platform.OS === "ios" ? ["40%"] : ["30%"];
+
+  const initialAddressState = {
     firstname: "",
     lastname: "",
     email: "",
@@ -45,9 +49,7 @@ const AccountScreen = ({
     city: "",
     state_name: "Bergen",
     country_iso: "NO",
-  });
-
-  const snapPoints = Platform.OS === "ios" ? ["40%"] : ["30%"];
+  };
 
   const sheetRef = useRef(null);
 
@@ -167,6 +169,7 @@ const AccountScreen = ({
                 <TouchableOpacity
                   style={{ ...styles.button, marginBottom: 10, marginTop: 10 }}
                   onPress={() => {
+                    setUpdateAddress(initialAddressState);
                     dispatch(accountLogout());
                     dispatch(userLogout());
                   }}

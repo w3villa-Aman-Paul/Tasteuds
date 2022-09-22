@@ -1,25 +1,18 @@
 import * as React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import ProfileScreen from "../screens/main/ProfileStack/ProfileScreen";
 
-import { colors } from "../res/palette";
-import { globalStyles } from "../styles/global";
 import AccountScreen from "../screens/main/ProfileStack/AccountScreen";
 import SavedAddress from "../screens/main/ProfileStack/SavedAddress";
-import FavouritesScreen from "../screens/main/FavouritesStack/FavouritesScreen";
 import OffersScreen from "../screens/main/ProfileStack/OffersScreen";
 import updateAddress from "../screens/main/ProfileStack/updateAddress";
 import { connect, useSelector } from "react-redux";
 import { Image, StyleSheet, TouchableOpacity } from "react-native";
-import { Icon } from "react-native-elements";
 import AddAddress from "../screens/main/ProfileStack/AddAddress";
 import ResetPasswordScreen from "../screens/auth/ResetPasswordScreen";
 
 const ProfileStack = createStackNavigator();
 
 function ProfileStackNavigator({ navigation }) {
-  const authState = useSelector((state) => state.auth);
-
   return (
     <ProfileStack.Navigator
       screenOptions={{
@@ -60,11 +53,7 @@ function ProfileStackNavigator({ navigation }) {
           ),
         }}
       />
-      <ProfileStack.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{ headerTitle: "PROFIL", headerTitleAlign: "center" }}
-      />
+
       <ProfileStack.Screen
         name="SavedAddress"
         component={SavedAddress}
