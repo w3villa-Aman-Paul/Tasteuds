@@ -59,10 +59,10 @@ const AccountScreen = ({
         firstname: Address[0]?.firstname,
         lastname: Address[0]?.lastname,
         phone: Address[0]?.phone,
-        address: Address[0]?.address1,
-        pin: Address[0]?.zipcode,
+        address: Address[0]?.address1 ? Address[0]?.address1 : "",
+        pin: Address[0]?.zipcode ? Address[0]?.zipcode : "",
         email: Account?.email,
-        city: Address[0]?.city,
+        city: Address[0]?.city ? Address[0]?.city : "",
         state_name: Address[0]?.state_name,
       });
     } else if (Account?.email) {
@@ -126,14 +126,20 @@ const AccountScreen = ({
 
                 <View style={styles.second}>
                   <Text style={styles.text}>TELEFONNUMMER</Text>
-                  <Text>{updateAddress?.phone}</Text>
+                  <Text>
+                    {updateAddress?.phone ? updateAddress?.phone : ""}
+                  </Text>
                 </View>
 
                 <View style={styles.second}>
                   <Text style={styles.text}>ADRESSE</Text>
-                  <Text>{`${updateAddress.address}, ${updateAddress.city}`}</Text>
+                  <Text>{`${
+                    updateAddress?.address ? updateAddress?.address : ""
+                  }, ${updateAddress?.city ? updateAddress?.city : ""}`}</Text>
                   <Text>
-                    {updateAddress.pin} {user[0]?.country_name}
+                    {`${updateAddress?.pin ? updateAddress?.pin : ""} ${
+                      user[0]?.country_name ? user[0]?.country_name : ""
+                    }`}
                   </Text>
                 </View>
               </View>
