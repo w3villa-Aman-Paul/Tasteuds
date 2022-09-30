@@ -1,8 +1,5 @@
 export const HOST = "https://tb-alpha.herokuapp.com";
 
-// export const HOST =
-//   "https://01e9-2405-201-4018-5089-104f-875b-4789-e60f.ngrok.io";
-
 export const GOOGLE_IOS_CLIENT_ID =
   "575803309006-hqi5d55e9ge3vhund8kifreii46atgnc.apps.googleusercontent.com";
 export const GOOGLE_ANDROID_CLIENT_ID =

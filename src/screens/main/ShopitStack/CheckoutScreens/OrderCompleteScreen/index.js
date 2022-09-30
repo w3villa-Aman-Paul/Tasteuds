@@ -1,17 +1,47 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, Image, ScrollView, TouchableOpacity } from "react-native";
 import { Icon } from "react-native-elements";
 import { useSelector } from "react-redux";
 import { connect } from "react-redux";
 import { HOST } from "../../../../../res/env";
+import UpperNotification from "../../../../components/DelieveryNotifyComponent/UpperNotification";
 import "./styles";
 import { styles } from "./styles";
 
 const OrderCompleteScreen = ({ navigation, dispatch }) => {
   const { orderComplete } = useSelector((state) => state.checkout);
   const { productsList } = useSelector((state) => state.products);
+  const [today, setToday] = useState(null);
+  const [delieveryDate, setDelieveryDate] = useState(null);
 
-  const deliveyData = { day: "Tosdag", time: "17.04", range: "16:00 - 22:00" };
+  useEffect(() => {
+    handleDelieveryDate();
+  }, []);
+
+  const handleDelieveryDate = () => {
+    let todayDate = new Date();
+    let tempDelieveryDate = new Date(todayDate);
+
+    if (today?.getDay() === 2) {
+      setToday(todayDate);
+      tempDelieveryDate?.setDate(
+        tempDelieveryDate?.getDate() +
+          ((4 + 7 - tempDelieveryDate?.getDay()) % 7 || 7)
+      );
+      setDelieveryDate(tempDelieveryDate);
+    } else {
+      todayDate?.setDate(
+        todayDate?.getDate() + ((2 + 7 - todayDate?.getDay()) % 7 || 7)
+      );
+      tempDelieveryDate?.setDate(
+        tempDelieveryDate?.getDate() +
+          ((4 + 7 - tempDelieveryDate?.getDay()) % 7 || 7)
+      );
+      setDelieveryDate(tempDelieveryDate);
+    }
+
+    setToday(todayDate);
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -97,11 +127,13 @@ const OrderCompleteScreen = ({ navigation, dispatch }) => {
           <Text style={styles.primaryText}>LIVERINGSDATO</Text>
 
           <View style={styles.delivery}>
-            <Text
-              style={styles.deliveryText}
-            >{`${deliveyData.day} ${deliveyData.time}`}</Text>
+            <Text style={styles.deliveryText}>{`Torsdag ${String(
+              delieveryDate?.getDate()
+            ).padStart(2, "0")}.${String(
+              delieveryDate?.getMonth() + 1
+            ).padStart(2, "0")}`}</Text>
 
-            <Text style={styles.deliveryText}>{deliveyData.range}</Text>
+            {/* <Text style={styles.deliveryText}>{deliveyData.range}</Text> */}
           </View>
         </View>
 

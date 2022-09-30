@@ -37,7 +37,7 @@ const AccountScreen = ({
   let user = address.filter((add) => add.id === account?.id);
   const [updateAddress, setUpdateAddress] = useState(initialAddressState);
 
-  const snapPoints = Platform.OS === "ios" ? ["40%"] : ["30%"];
+  const snapPoints = Platform.OS === "ios" ? ["50%"] : ["30%"];
 
   const initialAddressState = {
     firstname: "",
