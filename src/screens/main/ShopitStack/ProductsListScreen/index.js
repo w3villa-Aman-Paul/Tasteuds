@@ -155,8 +155,6 @@ const ProductListScreen = ({
     removeData("food");
     removeData("vendors");
 
-    console.log("cart", cart.line_items);
-
     handleCartItemsQuantity();
   }, [cart.line_items]);
 
@@ -182,10 +180,7 @@ const ProductListScreen = ({
     ]);
   };
 
-  console.log("cartItems", inCartItem);
-
   useEffect(() => {
-    console.log("productlist length", productsList.length);
     {
       productsList.length === 0 && handleProductsLoad();
     }
@@ -459,8 +454,6 @@ const ProductListScreen = ({
           ...inCartItem.filter((pro) => item?.id !== pro.productId),
         ]);
       }
-
-      console.log("deleteItem", itemInCart);
 
       setShowItemCard(false);
     } else {
@@ -741,12 +734,12 @@ const ProductListScreen = ({
   ];
 
   const handleEndReached = () => {
-    // if (showTaxonProducts) {
-    const response = dispatch(
-      setPageIndex(Math.round(productsList.length / 20) + 1)
-    );
-    handleProductsLoad(response.payload) && console.log("this is running");
-    // }
+    if (Math.round(productsList.length / 20) >= pageIndex) {
+      const response = dispatch(
+        setPageIndex(Math.round(productsList.length / 20) + 1)
+      );
+      handleProductsLoad(response.payload);
+    }
   };
 
   const handleAll = () => {
@@ -1410,11 +1403,8 @@ const ProductListScreen = ({
             renderItem={newJustInRenderItem}
             numColumns={2}
             ListFooterComponent={flatListLowerElement}
-            ref={scrollRef}
-            onEndReachedThreshold={0.33}
-            onEndReached={() =>
-              meta.total_count < productsList.length && handleEndReached()
-            }
+            onEndReachedThreshold={0}
+            onEndReached={handleEndReached}
             columnWrapperStyle={{
               width: "100%",
               justifyContent: "space-evenly",
