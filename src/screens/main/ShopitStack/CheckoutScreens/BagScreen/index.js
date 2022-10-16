@@ -6,7 +6,6 @@ import {
   Image,
   TextInput,
   Pressable,
-  ActivityIndicator,
   Platform,
 } from "react-native";
 import { globalStyles } from "../../../../../styles/global";
@@ -18,10 +17,6 @@ import {
   getCart,
   removeLineItem,
   setQuantity,
-  getDefaultCountry,
-  getCountriesList,
-  googleLogin,
-  facebookLogin,
   getProduct,
 } from "../../../../../redux";
 
@@ -38,7 +33,6 @@ import {
 } from "../../../../../res/env";
 import FilterFooter from "../../../../../library/components/ActionButtonFooter/FilterFooter";
 import { colors } from "../../../../../res/palette";
-import ApplePay from "../../../../components/ApplePay/ApplePay";
 import * as WebBrowser from "expo-web-browser";
 import UpperNotification from "../../../../components/DelieveryNotifyComponent/UpperNotification";
 import BottomLoginModal from "../../../../components/BottomModal/BottomLoginModal";
@@ -51,9 +45,6 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const sheetRef = React.useRef(null);
   const [isOpen, setIsOpen] = useState(false);
-
-  const [today, setToday] = useState(null);
-  const [delieveryDate, setDelieveryDate] = useState(null);
 
   const onDismiss = () => setSnackbarVisible(false);
   const [showItemCard, setShowItemCard] = useState(false);
@@ -107,7 +98,7 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
   };
 
   const closeIncBar = () => {
-    const id = setTimeout(() => setShowItemCard(false), 2000);
+    const id = setTimeout(() => setShowItemCard(false), 4000);
     timeoutIdRef.current = id;
   };
 
@@ -131,7 +122,8 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
   const handleItemDecrement = (lineItemQuantity) => {
     console.log("ORIGINAL", lineItemQuantity);
     if (2 + itemQuantity > lineItemQuantity) {
-      setShowItemCard(false);
+      // setShowItemCard(false);
+      closeIncBar();
     } else {
       setInc(false);
       setItemQuantity(itemQuantity + 1);
@@ -149,8 +141,8 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
           cart?.token
         )
       );
-      setShowItemCard(false);
       setItemQuantity(0);
+      setShowItemCard(false);
     }, 2000);
     timeoutIdRef.current = id;
   };
@@ -170,8 +162,8 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
             cart?.token
           )
         );
-        setShowItemCard(false);
         setItemQuantity(0);
+        setShowItemCard(false);
       }, 2000);
       timeoutIdRef.current = id;
     }

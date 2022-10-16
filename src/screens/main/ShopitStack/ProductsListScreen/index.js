@@ -48,6 +48,7 @@ import { getData, removeData, storeData } from "../../../../redux/rootReducer";
 import { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import BottomBarCart from "../../../components/bottomBarCart";
 import UpperNotification from "../../../components/DelieveryNotifyComponent/UpperNotification";
+import { Alert } from "react-native";
 
 const ProductListScreen = ({
   navigation,
@@ -56,6 +57,7 @@ const ProductListScreen = ({
   productsList,
   saving,
   pageIndex,
+  meta,
 }) => {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [all, setAll] = useState(true);
@@ -74,7 +76,7 @@ const ProductListScreen = ({
   const [showItemCard, setShowItemCard] = useState(false);
   const [enableQty, setEnableQty] = useState(null);
   const [itemQuantity, setItemQuantity] = useState(1);
-  const [inCart, setInCart] = useState(false);
+  const [inCartItem, setInCartItem] = useState([]);
   const [inc, setInc] = useState("false");
   const [isModelVisible, setModelVisible] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
@@ -122,6 +124,12 @@ const ProductListScreen = ({
     };
   }, []);
 
+  // useEffect(() => {
+  //   if (checkout?.iserror) {
+  //     Alert.alert("Error:", checkout.error);
+  //   }
+  // }, [checkout?.iserror]);
+
   useEffect(() => {
     handleActiveMenu();
   }, [menus, params]);
@@ -146,9 +154,38 @@ const ProductListScreen = ({
     }
     removeData("food");
     removeData("vendors");
-  }, []);
+
+    console.log("cart", cart.line_items);
+
+    handleCartItemsQuantity();
+  }, [cart.line_items]);
+
+  const handleCartItemsQuantity = () => {
+    let uniqueNew = [];
+
+    if (cart?.line_items?.length > 0) {
+      cart.line_items.map((ele) => {
+        uniqueNew.push({
+          id: ele.id,
+          quantity: ele.quantity,
+          productId: ele?.variant?.product.id,
+        });
+      });
+    }
+
+    setUniqueItemInCartVariable(uniqueNew);
+  };
+
+  const setUniqueItemInCartVariable = (itemArray) => {
+    setInCartItem([
+      ...new Map(itemArray.map((item) => [item["productId"], item])).values(),
+    ]);
+  };
+
+  console.log("cartItems", inCartItem);
 
   useEffect(() => {
+    console.log("productlist length", productsList.length);
     {
       productsList.length === 0 && handleProductsLoad();
     }
@@ -318,9 +355,23 @@ const ProductListScreen = ({
     return item?.default_variant?.id;
   };
 
-  const handleItemIncrement = () => {
+  const handleItemIncrement = (item = null) => {
     setInc(true);
     setItemQuantity(itemQuantity + 1);
+
+    let itemInCart = inCartItem.find((ele) => ele.productId == item?.id);
+
+    if (item?.id && itemInCart) {
+      setUniqueItemInCartVariable([
+        ...inCartItem,
+        { ...itemInCart, quantity: itemInCart.quantity + 1 },
+      ]);
+    } else if (item?.id) {
+      setUniqueItemInCartVariable([
+        ...inCartItem,
+        { quantity: itemQuantity + 1, productId: item.id },
+      ]);
+    }
   };
 
   const handleChangeQuantityClick = () => {
@@ -336,27 +387,47 @@ const ProductListScreen = ({
     }
   };
 
-  const handleSetTimeoutDefault = (ID) => {
+  const handleSetTimeoutDefault = (ID, item) => {
     handleChangeQuantityClick();
     let firstItem = productsList.find((x) => x.id == ID);
-    setTimeout(() => {
+    const id = setTimeout(() => {
       dispatch(
         addItem(cart?.token, {
           variant_id: firstItem?.default_variant?.id,
           quantity: 1,
         })
       );
+      setUniqueItemInCartVariable([
+        ...inCartItem,
+        { quantity: 1, productId: item.id },
+      ]);
       setShowItemCard(false);
     }, 2000);
+
+    timeoutIdRef.current = id;
+  };
+
+  const findItemInCart = (id) => {
+    let cartItem = cart.line_items.filter((ele) => id == ele.id);
+
+    return cartItem;
+  };
+
+  const findItemTempCartVariable = (item) => {
+    let element = inCartItem?.find((ele) => ele.productId == item?.id);
+
+    return element;
   };
 
   const handleSetTimeoutInc = (tempId, qty) => {
+    let itemInCart = findItemInCart(tempId);
+
     const id = setTimeout(() => {
-      if (!inCart) {
+      if (!itemInCart[0]) {
         dispatch(
           addItem(cart?.token, {
             variant_id: handleCart(),
-            quantity: itemQuantity,
+            quantity: itemQuantity + 1,
           })
         );
         setShowItemCard(false);
@@ -378,25 +449,42 @@ const ProductListScreen = ({
     timeoutIdRef.current = id;
   };
 
-  const handleSetTimeoutDec = (tempId, qty) => {
+  const handleSetTimeoutDec = (tempId, qty, item) => {
+    let itemInCart = inCartItem.find((ele) => ele.productId == item?.id);
     if (3 - itemQuantity > qty) {
       dispatch(removeLineItem(tempId, {}, cart?.token));
+
+      if (item?.id && itemInCart) {
+        setUniqueItemInCartVariable([
+          ...inCartItem.filter((pro) => item?.id !== pro.productId),
+        ]);
+      }
+
+      console.log("deleteItem", itemInCart);
+
       setShowItemCard(false);
     } else {
-      const id = setTimeout(() => {
-        dispatch(
-          setQuantity(
-            {
-              line_item_id: tempId,
-              quantity: qty + (itemQuantity - 2),
-            },
-            cart?.token
-          )
-        );
-        setShowItemCard(false);
-        setItemQuantity(0);
-      }, 2000);
-      timeoutIdRef.current = id;
+      if (item?.id && itemInCart) {
+        const id = setTimeout(() => {
+          dispatch(
+            setQuantity(
+              {
+                line_item_id: tempId,
+                quantity: qty + (itemQuantity - 2),
+              },
+              cart?.token
+            )
+          );
+          setShowItemCard(false);
+          setItemQuantity(0);
+        }, 2000);
+
+        setUniqueItemInCartVariable([
+          ...inCartItem,
+          { ...itemInCart, quantity: itemInCart.quantity - 1 },
+        ]);
+        timeoutIdRef.current = id;
+      }
     }
   };
 
@@ -507,7 +595,11 @@ const ProductListScreen = ({
                 onPress={() => {
                   handleChangeQuantityClick();
                   handleItemDecrement(tempArr[0]?.quantity);
-                  handleSetTimeoutDec(tempArr[0]?.id, tempArr[0]?.quantity);
+                  handleSetTimeoutDec(
+                    tempArr[0]?.id,
+                    tempArr[0]?.quantity,
+                    item
+                  );
                 }}
               >
                 <Icon
@@ -529,7 +621,7 @@ const ProductListScreen = ({
               <TouchableOpacity
                 onPress={() => {
                   handleChangeQuantityClick();
-                  handleItemIncrement();
+                  handleItemIncrement(item);
                   handleSetTimeoutInc(tempArr[0]?.id, tempArr[0]?.quantity);
                 }}
               >
@@ -541,7 +633,7 @@ const ProductListScreen = ({
                 />
               </TouchableOpacity>
             </View>
-          ) : tempArr[0] ? (
+          ) : findItemTempCartVariable(item) ? (
             <Pressable
               style={styles.addLogo}
               onPress={() => {
@@ -551,10 +643,10 @@ const ProductListScreen = ({
                 findCartProduct(item?.id);
               }}
             >
-              {item?.id == tempArr[0]?.variant?.product?.id && (
+              {findItemTempCartVariable(item) && (
                 <View style={styles.afterText}>
                   <Text style={{ color: colors.white, fontSize: 25 }}>
-                    {tempArr.length !== 0 ? tempArr[0].quantity : 1}
+                    {findItemTempCartVariable(item)?.quantity}
                   </Text>
                 </View>
               )}
@@ -572,7 +664,7 @@ const ProductListScreen = ({
                   setItemQuantity(1);
                   setShowItemCard(true);
                   findCartProduct(item?.id);
-                  handleSetTimeoutDefault(item?.id);
+                  handleSetTimeoutDefault(item?.id, item);
                 }}
               />
             </TouchableOpacity>
@@ -649,12 +741,12 @@ const ProductListScreen = ({
   ];
 
   const handleEndReached = () => {
-    if (!showTaxonProducts) {
-      const response = dispatch(
-        setPageIndex(Math.round(productsList.length / 20) + 1)
-      );
-      handleProductsLoad(response.payload);
-    }
+    // if (showTaxonProducts) {
+    const response = dispatch(
+      setPageIndex(Math.round(productsList.length / 20) + 1)
+    );
+    handleProductsLoad(response.payload) && console.log("this is running");
+    // }
   };
 
   const handleAll = () => {
@@ -1319,9 +1411,10 @@ const ProductListScreen = ({
             numColumns={2}
             ListFooterComponent={flatListLowerElement}
             ref={scrollRef}
-            extraData={selectedId}
             onEndReachedThreshold={0.33}
-            onEndReached={() => handleEndReached()}
+            onEndReached={() =>
+              meta.total_count < productsList.length && handleEndReached()
+            }
             columnWrapperStyle={{
               width: "100%",
               justifyContent: "space-evenly",

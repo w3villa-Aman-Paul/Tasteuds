@@ -7,6 +7,7 @@ const DEFAULT_STATE = {
   address: [],
   orderComplete: [],
   error: null,
+  iserror: false,
   country: {
     states: [],
     iso: null,
@@ -72,6 +73,7 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
         country: dataFormatter.deserialize(response),
         saving: false,
         error: null,
+        iserror: false,
         isAuth: true,
         status: action.payload.status,
       };
@@ -94,6 +96,7 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
         countriesList: dataFormatter.deserialize(response),
         saving: false,
         error: null,
+        iserror: false,
         isAuth: true,
         status: action.payload.status,
       };
@@ -116,6 +119,7 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
         country: dataFormatter.deserialize(response),
         saving: false,
         error: null,
+        iserror: false,
         isAuth: true,
         status: action.payload.status,
       };
@@ -138,6 +142,7 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
         paymentMethods: dataFormatter.deserialize(response),
         saving: false,
         error: null,
+        iserror: false,
         isAuth: true,
         status: action.payload.status,
       };
@@ -160,6 +165,7 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
         cart: dataFormatter.deserialize(response),
         saving: false,
         error: null,
+        iserror: false,
         isAuth: true,
         status: action.payload.status,
       };
@@ -185,6 +191,7 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
         cart: dataFormatter.deserialize(response),
         saving: false,
         error: null,
+        iserror: false,
         isAuth: true,
         status: action.payload.status,
       };
@@ -205,6 +212,7 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
         saving: false,
         error: null,
         isAuth: true,
+        iserror: false,
         status: action.payload.status,
       };
       return { ...state, ...changes };
@@ -220,6 +228,7 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
       changes = {
         saving: false,
         error: response.data.error,
+        iserror: true,
         isAuth: false,
         status: response.status,
       };
@@ -230,6 +239,7 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
         ...state,
         saving: false,
         error: null,
+        iserror: false,
         isAuth: true,
         address: [...state.address, action.payload.data.data.attributes],
       };
@@ -241,6 +251,7 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
       changes = {
         saving: false,
         error: response.data.error,
+        iserror: true,
         isAuth: false,
         status: response.status,
       };
@@ -251,6 +262,7 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
         address: dataFormatter.deserialize(response),
         saving: false,
         error: null,
+        iserror: false,
         isAuth: true,
         status: action.payload.status,
       };
@@ -263,6 +275,7 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
       changes = {
         saving: false,
         error: response.data.error,
+        iserror: true,
         isAuth: false,
         status: response.status,
       };
@@ -282,6 +295,7 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
           ),
           saving: false,
           error: null,
+          iserror: false,
           isAuth: true,
         };
       }
@@ -299,6 +313,7 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
       changes = {
         saving: false,
         error: response.data.error,
+        iserror: true,
         isAuth: false,
         status: response.status,
       };
@@ -309,6 +324,7 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
         message: "Address Deleted Succcessfully",
         saving: false,
         error: null,
+        iserror: false,
         isAuth: true,
         status: action.payload.status,
       };
@@ -324,6 +340,7 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
       changes = {
         saving: false,
         error: response.data.error,
+        iserror: true,
         isAuth: false,
         status: response.status,
       };
@@ -334,6 +351,7 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
         orderComplete: dataFormatter.deserialize(response),
         saving: false,
         error: null,
+        iserror: false,
         isAuth: true,
         status: action.payload.status,
       };
@@ -349,6 +367,7 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
       changes = {
         saving: false,
         error: response.data.error,
+        iserror: true,
         status: response.status,
       };
       return { ...state, ...changes };
@@ -358,6 +377,7 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
         cart: dataFormatter.deserialize(response),
         saving: false,
         error: null,
+        iserror: false,
         isAuth: true,
         status: action.payload.status,
       };
@@ -373,6 +393,7 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
       changes = {
         saving: false,
         error: response.data.error,
+        iserror: true,
         isAuth: false,
         status: response.status,
       };
@@ -383,6 +404,7 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
         cart: dataFormatter.deserialize(response),
         saving: false,
         error: null,
+        iserror: false,
         isAuth: true,
         status: action.payload.status,
       };
@@ -398,6 +420,7 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
       changes = {
         saving: false,
         error: response.data.error,
+        iserror: true,
         isAuth: false,
         status: response.status,
       };
@@ -409,6 +432,7 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
         saving: false,
         error: "Lagt til bag",
         isAuth: true,
+        iserror: false,
         status: action.payload.status,
       };
       return { ...state, ...changes };
@@ -423,6 +447,7 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
       changes = {
         saving: false,
         error: response.data.error,
+        iserror: true,
         isAuth: false,
         status: response.status,
       };
@@ -434,6 +459,7 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
         saving: false,
         error: null,
         isAuth: true,
+        iserror: false,
         status: action.payload.status,
       };
       return { ...state, ...changes };
@@ -448,6 +474,7 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
       changes = {
         saving: false,
         error: response.data.error,
+        iserror: true,
         isAuth: false,
         status: response.status,
       };
@@ -459,6 +486,7 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
         saving: false,
         error: null,
         isAuth: true,
+        iserror: false,
         status: action.payload.status,
         saving: false,
       };
