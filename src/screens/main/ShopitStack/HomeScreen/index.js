@@ -114,8 +114,6 @@ const HomeComponent = ({ dispatch, navigation, route, productsList, cart }) => {
     ]);
   };
 
-  console.log("cartItems", inCartItem);
-
   const dismissSnackbar = () => setSnackbarVisible(false);
 
   const loadMostBoughtGoods = () => {

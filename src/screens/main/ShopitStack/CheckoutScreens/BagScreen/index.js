@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -51,10 +51,10 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
   const [enableQty, setEnableQty] = useState(null);
   const [itemQuantity, setItemQuantity] = useState(0);
 
-  const [inc, setInc] = useState("false");
+  const [inc, setInc] = useState(false);
 
   const snapPoints = Platform.OS === "ios" ? ["40%"] : ["30%"];
-  const timeoutIdRef = React.useRef();
+  const timeoutIdRef = useRef();
 
   useEffect(() => {
     if (isAuth) {
@@ -120,10 +120,8 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
     setItemQuantity(itemQuantity + 1);
   };
   const handleItemDecrement = (lineItemQuantity) => {
-    console.log("ORIGINAL", lineItemQuantity);
     if (2 + itemQuantity > lineItemQuantity) {
-      // setShowItemCard(false);
-      closeIncBar();
+      setShowItemCard(false);
     } else {
       setInc(false);
       setItemQuantity(itemQuantity + 1);
@@ -141,9 +139,10 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
           cart?.token
         )
       );
-      setItemQuantity(0);
       setShowItemCard(false);
+      setItemQuantity(0);
     }, 2000);
+
     timeoutIdRef.current = id;
   };
 
@@ -246,6 +245,8 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
                 (ele) => ele?.variant?.product?.id == enableQty?.id
               );
 
+              console.log("cart", ele);
+
               return (
                 <View key={ele?.variant?.id.toString()}>
                   <View style={styles.body}>
@@ -290,16 +291,7 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
                       <Text style={styles.price}>{ele.display_total}</Text>
                     </View>
 
-                    <Pressable
-                      style={styles.cart_btn}
-                      onPress={() => {
-                        setShowItemCard(true);
-                        findCartProduct(cartItemId);
-                        {
-                          !itemQuantity ? closeIncBar() : null;
-                        }
-                      }}
-                    >
+                    <View style={styles.cart_btn}>
                       {showItemCard && cartItemId === enableQty?.id ? (
                         <View style={styles.after_Press}>
                           <TouchableOpacity
@@ -344,7 +336,19 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
                           </TouchableOpacity>
                         </View>
                       ) : (
-                        <>
+                        <Pressable
+                          style={{
+                            height: "100%",
+                            width: "100%",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                          onPress={() => {
+                            setShowItemCard(true);
+                            findCartProduct(cartItemId);
+                            closeIncBar();
+                          }}
+                        >
                           <View style={styles.inc_btn}>
                             <Text style={{ fontSize: 23 }}>{ele.quantity}</Text>
 
@@ -369,9 +373,9 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
                               </Text>
                             </View>
                           </View>
-                        </>
+                        </Pressable>
                       )}
-                    </Pressable>
+                    </View>
                   </View>
                   <Divider orientation="horizontal" />
                 </View>

@@ -91,7 +91,7 @@ export const styles = StyleSheet.create({
   cart_btn: {
     flex: 0.3,
     flexDirection: "row",
-    justifyContent: "flex-end",
+    justifyContent: "center",
     alignItems: "center",
   },
   inc_btn: {
