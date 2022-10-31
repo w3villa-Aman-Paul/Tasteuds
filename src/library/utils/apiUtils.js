@@ -50,6 +50,7 @@ async function handleAPI(path, params, method, data = null, filter = null) {
     url = url + "?" + qs.stringify(params, { arrayFormat: "brackets" });
   }
 
+  // console.log("TRUE")
   return await axios({ url, headers, method, data });
 }
 

@@ -84,37 +84,19 @@ const SearchScreen = ({ navigation, dispatch }) => {
 
   const newJustInRenderItem = ({ item, index }) => {
     return (
-      <TouchableOpacity>
-        <FlatListImageItem
-          key={index.toString()}
-          item={item}
-          onPress={() => {
-            storeData("selectedVendor", resultVendor(item?.vendor?.id)[1]);
-            handleProductLoad(item?.id, item);
-          }}
-          imageStyle={styles.newJustInImage}
-          itemContainerStyle={styles.newJustInItemContainer}
-        />
-      </TouchableOpacity>
-    );
-  };
-
-  const FlatListImageItem = ({
-    item,
-    onPress,
-    imageStyle,
-    itemContainerStyle,
-  }) => {
-    return (
-      <TouchableOpacity onPress={onPress} style={{ ...itemContainerStyle }}>
+      <TouchableOpacity onPress={() => {
+        storeData("selectedVendor", resultVendor(item?.vendor?.id)[1]);
+        handleProductLoad(item?.id, item);
+      }}
+       style={{ ...styles.newJustInItemContainer}}>
         <View style={{ position: "relative" }}>
           <Image
             source={{
               uri: `${HOST}/${item.images[0].styles[3].url}`,
             }}
             style={{
-              width: imageStyle?.width,
-              height: imageStyle?.height,
+              width: styles.newJustInImage?.width,
+              height: styles.newJustInImage?.height,
               resizeMode: "contain",
             }}
           />
@@ -145,7 +127,73 @@ const SearchScreen = ({ navigation, dispatch }) => {
         </View>
       </TouchableOpacity>
     );
+    // return (
+    //   <TouchableOpacity>
+    //     <FlatListImageItem
+    //       key={index.toString()}
+    //       item={item}
+    //       onPress={() => {
+    //         storeData("selectedVendor", resultVendor(item?.vendor?.id)[1]);
+    //         handleProductLoad(item?.id, item);
+    //       }}
+    //       imageStyle={styles.newJustInImage}
+    //       itemContainerStyle={styles.newJustInItemContainer}
+    //     />
+    //   </TouchableOpacity>
+    // );
   };
+
+  // const FlatListImageItem = ({
+  //   item,
+  //   onPress,
+  //   imageStyle,
+  //   itemContainerStyle,
+  // }) => {
+  //   return (
+  //     <TouchableOpacity onPress={() => {
+  //       storeData("selectedVendor", resultVendor(item?.vendor?.id)[1]);
+  //       handleProductLoad(item?.id, item);
+  //     }}
+  //      style={{ ...styles.newJustInItemContainer}}>
+  //       <View style={{ position: "relative" }}>
+  //         <Image
+  //           source={{
+  //             uri: `${HOST}/${item.images[0].styles[3].url}`,
+  //           }}
+  //           style={{
+  //             width: styles.newJustInImage?.width,
+  //             height: styles.newJustInImage?.height,
+  //             resizeMode: "contain",
+  //           }}
+  //         />
+  //         {/* <TouchableOpacity style={styles.addBtn}>
+  //           <Icon
+  //             name="pluscircleo"
+  //             type="ant-design"
+  //             size={34}
+  //             color={colors.btnLink}
+  //             borderRadius={34}
+  //             onPress={() => cartHandler(item?.id)}
+  //           />
+  //         </TouchableOpacity> */}
+  //       </View>
+  //       <View style={styles.detailsContainer}>
+  //         <Text numberOfLines={1} style={styles.title}>
+  //           {item.name}
+  //         </Text>
+  //         <Text numberOfLines={1} style={styles.description}>
+  //           {`${resultVendor(item?.vendor?.id)[0]}`}
+  //         </Text>
+  //         <View style={styles.pricingContainer}>
+  //           <Text style={[styles.prices, { color: colors.black }]}>
+  //             {" "}
+  //             {item.display_price}
+  //           </Text>
+  //         </View>
+  //       </View>
+  //     </TouchableOpacity>
+  //   );
+  // };
 
   return (
     <SafeAreaView style={styles.container}>

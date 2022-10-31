@@ -6,6 +6,7 @@ const DEFAULT_STATE = {
   status: null,
   address: [],
   orderComplete: [],
+  orders: [],
   error: null,
   iserror: false,
   country: {
@@ -430,7 +431,7 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
       changes = {
         cart: dataFormatter.deserialize(response),
         saving: false,
-        error: "Lagt til bag",
+        error: null,
         isAuth: true,
         iserror: false,
         status: action.payload.status,
@@ -483,6 +484,33 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
     case "REMOVE_LINE_ITEM_FULFILLED":
       changes = {
         cart: dataFormatter.deserialize(response),
+        saving: false,
+        error: null,
+        isAuth: true,
+        iserror: false,
+        status: action.payload.status,
+        saving: false,
+      };
+      return { ...state, ...changes };
+
+      /** GET _ORDERS **/
+
+    case "GET_ORDERS_PENDING":
+      return { ...state, saving: true, error: null, isAuth: false, status: "" };
+
+    case "GET_ORDERS_REJECTED":
+      changes = {
+        saving: false,
+        error: response.data.error,
+        iserror: true,
+        isAuth: false,
+        status: response.status,
+      };
+      return { ...state, ...changes };
+
+    case "GET_ORDERS_FULFILLED":
+      changes = {
+        orders: dataFormatter.deserialize(response),
         saving: false,
         error: null,
         isAuth: true,

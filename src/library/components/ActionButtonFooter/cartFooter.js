@@ -1,35 +1,32 @@
-import * as React from "react";
-import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
-import { globalStyles } from "../../../styles/global";
-import { connect, useSelector } from "react-redux";
+import React, {useState} from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+import { connect } from "react-redux";
 import { Button } from "react-native-elements";
 import { styles } from "./styles";
-import { useRoute } from "@react-navigation/native";
-import Payments from "../Payments/Payments";
+import { ActivityIndicator } from "react-native";
+import { colors } from "../../../res/palette";
 
-const CartFooter = ({ title, onPress, cart, navigation, payment_btn }) => {
-  const route = useRoute();
-  console.log(route.name);
+const CartFooter = (props) => {
+  const { title, onPress, cart, disabled, setDisabled } = props;
   return (
     <TouchableOpacity style={styles.cart_total_price}>
       <View style={styles.cart_footer_body}>
         <Text style={styles.total_text}>TOTALSUM</Text>
         <Text style={styles.total_price}>{cart.display_total}</Text>
       </View>
-
-      {route.name === "Bag" ? (
-        <Button
-          title={title}
-          type="solid"
-          buttonStyle={styles.footerAction}
-          titleStyle={globalStyles.latoBold16}
+        <TouchableOpacity
+          style={styles.footerAction}
           onPress={onPress}
-        />
-      ) : (
+        >
+          <Text style={styles.btnText}>{disabled ? <ActivityIndicator size="large" color={colors.black} /> : title} </Text>
+        </TouchableOpacity>
+
+
+      {/* ) : (
         <TouchableOpacity style={styles.footerAction}>
           <Payments payment_btn={{ height: "100%" }} />
         </TouchableOpacity>
-      )}
+      )} */}
     </TouchableOpacity>
   );
 };

@@ -1,6 +1,5 @@
-import * as React from "react";
+import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-
 import AccountScreen from "../screens/main/ProfileStack/AccountScreen";
 import SavedAddress from "../screens/main/ProfileStack/SavedAddress";
 import OffersScreen from "../screens/main/ProfileStack/OffersScreen";
@@ -9,10 +8,13 @@ import { connect, useSelector } from "react-redux";
 import { Image, StyleSheet, TouchableOpacity } from "react-native";
 import AddAddress from "../screens/main/ProfileStack/AddAddress";
 import ResetPasswordScreen from "../screens/auth/ResetPasswordScreen";
+import SingleOrderScreen from "../screens/main/ProfileStack/SingleOrderScreen/SingleOrderScreen";
 
 const ProfileStack = createStackNavigator();
 
-function ProfileStackNavigator({ navigation }) {
+function ProfileStackNavigator({ navigation,route }) {
+
+
   return (
     <ProfileStack.Navigator
       screenOptions={{
@@ -78,6 +80,12 @@ function ProfileStackNavigator({ navigation }) {
         name="Offers"
         component={OffersScreen}
         options={{ headerTitle: "OFFERS", headerTitleAlign: "center" }}
+      />
+
+      <ProfileStack.Screen
+        name="SingleOrderScreen"
+        component={SingleOrderScreen}
+        options={{ headerTitle: "", headerShown: false }}
       />
     </ProfileStack.Navigator>
   );

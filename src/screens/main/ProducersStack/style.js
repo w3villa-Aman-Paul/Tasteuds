@@ -174,8 +174,8 @@ export const styles = StyleSheet.create({
 
   addLogo: {
     position: "absolute",
-    bottom: 10,
-    right: 10,
+    bottom: 5,
+    right: 2,
     flexDirection: "row",
     elevation: 8,
     borderRadius: 12,

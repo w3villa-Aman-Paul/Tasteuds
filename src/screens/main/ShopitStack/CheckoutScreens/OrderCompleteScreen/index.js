@@ -79,7 +79,7 @@ const OrderCompleteScreen = ({ navigation, dispatch }) => {
                           uri: `${HOST}/${product?.images[0]?.styles[0]?.url}`,
                         }}
                       />
-                      <Text style={styles.productText}>{item.name}</Text>
+                      <Text style={styles.productText}>{item?.name}</Text>
                     </View>
 
                     <View style={styles.productDes}>
@@ -90,7 +90,7 @@ const OrderCompleteScreen = ({ navigation, dispatch }) => {
                           fontFamily: "lato-medium",
                         }}
                       >
-                        {item.qty}
+                         {item?.quantity} STK
                       </Text>
                     </View>
 
@@ -103,7 +103,7 @@ const OrderCompleteScreen = ({ navigation, dispatch }) => {
                         }}
                         numberOfLines={1}
                       >
-                        {item.display_price}
+                        {item?.display_price}
                       </Text>
                     </View>
                   </View>
@@ -133,7 +133,7 @@ const OrderCompleteScreen = ({ navigation, dispatch }) => {
               delieveryDate?.getMonth() + 1
             ).padStart(2, "0")}`}</Text>
 
-            {/* <Text style={styles.deliveryText}>{deliveyData.range}</Text> */}
+            {/* <Text style={styles.deliveryText}>{delieveryDate.range}</Text> */}
           </View>
         </View>
 
@@ -141,12 +141,12 @@ const OrderCompleteScreen = ({ navigation, dispatch }) => {
           <Text style={styles.primaryText}>LEVERINGSADRESSE</Text>
 
           <Text style={[styles.deliveryText, { paddingVertical: 10 }]}>
-            {orderComplete.billing_address?.firstname}
+            {orderComplete?.billing_address?.firstname}
           </Text>
 
           <View style={styles.delivery}>
             <Text style={styles.deliveryText}>
-              {orderComplete.billing_address?.address1}
+              {orderComplete?.billing_address?.address1}
             </Text>
 
             <Text style={styles.deliveryText}>

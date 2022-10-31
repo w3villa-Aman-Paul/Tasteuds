@@ -40,37 +40,19 @@ const MostBoughtProducts = ({ navigation, dispatch }) => {
 
   const newJustInRenderItem = ({ item, index }) => {
     return (
-      <TouchableOpacity>
-        <FlatListImageItem
-          key={index.toString()}
-          item={item}
-          onPress={() => {
-            storeData("selectedVendor", resultVendor(item?.vendor_id)[1]);
-            handleProductLoad(item?.id, item);
-          }}
-          imageStyle={styles.newJustInImage}
-          itemContainerStyle={styles.newJustInItemContainer}
-        />
-      </TouchableOpacity>
-    );
-  };
-
-  const FlatListImageItem = ({
-    item,
-    onPress,
-    imageStyle,
-    itemContainerStyle,
-  }) => {
-    return (
-      <TouchableOpacity onPress={onPress} style={{ ...itemContainerStyle }}>
+      <TouchableOpacity onPress={() => {
+        storeData("selectedVendor", resultVendor(item?.vendor_id)[1]);
+        handleProductLoad(item?.id, item);
+      }}
+       style={{ ...styles.newJustInItemContainer }}>
         <View style={{ position: "relative" }}>
           <Image
             source={{
               uri: `${item.image_attachment}`,
             }}
             style={{
-              width: imageStyle?.width,
-              height: imageStyle?.height,
+              width: styles.newJustInImage?.width,
+              height: styles.newJustInImage?.height,
               resizeMode: "contain",
             }}
           />
@@ -91,7 +73,63 @@ const MostBoughtProducts = ({ navigation, dispatch }) => {
         </View>
       </TouchableOpacity>
     );
+    // return (
+    //   <TouchableOpacity>
+    //     <FlatListImageItem
+    //       key={index.toString()}
+    //       item={item}
+    //       onPress={() => {
+    //         storeData("selectedVendor", resultVendor(item?.vendor_id)[1]);
+    //         handleProductLoad(item?.id, item);
+    //       }}
+    //       imageStyle={styles.newJustInImage}
+    //       itemContainerStyle={styles.newJustInItemContainer}
+    //     />
+    //   </TouchableOpacity>
+    // );
   };
+
+  // const FlatListImageItem = ({
+  //   item,
+  //   onPress,
+  //   imageStyle,
+  //   itemContainerStyle,
+  // }) => {
+  //   return (
+  //     <TouchableOpacity onPress={() => {
+  //       storeData("selectedVendor", resultVendor(item?.vendor_id)[1]);
+  //       handleProductLoad(item?.id, item);
+  //     }}
+  //      style={{ ...styles.newJustInItemContainer }}>
+  //       <View style={{ position: "relative" }}>
+  //         <Image
+  //           source={{
+  //             uri: `${item.image_attachment}`,
+  //           }}
+  //           style={{
+  //             width: styles.newJustInImage?.width,
+  //             height: styles.newJustInImage?.height,
+  //             resizeMode: "contain",
+  //           }}
+  //         />
+  //       </View>
+  //       <View style={styles.detailsContainer}>
+  //         <Text numberOfLines={1} style={styles.title}>
+  //           {item.name}
+  //         </Text>
+  //         <Text numberOfLines={1} style={styles.description}>
+  //           {`${resultVendor(item?.vendor_id)[0]}`}
+  //         </Text>
+  //         <View style={styles.pricingContainer}>
+  //           <Text style={[styles.prices, { color: colors.black }]}>
+  //             {" "}
+  //             {item.display_price}
+  //           </Text>
+  //         </View>
+  //       </View>
+  //     </TouchableOpacity>
+  //   );
+  // };
 
   return (
     <SafeAreaView

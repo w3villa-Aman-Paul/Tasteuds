@@ -34,12 +34,7 @@ function ShopitStackNavigator({ navigation, route }) {
   const { cart } = useSelector((state) => state.checkout);
   const { mostBoughtGoods } = useSelector((state) => state.taxons);
 
-  const { isAuth } = useSelector((state) => state.auth);
-
   useEffect(() => {
-    if (!cart.token || cart.token === "yNgtO10tKJk_hmw4ETtv5Q1657624186384") {
-      dispatch(createCart(isAuth));
-    }
     {
       mostBoughtGoods?.length === 0 && dispatch(getMostBoughtGoods());
     }

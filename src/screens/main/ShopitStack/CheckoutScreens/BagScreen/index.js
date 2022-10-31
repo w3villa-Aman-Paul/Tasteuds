@@ -24,11 +24,6 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import CartFooter from "../../../../../library/components/ActionButtonFooter/cartFooter";
 import { useSelector } from "react-redux";
 import {
-  APP_NAME,
-  FACEBOOK_APP_ID,
-  GOOGLE_ANDROID_CLIENT_ID,
-  GOOGLE_EXPO_ID,
-  GOOGLE_IOS_CLIENT_ID,
   HOST,
 } from "../../../../../res/env";
 import FilterFooter from "../../../../../library/components/ActionButtonFooter/FilterFooter";
@@ -45,15 +40,18 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const sheetRef = React.useRef(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [disabled, setDisabled] = useState(false);
 
   const onDismiss = () => setSnackbarVisible(false);
   const [showItemCard, setShowItemCard] = useState(false);
   const [enableQty, setEnableQty] = useState(null);
   const [itemQuantity, setItemQuantity] = useState(0);
-
   const [inc, setInc] = useState(false);
 
-  const snapPoints = Platform.OS === "ios" ? ["40%"] : ["30%"];
+
+  const snapPoints = Platform.OS === "ios" ? ["40%"] : ["50%"];
+
+
   const timeoutIdRef = useRef();
 
   useEffect(() => {
@@ -74,28 +72,20 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
     dispatch(getCart(cart?.token));
   }, []);
 
-  const hideLoginModal = () => {
-    setIsOpen(false);
-  };
-
+  
   const handleCartProductImage = (cartPro) => {
     const product = productsList?.find(
-      (element) => cartPro?.variant?.product.id === element.id
-    );
-    return product?.images[0].styles[1];
-  };
+      (element) => cartPro?.variant?.product?.id === element.id
+      );
+      return product?.images[0].styles[1];
+    };
+    
+    
+    const bottomSheetContent = () => {
+      setDisabled(false);
+      return <BottomLoginModal hideLoginModal={() => setIsOpen(false)} />;
+    };
 
-  const handleToCheckout = async () => {
-    navigation.navigate("ShippingAddress");
-  };
-
-  const bottomSheetContent = () => {
-    return <BottomLoginModal hideLoginModal={hideLoginModal} />;
-  };
-
-  const loginFooterCheckout = () => {
-    setIsOpen(true);
-  };
 
   const closeIncBar = () => {
     const id = setTimeout(() => setShowItemCard(false), 4000);
@@ -167,6 +157,17 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
       timeoutIdRef.current = id;
     }
   };
+
+  const checkDisablity = () => {
+    if(isAuth){
+      navigation.navigate("ShippingAddress", {setDisabled : () => setDisabled(false)});
+      setDisabled(true);
+    }
+    else{
+      setIsOpen(true);
+      setDisabled(true);
+    }
+  }
 
   return (
     <>
@@ -245,10 +246,8 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
                 (ele) => ele?.variant?.product?.id == enableQty?.id
               );
 
-              console.log("cart", ele);
-
               return (
-                <View key={ele?.variant?.id.toString()}>
+                <View key={cartItemId}>
                   <View style={styles.body}>
                     <View style={styles.body_second}>
                       <>
@@ -432,14 +431,14 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
           <View></View>
         </ScrollView>
 
-        {cart?.line_items.length === 0 ? (
-          <></>
-        ) : isOpen ? (
+        {isOpen ? (
           <></>
         ) : (
           <CartFooter
             title={"TIL BETALING"}
-            onPress={isAuth ? handleToCheckout : loginFooterCheckout}
+            onPress={checkDisablity}
+            disabled={disabled}
+            setDisabled={() => setDisabled(false)}
           />
         )}
 

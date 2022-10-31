@@ -4,7 +4,8 @@ import {
   handleAddCartItem,
   handleAPIWithoutToken,
 } from "../../library/utils/apiUtils";
-import { removeData, storeData } from "../rootReducer";
+
+import { useSelector } from "react-redux";
 
 export function getDefaultCountry(data, params = null) {
   const url = `${API_VERSION_STOREFRONT}/countries/default`;
@@ -192,7 +193,7 @@ export function getCart(cartToken) {
   };
 }
 
-export function createCart(isAuth = false) {
+export function createCart() {
   const url = `${API_VERSION_STOREFRONT}/cart`;
   const method = "POST";
   const params = {
@@ -200,9 +201,8 @@ export function createCart(isAuth = false) {
   };
   return {
     type: "CREATE_CART",
-    payload: isAuth
-      ? handleAPI(url, params, method)
-      : handleAPIWithoutToken(url, params, method),
+    payload: handleAPI(url, params, method)
+    
   };
 }
 
@@ -240,3 +240,20 @@ export const fetchClientSecret = () => {
 
   return handleAddCartItem(url, null, method, data);
 };
+
+
+// ORDERS LIST
+
+export function getOrders() {
+  const url = `${API_VERSION_STOREFRONT}/account/orders`;
+  const method = "GET";
+  const params = {
+    include: "line_items,variants,variants.images,billing_address,shipping_address,user,payments,shipments,promotions",
+  };
+  return {
+    type: "GET_ORDERS",
+    payload: handleAPI(url, params, method)
+
+  };
+}
+

@@ -4,56 +4,42 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Image,
-  TextInput,
-  KeyboardAvoidingView,
   Platform,
+  Alert,
 } from "react-native";
 import { globalStyles } from "../../../../../styles/global";
 import { colors } from "../../../../../res/palette";
-import { CheckO } from "../../../../../library/icons";
-import { Icon } from "react-native-elements";
-import { initStripe, useStripe } from "@stripe/stripe-react-native";
+import {
+  initPaymentSheet,
+  presentPaymentSheet,
+  confirmPaymentSheetPayment,
+} from "@stripe/stripe-react-native";
 
 import {
   createCart,
   updateCheckout,
-  checkoutNext,
   getPaymentMethods,
   completeCheckout,
-  getDefaultCountry,
-  getCountriesList,
+  getOrders,
 } from "../../../../../redux/actions/checkoutActions";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { retrieveAddress } from "../../../../../redux/actions/checkoutActions";
 import { styles } from "./styles";
-import { checkoutStyles } from "../styles";
 import CartFooter from "../../../../../library/components/ActionButtonFooter/cartFooter";
 import ActivityIndicatorCard from "../../../../../library/components/ActivityIndicatorCard";
-import FilterFooter from "../../../../../library/components/ActionButtonFooter/FilterFooter";
 import { accountRetrieve } from "../../../../../redux";
-import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import { useNavigation } from "@react-navigation/native";
-import { MethodSelector } from "./MethodSelector";
 import ApplePay from "../../../../components/ApplePay/ApplePay";
 import BottomModal from "../../../../components/BottomModal/BottomModal";
 import Payments from "../../../../../library/components/Payments/Payments";
+import { HOST } from "../../../../../res/env";
 import GooglePay from "../../../../components/GooglePay/GooglePay";
 
-const FormInput = ({ placeholder, ...rest }) => {
-  return (
-    <BottomSheetTextInput
-      {...rest}
-      placeholder={placeholder ? placeholder : ""}
-    />
-  );
-};
 
 const ShippingAddressScreen = ({ saving, route }) => {
-  let newAddress = Address?.filter((x) => x.id === route.params?.Id);
-  const [paymentMethod, setPaymentMethod] = useState();
-  const [paymentVisible, setPaymentVisible] = useState(false);
+  route.params.setDisabled();
   const [isModalVisible, setModalVisible] = useState(false);
+  const [disabled, setDisabled] = useState(false);
   const [updateAddress, setUpdateAddress] = useState({
     firstname: "",
     lastname: "",
@@ -65,13 +51,14 @@ const ShippingAddressScreen = ({ saving, route }) => {
     state_name: "Bergen",
     country_iso: "NO",
   });
-  const { initPaymentSheet, presentPaymentSheet, confirmPaymentSheetPayment } =
-    useStripe();
 
   const Account = useSelector((state) => state.account.account);
   const Address = useSelector((state) => state.checkout.address);
+  const { token } = useSelector((state) => state.checkout.cart);
+  const { isAuth } = useSelector((state) => state.auth);
 
   useEffect(() => {
+    dispatch(createCart());
     dispatch(accountRetrieve());
     dispatch(retrieveAddress());
     dispatch(getPaymentMethods(cart?.token));
@@ -123,18 +110,8 @@ const ShippingAddressScreen = ({ saving, route }) => {
     }
   }, [Address, Account]);
 
-  const sheetRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
-
   const snapPoints = useMemo(() => ["50%", "75%"], []);
-
-  const hideAddressModal = () => {
-    setModalVisible(false);
-  };
-
-  const paymentHandler = () => {
-    setIsOpen(true);
-  };
 
   const { cart } = useSelector((state) => state.checkout);
   const dispatch = useDispatch();
@@ -146,6 +123,7 @@ const ShippingAddressScreen = ({ saving, route }) => {
         dispatch(completeCheckout(cart?.token)).then(() => {
           setIsOpen(false);
           dispatch(createCart());
+          dispatch(getOrders())
           navigation.navigate("OrderComplete");
         });
       } catch (error) {
@@ -156,45 +134,147 @@ const ShippingAddressScreen = ({ saving, route }) => {
     }
   };
 
-  const handleUpdateCheckout = () => {
-    dispatch(
-      updateCheckout(cart?.token, {
-        order: {
-          email: email,
-          special_instructions: "Please leave at door",
-          bill_address_attributes: {
-            firstname: updateAddress.firstname,
-            lastname: updateAddress.lastname,
-            address1: updateAddress.address1,
-            city: updateAddress.city,
-            phone: updateAddress.phone,
-            zipcode: updateAddress.pin,
-            // state_name:
-            //   newAddress.length > 0
-            //     ? newAddress[0].state_name
-            //     : Address[0].state_name,
-            country_iso: updateAddress.country_iso,
+  // const handleUpdateCheckout = () => {
+  //   dispatch(
+  //     updateCheckout(cart?.token, {
+  //       order: {
+  //         email: email,
+  //         special_instructions: "Please leave at door",
+  //         bill_address_attributes: {
+  //           firstname: updateAddress.firstname,
+  //           lastname: updateAddress.lastname,
+  //           address1: updateAddress.address1,
+  //           city: updateAddress.city,
+  //           phone: updateAddress.phone,
+  //           zipcode: updateAddress.pin,
+  //           // state_name:
+  //           //   newAddress.length > 0
+  //           //     ? newAddress[0].state_name
+  //           //     : Address[0].state_name,
+  //           country_iso: updateAddress.country_iso,
+  //         },
+  //         ship_address_attributes: {
+  //           firstname: updateAddress.firstname,
+  //           lastname: updateAddress.lastname,
+  //           address1: updateAddress.address1,
+  //           city: updateAddress.city,
+  //           phone: updateAddress.phone,
+  //           zipcode: updateAddress.pin,
+  //           // state_name:
+  //           //   newAddress.length > 0
+  //           //     ? newAddress[0].state_name
+  //           //     : Address[0].state_name,
+  //           country_iso: updateAddress.country_iso,
+  //         },
+  //       },
+  //     })
+  //   );
+  //   // dispatch(getPaymentMethods(cart?.token));
+  //   dispatch(checkoutNext(cart.token));
+  //   paymentHandler();
+  // };
+
+
+  const subscribe = async () => {
+    try {
+      if (Address.length === 0) {
+        return Alert.alert("Please enter the address first.");
+      }
+      const response = await fetch(
+        `${HOST}/api/v2/storefront/checkout/payment_intent`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Spree-Order-Token": `${token}`,
           },
-          ship_address_attributes: {
-            firstname: updateAddress.firstname,
-            lastname: updateAddress.lastname,
-            address1: updateAddress.address1,
-            city: updateAddress.city,
-            phone: updateAddress.phone,
-            zipcode: updateAddress.pin,
-            // state_name:
-            //   newAddress.length > 0
-            //     ? newAddress[0].state_name
-            //     : Address[0].state_name,
-            country_iso: updateAddress.country_iso,
-          },
+        }
+      );
+
+      const data = await response.json();
+
+      if(data.message === 'Success'){
+        setDisabled(false);
+      }
+      console.log("data", data);
+
+      if (!response.ok) return Alert.alert(data.message);
+
+      const { paymentIntent, ephemeralKey, customer, cartToken, intentId } =
+        data.data;
+
+      const initsheet = await initPaymentSheet({
+        customerId: "cus_MT6T8EFMbytt7Q",
+        // customerEphemeralKeySecret: ephemeralKey,
+        paymentIntentClientSecret: paymentIntent,
+        customFlow: true,
+        merchantDisplayName: "Aman Paul",
+        allowsDelayedPaymentMethods: true,
+        style: "alwaysDark",
+        googlePay: {
+          merchantCountryCode: "IN",
+          testEnv: true, // use test environment
         },
-      })
-    );
-    // dispatch(getPaymentMethods(cart?.token));
-    dispatch(checkoutNext(cart.token));
-    paymentHandler();
+      });
+
+      console.log("init",initsheet);
+
+      if (initsheet.error) {
+        console.log(initsheet.error.message);
+        return Alert.alert(initsheet.error.message);
+      }
+      const presentSheet = await presentPaymentSheet({
+        clientSecret: paymentIntent,
+      });
+
+      if (presentSheet.error) {
+        console.log("presentSheet", presentSheet.error.message);
+        return Alert.alert(presentSheet.error.message);
+      }
+
+      const confirmSheet = await confirmPaymentSheetPayment();
+
+      if (confirmSheet.error) {
+        console.log("confirmSheet", confirmSheet.error.message);
+        return Alert.alert(confirmSheet.error.message);
+      }
+
+      Alert.alert("Payment complete, thank you");
+
+      const paymentStatus = await fetch(
+        `${HOST}/api/v2/storefront/checkout/stripe_payment_status`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Spree-Order-Token": `${token}`,
+          },
+          body: JSON.stringify({
+            payment_intent_id: intentId,
+            payment_method_id: 3,
+          }),
+        }
+      );
+
+      const res = await paymentStatus.json();
+
+      if (res.message === "Success") {
+        handlePaymentConfirmation();
+      } else {
+        Alert.alert("An error occurred. Please try again.");
+      }
+    } catch (error) {
+      Alert.alert("Something went wrong");
+    }
   };
+
+  const checkDisablity = () => {
+    if(isAuth){
+      subscribe();
+      setDisabled(true);
+    }
+  }
+
 
   if (saving) {
     return <ActivityIndicatorCard />;
@@ -347,31 +427,13 @@ const ShippingAddressScreen = ({ saving, route }) => {
           </View>
         </ScrollView>
 
-        {isOpen ? <></> : <CartFooter payment_btn={styles.payment_btn} />}
+        {<CartFooter title={"FULLFØR BETALING"} disabled={disabled}  onPress={checkDisablity} />}
 
-        {console.log((<Payments />).onPress)}
-
-        {isOpen && (
-          <FilterFooter
-            value={sheetRef}
-            snapPoints={snapPoints}
-            onClose={() => setIsOpen(false)}
-            bottomSheetContent={bottomSheetContent}
-          />
-        )}
-
-        {paymentVisible && (
-          <FilterFooter
-            snapPoints={snapPoints}
-            onClose={() => setIsOpen(false)}
-            bottomSheetContent={Payments}
-          />
-        )}
 
         {isModalVisible && (
           <BottomModal
             isModalVisible={isModalVisible}
-            setModalVisible={hideAddressModal}
+            setModalVisible={() =>  setModalVisible(false)}
           />
         )}
       </View>

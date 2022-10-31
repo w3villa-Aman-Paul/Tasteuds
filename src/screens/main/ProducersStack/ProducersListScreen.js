@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { styles } from "./style";
-import { Icon } from "react-native-elements";
 import { connect, useSelector } from "react-redux";
 import Modal from "react-native-modal";
 
@@ -25,14 +24,13 @@ import { globalStyles } from "../../../styles/global";
 const ProducersListScreen = ({ dispatch, navigation }) => {
   const vendors = useSelector((state) => state.taxons.vendors);
 
-  const [vendorsList, setVendorsList] = useState();
+  const [vendorsList, setVendorsList] = useState([]);
 
   const [isModalVisible, setModalVisible] = useState(false);
 
+
   useEffect(() => {
     let load = false;
-
-    // dispatch(getVendorsList());
     if (!load) {
       setVendorsList(vendors?.sort((a, b) => a.name.localeCompare(b.name)));
     }
@@ -40,6 +38,7 @@ const ProducersListScreen = ({ dispatch, navigation }) => {
       load = true;
     };
   }, []);
+
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -55,7 +54,7 @@ const ProducersListScreen = ({ dispatch, navigation }) => {
     });
   };
 
-  const renderFlatListItem = ({ item }) => {
+  const renderFlatListItem = ({ item}) => {
     return (
       <TouchableOpacity
         style={[styles.container, styles.producer]}
@@ -63,7 +62,7 @@ const ProducersListScreen = ({ dispatch, navigation }) => {
       >
         <ImageBackground
           source={{
-            uri: `${item.cover_image_url}`,
+            uri: `${item.cover_image_url}` ? `${item.cover_image_url}` : "https://cdn-icons-png.flaticon.com/512/79/79976.png"
           }}
           style={styles.producerCoverImage}
           imageStyle={{ borderRadius: 10 }}
@@ -176,7 +175,7 @@ const ProducersListScreen = ({ dispatch, navigation }) => {
             ? vendorsList?.filter((item) => item.state === "active")
             : []
         }
-        keyExtractor={(item, index) => item.id}
+        keyExtractor={item => item.id.toString()}
         renderItem={vendorsList ? renderFlatListItem : <ActivityIndicator />}
         ListHeaderComponent={producerListUpperComponent}
       />

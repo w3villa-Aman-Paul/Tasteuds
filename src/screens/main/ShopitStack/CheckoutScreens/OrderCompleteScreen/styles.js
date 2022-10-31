@@ -72,7 +72,7 @@ export const styles = StyleSheet.create({
   },
 
   imgContainer: {
-    flex: 0.3,
+    flex: 0.5,
     flexDirection: "row",
   },
 
@@ -89,8 +89,7 @@ export const styles = StyleSheet.create({
     fontFamily: "lato-medium",
   },
   productDes: {
-    flex: 0.3,
-
+    flex: 0.2,
     alignSelf: "center",
   },
   productPrice: {

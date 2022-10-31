@@ -1,20 +1,11 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
-  View,
   Text,
-  TextInput,
   Alert,
-  Button,
   TouchableOpacity,
   Image,
-  Linking,
 } from "react-native";
 import {
-  CardField,
-  PaymentIntents,
-  useStripe,
-  createToken,
-  useConfirmPayment,
   initPaymentSheet,
   presentPaymentSheet,
   confirmPaymentSheetPayment,
@@ -22,7 +13,8 @@ import {
 import { useSelector } from "react-redux";
 import { HOST } from "../../../res/env";
 
-const Payments = (styles) => {
+const Payments = ({ payment_btn, img_style,  handlePaymentConfirmation,  type}) => {
+  const [disabled,setDisabled]= useState(false);
   const { token } = useSelector((state) => state.checkout.cart);
   const Address = useSelector((state) => state.checkout.address);
 
@@ -64,7 +56,7 @@ const Payments = (styles) => {
         },
       });
 
-      console.log(initsheet);
+      console.log("init",initsheet);
 
       if (initsheet.error) {
         console.log(initsheet.error.message);
@@ -106,7 +98,7 @@ const Payments = (styles) => {
       const res = await paymentStatus.json();
 
       if (res.message === "Success") {
-        styles.handlePaymentConfirmation();
+        handlePaymentConfirmation();
       } else {
         Alert.alert("An error occurred. Please try again.");
       }
@@ -116,30 +108,34 @@ const Payments = (styles) => {
   };
 
   return (
+    <>
     <TouchableOpacity
-      style={[styles.payment_btn, { flexDirection: "row", elevation: 5 }]}
-      onPress={subscribe}
+      style={[payment_btn, { flexDirection: "row", elevation: 5 }]}
+      disabled={disabled}
+      onPress={() => {subscribe(); setDisabled(true)}}
     >
-      {styles.type === "card" ? (
+      {type === "card" && (
         <>
           <Image
             source={require("../../../../assets/images/Header-Icon/cardpay.png")}
-            style={styles.img_style}
+            style={img_style}
           />
           <Text style={{ marginLeft: 10, fontSize: 14 }}>KORTBETALING</Text>
         </>
-      ) : (
-        <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
-          <Text
-            style={{ fontFamily: "lato-bold", fontSize: 16, color: "#fff" }}
-          >
-            FULLFØR BETALING
-          </Text>
-        </View>
       )}
-    </TouchableOpacity>
+        </TouchableOpacity>
+        </>
+      // ) : (
+      //   <View
+      //     style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+      //   >
+      //     <Text
+      //       style={{ fontFamily: "lato-bold", fontSize: 16, color: "#fff" }}
+      //     >
+      //      { disabled ? <ActivityIndicator size="large" color={colors.black} /> : "FULLFØR BETALING"}
+      //     </Text>
+      //   </View>
+      // )}
   );
 };
 

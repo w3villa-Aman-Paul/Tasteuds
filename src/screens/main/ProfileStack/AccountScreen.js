@@ -5,6 +5,7 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import { useState, useEffect, useRef } from "react";
 import { connect, useSelector } from "react-redux";
@@ -12,6 +13,7 @@ import { colors } from "../../../res/palette";
 import {
   accountLogout,
   accountRetrieve,
+  getOrders,
   retrieveAddress,
   userLogout,
 } from "../../../redux";
@@ -25,19 +27,19 @@ const AccountScreen = ({
   navigation,
   address,
   account,
-  acc,
-  route,
 }) => {
   const { isAuth } = useSelector((state) => state.auth);
   const Address = useSelector((state) => state.checkout.address);
   const Account = useSelector((state) => state.account.account);
+  const orders = useSelector((state) => state.checkout.orders);
 
   const [loginModelOpen, setLoginModelOpen] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
+  const [disabled, setDisabled] = useState(false);
   let user = address.filter((add) => add.id === account?.id);
   const [updateAddress, setUpdateAddress] = useState(initialAddressState);
 
-  const snapPoints = Platform.OS === "ios" ? ["50%"] : ["30%"];
+  const snapPoints = Platform.OS === "ios" ? ["50%"] : ["50%"];
 
   const initialAddressState = {
     firstname: "",
@@ -133,36 +135,34 @@ const AccountScreen = ({
 
                 <View style={styles.second}>
                   <Text style={styles.text}>ADRESSE</Text>
-                  <Text>{`${
-                    updateAddress?.address ? updateAddress?.address : ""
-                  }, ${updateAddress?.city ? updateAddress?.city : ""}`}</Text>
+                  <Text>{`${updateAddress?.address ? updateAddress?.address : ""
+                    }, ${updateAddress?.city ? updateAddress?.city : ""}`}</Text>
                   <Text>
-                    {`${updateAddress?.pin ? updateAddress?.pin : ""} ${
-                      user[0]?.country_name ? user[0]?.country_name : ""
-                    }`}
+                    {`${updateAddress?.pin ? updateAddress?.pin : ""} ${user[0]?.country_name ? user[0]?.country_name : ""
+                      }`}
                   </Text>
                 </View>
               </View>
 
-              <View style={styles.body}>
+              <ScrollView style={styles.body}>
                 <View style={styles.first}>
                   <Text style={styles.textbtn}>MINE BESTILLINGER</Text>
                 </View>
-                <View style={styles.first}>
-                  <Text>24/04/2022</Text>
-                  <Text>KR 2 155,00</Text>
-                  <TouchableOpacity>
-                    <Text style={styles.textbtn}>SE DETALJER</Text>
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.first}>
-                  <Text>28/04/2022 </Text>
-                  <Text>KR 455,00</Text>
-                  <TouchableOpacity>
-                    <Text style={styles.textbtn}>SE DETALJER</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
+                {
+                  orders.map((order) => {
+                    const orderNumber = order.number;
+                    return(
+                    <View style={styles.first}>
+                      <Text>{order.completed_at.slice(0, 10)}</Text>
+                      <Text>{order.display_total}</Text>
+                      <TouchableOpacity disabled={disabled} style={styles.seeDetail} onPress={() => {navigation.navigate("SingleOrderScreen", { orderNumber: orderNumber, set: () => setDisabled(false) }); setDisabled(true)}}>
+                        <Text style={styles.textbtn}>{disabled ? <ActivityIndicator size="small" color={colors.black} /> : "SE DETALJER"}</Text>
+                      </TouchableOpacity>
+                    </View>
+                    );
+                  })
+                }
+              </ScrollView>
 
               <View
                 style={{
@@ -296,6 +296,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginRight: 5,
     marginBottom: 15,
+    alignItems: 'center',
   },
   second: {
     marginBottom: 15,
@@ -332,4 +333,12 @@ const styles = StyleSheet.create({
     width: "80%",
     resizeMode: "contain",
   },
+  seeDetail:{
+    borderRadius: 6, 
+    paddingHorizontal: 14,
+    paddingVertical: 4,
+    borderColor: 'transparent',
+    alignSelf: 'center',
+    zIndex: 10
+  }
 });

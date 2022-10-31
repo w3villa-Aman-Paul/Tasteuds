@@ -8,9 +8,7 @@ import {
   ScrollView,
   Dimensions,
   LogBox,
-  Platform,
   Pressable,
-  RefreshControl,
 } from "react-native";
 import { globalStyles } from "../../../../styles/global";
 import { colors } from "../../../../res/palette";
@@ -23,9 +21,6 @@ import {
   getProductsList,
   getProduct,
   setPageIndex,
-  getTaxonsList,
-  getTaxon,
-  getCategories,
   getMenus,
   getSubMenu,
   getSubMenuProducts,
@@ -37,18 +32,15 @@ import {
   sortByMostBought,
   sortByNewlyAdd,
   sortByPrice,
-  getVendorsList,
-  createCart,
 } from "../../../../redux";
 import FilterFooter from "../../../../library/components/ActionButtonFooter/FilterFooter";
 import { HOST } from "../../../../res/env";
 import { useSelector } from "react-redux";
 import { Snackbar } from "react-native-paper";
 import { getData, removeData, storeData } from "../../../../redux/rootReducer";
-import { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import BottomBarCart from "../../../components/bottomBarCart";
 import UpperNotification from "../../../components/DelieveryNotifyComponent/UpperNotification";
-import { Alert } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const ProductListScreen = ({
   navigation,
@@ -94,8 +86,6 @@ const ProductListScreen = ({
   const menus = useSelector((state) => state.taxons.menus);
   const submenus = useSelector((state) => state.taxons.submenus);
   const { products } = useSelector((state) => state);
-  const { isFiltered } = useSelector((state) => state.products);
-
   const { mostBoughtGoods } = useSelector((state) => state.taxons);
   const { newAddedProducts } = useSelector((state) => state.taxons);
   const { selectedTaxonProducts } = useSelector((state) => state.products);
@@ -124,11 +114,6 @@ const ProductListScreen = ({
     };
   }, []);
 
-  // useEffect(() => {
-  //   if (checkout?.iserror) {
-  //     Alert.alert("Error:", checkout.error);
-  //   }
-  // }, [checkout?.iserror]);
 
   useEffect(() => {
     handleActiveMenu();
@@ -166,7 +151,7 @@ const ProductListScreen = ({
         uniqueNew.push({
           id: ele.id,
           quantity: ele.quantity,
-          productId: ele?.variant?.product.id,
+          productId: ele?.variant?.product?.id,
         });
       });
     }
@@ -548,145 +533,6 @@ const ProductListScreen = ({
     handleProductLoad(item?.id, item);
   };
 
-  // Item Rendering..............................................................
-  function FlatListImageItem({
-    item,
-    onPress,
-    imageStyle,
-    itemContainerStyle,
-  }) {
-    const tempArr = cart.line_items.filter(
-      (ele) => item?.id == ele?.variant?.product?.id
-    );
-
-    return (
-      <TouchableOpacity
-        onPress={onPress}
-        style={{ ...itemContainerStyle, width: width / 2 - 5 }}
-      >
-        <View style={{ position: "relative" }}>
-          <Image
-            source={{
-              uri: item.images
-                ? `${HOST}/${item?.images[0]?.styles[3].url}`
-                : null,
-            }}
-            style={{
-              width: imageStyle.width,
-              height: imageStyle.height,
-              resizeMode: "contain",
-            }}
-          />
-          {showItemCard && item?.id === enableQty?.id ? (
-            <View
-              style={[
-                styles.addLogo,
-                { width: "95%", justifyContent: "space-between" },
-              ]}
-            >
-              <TouchableOpacity
-                onPress={() => {
-                  handleChangeQuantityClick();
-                  handleItemDecrement(tempArr[0]?.quantity);
-                  handleSetTimeoutDec(
-                    tempArr[0]?.id,
-                    tempArr[0]?.quantity,
-                    item
-                  );
-                }}
-              >
-                <Icon
-                  type="ant-design"
-                  name="minus"
-                  size={24}
-                  color={colors.btnLink}
-                />
-              </TouchableOpacity>
-
-              <Text style={styles.dynamicText}>
-                {tempArr.length !== 0
-                  ? inc
-                    ? tempArr[0].quantity + (itemQuantity - 1)
-                    : tempArr[0].quantity + (itemQuantity - 1)
-                  : itemQuantity}
-              </Text>
-
-              <TouchableOpacity
-                onPress={() => {
-                  handleChangeQuantityClick();
-                  handleItemIncrement(item);
-                  handleSetTimeoutInc(tempArr[0]?.id, tempArr[0]?.quantity);
-                }}
-              >
-                <Icon
-                  type="ant-design"
-                  name="plus"
-                  size={24}
-                  color={colors.btnLink}
-                />
-              </TouchableOpacity>
-            </View>
-          ) : findItemTempCartVariable(item) ? (
-            <Pressable
-              style={styles.addLogo}
-              onPress={() => {
-                closeIncBar();
-                setItemQuantity(1);
-                setShowItemCard(true);
-                findCartProduct(item?.id);
-              }}
-            >
-              {findItemTempCartVariable(item) && (
-                <View style={styles.afterText}>
-                  <Text style={{ color: colors.white, fontSize: 25 }}>
-                    {findItemTempCartVariable(item)?.quantity}
-                  </Text>
-                </View>
-              )}
-            </Pressable>
-          ) : (
-            <TouchableOpacity style={styles.addLogo}>
-              <Icon
-                name="plus"
-                type="ant-design"
-                size={25}
-                borderRadius={10}
-                color={colors.btnLink}
-                backgroundColor={colors.white}
-                onPress={() => {
-                  setItemQuantity(1);
-                  setShowItemCard(true);
-                  findCartProduct(item?.id);
-                  handleSetTimeoutDefault(item?.id, item);
-                }}
-              />
-            </TouchableOpacity>
-          )}
-        </View>
-        <View style={styles.detailsContainer}>
-          <Text numberOfLines={1} style={styles.title}>
-            {item.name}
-          </Text>
-          <View style={styles.pricingContainer}>
-            <Text style={[styles.prices, { color: colors.black }]}>
-              {item.display_price} |
-            </Text>
-            <Text style={{ ...styles.prices, color: "#808080" }}>
-              {item?.default_variant?.options_text
-                ? item?.default_variant?.options_text.split(" ")[3] ||
-                  item?.default_variant?.options_text.split(" ")[1]
-                : null}
-            </Text>
-          </View>
-          <Text numberOfLines={1} style={styles.description}>
-            {`${item?.vendor?.id ? resultVendor(item?.vendor?.id)[0] : ""}`}
-          </Text>
-        </View>
-      </TouchableOpacity>
-    );
-  }
-
-  //..........................................................................................
 
   const setProductListHighToLow = () => {
     productsList.sort((a, b) => (Number(a.price) > Number(b.price) ? 1 : -1));
@@ -760,26 +606,145 @@ const ProductListScreen = ({
   const onScroll = () => {
     scrollRef.current
       ? scrollRef.current.scrollToOffset({
-          offset: 0,
-          animated: true,
-        })
+        offset: 0,
+        animated: true,
+      })
       : setTimeout(onPress, 50);
   };
 
   let data = taxons?.subMenuProducts?.products?.map((el) => el);
 
   function newJustInRenderItem({ item, index }) {
+    const tempArr = cart.line_items.filter(
+      (ele) => item?.id == ele?.variant?.product?.id
+    );
     return (
-      <FlatListImageItem
-        item={item}
-        keyExtractor={(index) => index.toString()}
+      <TouchableOpacity
         onPress={() => {
           handleNewJustRenderItemClick(item);
           setSelectedId(item.id);
         }}
-        imageStyle={styles.newJustInImage}
-        itemContainerStyle={[styles.newJustInItemContainer]}
-      />
+        style={{ ...styles.newJustInItemContainer, width: width / 2 - 5 }}
+      >
+        <View style={{ position: "relative" }}>
+          <Image
+            source={{
+              uri: item.images
+                ? `${HOST}/${item?.images[0]?.styles[3].url}`
+                : null,
+            }}
+            style={{
+              width: styles.newJustInImage.width,
+              height: styles.newJustInImage.height,
+              resizeMode: "contain",
+            }}
+          />
+          {showItemCard && item?.id === enableQty?.id ? (
+            <View
+              style={[
+                styles.addLogo,
+                { width: "95%", justifyContent: "space-between" },
+              ]}
+            >
+              <TouchableOpacity
+                onPress={() => {
+                  handleChangeQuantityClick();
+                  handleItemDecrement(tempArr[0]?.quantity);
+                  handleSetTimeoutDec(
+                    tempArr[0]?.id,
+                    tempArr[0]?.quantity,
+                    item
+                  );
+                }}
+              >
+                <Icon
+                  type="ant-design"
+                  name="minus"
+                  size={24}
+                  color={colors.btnLink}
+                />
+              </TouchableOpacity>
+
+              <Text style={styles.dynamicText}>
+                {tempArr.length !== 0
+                  ? inc
+                    ? tempArr[0].quantity + (itemQuantity - 1)
+                    : tempArr[0].quantity + (itemQuantity - 1)
+                  : itemQuantity}
+              </Text>
+
+              <TouchableOpacity
+                onPress={() => {
+                  handleChangeQuantityClick();
+                  handleItemIncrement(item);
+                  handleSetTimeoutInc(tempArr[0]?.id, tempArr[0]?.quantity);
+                }}
+              >
+                <Icon
+                  type="ant-design"
+                  name="plus"
+                  size={24}
+                  color={colors.btnLink}
+                />
+              </TouchableOpacity>
+            </View>
+          ) : findItemTempCartVariable(item) ? (
+            <Pressable
+              style={styles.addLogo}
+              onPress={() => {
+                closeIncBar();
+                setItemQuantity(1);
+                setShowItemCard(true);
+                findCartProduct(item?.id);
+              }}
+            >
+              {findItemTempCartVariable(item) && (
+                <View style={styles.afterText}>
+                  <Text style={{ color: colors.white, fontSize: 25 }}>
+                    {errMessage ? "1" :  findItemTempCartVariable(item)?.quantity}
+                  </Text>
+                </View>
+              )}
+            </Pressable>
+          ) : (
+            <TouchableOpacity style={styles.addLogo}>
+              <Icon
+                name="plus"
+                type="ant-design"
+                size={25}
+                borderRadius={10}
+                color={colors.btnLink}
+                backgroundColor={colors.white}
+                onPress={() => {
+                  setItemQuantity(1);
+                  setShowItemCard(true);
+                  findCartProduct(item?.id);
+                  handleSetTimeoutDefault(item?.id, item);
+                }}
+              />
+            </TouchableOpacity>
+          )}
+        </View>
+        <View style={styles.detailsContainer}>
+          <Text numberOfLines={1} style={styles.title}>
+            {item.name}
+          </Text>
+          <View style={styles.pricingContainer}>
+            <Text style={[styles.prices, { color: colors.black }]}>
+              {item.display_price} |
+            </Text>
+            <Text style={{ ...styles.prices, color: "#808080" }}>
+              {item?.default_variant?.options_text
+                ? item?.default_variant?.options_text.split(" ")[3] ||
+                item?.default_variant?.options_text.split(" ")[1]
+                : null}
+            </Text>
+          </View>
+          <Text numberOfLines={1} style={styles.description}>
+            {`${item?.vendor?.id ? resultVendor(item?.vendor?.id)[0] : ""}`}
+          </Text>
+        </View>
+      </TouchableOpacity>
     );
   }
 
@@ -796,7 +761,7 @@ const ProductListScreen = ({
   const scrollMenuRef = React.useRef();
   const scrollSubMenuRef = React.useRef();
 
-  function flatListUpperElement() {
+  const flatListUpperElement = ()  => {
     return (
       <View
         style={{
@@ -1245,87 +1210,87 @@ const ProductListScreen = ({
                         }}
                       >
                         {ele.name === "food" &&
-                        selectedCategory !== [] &&
-                        selectedFilterTaxon?.length <= 1
+                          selectedCategory !== [] &&
+                          selectedFilterTaxon?.length <= 1
                           ? selectedFilterTaxon?.map((item, index) => (
-                              <View
-                                key={index}
-                                flexDirection={"row"}
-                                style={styles.selectedFilter}
-                              >
-                                <Text style={styles.selectedFilterText}>
-                                  {item.name.length > 11
-                                    ? `${item.name.slice(0, 11)}...`
-                                    : item.name}
-                                </Text>
+                            <View
+                              key={index}
+                              flexDirection={"row"}
+                              style={styles.selectedFilter}
+                            >
+                              <Text style={styles.selectedFilterText}>
+                                {item.name.length > 11
+                                  ? `${item.name.slice(0, 11)}...`
+                                  : item.name}
+                              </Text>
 
-                                <TouchableOpacity
-                                  onPress={() => handleDeselectFood(item)}
-                                >
-                                  <Icon
-                                    name="close"
-                                    type="material-icons"
-                                    size={18}
-                                    color={colors.white}
-                                  />
-                                </TouchableOpacity>
-                              </View>
-                            ))
-                          : selectedFilterTaxon &&
-                            ele.name === "food" && (
-                              <View
-                                style={[
-                                  styles.selectedFilter,
-                                  { alignItems: "flex-end" },
-                                ]}
+                              <TouchableOpacity
+                                onPress={() => handleDeselectFood(item)}
                               >
-                                <Text
-                                  style={styles.selectedFilterText}
-                                >{`${selectedFilterTaxon?.length} valgt`}</Text>
-                              </View>
-                            )}
+                                <Icon
+                                  name="close"
+                                  type="material-icons"
+                                  size={18}
+                                  color={colors.white}
+                                />
+                              </TouchableOpacity>
+                            </View>
+                          ))
+                          : selectedFilterTaxon &&
+                          ele.name === "food" && (
+                            <View
+                              style={[
+                                styles.selectedFilter,
+                                { alignItems: "flex-end" },
+                              ]}
+                            >
+                              <Text
+                                style={styles.selectedFilterText}
+                              >{`${selectedFilterTaxon?.length} valgt`}</Text>
+                            </View>
+                          )}
 
                         {/* // *producers */}
                         {ele.name === "producers" &&
-                        selectedVendors !== [] &&
-                        selectedFilterVendor?.length <= 1
+                          selectedVendors !== [] &&
+                          selectedFilterVendor?.length <= 1
                           ? selectedFilterVendor?.map((item, index) => (
-                              <View
-                                key={index}
-                                flexDirection={"row"}
-                                style={styles.selectedFilter}
-                              >
-                                <Text style={styles.selectedFilterText}>
-                                  {item.name.length > 11
-                                    ? `${item.name.slice(0, 11)}...`
-                                    : item.name}
-                                </Text>
+                            <View
+                              key={index}
+                              flexDirection={"row"}
+                              style={styles.selectedFilter}
+                            >
+                              <Text style={styles.selectedFilterText}>
+                                {item.name.length > 11
+                                  ? `${item.name.slice(0, 11)}...`
+                                  : item.name}
+                              </Text>
 
-                                <TouchableOpacity
-                                  onPress={() => handleDeselectVendor(item)}
-                                >
-                                  <Icon
-                                    name="close"
-                                    type="material-icons"
-                                    size={18}
-                                    color={colors.white}
-                                  />
-                                </TouchableOpacity>
-                              </View>
-                            ))
-                          : selectedFilterVendor &&
-                            ele.name === "producers" && (
-                              <View
-                                style={[
-                                  styles.selectedFilter,
-                                  { alignItems: "flex-end" },
-                                ]}
+                              <TouchableOpacity
+                                onPress={() => handleDeselectVendor(item)}
                               >
-                                <Text
-                                  style={styles.selectedFilterText}
-                                >{`${selectedFilterVendor?.length} valgt`}</Text>
-                              </View>
-                            )}
+                                <Icon
+                                  name="close"
+                                  type="material-icons"
+                                  size={18}
+                                  color={colors.white}
+                                />
+                              </TouchableOpacity>
+                            </View>
+                          ))
+                          : selectedFilterVendor &&
+                          ele.name === "producers" && (
+                            <View
+                              style={[
+                                styles.selectedFilter,
+                                { alignItems: "flex-end" },
+                              ]}
+                            >
+                              <Text
+                                style={styles.selectedFilterText}
+                              >{`${selectedFilterVendor?.length} valgt`}</Text>
+                            </View>
+                          )}
                       </View>
 
                       <View style={{ flex: 0.05 }}>
@@ -1389,19 +1354,20 @@ const ProductListScreen = ({
       <>
         <ScrollView
           style={[globalStyles.containerFluid, styles.bgwhite, { flex: 1 }]}
-        >
+          >
           {flatListUpperElement()}
           <FlatList
-            keyExtractor={(item, index) => index.toString()}
+            keyExtractor={(item) => item.id.toString()}
             data={
               isAll || all
                 ? (showTaxonProducts &&
-                    selectedTaxonProducts.filter((item) => item?.available)) ||
-                  productsList.filter((item) => item?.available)
+                  selectedTaxonProducts.filter((item) => item?.available)) ||
+                productsList.filter((item) => item?.available)
                 : data
             }
             renderItem={newJustInRenderItem}
             numColumns={2}
+            // ListHeaderComponent={flatListUpperElement}
             ListFooterComponent={flatListLowerElement}
             onEndReachedThreshold={0}
             onEndReached={handleEndReached}

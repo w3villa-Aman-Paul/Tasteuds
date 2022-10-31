@@ -60,8 +60,6 @@ const MostBoughtProducts = ({
     }
     dispatch(getMostBoughtGoods());
 
-    // dispatch(createCart());
-
     return () => {
       clearTimeout(timeOutId);
     };
@@ -222,18 +220,167 @@ const MostBoughtProducts = ({
     timeoutIdRef.current = id;
   };
 
-  const FlatListImageItem = ({
-    item,
-    onPress,
-    imageStyle,
-    itemContainerStyle,
-  }) => {
+  // const FlatListImageItem = ({
+  //   item,
+  //   onPress,
+  //   imageStyle,
+  //   itemContainerStyle,
+  // }) => {
+  //   const tempArr = cart.line_items.filter(
+  //     (ele) => item.id == ele?.variant?.product?.id
+  //   );
+
+  //   return (
+  //     <TouchableOpacity  onPress={() => {
+  //       storeData("selectedVendor", resultVendor(item?.vendor?.id)[1]);
+  //       handleProductLoad(item?.id, item);
+  //     }}
+  //      style={{ ...styles.newJustInItemContainer }}>
+  //       <View>
+  //         <Image
+  //           source={{
+  //             uri: item.images
+  //               ? `${HOST}/${item?.images[0]?.styles[3].url}`
+  //               : null,
+  //           }}
+  //           style={{
+  //             width: styles.newJustInImage?.width,
+  //             height: styles.newJustInImage?.height,
+  //             resizeMode: "contain",
+  //           }}
+  //         />
+
+  //         {showItemCard && item?.id === enableQty?.id ? (
+  //           <View
+  //             style={[
+  //               styles.addLogo,
+  //               { width: "95%", justifyContent: "space-between" },
+  //             ]}
+  //           >
+  //             <TouchableOpacity
+  //               onPress={() => {
+  //                 handleChangeQuantityClick();
+  //                 handleItemDecrement(tempArr[0]?.quantity);
+  //                 handleSetTimeoutDec(tempArr[0]?.id, tempArr[0]?.quantity);
+  //               }}
+  //             >
+  //               <Icon
+  //                 type="ant-design"
+  //                 name="minus"
+  //                 size={24}
+  //                 color={colors.btnLink}
+  //               />
+  //             </TouchableOpacity>
+
+  //             <Text style={styles.dynamicText}>
+  //               {tempArr.length !== 0
+  //                 ? inc
+  //                   ? tempArr[0].quantity + (itemQuantity - 1)
+  //                   : tempArr[0].quantity + (itemQuantity - 1)
+  //                 : itemQuantity}
+  //             </Text>
+
+  //             <TouchableOpacity
+  //               onPress={() => {
+  //                 handleChangeQuantityClick();
+  //                 handleItemIncrement();
+  //                 handleSetTimeoutInc(tempArr[0]?.id, tempArr[0]?.quantity);
+  //               }}
+  //             >
+  //               <Icon
+  //                 type="ant-design"
+  //                 name="plus"
+  //                 size={24}
+  //                 color={colors.btnLink}
+  //               />
+  //             </TouchableOpacity>
+  //           </View>
+  //         ) : tempArr[0] ? (
+  //           <Pressable
+  //             style={styles.addLogo}
+  //             onPress={() => {
+  //               closeIncBar();
+  //               setItemQuantity(1);
+  //               setShowItemCard(true);
+  //               findCartProduct(item?.id);
+  //             }}
+  //           >
+  //             {item?.id == tempArr[0]?.variant?.product?.id && (
+  //               <View style={styles.afterText}>
+  //                 <Text style={{ color: colors.white, fontSize: 25 }}>
+  //                   {tempArr.length !== 0 ? tempArr[0].quantity : 1}
+  //                 </Text>
+  //               </View>
+  //             )}
+  //           </Pressable>
+  //         ) : (
+  //           <TouchableOpacity style={styles.addLogo}>
+  //             <Icon
+  //               name="plus"
+  //               type="ant-design"
+  //               size={25}
+  //               borderRadius={10}
+  //               color={colors.btnLink}
+  //               backgroundColor={colors.white}
+  //               onPress={() => {
+  //                 setItemQuantity(1);
+  //                 setShowItemCard(true);
+  //                 findCartProduct(item?.id);
+  //                 handleSetTimeoutDefault(item?.id);
+  //               }}
+  //             />
+  //           </TouchableOpacity>
+  //         )}
+  //       </View>
+  //       <View style={styles.detailsContainer}>
+  //         <Text numberOfLines={1} style={styles.title}>
+  //           {item.name}
+  //         </Text>
+  //         <View style={styles.pricingContainer}>
+  //           <Text style={[styles.prices, { color: colors.black }]}>
+  //             {item.display_price} |
+  //           </Text>
+  //           <Text style={{ ...styles.prices, color: "#808080" }}>
+  //             {item?.default_variant?.options_text
+  //               ? item?.default_variant?.options_text.split(" ")[3] ||
+  //                 item?.default_variant?.options_text.split(" ")[1]
+  //               : null}
+  //           </Text>
+  //         </View>
+  //         <Text numberOfLines={1} style={styles.description}>
+  //           {`${resultVendor(item?.vendor?.id)[0]}`}
+  //         </Text>
+  //       </View>
+  //     </TouchableOpacity>
+  //   );
+  // };
+
+  const handleProductsLoad = (pageIndexAfterDispatch = null) => {
+    dispatch(
+      getProductsList(null, {
+        pageIndex: null,
+        filter: {},
+      })
+    );
+  };
+
+  const handleProductLoad = (id, item) => {
+    dispatch(getProduct(id));
+    dispatch(getTaxon(item.taxons[0].id));
+    navigation.navigate("ProductDetail");
+  };
+
+  const newJustInRenderItem = ({ item, index }) => {
     const tempArr = cart.line_items.filter(
       (ele) => item.id == ele?.variant?.product?.id
     );
 
     return (
-      <TouchableOpacity onPress={onPress} style={{ ...itemContainerStyle }}>
+      <TouchableOpacity  onPress={() => {
+        storeData("selectedVendor", resultVendor(item?.vendor?.id)[1]);
+        handleProductLoad(item?.id, item);
+      }}
+       style={{ ...styles.newJustInItemContainer }}>
         <View>
           <Image
             source={{
@@ -242,8 +389,8 @@ const MostBoughtProducts = ({
                 : null,
             }}
             style={{
-              width: imageStyle.width,
-              height: imageStyle.height,
+              width: styles.newJustInImage?.width,
+              height: styles.newJustInImage?.height,
               resizeMode: "contain",
             }}
           />
@@ -351,36 +498,18 @@ const MostBoughtProducts = ({
         </View>
       </TouchableOpacity>
     );
-  };
-
-  const handleProductsLoad = (pageIndexAfterDispatch = null) => {
-    dispatch(
-      getProductsList(null, {
-        pageIndex: null,
-        filter: {},
-      })
-    );
-  };
-
-  const handleProductLoad = (id, item) => {
-    dispatch(getProduct(id));
-    dispatch(getTaxon(item.taxons[0].id));
-    navigation.navigate("ProductDetail");
-  };
-
-  const newJustInRenderItem = ({ item, index }) => {
-    return (
-      <FlatListImageItem
-        keyExtractor={(item, index) => index.toString()}
-        item={item}
-        onPress={() => {
-          storeData("selectedVendor", resultVendor(item?.vendor?.id)[1]);
-          handleProductLoad(item?.id, item);
-        }}
-        imageStyle={styles.newJustInImage}
-        itemContainerStyle={styles.newJustInItemContainer}
-      />
-    );
+    // return (
+    //   <FlatListImageItem
+    //     keyExtractor={(item, index) => index.toString()}
+    //     item={item}
+    //     onPress={() => {
+    //       storeData("selectedVendor", resultVendor(item?.vendor?.id)[1]);
+    //       handleProductLoad(item?.id, item);
+    //     }}
+    //     imageStyle={styles.newJustInImage}
+    //     itemContainerStyle={styles.newJustInItemContainer}
+    //   />
+    // );
   };
 
   const productsUnique = [

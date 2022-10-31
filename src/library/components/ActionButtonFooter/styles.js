@@ -19,6 +19,8 @@ export const styles = StyleSheet.create({
     marginLeft: "4%",
     marginRight: "4%",
     height: 48,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   cart_total_price: {
     height: 135,
@@ -92,4 +94,10 @@ export const styles = StyleSheet.create({
     marginTop: 25,
     marginBottom: 25,
   },
+  btnText:{
+    color: colors.white,
+    textAlign: 'center',
+    fontFamily: "lato-bold",
+    fontSize: 16,
+  }
 });
