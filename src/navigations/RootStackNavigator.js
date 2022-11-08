@@ -21,6 +21,11 @@ import { useSelector } from "react-redux";
 import { StripeProvider } from "@stripe/stripe-react-native";
 import * as Linking from "expo-linking";
 import Constants from "expo-constants";
+import SearchScreen from "../screens/main/ShopitStack/SearchScreen";
+import BagScreen from "../screens/main/ShopitStack/CheckoutScreens/BagScreen";
+import { colors } from "../res/palette";
+import OrderCompleteScreen from "../screens/main/ShopitStack/CheckoutScreens/OrderCompleteScreen";
+import ShippingAddressScreen from "../screens/main/ShopitStack/CheckoutScreens/ShippingAddressScreen";
 
 const MyTheme = {
   ...DefaultTheme,
@@ -68,11 +73,9 @@ function RootStackNavigator({ authState, dispatch }) {
         }}
       >
         <RootStack.Navigator screenOptions={{ headerShown: false }}>
-          <RootStack.Screen name="Splash" component={splash} />
           <RootStack.Screen name="Shopit" component={MainTabNavigator} />
-
           <RootStack.Screen name="Profile" component={ProfileStackNavigator} />
-
+          <RootStack.Screen name="Splash" component={splash} />
           <RootStack.Screen name="SignIn" component={SignInScreen} />
           <RootStack.Screen name="SignUp" component={SignUpScreen} />
           <RootStack.Screen
@@ -84,6 +87,84 @@ function RootStackNavigator({ authState, dispatch }) {
             component={ResetPasswordScreen}
           />
           <RootStack.Screen name="EnterCode" component={EnterCodeScreen} />
+          <RootStack.Screen
+            name="SearchScreen"
+            component={SearchScreen}
+            options={{
+              headerShown: "true",
+              headerTitle: "Søk",
+              headerTitleAlign: "center",
+              headerTitleStyle: {
+                color: colors.primary,
+                fontFamily: "lato-bold",
+              },
+            }}
+          />
+
+          <RootStack.Screen
+            name="Bag"
+            component={BagScreen}
+            // options={{
+            //   // headerShown: "true",
+            //   headerTitle: "HANDLEKURV",
+            //   headerTitleAlign: "center",
+            //   headerTitleStyle: {
+            //     color: colors.primary,
+            //     fontFamily: "lato-bold",
+            //   },
+            //   headerRightContainerStyle: {
+            //     elevation: 0,
+            //   },
+            // }}
+          />
+
+          <RootStack.Screen
+            name="ShippingAddress"
+            component={ShippingAddressScreen}
+            options={{
+              headerShown: 'true',
+              headerTitle: "BETALING",
+              headerTitleStyle: {
+                color: colors.primary,
+                fontFamily: "lato-bold",
+              },
+              headerTitleAlign: "center",
+              headerRightContainerStyle: {
+                elevation: 0,
+              },
+            }}
+          />
+          <RootStack.Screen
+            name="OrderComplete"
+            component={OrderCompleteScreen}
+            options={{
+              headerTitle: "",
+              headerShown: false,
+              headerTitleStyle: {
+                color: colors.primary,
+                fontFamily: "lato-bold",
+              },
+              headerTitleAlign: "center",
+              headerRight: () => (
+                <Heart
+                  size={24}
+                  style={{ color: colors.black }}
+                  onPress={() => navigation.goBack()}
+                />
+              ),
+              headerRightContainerStyle: {
+                top: 4,
+                right: 20,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "#ffffff",
+                borderRadius: 50,
+                elevation: 10,
+                height: 40,
+                width: 40,
+              },
+            }}
+          />
         </RootStack.Navigator>
       </NavigationContainer>
     </StripeProvider>

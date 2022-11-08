@@ -75,10 +75,9 @@ const Payments = ({ payment_btn, img_style,  handlePaymentConfirmation,  type}) 
 
       if (confirmSheet.error) {
         console.log("confirmSheet", confirmSheet.error.message);
-        return Alert.alert(confirmSheet.error.message);
+        //return Alert.alert(confirmSheet.error.message);
       }
 
-      Alert.alert("Payment complete, thank you");
 
       const paymentStatus = await fetch(
         `${HOST}/api/v2/storefront/checkout/stripe_payment_status`,
@@ -98,9 +97,10 @@ const Payments = ({ payment_btn, img_style,  handlePaymentConfirmation,  type}) 
       const res = await paymentStatus.json();
 
       if (res.message === "Success") {
+        Alert.alert("Your payment is sucessfull !, Thank you");
         handlePaymentConfirmation();
       } else {
-        Alert.alert("An error occurred. Please try again.");
+        console.log("An error occurred. Please try again.");
       }
     } catch (error) {
       Alert.alert("Something went wrong");
@@ -125,17 +125,6 @@ const Payments = ({ payment_btn, img_style,  handlePaymentConfirmation,  type}) 
       )}
         </TouchableOpacity>
         </>
-      // ) : (
-      //   <View
-      //     style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-      //   >
-      //     <Text
-      //       style={{ fontFamily: "lato-bold", fontSize: 16, color: "#fff" }}
-      //     >
-      //      { disabled ? <ActivityIndicator size="large" color={colors.black} /> : "FULLFØR BETALING"}
-      //     </Text>
-      //   </View>
-      // )}
   );
 };
 

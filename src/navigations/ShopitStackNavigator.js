@@ -57,17 +57,7 @@ function ShopitStackNavigator({ navigation, route }) {
   return (
     <ShopitStack.Navigator
       screenOptions={{
-        headerBackTitle: " ",
-        headerBackImage: (props) => (
-          <Image
-            source={require("../../assets/images/icons/chevron-left.png")}
-            style={{
-              height: 25,
-              width: 25,
-              zIndex: 1,
-            }}
-          />
-        ),
+        headerBackTitle: "",
       }}
     >
       <ShopitStack.Screen
@@ -161,27 +151,9 @@ function ShopitStackNavigator({ navigation, route }) {
             justifyContent: "space-between",
             alignItems: "center",
           },
-          title: "",
           headerLeftContainerStyle: {
             margin: 0,
           },
-        }}
-      />
-      <ShopitStack.Screen
-        name="ProducersListScreen"
-        component={ProducersListScreen}
-        options={{
-          headerTitle: "PRODUSENTER",
-          headerShown: true,
-          headerTitleAlign: "center",
-        }}
-      />
-      <ShopitStack.Screen
-        name="ProducersDetailScreen"
-        component={ProducerDetailScreen}
-        options={{
-          headerTitle: "",
-          headerShown: false,
         }}
       />
 
@@ -340,84 +312,13 @@ function ShopitStackNavigator({ navigation, route }) {
           },
         }}
       />
-      <ShopitStack.Screen
-        name="Bag"
-        component={BagScreen}
-        options={{
-          headerTitle: "HANDLEKURV",
-          headerRight: () => <></>,
-          headerTitleStyle: {
-            color: colors.primary,
-            fontFamily: "lato-bold",
-          },
-          headerTitleAlign: "center",
 
-          headerRightContainerStyle: {
-            elevation: 0,
-          },
-        }}
-      />
-
-      <ShopitStack.Screen
-        name="ShippingAddress"
-        component={ShippingAddressScreen}
-        options={{
-          headerTitle: "BETALING",
-          headerTitleStyle: {
-            color: colors.primary,
-            fontFamily: "lato-bold",
-          },
-          headerTitleAlign: "center",
-          headerRightContainerStyle: {
-            elevation: 0,
-          },
-        }}
-      />
-      <ShopitStack.Screen
-        name="OrderComplete"
-        component={OrderCompleteScreen}
-        options={{
-          headerTitle: "",
-          headerShown: false,
-          headerTitleStyle: {
-            color: colors.primary,
-            fontFamily: "lato-bold",
-          },
-          headerTitleAlign: "center",
-          headerRight: () => (
-            <Heart
-              size={24}
-              style={{ color: colors.black }}
-              onPress={() => navigation.goBack()}
-            />
-          ),
-          headerRightContainerStyle: {
-            top: 4,
-            right: 20,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "#ffffff",
-            borderRadius: 50,
-            elevation: 10,
-            height: 40,
-            width: 40,
-          },
-        }}
-      />
+     
       <ShopitStack.Screen name="Favorites" component={FavouritesScreen} />
       <ShopitStack.Screen name="SavedAddress" component={SavedAddress} />
       <ShopitStack.Screen name="AddAdress" component={AddAddress} />
       <ShopitStack.Screen name="updateAddress" component={updateAddress} />
       <ShopitStack.Screen name="Payments" component={Payments} />
-
-      <ShopitStack.Screen
-        name="SearchScreen"
-        component={SearchScreen}
-        options={{
-          headerTitle: "Søk",
-          headerTitleAlign: "center",
-        }}
-      />
     </ShopitStack.Navigator>
   );
 }

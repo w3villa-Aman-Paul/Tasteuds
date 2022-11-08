@@ -10,7 +10,6 @@ import { HOST } from "../../../res/env";
 const CategoriesScreen = ({
   navigation,
   dispatch,
-  taxonomy,
   saving,
   route,
 }) => {

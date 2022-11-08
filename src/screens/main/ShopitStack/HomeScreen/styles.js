@@ -114,11 +114,12 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   first: {
-    flex: 0.55,
-    height: 119,
+    flex: 0.6,
+    height: 120,
+
   },
   second: {
-    flex: 0.43,
+    flex: 0.4,
     height: 119,
   },
   body_second_image: {
@@ -130,7 +131,8 @@ export const styles = StyleSheet.create({
   },
   text_second: {
     color: "#ffffff",
-    textAlign: "center",
+    width: "60%",
+    textAlign: 'center',
   },
   third: {
     borderWidth: 1,

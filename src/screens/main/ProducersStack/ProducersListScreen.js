@@ -24,7 +24,7 @@ import { globalStyles } from "../../../styles/global";
 const ProducersListScreen = ({ dispatch, navigation }) => {
   const vendors = useSelector((state) => state.taxons.vendors);
 
-  const [vendorsList, setVendorsList] = useState([]);
+  const [vendorsList, setVendorsList] = useState([vendors]);
 
   const [isModalVisible, setModalVisible] = useState(false);
 
@@ -62,7 +62,7 @@ const ProducersListScreen = ({ dispatch, navigation }) => {
       >
         <ImageBackground
           source={{
-            uri: `${item.cover_image_url}` ? `${item.cover_image_url}` : "https://cdn-icons-png.flaticon.com/512/79/79976.png"
+            uri: `${item?.cover_image_url}` ? `${item?.cover_image_url}` : "https://cdn-icons-png.flaticon.com/512/79/79976.png"
           }}
           style={styles.producerCoverImage}
           imageStyle={{ borderRadius: 10 }}

@@ -236,10 +236,8 @@ const ShippingAddressScreen = ({ saving, route }) => {
 
       if (confirmSheet.error) {
         console.log("confirmSheet", confirmSheet.error.message);
-        return Alert.alert(confirmSheet.error.message);
+        // return Alert.alert(confirmSheet.error.message);
       }
-
-      Alert.alert("Payment complete, thank you");
 
       const paymentStatus = await fetch(
         `${HOST}/api/v2/storefront/checkout/stripe_payment_status`,
@@ -259,9 +257,10 @@ const ShippingAddressScreen = ({ saving, route }) => {
       const res = await paymentStatus.json();
 
       if (res.message === "Success") {
+        Alert.alert("Your payment is sucessfull !, Thank you");
         handlePaymentConfirmation();
       } else {
-        Alert.alert("An error occurred. Please try again.");
+        console.log("An error occurred. Please try again.");
       }
     } catch (error) {
       Alert.alert("Something went wrong");

@@ -72,19 +72,19 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
     dispatch(getCart(cart?.token));
   }, []);
 
-  
+
   const handleCartProductImage = (cartPro) => {
     const product = productsList?.find(
       (element) => cartPro?.variant?.product?.id === element.id
-      );
-      return product?.images[0].styles[1];
-    };
-    
-    
-    const bottomSheetContent = () => {
-      setDisabled(false);
-      return <BottomLoginModal hideLoginModal={() => setIsOpen(false)} />;
-    };
+    );
+    return product?.images[0].styles[1];
+  };
+
+
+  const bottomSheetContent = () => {
+    setDisabled(false);
+    return <BottomLoginModal hideLoginModal={() => setIsOpen(false)} />;
+  };
 
 
   const closeIncBar = () => {
@@ -159,11 +159,11 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
   };
 
   const checkDisablity = () => {
-    if(isAuth){
-      navigation.navigate("ShippingAddress", {setDisabled : () => setDisabled(false)});
+    if (isAuth) {
+      navigation.navigate("ShippingAddress", { setDisabled: () => setDisabled(false) });
       setDisabled(true);
     }
-    else{
+    else {
       setIsOpen(true);
       setDisabled(true);
     }
@@ -172,6 +172,28 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
   return (
     <>
       <View style={globalStyles.containerFluid}>
+        <View
+          style={[
+            styles.detailHeader,
+            Platform.OS === "android" ? { marginTop: 30 } : { marginTop: 0 },
+          ]}
+        >
+          <TouchableOpacity
+            style={[styles.detailHeaderContainer, globalStyles.iosShadow]}
+            onPress={() => navigation.navigate("Shop")}
+          >
+            <Icon
+              name="cross"
+              type="entypo"
+              size={24}
+              style={{ color: colors.black }}
+            />
+          </TouchableOpacity>
+
+          <Text style={styles.detailHeaderText} numberOfLines={1}>
+          HANDLEKURV
+          </Text>
+        </View>
         <ScrollView style={{ ...styles.bgWhite }}>
           <View
             style={{
@@ -280,7 +302,7 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
                           <Text>
                             {ele.variant.options_text
                               ? ele.variant.options_text.split(" ")[3] ||
-                                ele.variant.options_text.split(" ")[1]
+                              ele.variant.options_text.split(" ")[1]
                               : ""}
                           </Text>
                         </View>

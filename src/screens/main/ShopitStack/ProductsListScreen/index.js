@@ -701,7 +701,7 @@ const ProductListScreen = ({
               {findItemTempCartVariable(item) && (
                 <View style={styles.afterText}>
                   <Text style={{ color: colors.white, fontSize: 25 }}>
-                    {errMessage ? "1" :  findItemTempCartVariable(item)?.quantity}
+                    {findItemTempCartVariable(item)?.quantity}
                   </Text>
                 </View>
               )}
@@ -1352,10 +1352,10 @@ const ProductListScreen = ({
   } else
     return (
       <>
-        <ScrollView
+        <SafeAreaView
           style={[globalStyles.containerFluid, styles.bgwhite, { flex: 1 }]}
           >
-          {flatListUpperElement()}
+          {/* {flatListUpperElement()} */}
           <FlatList
             keyExtractor={(item) => item.id.toString()}
             data={
@@ -1367,7 +1367,7 @@ const ProductListScreen = ({
             }
             renderItem={newJustInRenderItem}
             numColumns={2}
-            // ListHeaderComponent={flatListUpperElement}
+            ListHeaderComponent={flatListUpperElement}
             ListFooterComponent={flatListLowerElement}
             onEndReachedThreshold={0}
             onEndReached={handleEndReached}
@@ -1376,7 +1376,7 @@ const ProductListScreen = ({
               justifyContent: "space-evenly",
             }}
           />
-        </ScrollView>
+        </SafeAreaView>
         {stikyOptions()}
         {checkout.error !== null && saving === false ? (
           <Snackbar visible={snackbarVisible} onDismiss={dismissSnackbar}>

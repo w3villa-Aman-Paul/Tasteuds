@@ -60,17 +60,18 @@ function HomePageUpperComponent() {
 
       <View style={styles.body_second}>
         <TouchableOpacity
-          style={styles.first}
+          // style={styles.first}
           onPress={() => handleWeeklyProducerClick(weeklyProducer[0].vendor)}
         >
           <ImageBackground
             source={require("../../../../../assets/images/Header-Icon/home_second.png")}
             style={{
-              flex: 1,
               justifyContent: "center",
               alignItems: "center",
+              height: 128, 
             }}
-            imageStyle={{ borderRadius: 20 }}
+            imageStyle={{ borderRadius: 15 }}
+
           >
             <Text style={styles.text1}>UKENS PRODUSENT</Text>
             <Text style={{ ...styles.text_second, fontWeight: "700" }}>
@@ -80,17 +81,18 @@ function HomePageUpperComponent() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.second}
+          // style={styles.second}
           onPress={() => navigation.navigate("ProducersListScreen")}
         >
           <ImageBackground
             source={require("../../../../../assets/images/Header-Icon/home_second_2.png")}
             style={{
-              flex: 1,
               justifyContent: "center",
               alignItems: "center",
+              height: 120 
             }}
-            imageStyle={{ borderRadius: 20 }}
+            imageStyle={{ borderRadius: 15 }}
+
           >
             <Text
               style={{

@@ -46,7 +46,7 @@ export function getSelectedVendor(vendor) {
     include: "image,products.images.attachment",
   };
 
-  console.log("SELECTED VENDOR: ", handleAPIWithoutToken(url, params, method));
+  //console.log("SELECTED VENDOR: ", handleAPIWithoutToken(url, params, method));
   return {
     type: "GET_SELECTED_VENDOR",
     payload: handleAPIWithoutToken(url, params, method),

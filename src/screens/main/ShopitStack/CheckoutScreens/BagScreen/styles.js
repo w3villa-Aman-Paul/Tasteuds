@@ -250,4 +250,35 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.white,
   },
+  detailHeader: {
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    height: '10%',
+    position: "relative",
+    backgroundColor: '#fff'
+  },
+
+  detailHeaderContainer: {
+    width: 30,
+    height: 30,
+    borderWidth: 1,
+    borderRadius: 50,
+    borderColor: "transparent",
+    elevation: 2,
+    backgroundColor: "white",
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 5
+  },
+
+  detailHeaderText: {
+    fontSize: 18,
+    fontFamily: "lato-bold",
+    flex: 0.8,
+    textAlign: "center",
+    justifyContent: 'center',
+    alignSelf: 'center'
+  },
 });
