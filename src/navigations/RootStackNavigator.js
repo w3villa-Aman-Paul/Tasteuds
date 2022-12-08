@@ -26,6 +26,7 @@ import BagScreen from "../screens/main/ShopitStack/CheckoutScreens/BagScreen";
 import { colors } from "../res/palette";
 import OrderCompleteScreen from "../screens/main/ShopitStack/CheckoutScreens/OrderCompleteScreen";
 import ShippingAddressScreen from "../screens/main/ShopitStack/CheckoutScreens/ShippingAddressScreen";
+import { createCart } from "../redux";
 
 const MyTheme = {
   ...DefaultTheme,
@@ -37,10 +38,15 @@ const MyTheme = {
 const RootStack = createStackNavigator();
 
 function RootStackNavigator({ authState, dispatch }) {
+
   const { cart } = useSelector((state) => state.checkout);
   const publishableKey = useSelector(
     (state) => state.checkout?.paymentMethods[0]?.preferences?.publishable_key
   );
+
+  React.useEffect(() => {
+    dispatch(createCart());
+  },[])
 
   if (authState.isLoading) {
     return <ActivityIndicatorCard />;

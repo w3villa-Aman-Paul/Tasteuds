@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from "@react-navigation/stack";
 import CategoriesScreen from "../screens/main/CategoriesStack/CategoriesScreen";
@@ -9,14 +9,20 @@ import NewlyAddedProducts from "../screens/main/CategoriesStack/NewlyAddedProduc
 import MostBoughtProducts from "../screens/main/CategoriesStack/MostBoughtProducts";
 import ProducersListScreen from "../screens/main/ProducersStack/ProducersListScreen";
 import ProductsListScreen from "../screens/main/ShopitStack/ProductsListScreen";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ProducerDetailScreen from "../screens/main/ProducersStack/ProducerDetailScreen";
 import ProductDetailScreen from "../screens/main/ShopitStack/ProductDetailScreen";
+import { getVendorsList } from "../redux";
 
 const CategoriesStack = createStackNavigator();
 
 function CategoriesStackNavigator({ navigation, route }) {
+  const dispatch = useDispatch();
   const { cart } = useSelector((state) => state.checkout);
+
+  useEffect(() => {
+    dispatch(getVendorsList());
+  }, []);
 
 
   return (

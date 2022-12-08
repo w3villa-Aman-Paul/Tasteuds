@@ -115,12 +115,10 @@ export const styles = StyleSheet.create({
   },
   first: {
     flex: 0.6,
-    height: 120,
 
   },
   second: {
     flex: 0.4,
-    height: 119,
   },
   body_second_image: {
     width: "100%",

@@ -17,13 +17,13 @@ const CategoriesScreen = ({
 
   const [activeCategory, setActiveCategory] = React.useState({});
 
-  React.useEffect(() => {
-    {
-      {
-        menus.menu_items === 0 && dispatch(getMenus());
-      }
-    }
-  }, []);
+  // React.useEffect(() => {
+  //   {
+  //     {
+  //       menus.menu_items === 0 && dispatch(getMenus());
+  //     }
+  //   }
+  // }, []);
 
   if (saving) {
     return <ActivityIndicatorCard />;

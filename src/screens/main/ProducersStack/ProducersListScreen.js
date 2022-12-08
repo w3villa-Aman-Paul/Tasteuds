@@ -29,6 +29,12 @@ const ProducersListScreen = ({ dispatch, navigation }) => {
   const [isModalVisible, setModalVisible] = useState(false);
 
 
+
+  // useEffect(() => {
+  //   dispatch(getVendorsList());
+  // }, []);
+
+
   useEffect(() => {
     let load = false;
     if (!load) {

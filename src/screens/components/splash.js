@@ -2,7 +2,6 @@ import { Image, StyleSheet, Text, View } from "react-native";
 import React, { useEffect } from "react";
 import {
   getMenus,
-  getMostBoughtGoods,
   getVendorsList,
   getWeeklyProducer,
 } from "../../redux";
@@ -39,8 +38,6 @@ const splash = ({ navigation, dispatch }) => {
     {
       weeklyProducer.length == 0 && (await dispatch(getWeeklyProducer()));
     }
-
-    await dispatch(getMostBoughtGoods());
   };
 
   return (

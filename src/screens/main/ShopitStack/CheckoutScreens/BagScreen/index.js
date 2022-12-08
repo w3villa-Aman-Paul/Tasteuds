@@ -98,7 +98,8 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
 
   const findCartProduct = (itemID) => {
     const newItem = productsList.find((ele) => ele.id == itemID);
-    setEnableQty(newItem);
+    setEnableQty(newItem?.id);
+    //console.log(newItem);
   };
 
   const handleChangeQuantityClick = () => {
@@ -263,9 +264,10 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
             {cart?.line_items?.map((ele) => {
               let cartProductImage = handleCartProductImage(ele);
               let cartItemId = ele?.variant?.product?.id;
+              //console.log(cartItemId);
 
               let cartProduct = cart?.line_items?.find(
-                (ele) => ele?.variant?.product?.id == enableQty?.id
+                (ele) => ele?.variant?.product?.id == enableQty
               );
 
               return (
@@ -275,10 +277,10 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
                       <>
                         <TouchableOpacity
                           style={styles.body_first}
-                          onPress={() => {
-                            dispatch(getProduct(enableQty?.id));
-                            navigation.navigate("ProductDetail");
-                          }}
+                          // onPress={() => {
+                          //   dispatch(getProduct(enableQty?.id));
+                          //   navigation.navigate("ProductDetail");
+                          // }}
                         >
                           <Image
                             source={{
@@ -313,7 +315,7 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
                     </View>
 
                     <View style={styles.cart_btn}>
-                      {showItemCard && cartItemId === enableQty?.id ? (
+                      {showItemCard && cartItemId === enableQty ? (
                         <View style={styles.after_Press}>
                           <TouchableOpacity
                             onPress={() => {
@@ -365,7 +367,7 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
                             alignItems: "center",
                           }}
                           onPress={() => {
-                            setShowItemCard(true);
+                            setShowItemCard((prev) => !prev);
                             findCartProduct(cartItemId);
                             closeIncBar();
                           }}

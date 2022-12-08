@@ -17,12 +17,8 @@ import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import FavouritesScreen from "../screens/main/FavouritesStack/FavouritesScreen";
 import SavedAddress from "../screens/main/ProfileStack/SavedAddress";
 import AddAddress from "../screens/main/ProfileStack/AddAddress";
-
-import ProducerDetailScreen from "../screens/main/ProducersStack/ProducerDetailScreen";
-import SearchScreen from "../screens/main/ShopitStack/SearchScreen/index";
-import ProducersListScreen from "../screens/main/ProducersStack/ProducersListScreen";
 import { useSelector, useDispatch } from "react-redux";
-import { createCart, getMostBoughtGoods } from "../redux";
+import { createCart, getMenus, getMostBoughtGoods } from "../redux";
 import updateAddress from "../screens/main/ProfileStack/updateAddress";
 import OrderCompleteScreen from "../screens/main/ShopitStack/CheckoutScreens/OrderCompleteScreen";
 import Payments from "../library/components/Payments/Payments";
@@ -33,10 +29,17 @@ function ShopitStackNavigator({ navigation, route }) {
   const dispatch = useDispatch();
   const { cart } = useSelector((state) => state.checkout);
   const { mostBoughtGoods } = useSelector((state) => state.taxons);
+  const menus = useSelector((state) => state.taxons.menus);
 
   useEffect(() => {
-    {
-      mostBoughtGoods?.length === 0 && dispatch(getMostBoughtGoods());
+    if( menus?.menu_items?.length === 0){
+      dispatch(getMenus());
+    }
+  }, [menus.menu_items]);
+
+  useEffect(() => {
+    if( mostBoughtGoods?.length === 0 ){
+      dispatch(getMostBoughtGoods());
     }
   }, []);
 

@@ -400,8 +400,7 @@ const ProducerDetailScreen = ({ dispatch, navigation, route }) => {
         >
           <Image
             source={{
-              uri: `${HOST}/${selectedVendor?.image?.styles[6].url}` ? `${HOST}/${selectedVendor?.image?.styles[6].url}`
-                : "https://cdn-icons-png.flaticon.com/512/79/79976.pn"
+              uri: cover_image_url//`${item?.cover_image_url}` ? `${item?.cover_image_url}` : "https://cdn-icons-png.flaticon.com/512/79/79976.png"
             }}
             style={{ flex: 1, width: "100%" }}
             resizeMode={"contain"}

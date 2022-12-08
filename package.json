@@ -83,6 +83,6 @@
     "babel-preset-expo": "9.0.2"
   },
   "private": true,
-  "name": "Tastebuds",
+  "name": "tastebuds",
   "version": "1.0.0"
 }

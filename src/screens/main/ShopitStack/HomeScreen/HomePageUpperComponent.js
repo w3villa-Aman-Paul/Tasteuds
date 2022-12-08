@@ -60,7 +60,7 @@ function HomePageUpperComponent() {
 
       <View style={styles.body_second}>
         <TouchableOpacity
-          // style={styles.first}
+          style={styles.first}
           onPress={() => handleWeeklyProducerClick(weeklyProducer[0].vendor)}
         >
           <ImageBackground
@@ -68,7 +68,7 @@ function HomePageUpperComponent() {
             style={{
               justifyContent: "center",
               alignItems: "center",
-              height: 128, 
+              height: 120, 
             }}
             imageStyle={{ borderRadius: 15 }}
 
@@ -81,7 +81,7 @@ function HomePageUpperComponent() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          // style={styles.second}
+          style={styles.second}
           onPress={() => navigation.navigate("ProducersListScreen")}
         >
           <ImageBackground

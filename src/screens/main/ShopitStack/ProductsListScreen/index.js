@@ -47,6 +47,7 @@ const ProductListScreen = ({
   route,
   dispatch,
   productsList,
+  iserror,
   saving,
   pageIndex,
   meta,
@@ -148,11 +149,13 @@ const ProductListScreen = ({
 
     if (cart?.line_items?.length > 0) {
       cart.line_items.map((ele) => {
-        uniqueNew.push({
-          id: ele.id,
-          quantity: ele.quantity,
-          productId: ele?.variant?.product?.id,
-        });
+        {
+          iserror == true ? null : uniqueNew.push({
+            id: ele.id,
+            quantity: ele.quantity,
+            productId: ele?.variant?.product?.id,
+          });
+        }
       });
     }
 
@@ -326,6 +329,7 @@ const ProductListScreen = ({
 
   const findCartProduct = (itemID) => {
     const newItem = productsList.find((ele) => ele.id == itemID);
+    console.log(newItem);
     setEnableQty(newItem);
   };
 
@@ -395,7 +399,7 @@ const ProductListScreen = ({
 
   const findItemTempCartVariable = (item) => {
     let element = inCartItem?.find((ele) => ele.productId == item?.id);
-
+    console.log(element)
     return element;
   };
 
@@ -639,7 +643,7 @@ const ProductListScreen = ({
               resizeMode: "contain",
             }}
           />
-          {showItemCard && item?.id === enableQty?.id ? (
+          {showItemCard && item?.id == enableQty?.id ? (
             <View
               style={[
                 styles.addLogo,
@@ -1413,6 +1417,7 @@ const ProductListScreen = ({
 };
 
 const mapStateToProps = (state) => ({
+  iserror: state.checkout.iserror,
   saving: state.products.saving,
   savingTaxon: state.taxons.saving,
   productsList: state.products.productsList,
