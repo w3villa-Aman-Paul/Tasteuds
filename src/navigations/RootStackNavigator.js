@@ -13,9 +13,7 @@ import { connect } from "react-redux";
 import ActivityIndicatorCard from "../library/components/ActivityIndicatorCard";
 import { navigationRef } from "../library/utils/RootNavigation";
 import splash from "../screens/components/splash";
-import Search from "../screens/components/Search";
 import ProfileStackNavigator from "./ProfileStackNavigator";
-import HomeScreen from "../screens/main/ShopitStack/HomeScreen";
 import MainTabNavigator from "./MainTabNavigator";
 import { useSelector } from "react-redux";
 import { StripeProvider } from "@stripe/stripe-react-native";
@@ -26,7 +24,7 @@ import BagScreen from "../screens/main/ShopitStack/CheckoutScreens/BagScreen";
 import { colors } from "../res/palette";
 import OrderCompleteScreen from "../screens/main/ShopitStack/CheckoutScreens/OrderCompleteScreen";
 import ShippingAddressScreen from "../screens/main/ShopitStack/CheckoutScreens/ShippingAddressScreen";
-import { createCart } from "../redux";
+import { createCart, getMenus, getVendorsList, getWeeklyProducer, resetError } from "../redux";
 
 const MyTheme = {
   ...DefaultTheme,
@@ -39,13 +37,16 @@ const RootStack = createStackNavigator();
 
 function RootStackNavigator({ authState, dispatch }) {
 
-  const { cart } = useSelector((state) => state.checkout);
+  //const { cart } = useSelector((state) => state.checkout);
   const publishableKey = useSelector(
     (state) => state.checkout?.paymentMethods[0]?.preferences?.publishable_key
   );
 
   React.useEffect(() => {
-    dispatch(createCart());
+    // dispatch(createCart());
+    dispatch(getVendorsList())
+    dispatch(getMenus())
+    dispatch(getWeeklyProducer())
   },[])
 
   if (authState.isLoading) {

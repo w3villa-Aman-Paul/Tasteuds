@@ -32,27 +32,26 @@ import {
   sortByMostBought,
   sortByNewlyAdd,
   sortByPrice,
+  resetError,
 } from "../../../../redux";
 import FilterFooter from "../../../../library/components/ActionButtonFooter/FilterFooter";
 import { HOST } from "../../../../res/env";
 import { useSelector } from "react-redux";
-import { Snackbar } from "react-native-paper";
 import { getData, removeData, storeData } from "../../../../redux/rootReducer";
 import BottomBarCart from "../../../components/bottomBarCart";
 import UpperNotification from "../../../components/DelieveryNotifyComponent/UpperNotification";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Toast from 'react-native-toast-message';
+import { toastConfig } from '../../../components/CustomToast/CustomToast'
 
 const ProductListScreen = ({
   navigation,
   route,
   dispatch,
   productsList,
-  iserror,
   saving,
-  pageIndex,
-  meta,
+  pageIndex
 }) => {
-  const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [all, setAll] = useState(true);
   const [isSubAll, setIsSubAll] = useState(true);
   const [subLink, setSubLink] = useState("");
@@ -66,22 +65,22 @@ const ProductListScreen = ({
   const [subMenuCords, setSubMenuCords] = useState([]);
   const [offsetSubMenu, setoffsetSubMenu] = useState({ x: 0, y: 0 });
   const [show, setShow] = useState(false);
+
   const [showItemCard, setShowItemCard] = useState(false);
-  const [enableQty, setEnableQty] = useState(null);
-  const [itemQuantity, setItemQuantity] = useState(1);
-  const [inCartItem, setInCartItem] = useState([]);
+  const [enableQty, setEnableQty] = useState({});
+  const [cartTempQty, setCartTempQty] = useState(1);
   const [inc, setInc] = useState("false");
+
+
   const [isModelVisible, setModelVisible] = useState(false);
-  const [selectedId, setSelectedId] = useState(null);
 
   const [showTaxonProducts, setShowTaxonProducts] = useState(false);
 
   const [mostBought, setMostBought] = useState([]);
   const [newlyAdded, setNewlyAdded] = useState([]);
 
-  const checkout = useSelector((state) => state.checkout);
-  const errMessage = useSelector((state) => state.checkout.error);
   const cart = useSelector((state) => state.checkout.cart);
+  const { error } = useSelector((state) => state.checkout);
   const vendorList = useSelector((state) => state.taxons.vendors);
   const taxons = useSelector((state) => state.taxons);
   const menus = useSelector((state) => state.taxons.menus);
@@ -91,8 +90,33 @@ const ProductListScreen = ({
   const { newAddedProducts } = useSelector((state) => state.taxons);
   const { selectedTaxonProducts } = useSelector((state) => state.products);
   const params = route?.params;
+  const windowWidth = Dimensions.get("window").width;
+  const [isOpen, setIsOpen] = useState(false);
 
+  const snapPoints = useMemo(() => ["50%"], []);
   const timeoutIdRef = useRef();
+
+
+
+
+  //CART_USEE_FFECT
+
+  useEffect(() => {
+    if (error !== null) {
+      const showToast = () => {
+        Toast.show({
+          type: 'error',
+          text1: "Error",
+          text2: error,
+        });
+      }
+      showToast()
+      dispatch(resetError())
+    }
+  }, [error])
+
+
+  // END_OF_CART_USE_EFFECT
 
   useEffect(() => {
     loadMostBoughtGoods();
@@ -107,8 +131,6 @@ const ProductListScreen = ({
     {
       products.sortedProductsList || dispatch(sortByMostBought(mostBought));
     }
-
-    // dispatch(createCart());
 
     return () => {
       clearTimeout(timeOutId);
@@ -141,32 +163,7 @@ const ProductListScreen = ({
     removeData("food");
     removeData("vendors");
 
-    handleCartItemsQuantity();
   }, [cart.line_items]);
-
-  const handleCartItemsQuantity = () => {
-    let uniqueNew = [];
-
-    if (cart?.line_items?.length > 0) {
-      cart.line_items.map((ele) => {
-        {
-          iserror == true ? null : uniqueNew.push({
-            id: ele.id,
-            quantity: ele.quantity,
-            productId: ele?.variant?.product?.id,
-          });
-        }
-      });
-    }
-
-    setUniqueItemInCartVariable(uniqueNew);
-  };
-
-  const setUniqueItemInCartVariable = (itemArray) => {
-    setInCartItem([
-      ...new Map(itemArray.map((item) => [item["productId"], item])).values(),
-    ]);
-  };
 
   useEffect(() => {
     {
@@ -174,9 +171,145 @@ const ProductListScreen = ({
     }
   }, [route.params]);
 
-  LogBox.ignoreLogs([
-    "Non-serializable values were found in the navigation state",
-  ]);
+
+
+  // CART_FUNCTIONS
+
+  const findCartProduct = (itemID) => {
+    const newItem = productsList.find((ele) => ele.id == itemID);
+    console.log("NEWITEM", newItem);
+    setEnableQty(newItem);
+  };
+
+  const clearTimeoutHandler = () => {
+    clearTimeout(timeoutIdRef.current);
+  };
+
+
+  const qtyHandler = async (type, itemID) => {
+    let existedItem = await checkItemInCart(itemID);
+    if (type === "inc") {
+      setCartTempQty((prev) => prev + 1)
+    }
+    else {
+      if (3 - cartTempQty > existedItem?.quantity) {
+        setShowItemCard(false);
+        dispatch(removeLineItem(existedItem?.id, {}, cart?.token));
+      }
+      else {
+        setCartTempQty((prev) => prev - 1)
+      }
+    }
+  }
+
+  const checkItemInCart = (itemID) => {
+    let item = cart?.line_items?.find((ele) => ele?.variant?.product?.id === itemID);
+    if (item) {
+      console.log("INCART")
+      return item
+    }
+    else {
+      console.log("NOTINCART")
+      return null;
+    }
+  }
+
+
+  console.log("cartTempQty", cartTempQty);
+
+
+  const addItemInCart = async (type, itemID, vID) => {
+    let existedItem = await checkItemInCart(itemID);
+    console.log("EXISTED", existedItem)
+    if (type === "single") {
+      const id = setTimeout(async () => {
+        await dispatch(
+          addItem(cart?.token, {
+            variant_id: vID,
+            quantity: 1,
+          })
+        );
+        setShowItemCard(false);
+      }, 2000)
+      timeoutIdRef.current = id;
+    }
+    else if (type === "inc") {
+      if (existedItem !== null) {
+        setInc(true)
+        const id = setTimeout(() => {
+          dispatch(
+            setQuantity(
+              {
+                line_item_id: existedItem?.id,
+                quantity: existedItem?.quantity + cartTempQty,
+              },
+              cart?.token
+            )
+          );
+          setShowItemCard(false);
+        }, 2000)
+        timeoutIdRef.current = id;
+      }
+      else {
+        const id = setTimeout(() => {
+          dispatch(
+            addItem(cart?.token, {
+              variant_id: vID,
+              quantity: cartTempQty + 1,
+            })
+          );
+          setShowItemCard(false);
+        }, 2000)
+        timeoutIdRef.current = id;
+      }
+    }
+    else if (type === "dec") {
+      if (existedItem !== null) {
+        setInc(false)
+        const id = setTimeout(() => {
+          if (3 - cartTempQty > existedItem?.quantity) {
+            null
+          }
+          else {
+            dispatch(
+              setQuantity(
+                {
+                  line_item_id: existedItem?.id,
+                  quantity: existedItem?.quantity + (cartTempQty - 2),
+                },
+                cart?.token
+              )
+            );
+          }
+          setShowItemCard(false);
+        }, 2000)
+        timeoutIdRef.current = id;
+      }
+      else {
+        const id = setTimeout(() => {
+          dispatch(
+            addItem(cart?.token, {
+              variant_id: vID,
+              quantity: cartTempQty - 1,
+            })
+          );
+          setShowItemCard(false);
+        }, 2000)
+        timeoutIdRef.current = id;
+      }
+    }
+    else {
+      if (existedItem != null) {
+        const id = setTimeout(() => {
+          setShowItemCard(false);
+        }, 2000)
+        timeoutIdRef.current = id;
+      }
+    }
+  }
+
+  // END_OF_CART_FUNCTIONS
+
 
   const paramsDispatchHandler = async (params) => {
     await handleActiveMenuClick(params.menu);
@@ -236,7 +369,6 @@ const ProductListScreen = ({
     return [vendorName, vendor];
   };
 
-  const dismissSnackbar = () => setSnackbarVisible(false);
 
   const handleActiveMenu = () => {
     const unactive = menus?.menu_items
@@ -314,9 +446,6 @@ const ProductListScreen = ({
   const width = Dimensions.get("window").width - 10;
 
   const sheetRef = React.useRef(null);
-  const [isOpen, setIsOpen] = useState(false);
-
-  const snapPoints = useMemo(() => ["50%"], []);
 
   const handleFilter = () => {
     setShow(false);
@@ -325,154 +454,6 @@ const ProductListScreen = ({
 
   const handleSort = () => {
     setSort(true);
-  };
-
-  const findCartProduct = (itemID) => {
-    const newItem = productsList.find((ele) => ele.id == itemID);
-    console.log(newItem);
-    setEnableQty(newItem);
-  };
-
-  const handleCart = () => {
-    let item = productsList.find((x) => x.id === enableQty?.id);
-
-    return item?.default_variant?.id;
-  };
-
-  const handleItemIncrement = (item = null) => {
-    setInc(true);
-    setItemQuantity(itemQuantity + 1);
-
-    let itemInCart = inCartItem.find((ele) => ele.productId == item?.id);
-
-    if (item?.id && itemInCart) {
-      setUniqueItemInCartVariable([
-        ...inCartItem,
-        { ...itemInCart, quantity: itemInCart.quantity + 1 },
-      ]);
-    } else if (item?.id) {
-      setUniqueItemInCartVariable([
-        ...inCartItem,
-        { quantity: itemQuantity + 1, productId: item.id },
-      ]);
-    }
-  };
-
-  const handleChangeQuantityClick = () => {
-    clearTimeout(timeoutIdRef.current);
-  };
-
-  const handleItemDecrement = (lineItemQuantity) => {
-    if (3 - itemQuantity > lineItemQuantity) {
-      setShowItemCard(false);
-    } else {
-      setInc(false);
-      setItemQuantity(itemQuantity - 1);
-    }
-  };
-
-  const handleSetTimeoutDefault = (ID, item) => {
-    handleChangeQuantityClick();
-    let firstItem = productsList.find((x) => x.id == ID);
-    const id = setTimeout(() => {
-      dispatch(
-        addItem(cart?.token, {
-          variant_id: firstItem?.default_variant?.id,
-          quantity: 1,
-        })
-      );
-      setUniqueItemInCartVariable([
-        ...inCartItem,
-        { quantity: 1, productId: item.id },
-      ]);
-      setShowItemCard(false);
-    }, 2000);
-
-    timeoutIdRef.current = id;
-  };
-
-  const findItemInCart = (id) => {
-    let cartItem = cart.line_items.filter((ele) => id == ele.id);
-
-    return cartItem;
-  };
-
-  const findItemTempCartVariable = (item) => {
-    let element = inCartItem?.find((ele) => ele.productId == item?.id);
-    console.log(element)
-    return element;
-  };
-
-  const handleSetTimeoutInc = (tempId, qty) => {
-    let itemInCart = findItemInCart(tempId);
-
-    const id = setTimeout(() => {
-      if (!itemInCart[0]) {
-        dispatch(
-          addItem(cart?.token, {
-            variant_id: handleCart(),
-            quantity: itemQuantity + 1,
-          })
-        );
-        setShowItemCard(false);
-      } else {
-        dispatch(
-          setQuantity(
-            {
-              line_item_id: tempId,
-              quantity: qty + itemQuantity,
-            },
-            cart?.token
-          )
-        );
-        setShowItemCard(false);
-        setItemQuantity(1);
-      }
-    }, 2000);
-
-    timeoutIdRef.current = id;
-  };
-
-  const handleSetTimeoutDec = (tempId, qty, item) => {
-    let itemInCart = inCartItem.find((ele) => ele.productId == item?.id);
-    if (3 - itemQuantity > qty) {
-      dispatch(removeLineItem(tempId, {}, cart?.token));
-
-      if (item?.id && itemInCart) {
-        setUniqueItemInCartVariable([
-          ...inCartItem.filter((pro) => item?.id !== pro.productId),
-        ]);
-      }
-
-      setShowItemCard(false);
-    } else {
-      if (item?.id && itemInCart) {
-        const id = setTimeout(() => {
-          dispatch(
-            setQuantity(
-              {
-                line_item_id: tempId,
-                quantity: qty + (itemQuantity - 2),
-              },
-              cart?.token
-            )
-          );
-          setShowItemCard(false);
-          setItemQuantity(0);
-        }, 2000);
-
-        setUniqueItemInCartVariable([
-          ...inCartItem,
-          { ...itemInCart, quantity: itemInCart.quantity - 1 },
-        ]);
-        timeoutIdRef.current = id;
-      }
-    }
-  };
-
-  const closeIncBar = () => {
-    const id = setTimeout(() => setShowItemCard(false), 2000);
-    timeoutIdRef.current = id;
   };
 
   const loadMostBoughtGoods = () => {
@@ -618,32 +599,32 @@ const ProductListScreen = ({
 
   let data = taxons?.subMenuProducts?.products?.map((el) => el);
 
-  function newJustInRenderItem({ item, index }) {
-    const tempArr = cart.line_items.filter(
-      (ele) => item?.id == ele?.variant?.product?.id
+  function newJustInRenderItem({ item }) {
+    let tempData = cart.line_items.find(
+      (ele) => item.id === ele?.variant?.product?.id
     );
     return (
       <TouchableOpacity
         onPress={() => {
           handleNewJustRenderItemClick(item);
-          setSelectedId(item.id);
         }}
         style={{ ...styles.newJustInItemContainer, width: width / 2 - 5 }}
       >
-        <View style={{ position: "relative" }}>
+        <View style={{ position: 'relative' }}>
           <Image
             source={{
               uri: item.images
                 ? `${HOST}/${item?.images[0]?.styles[3].url}`
-                : null,
+                : item.image_attachement,
             }}
             style={{
-              width: styles.newJustInImage.width,
-              height: styles.newJustInImage.height,
+              width: (windowWidth / 100) * 45,
+              height: 200,
               resizeMode: "contain",
             }}
           />
-          {showItemCard && item?.id == enableQty?.id ? (
+
+          {showItemCard && item?.id === enableQty?.id ? (
             <View
               style={[
                 styles.addLogo,
@@ -652,14 +633,11 @@ const ProductListScreen = ({
             >
               <TouchableOpacity
                 onPress={() => {
-                  handleChangeQuantityClick();
-                  handleItemDecrement(tempArr[0]?.quantity);
-                  handleSetTimeoutDec(
-                    tempArr[0]?.id,
-                    tempArr[0]?.quantity,
-                    item
-                  );
+                  clearTimeoutHandler();
+                  qtyHandler("dec", item?.id)
+                  addItemInCart("dec", item?.id, item?.default_variant?.id)
                 }}
+                style={{ height: "100%", width: 30 }}
               >
                 <Icon
                   type="ant-design"
@@ -670,19 +648,16 @@ const ProductListScreen = ({
               </TouchableOpacity>
 
               <Text style={styles.dynamicText}>
-                {tempArr.length !== 0
-                  ? inc
-                    ? tempArr[0].quantity + (itemQuantity - 1)
-                    : tempArr[0].quantity + (itemQuantity - 1)
-                  : itemQuantity}
+                {tempData ? inc ? tempData?.quantity + (cartTempQty - 1) : tempData?.quantity + (cartTempQty - 1) : cartTempQty}
               </Text>
 
               <TouchableOpacity
                 onPress={() => {
-                  handleChangeQuantityClick();
-                  handleItemIncrement(item);
-                  handleSetTimeoutInc(tempArr[0]?.id, tempArr[0]?.quantity);
+                  clearTimeoutHandler();
+                  qtyHandler("inc", item?.id)
+                  addItemInCart("inc", item?.id, item?.default_variant?.id)
                 }}
+                style={{ height: "100%", width: 30 }}
               >
                 <Icon
                   type="ant-design"
@@ -692,43 +667,47 @@ const ProductListScreen = ({
                 />
               </TouchableOpacity>
             </View>
-          ) : findItemTempCartVariable(item) ? (
-            <Pressable
-              style={styles.addLogo}
-              onPress={() => {
-                closeIncBar();
-                setItemQuantity(1);
-                setShowItemCard(true);
-                findCartProduct(item?.id);
-              }}
-            >
-              {findItemTempCartVariable(item) && (
-                <View style={styles.afterText}>
-                  <Text style={{ color: colors.white, fontSize: 25 }}>
-                    {findItemTempCartVariable(item)?.quantity}
-                  </Text>
-                </View>
-              )}
-            </Pressable>
-          ) : (
-            <TouchableOpacity style={styles.addLogo}>
-              <Icon
-                name="plus"
-                type="ant-design"
-                size={25}
-                borderRadius={10}
-                color={colors.btnLink}
-                backgroundColor={colors.white}
+          ) :
+            tempData ? (
+              <Pressable
+                style={styles.addLogo}
                 onPress={() => {
-                  setItemQuantity(1);
                   setShowItemCard(true);
                   findCartProduct(item?.id);
-                  handleSetTimeoutDefault(item?.id, item);
+                  setCartTempQty(1);
+                  addItemInCart("", item?.id, item?.default_variant?.id)
                 }}
-              />
-            </TouchableOpacity>
-          )}
+              >
+                {
+                  <View style={styles.afterText}>
+                    <Text style={{ color: colors.white, fontSize: 25 }}>
+                      {tempData?.quantity}
+                    </Text>
+                  </View>
+                }
+              </Pressable>
+            ) : (
+              <TouchableOpacity
+                style={styles.addLogo}
+                onPress={() => {
+                  setShowItemCard(true);
+                  findCartProduct(item?.id);
+                  setCartTempQty(1);
+                  addItemInCart("single", item?.id, item?.default_variant?.id)
+                }}
+              >
+                <Icon
+                  name="plus"
+                  type="ant-design"
+                  size={25}
+                  borderRadius={10}
+                  color={colors.btnLink}
+                  backgroundColor={colors.white}
+                />
+              </TouchableOpacity>
+            )}
         </View>
+
         <View style={styles.detailsContainer}>
           <Text numberOfLines={1} style={styles.title}>
             {item.name}
@@ -765,7 +744,7 @@ const ProductListScreen = ({
   const scrollMenuRef = React.useRef();
   const scrollSubMenuRef = React.useRef();
 
-  const flatListUpperElement = ()  => {
+  const flatListUpperElement = () => {
     return (
       <View
         style={{
@@ -1358,7 +1337,7 @@ const ProductListScreen = ({
       <>
         <SafeAreaView
           style={[globalStyles.containerFluid, styles.bgwhite, { flex: 1 }]}
-          >
+        >
           {/* {flatListUpperElement()} */}
           <FlatList
             keyExtractor={(item) => item.id.toString()}
@@ -1382,13 +1361,6 @@ const ProductListScreen = ({
           />
         </SafeAreaView>
         {stikyOptions()}
-        {checkout.error !== null && saving === false ? (
-          <Snackbar visible={snackbarVisible} onDismiss={dismissSnackbar}>
-            {errMessage}
-          </Snackbar>
-        ) : (
-          <></>
-        )}
         {isOpen && (
           <FilterFooter
             value={sheetRef}
@@ -1411,6 +1383,12 @@ const ProductListScreen = ({
             setIsOpen={setSort}
           />
         )}
+
+        <Toast
+          config={toastConfig}
+          position='bottom'
+          bottomOffset={40}
+        />
         <BottomBarCart />
       </>
     );

@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from "@react-navigation/stack";
 import CategoriesScreen from "../screens/main/CategoriesStack/CategoriesScreen";
@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import ProducerDetailScreen from "../screens/main/ProducersStack/ProducerDetailScreen";
 import ProductDetailScreen from "../screens/main/ShopitStack/ProductDetailScreen";
 import { getVendorsList } from "../redux";
+import BagScreen from "../screens/main/ShopitStack/CheckoutScreens/BagScreen";
 
 const CategoriesStack = createStackNavigator();
 
@@ -103,6 +104,19 @@ function CategoriesStackNavigator({ navigation, route }) {
             headerShown: false,
           }}
         />
+
+        <CategoriesStack.Screen
+          name="Bag"
+          component={BagScreen}
+          options={{
+            headerShown: false
+          }}
+        //   headerRightContainerStyle: {
+        //     elevation: 0,
+        //   },
+        // }}
+        />
+
         <CategoriesStack.Screen
           name="ProductsList"
           component={ProductsListScreen}

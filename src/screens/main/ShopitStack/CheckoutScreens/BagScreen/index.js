@@ -93,7 +93,7 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
   };
 
   const handleRemoveLineItem = (lineItemId) => {
-    dispatch(removeLineItem(lineItemId, {}, cart?.token));
+    
   };
 
   const findCartProduct = (itemID) => {
@@ -139,7 +139,7 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
 
   const handleDecrementQuantity = (lineItemId, lineItemQuantity) => {
     if (2 + itemQuantity > lineItemQuantity) {
-      handleRemoveLineItem(lineItemId);
+      dispatch(removeLineItem(lineItemId, {}, cart?.token));
       setItemQuantity(0);
     } else {
       const id = setTimeout(() => {
@@ -181,7 +181,7 @@ const BagScreen = ({ navigation, dispatch, cart }) => {
         >
           <TouchableOpacity
             style={[styles.detailHeaderContainer, globalStyles.iosShadow]}
-            onPress={() => navigation.navigate("Shop")}
+            onPress={() => navigation.goBack()}
           >
             <Icon
               name="cross"

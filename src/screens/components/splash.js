@@ -18,9 +18,7 @@ const splash = ({ navigation, dispatch }) => {
 
     if (!load) {
       setTimeout(() => {
-        initialization().then(() => {
           navigation.replace("Shopit");
-        });
       }, 1000);
     }
     return () => {
@@ -28,17 +26,6 @@ const splash = ({ navigation, dispatch }) => {
     };
   }, []);
 
-  const initialization = async () => {
-    {
-      menus.length == 0 && (await dispatch(getMenus()));
-    }
-    {
-      vendorList.length == 0 && (await dispatch(getVendorsList()));
-    }
-    {
-      weeklyProducer.length == 0 && (await dispatch(getWeeklyProducer()));
-    }
-  };
 
   return (
     <View style={styles.container}>

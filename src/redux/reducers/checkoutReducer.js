@@ -438,6 +438,13 @@ export default function checkoutReducer(state = DEFAULT_STATE, action) {
       };
       return { ...state, ...changes };
 
+      case "RESET_ERROR":
+        changes = {
+          error: null,
+          iserror: false,
+        }
+        return { ...state, ...changes };
+
     /**
      * SET_QUANTITY
      */

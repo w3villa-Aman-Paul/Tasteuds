@@ -20,7 +20,6 @@ import AddAddress from "../screens/main/ProfileStack/AddAddress";
 import { useSelector, useDispatch } from "react-redux";
 import { createCart, getMenus, getMostBoughtGoods } from "../redux";
 import updateAddress from "../screens/main/ProfileStack/updateAddress";
-import OrderCompleteScreen from "../screens/main/ShopitStack/CheckoutScreens/OrderCompleteScreen";
 import Payments from "../library/components/Payments/Payments";
 
 const ShopitStack = createStackNavigator();

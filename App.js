@@ -9,7 +9,7 @@ import store, { persistor } from "./src/redux/store";
 import * as Font from "expo-font";
 import ActivityIndicatorCard from "./src/library/components/ActivityIndicatorCard";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { LogBox } from "react-native";
+import { LogBox, View, Text } from "react-native";
 
 const getFonts = () =>
   Font.loadAsync({
@@ -32,6 +32,7 @@ const App = () => {
     await getFonts();
     setFontsLoaded(true);
   };
+
 
   fun();
 

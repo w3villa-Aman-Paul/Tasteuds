@@ -5,7 +5,6 @@ import {
   handleAPIWithoutToken,
 } from "../../library/utils/apiUtils";
 
-import { useSelector } from "react-redux";
 
 export function getDefaultCountry(data, params = null) {
   const url = `${API_VERSION_STOREFRONT}/countries/default`;
@@ -167,6 +166,14 @@ export const completeCheckout = (auth_token) => {
 /**
  * Bag Screen Actions
  */
+
+export const resetError = () => (dispatch) => {
+  dispatch({
+    type: "RESET_ERROR",
+  });
+};
+
+
 export const addItem = (auth_token, data) => async (dispatch) => {
   const url = `${API_VERSION_STOREFRONT}/cart/add_item`;
   const method = "POST";
