@@ -7,9 +7,9 @@ import {
   View,
   SafeAreaView,
   Dimensions,
-  Alert 
+  Alert
 } from "react-native";
-import React, {useRef, useState, useEffect} from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { globalStyles } from "../../../../styles/global";
 import { styles } from "./styles";
 import {
@@ -30,11 +30,11 @@ import BottomBarCart from "../../../components/bottomBarCart";
 import HomePageUpperComponent from "./HomePageUpperComponent";
 import ActivityIndicatorCard from "../../../../library/components/ActivityIndicatorCard";
 import Toast from 'react-native-toast-message';
-import { toastConfig} from '../../../components/CustomToast/CustomToast'
+import { toastConfig } from '../../../components/CustomToast/CustomToast'
 
 const HomeComponent = ({ dispatch, navigation, productsList, cart }) => {
   const vendorList = useSelector((state) => state.taxons.vendors);
-  const {error} = useSelector((state) => state.checkout);
+  const { error } = useSelector((state) => state.checkout);
   const { saving, mostBoughtGoods } = useSelector((state) => state.taxons);
   const [showItemCard, setShowItemCard] = useState(false);
   const [enableQty, setEnableQty] = useState({});
@@ -82,7 +82,7 @@ const HomeComponent = ({ dispatch, navigation, productsList, cart }) => {
   }, [productsList]);
 
   useEffect(() => {
-    if(error !==  null){
+    if (error !== null) {
       const showToast = () => {
         Toast.show({
           type: 'error',
@@ -100,7 +100,6 @@ const HomeComponent = ({ dispatch, navigation, productsList, cart }) => {
     if (mostBoughtGoods?.length !== 0) {
       mostBoughtGoods?.forEach((item) => {
         const product = productsList.find((ele) => ele.id == item.id);
-
         if (!mostBought.includes(product)) {
           if (product && mostBought.length === 0) {
             mostBought.push({ ...product, qty: 1 });
@@ -145,11 +144,11 @@ const HomeComponent = ({ dispatch, navigation, productsList, cart }) => {
       setCartTempQty((prev) => prev + 1)
     }
     else {
-      if(3 - cartTempQty > existedItem?.quantity){
+      if (3 - cartTempQty > existedItem?.quantity) {
         setShowItemCard(false);
         dispatch(removeLineItem(existedItem?.id, {}, cart?.token));
       }
-      else{
+      else {
         setCartTempQty((prev) => prev - 1)
       }
     }
@@ -175,7 +174,7 @@ const HomeComponent = ({ dispatch, navigation, productsList, cart }) => {
     let existedItem = await checkItemInCart(itemID);
     console.log("EXISTED", existedItem)
     if (type === "single") {
-      const id =   setTimeout(async() => {
+      const id = setTimeout(async () => {
         await dispatch(
           addItem(cart?.token, {
             variant_id: vID,
@@ -220,10 +219,10 @@ const HomeComponent = ({ dispatch, navigation, productsList, cart }) => {
       if (existedItem !== null) {
         setInc(false)
         const id = setTimeout(() => {
-          if(3 - cartTempQty > existedItem?.quantity){
+          if (3 - cartTempQty > existedItem?.quantity) {
             null
           }
-          else{
+          else {
             dispatch(
               setQuantity(
                 {
@@ -238,7 +237,7 @@ const HomeComponent = ({ dispatch, navigation, productsList, cart }) => {
         }, 2000)
         timeoutIdRef.current = id;
       }
-      else{
+      else {
         const id = setTimeout(() => {
           dispatch(
             addItem(cart?.token, {
@@ -251,8 +250,8 @@ const HomeComponent = ({ dispatch, navigation, productsList, cart }) => {
         timeoutIdRef.current = id;
       }
     }
-    else{
-      if(existedItem != null){
+    else {
+      if (existedItem != null) {
         const id = setTimeout(() => {
           setShowItemCard(false);
         }, 2000)
@@ -288,143 +287,7 @@ const HomeComponent = ({ dispatch, navigation, productsList, cart }) => {
     );
   };
 
-  const newJustInRenderItem = ({ item }) => {
-    let tempData = cart.line_items.find(
-      (ele) => item.id === ele?.variant?.product?.id
-    );
-
-    if (saving) {
-      return <ActivityIndicatorCard />;
-    }
-    return (
-      <TouchableOpacity onPress={() => handleNewJustRenderItemClick(item)} style={{
-        flex: 1,
-        marginBottom: 16,
-        backgroundColor: colors.white,
-      }}>
-        <View>
-          <Image
-            source={{
-              uri: item.images
-                ? `${HOST}/${item?.images[0]?.styles[3].url}`
-                : item.image_attachement,
-            }}
-            style={{
-              width: (windowWidth / 100) * 45,
-              height: 200,
-              resizeMode: "contain",
-            }}
-          />
-
-          {showItemCard && item?.id === enableQty?.id ? (
-            <View
-              style={[
-                styles.addLogo,
-                { width: "95%", justifyContent: "space-between" },
-              ]}
-            >
-              <TouchableOpacity
-                onPress={() => {
-                  clearTimeoutHandler();
-                  qtyHandler("dec", item?.id)
-                  addItemInCart("dec", item?.id, item?.default_variant?.id)
-                }}
-                style={{ height: "100%", width: 30 }}
-              >
-                <Icon
-                  type="ant-design"
-                  name="minus"
-                  size={24}
-                  color={colors.btnLink}
-                />
-              </TouchableOpacity>
-
-              <Text style={styles.dynamicText}>
-                {tempData ? inc ? tempData?.quantity + (cartTempQty - 1) : tempData?.quantity + (cartTempQty - 1) : cartTempQty}
-              </Text>
-
-              <TouchableOpacity
-                onPress={() => {
-                  clearTimeoutHandler();
-                  qtyHandler("inc", item?.id)
-                  addItemInCart("inc", item?.id, item?.default_variant?.id)
-                }}
-                style={{ height: "100%", width: 30 }}
-              >
-                <Icon
-                  type="ant-design"
-                  name="plus"
-                  size={24}
-                  color={colors.btnLink}
-                />
-              </TouchableOpacity>
-            </View>
-          ) :
-            tempData ? (
-              <Pressable
-                style={styles.addLogo}
-                onPress={() => {
-                  setShowItemCard(true);
-                  findCartProduct(item?.id);
-                  setCartTempQty(1);
-                  addItemInCart("", item?.id, item?.default_variant?.id )
-                }}
-              >
-                {
-                  <View style={styles.afterText}>
-                    <Text style={{ color: colors.white, fontSize: 25 }}>
-                      {tempData?.quantity}
-                    </Text>
-                  </View>
-                }
-              </Pressable>
-            ) : (
-              <TouchableOpacity
-                style={styles.addLogo}
-                onPress={() => {
-                  setShowItemCard(true);
-                  findCartProduct(item?.id);
-                  setCartTempQty(1);
-                  addItemInCart("single", item?.id, item?.default_variant?.id)
-                }}
-              >
-                <Icon
-                  name="plus"
-                  type="ant-design"
-                  size={25}
-                  borderRadius={10}
-                  color={colors.btnLink}
-                  backgroundColor={colors.white}
-                />
-              </TouchableOpacity>
-            )}
-        </View>
-        <View style={styles.detailsContainer}>
-          <Text numberOfLines={1} style={styles.title}>
-            {item.name}
-          </Text>
-          <View style={styles.pricingContainer}>
-            <Text style={[styles.prices, { color: colors.black }]}>
-              {item.display_price} |
-            </Text>
-            <Text style={{ ...styles.prices, color: "#808080" }}>
-              {item?.default_variant?.options_text
-                ? item?.default_variant?.options_text.split(" ")[3] ||
-                item?.default_variant?.options_text.split(" ")[1]
-                : null}
-            </Text>
-          </View>
-          <Text numberOfLines={1} style={styles.description}>
-            {`${resultVendor(item?.vendor?.id)[0]}`}
-          </Text>
-        </View>
-      </TouchableOpacity>
-    );
-  };
-
-  // FlatListlowerComponent
-
-  function flatListlowerComponent() {
+   function flatListlowerComponent() {
     return (
       <>
         <TouchableOpacity
@@ -439,6 +302,143 @@ const HomeComponent = ({ dispatch, navigation, productsList, cart }) => {
     );
   }
 
+
+  const newJustInRenderItem = ({ item }) => {
+    let tempData = cart?.line_items.find(
+      (ele) => item.id === ele?.variant?.product?.id
+    );
+
+    // if (saving) {
+    //   return <ActivityIndicatorCard />;
+    // }
+    return (
+      <>
+        <TouchableOpacity onPress={() => handleNewJustRenderItemClick(item)} style={{
+          flex: 1,
+          marginBottom: 16,
+          backgroundColor: colors.white,
+        }}>
+          <View>
+            <Image
+              source={{
+                uri: item.images
+                  ? `${HOST}/${item?.images[0]?.styles[3].url}`
+                  : item.image_attachement,
+              }}
+              style={{
+                width: (windowWidth / 100) * 45,
+                height: 200,
+                resizeMode: "contain",
+              }}
+            />
+
+            {showItemCard && item?.id === enableQty?.id ? (
+              <View
+                style={[
+                  styles.addLogo,
+                  { width: "95%", justifyContent: "space-between" },
+                ]}
+              >
+                <TouchableOpacity
+                  onPress={() => {
+                    clearTimeoutHandler();
+                    qtyHandler("dec", item?.id)
+                    addItemInCart("dec", item?.id, item?.default_variant?.id)
+                  }}
+                  style={{ height: "100%", width: 30 }}
+                >
+                  <Icon
+                    type="ant-design"
+                    name="minus"
+                    size={24}
+                    color={colors.btnLink}
+                  />
+                </TouchableOpacity>
+
+                <Text style={styles.dynamicText}>
+                  {tempData ? inc ? tempData?.quantity + (cartTempQty - 1) : tempData?.quantity + (cartTempQty - 1) : cartTempQty}
+                </Text>
+
+                <TouchableOpacity
+                  onPress={() => {
+                    clearTimeoutHandler();
+                    qtyHandler("inc", item?.id)
+                    addItemInCart("inc", item?.id, item?.default_variant?.id)
+                  }}
+                  style={{ height: "100%", width: 30 }}
+                >
+                  <Icon
+                    type="ant-design"
+                    name="plus"
+                    size={24}
+                    color={colors.btnLink}
+                  />
+                </TouchableOpacity>
+              </View>
+            ) :
+              tempData ? (
+                <Pressable
+                  style={styles.addLogo}
+                  onPress={() => {
+                    setShowItemCard(true);
+                    findCartProduct(item?.id);
+                    setCartTempQty(1);
+                    addItemInCart("", item?.id, item?.default_variant?.id)
+                  }}
+                >
+                  {
+                    <View style={styles.afterText}>
+                      <Text style={{ color: colors.white, fontSize: 25 }}>
+                        {tempData?.quantity}
+                      </Text>
+                    </View>
+                  }
+                </Pressable>
+              ) : (
+                <TouchableOpacity
+                  style={styles.addLogo}
+                  onPress={() => {
+                    setShowItemCard(true);
+                    findCartProduct(item?.id);
+                    setCartTempQty(1);
+                    addItemInCart("single", item?.id, item?.default_variant?.id)
+                  }}
+                >
+                  <Icon
+                    name="plus"
+                    type="ant-design"
+                    size={25}
+                    borderRadius={10}
+                    color={colors.btnLink}
+                    backgroundColor={colors.white}
+                  />
+                </TouchableOpacity>
+              )}
+          </View>
+          <View style={styles.detailsContainer}>
+            <Text numberOfLines={1} style={styles.title}>
+              {item.name}
+            </Text>
+            <View style={styles.pricingContainer}>
+              <Text style={[styles.prices, { color: colors.black }]}>
+                {item.display_price} |
+              </Text>
+              <Text style={{ ...styles.prices, color: "#808080" }}>
+                {item?.default_variant?.options_text
+                  ? item?.default_variant?.options_text.split(" ")[3] ||
+                  item?.default_variant?.options_text.split(" ")[1]
+                  : null}
+              </Text>
+            </View>
+            <Text numberOfLines={1} style={styles.description}>
+              {`${resultVendor(item?.vendor?.id)[0]}`}
+            </Text>
+          </View>
+        </TouchableOpacity>
+      </>
+    );
+  };
+
   return (
     <>
       <SafeAreaView
@@ -447,7 +447,7 @@ const HomeComponent = ({ dispatch, navigation, productsList, cart }) => {
         <FlatList
           data={productsUnique}
           keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item, index }) =>
+          renderItem={({ item, index }) => saving ? <ActivityIndicatorCard /> :
             newJustInRenderItem((item = { item }), (index = { index }))
           }
           ListHeaderComponent={HomePageUpperComponent}

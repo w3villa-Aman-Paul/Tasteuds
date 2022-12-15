@@ -9,9 +9,7 @@ import { connect } from "react-redux";
 import { useSelector } from "react-redux";
 
 const splash = ({ navigation, dispatch }) => {
-  const vendorList = useSelector((state) => state.taxons.vendors);
-  const { mostBoughtGoods, menus } = useSelector((state) => state.taxons);
-  const weeklyProducer = useSelector((state) => state.taxons.weeklyProducer);
+
 
   useEffect(() => {
     let load = false;

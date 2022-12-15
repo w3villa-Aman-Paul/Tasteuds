@@ -58,7 +58,7 @@ const ShippingAddressScreen = ({ saving, route }) => {
   const { isAuth } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    dispatch(createCart());
+    //dispatch(createCart());
     dispatch(accountRetrieve());
     dispatch(retrieveAddress());
     dispatch(getPaymentMethods(cart?.token));
@@ -120,7 +120,7 @@ const ShippingAddressScreen = ({ saving, route }) => {
   const handlePaymentConfirmation = async () => {
     try {
       try {
-        dispatch(completeCheckout(cart?.token)).then(() => {
+        await dispatch(completeCheckout(cart?.token)).then(() => {
           setIsOpen(false);
           dispatch(createCart());
           dispatch(getOrders())

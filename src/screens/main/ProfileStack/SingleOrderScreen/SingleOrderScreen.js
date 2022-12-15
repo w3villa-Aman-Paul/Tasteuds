@@ -20,7 +20,7 @@ const SingleOrderScreen = ({ navigation, route }) => {
   useEffect(() => {
       const currentOrder = orders.find((order) => order.number === route.params?.orderNumber)
       setCurrentOrder(currentOrder)
-      console.log('CURRENTORDER',currentOrder)
+      //console.log('CURRENTORDER',currentOrder)
       route.params?.set();
   }, [currentOrder])
 

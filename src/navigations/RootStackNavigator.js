@@ -1,5 +1,5 @@
 import "react-native-gesture-handler";
-import * as React from "react";
+import React,{useEffect} from "react";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
@@ -24,8 +24,7 @@ import BagScreen from "../screens/main/ShopitStack/CheckoutScreens/BagScreen";
 import { colors } from "../res/palette";
 import OrderCompleteScreen from "../screens/main/ShopitStack/CheckoutScreens/OrderCompleteScreen";
 import ShippingAddressScreen from "../screens/main/ShopitStack/CheckoutScreens/ShippingAddressScreen";
-import { createCart, getMenus, getVendorsList, getWeeklyProducer, resetError } from "../redux";
-
+import { createCart, getMenus, getVendorsList, getWeeklyProducer, userLogout } from "../redux";
 const MyTheme = {
   ...DefaultTheme,
   colors: {
@@ -36,18 +35,38 @@ const MyTheme = {
 const RootStack = createStackNavigator();
 
 function RootStackNavigator({ authState, dispatch }) {
-
-  //const { cart } = useSelector((state) => state.checkout);
   const publishableKey = useSelector(
     (state) => state.checkout?.paymentMethods[0]?.preferences?.publishable_key
   );
 
-  React.useEffect(() => {
-    // dispatch(createCart());
-    dispatch(getVendorsList())
-    dispatch(getMenus())
-    dispatch(getWeeklyProducer())
+  const { status } = useSelector((state) => state.checkout);
+  const { isAuth} = useSelector((state) => state.account);
+  const {menus, vendors} = useSelector((state) => state.taxons)
+
+
+  const loader = async () => {
+    await dispatch(getWeeklyProducer())
+    if(menus.menu_items.length === 0){
+      await dispatch(getMenus())
+    }
+    if(vendors.length === 0){
+      await dispatch(getVendorsList())
+    }
+  }
+
+  useEffect(() => {
+    if(!isAuth){
+      dispatch(userLogout());
+    }
+  }, [])
+
+  useEffect(() => {
+    if(status === 404){
+      dispatch(createCart());
+    }
+    loader();
   },[])
+
 
   if (authState.isLoading) {
     return <ActivityIndicatorCard />;
