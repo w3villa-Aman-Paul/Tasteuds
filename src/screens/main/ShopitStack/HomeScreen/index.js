@@ -149,6 +149,7 @@ const HomeComponent = ({ dispatch, navigation, productsList, cart }) => {
         dispatch(removeLineItem(existedItem?.id, {}, cart?.token));
       }
       else {
+        cartTempQty === 1 ? "" :
         setCartTempQty((prev) => prev - 1)
       }
     }
@@ -238,17 +239,19 @@ const HomeComponent = ({ dispatch, navigation, productsList, cart }) => {
         timeoutIdRef.current = id;
       }
       else {
-        const id = setTimeout(() => {
-          dispatch(
-            addItem(cart?.token, {
-              variant_id: vID,
-              quantity: cartTempQty - 1,
-            })
-          );
-          setShowItemCard(false);
-        }, 2000)
-        timeoutIdRef.current = id;
-      }
+        if(cartTempQty > 1){
+          const id = setTimeout(() => {
+            dispatch(
+              addItem(cart?.token, {
+                variant_id: vID,
+                quantity: cartTempQty - 1,
+              })
+            );
+            setShowItemCard(false);
+          }, 2000)
+          timeoutIdRef.current = id;
+        }
+        }
     }
     else {
       if (existedItem != null) {
