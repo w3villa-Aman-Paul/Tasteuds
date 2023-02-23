@@ -17,11 +17,11 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.w3villa.tastebuds",
-      "buildNumber": "1.0.12",
+      "buildNumber": "1.0.15",
 
       "usesAppleSignIn": true,
       "infoPlist": {
-        "NSUserTrackingUsageDescription": true,
+        "NSUserTrackingUsageDescription": "true",
         "NSCameraUsageDescription": "This app uses the camera to take the profile image of user.",
         "SKAdNetworkItems": [
           {
